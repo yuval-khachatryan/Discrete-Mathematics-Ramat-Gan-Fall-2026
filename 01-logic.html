@@ -2897,7 +2897,12 @@ window.Quarto = {
 <p>לכן ״חופשי״ אינו פשוט שם אחר ל״מספר שעוד לא גילינו״. במשפט עם ״קיים״ איננו צריכים לכתוב מראש איזה מספר מתאים, ובכל זאת המשתנה קשור: ההוראה לחפש לפחות ערך אחד כבר נמצאת במשפט.</p>
 <p>גם בחירת ערך לצורך בדיקה אינה הופכת משתנה לקשור. אם מציבים ממש <span class="math inline">\(7\)</span> במקום <span class="math inline">\(x\)</span>, מקבלים <span class="math inline">\(7&gt;5\)</span>, ובתוצאה כבר אין משתנה. קשירה באמצעות כמת היא פעולה אחרת: האות נשארת במשפט, והכמת אומר כיצד להתייחס לערכים שלה.</p>
 </div>
-<p>נחזור לדוכן הפלאפל. נסמן ב-<span class="math inline">\(W(x)\)</span> את ״<span class="math inline">\(x\)</span> רוצה פלאפל״, והתחום הוא שלושת המתמטיקאים. השאלה ״כולם רוצים פלאפל?״ מבקשת לדעת אם הפסוק <span class="math inline">\(\forall x\, W(x)\)</span> אמיתי. אם נמספר את המתמטיקאים <span class="math inline">\(,1, 2, 3\)</span> זה בדיוק הפסוק <span class="math inline">\(W_1 \land W_2 \land W_3\)</span> <a href="#sec-bar-again">מהסעיף על דוכן הפלאפל</a>. השאלה ״מישהו רוצה פלאפל?״ מתייחסת לפסוק <span class="math inline">\(,\exists x\, W(x)\)</span> כלומר <span class="math inline">\(.W_1 \lor W_2 \lor W_3\)</span></p>
+<p>נמשיך עם אותו תחום, <span class="math inline">\(D=\{2,5,7\}\)</span>, ועם אותו פסוק פתוח, <span class="math inline">\(P(x)\)</span>: ״<span class="math inline">\(x&gt;5\)</span>״. בתחום הזה אפשר לכתוב במפורש את כל הבדיקות שהכמת מבקש:</p>
+<ul>
+<li>״כל מספר בתחום גדול מ־5״ דורש ששלוש הבדיקות יצליחו <strong>יחד</strong>: <span class="math inline">\(P(2) \land P(5) \land P(7)\)</span>. הטענה שגויה, כי לא כל שלושת המספרים גדולים מ־5.</li>
+<li>״יש מספר בתחום שגדול מ־5״ דורש ש<strong>לפחות אחת</strong> מהבדיקות תצליח: <span class="math inline">\(P(2) \lor P(5) \lor P(7)\)</span>. הטענה נכונה, כי <span class="math inline">\(7&gt;5\)</span>.</li>
+</ul>
+<p>כך המילים ״לכל״ ו״קיים״ מתחברות לקשרים שכבר למדנו, בלי לשנות את התחום או את משמעותו של <span class="math inline">\(P(x)\)</span>.</p>
 <div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea">
 <p><strong>חשוב לזכור.</strong></p>
 <p>בתחום <strong>סופי</strong>, <span class="math inline">\(\forall\)</span> הוא ״וגם״ ארוך ו-<span class="math inline">\(\exists\)</span> הוא ״או״ ארוך.</p>
@@ -2949,20 +2954,20 @@ window.Quarto = {
 <p><span class="math display">\[\neg \forall x\, P(x) \;\equiv\; \exists x\, \neg P(x)\]</span> <span class="math display">\[.\neg \exists x\, P(x) \;\equiv\; \forall x\, \neg P(x)\]</span></p>
 </div>
 <p>אלה בדיוק חוקי דה מורגן, בגרסה ארוכה: בתחום סופי, <span class="math inline">\(\neg\forall x\, P(x)\)</span> הוא <span class="math inline">\(,\neg(P(a_1) \land \dots \land P(a_n))\)</span> ולפי דה מורגן זה <span class="math inline">\(.\neg P(a_1) \lor \dots \lor \neg P(a_n)\)</span> כשמכניסים שלילה פנימה, <span class="math inline">\(\forall\)</span> הופך ל-<span class="math inline">\(\exists\)</span> ו-<span class="math inline">\(\exists\)</span> הופך ל-<span class="math inline">\(,\forall\)</span> כמו ש״וגם״ הופך ל״או״.</p>
-<div class="thmbox thmbox-self-check">
-<p><strong>בדיקה עצמית.</strong></p>
-<p>מה השלילה של ״<strong>יש</strong> סטודנט שאוכל פלאפל בלי חומוס״?</p>
+<div id="box-check-negate-exists" class="thmbox thmbox-self-check" title="איך שוללים ״יש לפחות אחד״?">
+<p><strong>בדיקה עצמית — איך שוללים ״יש לפחות אחד״?.</strong></p>
+<p>התחום הוא הסטודנטים בכיתה, ו-<span class="math inline">\(P(x)\)</span> הוא ״הסטודנט <span class="math inline">\(x\)</span> הגיש את העבודה״. מה השלילה של ״<strong>יש לפחות סטודנט אחד שהגיש את העבודה</strong>״?</p>
 <div class="tf-quiz" data-correct="false">
-<button class="tf-opt" data-val="true">״יש סטודנט שלא אוכל פלאפל בלי חומוס״</button>
-<button class="tf-opt" data-val="false">״אף סטודנט לא אוכל פלאפל בלי חומוס״</button>
-<div class="tf-feedback"></div>
-<div class="tf-why"><b>״אף סטודנט לא אוכל פלאפל בלי חומוס״</b>, כלומר \(\forall x\, \neg P(x)\). האפשרות הראשונה, \(\exists x\, \neg P(x)\), יכולה להיות אמת יחד עם הטענה המקורית: מספיק שיש סטודנט אחד שאוכל בלי חומוס ואחד שלא.</div>
+<button class="tf-opt" data-val="true">״יש לפחות סטודנט אחד שלא הגיש את העבודה״</button>
+<button class="tf-opt" data-val="false">״אף סטודנט בכיתה לא הגיש את העבודה״</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why"><b>השלילה היא ״אף סטודנט בכיתה לא הגיש את העבודה״</b>, כלומר \(\forall x\, \neg P(x)\). כדי שהטענה המקורית תהיה שגויה, לא יכול להיות אפילו מגיש אחד. ״יש סטודנט שלא הגיש״ אינו מספיק: ייתכן שדנה הגישה ויואב לא הגיש. אז גם ״יש מי שהגיש״ וגם ״יש מי שלא הגיש״ נכונים יחד, ולכן הם אינם שלילה זה של זה.</div>
 </div>
 </div>
 </section>
 <section id="sec-quantifier-order" class="level3" data-number="1.14.4">
 <h3 data-number="1.14.4" class="anchored" data-anchor-id="sec-quantifier-order"><span class="header-section-number">1.14.4</span> סדר הכמתים</h3>
-<p>כשיש שני משתנים, חשוב <strong>באיזה סדר</strong> כותבים את הכמתים. נסמן ב-<span class="math inline">\(L(x, y)\)</span> את הטענה ״הסטודנט <span class="math inline">\(x\)</span> אוהב את הפריט <span class="math inline">\(y\)</span>״. התחום של <span class="math inline">\(x\)</span> הוא הסטודנטים בכיתה; התחום של <span class="math inline">\(y\)</span> הוא הפריטים בתפריט, כגון פיצה, פלאפל, תפוחים וקפה:</p>
+<p>כשיש שני משתנים, חשוב <strong>באיזה סדר</strong> כותבים את הכמתים. נסמן ב-<span class="math inline">\(L(x, y)\)</span> את הטענה ״הסטודנט <span class="math inline">\(x\)</span> אוהב את הפריט <span class="math inline">\(y\)</span>״. התחום של <span class="math inline">\(x\)</span> הוא הסטודנטים בכיתה; התחום של <span class="math inline">\(y\)</span> הוא הפריטים בתפריט שמופיע במשחק:</p>
 <ul>
 <li><span class="math inline">\(\forall x\, \exists y\, L(x, y)\)</span>: לכל סטודנט <strong>יש</strong> פריט בתפריט שהוא אוהב. כל אחד יכול לאהוב פריט בתפריט אחר.</li>
 <li><span class="math inline">\(\exists y\, \forall x\, L(x, y)\)</span>: <strong>יש</strong> פריט בתפריט אחד שכל הסטודנטים אוהבים.</li>
