@@ -51,6 +51,7 @@
 import { parse, evaluate, assignments, variables, compare, format } from "./logic.js";
 import { initOpenStatement } from "./open-statement.js";
 import { initProofEditor } from "./proof-editor.js";
+import { initArgumentEditor } from "./argument-editor.js";
 import { evaluationSteps, show } from "../gate/knights.js";
 
 const tv = b => `<span class="tv-${b ? "T" : "F"}">${b ? "T" : "F"}</span>`;
@@ -296,6 +297,7 @@ function initTF(quiz) {
 }
 
 function init() {
+  document.querySelectorAll(".argument-editor").forEach(initArgumentEditor);
   document.querySelectorAll(".proof-editor").forEach(initProofEditor);
   document.querySelectorAll(".open-statement-game").forEach(initOpenStatement);
   document.querySelectorAll(".solve").forEach(initSolve);

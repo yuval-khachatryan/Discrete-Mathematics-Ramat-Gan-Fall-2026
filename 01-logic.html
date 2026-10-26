@@ -461,6 +461,20 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .proof-reference summary { cursor: pointer; color: #075985; }
 .proof-formula { direction: ltr; unicode-bidi: isolate; text-align: left; white-space: nowrap; overflow-x: auto; font-family: "Cambria Math", "Times New Roman", serif; margin-top: .25rem; }
 .proof-ready .proof-offline { display: none; }
+.argument-editor [hidden] { display: none !important; }
+.argument-ready .argument-offline { display: none; }
+.argument-stage { margin: .8rem 0; padding: .7rem; border: 1px solid #c4b5fd; border-radius: 10px; background: #fff; min-width: 0; }
+.argument-stage h4 { font-size: 1.1em; color: #6b21a8; margin-top: 0; }
+.argument-mapping { display: flex; align-items: center; gap: .7rem; padding: .5rem 0; }
+.argument-letter { flex: 0 0 4rem; min-height: 44px; direction: ltr; text-align: center; font: inherit; font-weight: 700; border: 1px solid #7c3aed; border-radius: 6px; color: #581c87; background: #faf5ff; }
+.argument-source { width: 100%; min-width: 0; min-height: 44px; padding: .35rem; font: inherit; border: 1px solid #94a3b8; border-radius: 6px; background: #fff; }
+.argument-letter:focus-visible, .argument-source:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.argument-translation { padding: .7rem 0; border-bottom: 1px solid #e2e8f0; }
+.argument-premises { list-style: none; padding: 0; margin: .8rem 0; }
+.argument-premises li { margin: .4rem 0; padding: .6rem; background: #f1f5f9; border-radius: 6px; }
+.argument-rule-help:not(:empty), .argument-hints:not(:empty), .argument-solution:not(:empty) { padding: .6rem; margin: .5rem 0; background: #fffbeb; border: 1px dashed #d97706; border-radius: 6px; }
+.argument-rule-help p, .argument-hints p { margin: .3rem 0; }
+.argument-editor .bk-bar { margin-top: .6rem; }
 .bk-keys { display: flex; flex-wrap: wrap; gap: 0.25rem; direction: ltr; }
 .bk-key { min-width: 40px; min-height: 40px; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; font: 1.1rem "Cambria Math", "STIX Two Math", serif; cursor: pointer; }
 .bk-key:hover { background: #eef2ff; }
@@ -2176,6 +2190,18 @@ window.Quarto = {
 <div class="tf-why">הניסוח המתאים הוא <b>״אם יש עשן, אז יש אש״</b>. המשפט שולל מצב שבו יש עשן ואין אש. המשפט ההפוך, ״אם יש אש, אז יש עשן״, הוא טענה אחרת; הוא אינו התרגום של הפתגם.</div>
 </div>
 </div>
+<div id="box-check-false-implies-true" class="thmbox thmbox-self-check" title="רגע, גם זה נחשב גרירה אמיתית?">
+<p><strong>בדיקה עצמית — רגע, גם זה נחשב גרירה אמיתית?.</strong></p>
+<p>האם <strong>״אם <span class="math inline">\(2 \ne 2\)</span>, אז <span class="math inline">\(5=5\)</span>״</strong> הוא פסוק נכון? הסימן <span class="math inline">\(\ne\)</span> נקרא ״אינו שווה״.</p>
+<p><span class="math display">\[ (2 \ne 2) \to (5=5) \]</span></p>
+<p>לפני שבוחרים, בדקו כל חלק בנפרד: האם <span class="math inline">\(2 \ne 2\)</span> נכון? האם <span class="math inline">\(5=5\)</span> נכון? עכשיו חפשו את השורה המתאימה בטבלת הגרירה.</p>
+<div class="tf-quiz" data-correct="true">
+<button class="tf-opt" data-val="true">כן, הפסוק עם הגרירה נכון.</button>
+<button class="tf-opt" data-val="false">לא, הפסוק עם הגרירה שגוי.</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why"><p><b>כן — לפי הגדרת הגרירה.</b> ההנחה \(2 \ne 2\) שגויה: 2 דווקא שווה לעצמו. המסקנה \(5=5\) נכונה. לכן אנחנו בשורה \(F \to T\), שבה ערך הגרירה הוא \(T\).</p><p><span class="key-rule">פסוק עם גרירה יכול להיות נכון גם כשההנחה שלו שגויה.</span> זה אינו הופך את המשפט ״2 אינו שווה ל־2״ לנכון. גם לא צריך קשר של סיבה ותוצאה בין שני החלקים: \(5=5\) נכון בפני עצמו. כאן חישבנו את ערך הפסוק המורכב לפי הטבלה.</p><p>המצב היחיד שהיה נותן גרירה שגויה הוא הנחה נכונה ומסקנה שגויה. זה אינו המצב בשאלה הזאת.</p></div>
+</div>
+</div>
 <p>כעת בדקו את מצבי ההבטחה במשחק. בכל סיבוב השתמשו בשורה המתאימה בטבלת הגרירה כדי לקבוע אם הפסוק נכון או שגוי: מנורה דולקת מציינת שהוא נכון, ומנורה כבויה מציינת שהוא שגוי.</p>
 <div id="box-game-implies" class="thmbox thmbox-game" title="הבטחה של השומר">
 <p><strong>משחק 1.10.3 — הבטחה של השומר.</strong></p>
@@ -2624,12 +2650,36 @@ window.Quarto = {
 </table>
 <p>יש רק שורה אחת כזו, ובה המסקנה <span class="math inline">\(B\)</span> אמת. לכן הטיעון תקף. מיד נבדוק את כלל השלילה בטבלה. בהמשך אותו סעיף נשלב את כלל השרשרת ואת כלל השלילה בשאלה על הגשם.</p>
 </div>
+<div class="thmbox thmbox-key-point thmicon-method" data-icon="method" title="ממשפטים במילים להוכחה שאתם כותבים">
+<p><strong>שיטת הוכחה — ממשפטים במילים להוכחה שאתם כותבים.</strong></p>
+<p>בתרגילים הבאים תבחרו בעצמכם אות לכל משפט פשוט. אחר כך תתרגמו את הנתונים ואת המטרה, ותכתבו הוכחה בצעדים.</p>
+<p><span class="key-rule"><strong>המטרה אינה נתון. צריך להגיע אליה מתוך הנתונים, בעזרת כללים שכבר למדנו.</strong></span> ליד כל צעד מציינים גם מאילו שורות קודמות הוא נובע. כך אפשר לבדוק את הדרך, ולא רק אם התשובה האחרונה נכונה.</p>
+</div>
+<div id="box-q-argument-library" class="thmbox thmbox-question" title="בוחרים אותיות ומוכיחים: הספר של נועה">
+<p><strong>שאלה 1.12.5 — בוחרים אותיות ומוכיחים: הספר של נועה.</strong></p>
+<p><strong>נתון:</strong> אם נועה הציגה כרטיס קורא, היא יכולה לשאול ספר. נועה הציגה כרטיס קורא. <strong>הוכיחו:</strong> נועה יכולה לשאול ספר.</p>
+<div class="argument-editor" data-argument="library">
+<div class="argument-offline">
+<p>בחרו אות לכל משפט פשוט, כתבו את הנתונים כנוסחאות והסיקו את המסקנה בעזרת כלל הניתוק. להפעלת עורך הסימונים והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
 <div id="box-q-ex-mt" class="thmbox thmbox-question" title="כלל השלילה בטבלה">
-<p><strong>שאלה 1.12.5 — כלל השלילה בטבלה.</strong></p>
+<p><strong>שאלה 1.12.6 — כלל השלילה בטבלה.</strong></p>
 <p>מלאו את הטבלה, ובדקו: בכל שורה שבה <strong>שתי</strong> ההנחות <span class="math inline">\(A \to B\)</span> ו-<span class="math inline">\(\neg B\)</span> אמת, האם המסקנה <span class="math inline">\(\neg A\)</span> אמת?</p>
 <div class="ttq" data-vars="A,B" cols="A -> B; !B; !A">
 <div class="after">
 <p>שתי ההנחות אמת רק בשורה <span class="math inline">\(A=F\)</span>, <span class="math inline">\(,B=F\)</span> ובה גם <span class="math inline">\(\neg A\)</span> אמת. לכן כלל השלילה תקף.</p>
+</div>
+</div>
+</div>
+<div id="box-q-argument-printer" class="thmbox thmbox-question" title="מוכיחים שלילה: המדפסת">
+<p><strong>שאלה 1.12.7 — מוכיחים שלילה: המדפסת.</strong></p>
+<p><strong>נתון:</strong> אם ההדפסה הצליחה, היה נייר במדפסת בזמן ההדפסה. לא היה נייר במדפסת בזמן ההדפסה. <strong>הוכיחו:</strong> ההדפסה לא הצליחה.</p>
+<p>שימו לב: ניתן שם למשפט החיובי ״היה נייר במדפסת בזמן ההדפסה״. כדי לכתוב את הנתון שלא היה נייר, נצטרך לשלול את המשפט הזה.</p>
+<div class="argument-editor" data-argument="printer">
+<div class="argument-offline">
+<p>בחרו אותיות, תרגמו את הנתונים והשתמשו בכלל השלילה. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
 </div>
 </div>
 </div>
@@ -2653,7 +2703,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-ex-deny" class="thmbox thmbox-question" title="כשל או כלל?">
-<p><strong>שאלה 1.12.6 — כשל או כלל?.</strong></p>
+<p><strong>שאלה 1.12.8 — כשל או כלל?.</strong></p>
 <p>מלאו את הטבלה, ובדקו את הטיעון: מ-<span class="math inline">\(A \to B\)</span> ומ-<span class="math inline">\(\neg A\)</span> ״נובע״ <span class="math inline">\(.\neg B\)</span></p>
 <div class="ttq" data-vars="A,B" cols="A -> B; !A; !B">
 <div class="after">
@@ -2661,18 +2711,33 @@ window.Quarto = {
 </div>
 </div>
 </div>
+<div id="box-q-argument-projector" class="thmbox thmbox-question" title="צעד שכבר הוכחנו יכול לעזור בצעד הבא">
+<p><strong>שאלה 1.12.9 — צעד שכבר הוכחנו יכול לעזור בצעד הבא.</strong></p>
+<p><strong>הנתונים בתרגיל:</strong> אם המחשב מחובר למקרן, התמונה מופיעה על המסך. אם התמונה מופיעה על המסך, אפשר להתחיל את ההצגה. המחשב מחובר למקרן.</p>
+<p><strong>הוכיחו:</strong> אפשר להתחיל את ההצגה. הפעם צריך יותר מצעד אחד. אפשר להשתמש במסקנת ביניים כשורת מקור לצעד הבא, ויש יותר מדרך נכונה אחת.</p>
+<div class="argument-editor" data-argument="projector">
+<div class="argument-offline">
+<p>בחרו שלוש אותיות, כתבו את הנתונים ואת המטרה, והשתמשו בכלל הניתוק פעמיים. אפשר גם להשתמש בכלל השרשרת ואחריו בכלל הניתוק. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
 <p>במשחק הבא תשתמשו בכללי ההיסק כדי לחקור מי אכל את הכריך של השומר. בכל שלב הכרטיסים הם הנתונים שמניחים כנכונים. בוחרים שני כרטיסים וכלל היסק כדי להוסיף מסקנה, וממשיכים עד שמוכיחים את הטענה המבוקשת. לא צריך לנחש מה ״סביר״ בסיפור; צריך להראות מה נובע מהכרטיסים.</p>
 <div id="box-game-detective" class="thmbox thmbox-game" title="הבלש של הקפטריה">
-<p><strong>משחק 1.12.7 — הבלש של הקפטריה.</strong></p>
+<p><strong>משחק 1.12.10 — הבלש של הקפטריה.</strong></p>
 <iframe class="widget-frame" src="games/detective/index.html?levels=mp,mt,hs,judge,chain,culprit&amp;embed=1" loading="lazy" title="משחק: הבלש של הקפטריה"></iframe>
 </div>
-<div id="box-q-ex-chain" class="thmbox thmbox-question">
-<p><strong>שאלה 1.12.8.</strong></p>
-<p><strong>הנחות:</strong> אם יורד גשם, המשחק בקמפוס מבוטל. אם המשחק מבוטל, השומר הולך הביתה מוקדם. השומר <strong>לא</strong> הלך הביתה מוקדם. מה אפשר להסיק על הגשם? ציינו את הכללים שבהם השתמשתם.</p>
+<div id="box-q-ex-chain" class="thmbox thmbox-question" title="בוחרים סימונים ומשלבים כללים">
+<p><strong>שאלה 1.12.11 — בוחרים סימונים ומשלבים כללים.</strong></p>
+<p><strong>הנחות:</strong> אם יורד גשם, המשחק בקמפוס מבוטל. אם המשחק מבוטל, השומר הולך הביתה מוקדם. השומר <strong>לא</strong> הולך הביתה מוקדם. <strong>הוכיחו שלא יורד גשם</strong>, וציינו את הכללים ואת שורות המקור בכל צעד.</p>
+<div class="argument-editor" data-argument="rain">
+<div class="argument-offline">
+<p>אפשר לפתור על דף בעזרת הרמזים והפתרון המודרך שבהמשך. להפעלת בחירת הסימונים וכתיבת ההוכחה עם בדיקה יש להפעיל JavaScript.</p>
+</div>
+</div>
 </div>
 <div class="solve">
 <div class="hint">
-<p>סמנו: <span class="math inline">\(G\)</span> = ״יורד גשם״, <span class="math inline">\(M\)</span> = ״המשחק מבוטל״, <span class="math inline">\(H\)</span> = ״השומר הולך הביתה מוקדם״. כתבו את שלוש ההנחות כנוסחאות.</p>
+<p>אפשר לסמן, למשל: <span class="math inline">\(G\)</span> = ״יורד גשם״, <span class="math inline">\(M\)</span> = ״המשחק מבוטל״, <span class="math inline">\(H\)</span> = ״השומר הולך הביתה מוקדם״. בפתרון המודרך נשתמש באותיות האלה; בעורך תוכלו לבחור אותיות אחרות. כתבו את שלוש ההנחות כנוסחאות.</p>
 </div>
 <div class="hint">
 <p>שתי הגרירות מתחברות לשרשרת. אחרי שתקבלו גרירה אחת מ-<span class="math inline">\(G\)</span> ל-<span class="math inline">\(,H\)</span> איזה כלל משתמש ב-<span class="math inline">\(?\neg H\)</span></p>
