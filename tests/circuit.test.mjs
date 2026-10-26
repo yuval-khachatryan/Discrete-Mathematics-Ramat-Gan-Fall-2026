@@ -12,7 +12,7 @@ test("level ids are unique and every level has the shell fields", () => {
   for (const l of LEVELS) {
     assert.ok(l.title && l.goal && l.debrief, l.id);
     assert.equal(l.hints.length, 3, l.id);
-    assert.ok(["play", "predict", "explore", "fill", "compare"].includes(l.mode), l.id);
+    assert.ok(["play", "predict", "select", "fill", "compare"].includes(l.mode), l.id);
   }
 });
 
