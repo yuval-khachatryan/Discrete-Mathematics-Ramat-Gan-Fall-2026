@@ -131,10 +131,10 @@ export function formula(level, claim) {
   switch (claim.type) {
     case "forall":
     case "exists":
-      return `${claim.type === "forall" ? "∀" : "∃"}x ${claim.neg ? "¬" : ""}${level.preds[claim.pred].letter}(x)`;
+      return `${claim.type === "forall" ? "∀" : "∃"}x∈D ${claim.neg ? "¬" : ""}${level.preds[claim.pred].letter}(x)`;
     case "not": return "¬" + formula(level, claim.of);
-    case "forall-exists": return `∀x ∃y ${level.rels[claim.rel].letter}(x, y)`;
-    case "exists-forall": return `∃y ∀x ${level.rels[claim.rel].letter}(x, y)`;
+    case "forall-exists": return `∀x∈D ∃y∈M ${level.rels[claim.rel].letter}(x, y)`;
+    case "exists-forall": return `∃y∈M ∀x∈D ${level.rels[claim.rel].letter}(x, y)`;
   }
   throw new Error(`unknown claim type: ${claim.type}`);
 }

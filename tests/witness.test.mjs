@@ -240,7 +240,7 @@ test("nobody: one card without pineapple does not refute ׳יש׳; all six do", 
 
 /* ---- level 5: negation -------------------------------------------------- */
 
-test("negation: exactly one option is ¬∀x P(x), checked over all 2^6 worlds", () => {
+test("negation: exactly one option is ¬∀x∈D P(x), checked over all 2^6 worlds", () => {
   const l = byId.negation;
   const matching = [];
   l.options.forEach((o, i) => {
@@ -253,11 +253,11 @@ test("negation: exactly one option is ¬∀x P(x), checked over all 2^6 worlds",
     assert.equal(R.isNegationOf(o.claim, l.target, l), always, `option ${i} (engine)`);
   });
   assert.deepEqual(matching, [l.expect.correct]);
-  assert.equal(R.formula(l, l.options[l.expect.correct].claim), "∃x ¬P(x)");
-  assert.equal(R.formula(l, l.target), "∀x P(x)");
+  assert.equal(R.formula(l, l.options[l.expect.correct].claim), "∃x∈D ¬P(x)");
+  assert.equal(R.formula(l, l.target), "∀x∈D P(x)");
   const robot = l.options.findIndex(o => o.robot);
   assert.equal(robot, l.expect.robotOption);
-  assert.equal(R.formula(l, l.options[robot].claim), "∀x ¬P(x)");
+  assert.equal(R.formula(l, l.options[robot].claim), "∀x∈D ¬P(x)");
   assert.deepEqual(l.options[robot].claim, l.claim, "the robot's option is the robot's reading");
   for (const [i, o] of l.options.entries()) if (i !== l.expect.correct) assert.ok(o.why, `option ${i} explains itself`);
   // generalised De Morgan, both ways
@@ -297,7 +297,7 @@ test("negation: the judge", () => {
 
 /* ---- level 6: order of quantifiers --------------------------------------- */
 
-test("order: ∀x ∃y is true and ∃y ∀x is false (brute force)", () => {
+test("order: ∀x∈D ∃y∈M is true and ∃y∈M ∀x∈D is false (brute force)", () => {
   const l = byId.order;
   assert.deepEqual(l.parts.map(p => bf(l, p.claim)), l.expect.values);
   assert.deepEqual(l.expect.values, [true, false]);
@@ -306,7 +306,7 @@ test("order: ∀x ∃y is true and ∃y ∀x is false (brute force)", () => {
   assert.deepEqual(l.parts.map(p => kindByRule(p.claim.type, bf(l, p.claim))), l.expect.evidence);
   for (const x of l.domain) assert.ok(x.snacks.length > 0, `${x.id} likes something`);
   for (const y of l.ys) assert.ok(l.domain.some(x => !x.snacks.includes(y.id)), `someone doesn't like ${y.id}`);
-  assert.deepEqual(l.parts.map(p => R.formula(l, p.claim)), ["∀x ∃y L(x, y)", "∃y ∀x L(x, y)"]);
+  assert.deepEqual(l.parts.map(p => R.formula(l, p.claim)), ["∀x∈D ∃y∈M L(x, y)", "∃y∈M ∀x∈D L(x, y)"]);
 });
 
 test("order: the judge accepts the hinted picks and the solution, and explains mistakes", () => {

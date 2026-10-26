@@ -94,7 +94,7 @@ test("every interactive exercise in the chapter has formulas that parse", () => 
   const cols = [...qmd.matchAll(/\.ttq[^}]*cols="([^"]+)"/g)].flatMap(m => m[1].split(";"));
   const answers = [...qmd.matchAll(/\.fq answer="([^"]+)"/g)].map(m => m[1]);
   const proofs = [...qmd.matchAll(/\.proof-editor data-start="([^"]+)" data-target="([^"]+)"/g)];
-  assert.equal(proofs.length, 2);
+  assert.ok(proofs.length >= 6);
   for (const [, start, target] of proofs) assert.ok(compare(start, target).equal);
   assert.ok(cols.length > 10 && answers.length >= 5);
   for (const f of [...cols, ...answers]) assert.doesNotThrow(() => parse(f.trim()), f);

@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { ARGUMENTS } from "../games/shared/argument-exercises.js";
-import { LETTERS, rename, checkMapping, checkTranslations, checkArgument } from "../games/shared/argument-rules.js";
+import { LETTERS, rename, formulaBank, checkMapping, checkTranslations, checkArgument } from "../games/shared/argument-rules.js";
 import { assignments, evaluate } from "../games/shared/logic.js";
 
 const identity = ex => Object.fromEntries(ex.atoms.map(a=>[a.id,a.id]));
@@ -11,7 +11,7 @@ function run(ex,steps=ex.solution,mapping=identity(ex),premises=ex.premises.map(
 }
 const step=(id,formula,rule,refs)=>({id,formula,rule,refs});
 
-test("all four activities are embedded and have valid authored proofs under different letter choices",()=>{
+test("all assisted arguments are embedded and have valid authored proofs under different letter choices",()=>{
   const qmd=readFileSync(new URL("../01-logic.qmd",import.meta.url),"utf8");
   for(const [id,ex] of Object.entries(ARGUMENTS)) {
     assert.ok(qmd.includes(`data-argument="${id}"`));
@@ -21,7 +21,9 @@ test("all four activities are embedded and have valid authored proofs under diff
       const result=run(ex,ex.solution,mapping);
       assert.ok(result.ok&&result.complete,`${id}: ${JSON.stringify(result)}`);
     }
-    for(const env of assignments(ex.atoms.map(a=>a.id))) {
+    const environments = assignments(ex.atoms.map(a=>a.id));
+    assert.ok(environments.some(env => ex.premises.every(p=>evaluate(p.formula,env))), `${id}: premises must be jointly satisfiable`);
+    for(const env of environments) {
       if(ex.premises.every(p=>evaluate(p.formula,env))) assert.ok(evaluate(ex.goal.formula,env));
     }
   }
@@ -32,6 +34,21 @@ test("names must be unique letters; truth constants cannot name statements",()=>
   for(const mapping of [{A:"A",B:"A"},{A:"T",B:"B"},{A:"F",B:"B"},{A:"A1",B:"B"},{A:"",B:"B"}]) assert.equal(checkMapping(ex,mapping).ok,false);
   assert.ok(!LETTERS.includes("F")&&!LETTERS.includes("T"));
   assert.equal(rename("A -> !B",{A:"B",B:"A"}),"B → ¬A");
+});
+
+test("formula banks follow chosen letters and offer alternate legal routes without approving distractors",()=>{
+  for(const ex of Object.values(ARGUMENTS)) {
+    const mapping=Object.fromEntries(ex.atoms.map((a,i)=>[a.id,["C","A","B"][i]]));
+    const bank=formulaBank(ex,mapping);
+    assert.equal(new Set(bank).size,bank.length);
+    for(const step of ex.solution)assert.ok(bank.includes(rename(step.formula,mapping)));
+  }
+  const ex=ARGUMENTS.projector,map={A:"X",B:"Y",C:"Z"};
+  const bank=formulaBank(ex,map);
+  assert.ok(bank.includes("X → Z")); // alternative: chain, then detachment
+  assert.ok(bank.includes("Y → X")); // plausible converse, not a valid step
+  assert.equal(run(ex,[step("s1","B -> A","hs",["p1","p2"])],map).ok,false);
+  assert.ok(run(ex,[step("s1","A -> C","hs",["p1","p2"]),step("s2","C","mp",["s1","p3"])],map).complete);
 });
 
 test("translations are checked using the chosen names, including negation and implication direction",()=>{

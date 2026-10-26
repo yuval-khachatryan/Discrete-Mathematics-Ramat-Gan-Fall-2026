@@ -55,6 +55,24 @@ function consequences(rule, a, b) {
   return result;
 }
 
+// A bank of possibilities, not a list of approved steps. Each selection still
+// needs a rule and earlier sources. Include intermediate results from different
+// routes as well as plausible distractors; typing remains unrestricted.
+export function formulaBank(exercise, mapping) {
+  const sources = [...exercise.premises.map(p => p.formula), ...exercise.solution.map(s => s.formula)].map(f => parse(f));
+  const candidates = new Set([
+    ...exercise.atoms.flatMap(a => [a.id, `!${a.id}`]),
+    ...sources.map(f => format(f)), exercise.goal.formula,
+  ]);
+  for (const p of sources) {
+    if (p.type === "imp") candidates.add(format({ type: "imp", left: p.right, right: p.left }));
+    for (const q of sources) for (const rule of INFERENCE_RULES) {
+      for (const result of consequences(rule.id, p, q)) candidates.add(format(result));
+    }
+  }
+  return [...new Set([...candidates].map(f => rename(f, mapping)))].sort((a,b) => a.localeCompare(b, "en"));
+}
+
 export function checkArgument(exercise, mapping, premises, goal, steps) {
   // Recheck translations on every submission: the editor state is not evidence.
   const translation = checkTranslations(exercise,mapping,premises,goal);

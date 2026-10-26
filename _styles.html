@@ -399,6 +399,13 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .argument-rule-help:not(:empty), .argument-hints:not(:empty), .argument-solution:not(:empty) { padding: .6rem; margin: .5rem 0; background: #fffbeb; border: 1px dashed #d97706; border-radius: 6px; }
 .argument-rule-help p, .argument-hints p { margin: .3rem 0; }
 .argument-editor .bk-bar { margin-top: .6rem; }
+.argument-formula-bank, .choice-select { width: 100%; min-width: 0; min-height: 44px; padding: .35rem; font: inherit; border: 1px solid #7c3aed; border-radius: 6px; background: #faf5ff; }
+.argument-formula-bank { direction: ltr; }
+.choice-item { min-width: 0; margin: .8rem 0; padding: .65rem; border: 1px solid #c4b5fd; border-radius: 8px; }
+.choice-item legend { float: none; width: auto; max-width: 100%; font-size: 1em; font-weight: 700; color: #581c87; padding: 0 .25rem; }
+.choice-select[aria-invalid="true"] { border: 2px solid #b91c1c; }
+.choice-select:focus-visible, .argument-formula-bank:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.choice-ready .choice-offline { display: none; }
 .bk-keys { display: flex; flex-wrap: wrap; gap: 0.25rem; direction: ltr; }
 .bk-key { min-width: 40px; min-height: 40px; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; font: 1.1rem "Cambria Math", "STIX Two Math", serif; cursor: pointer; }
 .bk-key:hover { background: #eef2ff; }

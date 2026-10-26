@@ -959,7 +959,7 @@
     const tally = el("p", { class: "k-tally" });
     const panel = el("section", { class: "k-panel", "aria-label": "טבלת האפשרויות" }, [
       el("h3", { text: "טבלת האפשרויות" }),
-      el("p", { class: "k-legend", html: `כל שורה מציגה אפשרות אחת לסוגי התושבים. מספר האפשרויות הוא ${m(`2<sup>${people.length}</sup> = ${rows2.length}`)} שורות. לחיצה על שורה מסמנת בכרטיסים את הסוגים המופיעים בה.` }),
+      el("p", { class: "k-legend", html: `כל שורה מציגה אפשרות אחת לסוגי התושבים. בטבלה ${rows2.length} שורות. לחיצה על שורה מסמנת בכרטיסים את הסוגים המופיעים בה.` }),
       el("p", { class: "k-legend k-vars", html: `${meaning} <span class="k-nw">(<span class="tv-T">T</span> = אביר או אבירה, <span class="tv-F">F</span> = נוכל או נוכלת)</span>` }),
       el("div", { class: "k-table-wrap" }, [table]),
       tally

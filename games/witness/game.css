@@ -38,6 +38,8 @@
 /* ---- domain line ------------------------------------------------------- */
 .w-domain-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.2em 1em; }
 .w-domain { margin: 0; font-size: 1em; }
+.w-world { margin: 0; padding: .65rem .8rem; background: #e0f2fe; border-inline-start: 4px solid #0284c7; border-radius: 6px; line-height: 1.6; }
+.g-debrief .m, .w-part-f { max-width: 100%; overflow-x: auto; vertical-align: middle; }
 .w-tally { font-size: 0.9em; color: var(--muted); margin: 0; }
 
 /* ---- the roster -------------------------------------------------------- */

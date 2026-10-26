@@ -1,5 +1,5 @@
 import { ARGUMENTS } from "./argument-exercises.js";
-import { LETTERS, INFERENCE_RULES, ruleName, rename, checkMapping, checkTranslations, checkArgument } from "./argument-rules.js";
+import { LETTERS, INFERENCE_RULES, ruleName, rename, formulaBank, checkMapping, checkTranslations, checkArgument } from "./argument-rules.js";
 import { RULES, ruleExamples } from "./proof-rules.js";
 
 function el(tag, attrs = {}, children = []) {
@@ -121,7 +121,7 @@ export function initArgumentEditor(box) {
   const proofForm=el("form",{onsubmit(e){e.preventDefault();check();}},[list,el("div",{class:"bk-bar"},[add,el("button",{type:"submit",class:"bk-btn bk-main",text:"בדיקת ההוכחה"})]),summary]);
   const stage3=el("section",{class:"argument-stage"},[
     el("h4",{text:"3. בונים הוכחה"}),goalView,reference,
-    el("p",{text:"בכל צעד כתבו מסקנה חדשה, בחרו כלל וציינו מאילו שורות היא נובעת. לכלל היסק בוחרים שתי שורות קודמות. לשינוי ניסוח בעזרת חוק שקילות בוחרים שורה אחת. גם צעד שהוכחתם יכול לשמש מקור לצעד הבא."}),
+    el("p",{text:"בכל צעד בחרו נוסחה מהמאגר או כתבו נוסחה בעצמכם, בחרו כלל וציינו מאילו שורות היא נובעת. במאגר יש גם אפשרויות שאינן נובעות מהנתונים: עצם הופעת הנוסחה במאגר אינה מצדיקה אותה. לכלל היסק בוחרים שתי שורות קודמות; לשינוי לפי חוק שקילות בוחרים שורה אחת. גם צעד שכבר הוכחתם יכול לשמש מקור, ואפשר להגיע למטרה בדרכים שונות."}),
     proofForm,
     btn("הצגת דרך פתרון לפי האותיות שלי",()=>{
       solution.replaceChildren(el("strong",{text:"דרך אפשרית אחת — אפשר להוכיח גם בדרך אחרת:"}));
@@ -147,6 +147,7 @@ export function initArgumentEditor(box) {
     rows.forEach((row,i)=>{
       row.legend.textContent=`צעד ${i+1}`;
       row.input.setAttribute("aria-label",`נוסחה בצעד ${i+1}`);
+      row.bank.setAttribute("aria-label",`מאגר נוסחאות לצעד ${i+1}`);
       row.rule.setAttribute("aria-label",`כלל בצעד ${i+1}`);
       row.remove.setAttribute("aria-label",`מחיקת צעד ${i+1}`);
       row.sources.forEach((select,j)=>{
@@ -164,7 +165,15 @@ export function initArgumentEditor(box) {
   function addRow(focus=false){
     if(rows.length>=20)return;
     clearResults();
-    const row=inputField("נוסחה בצעד חדש",()=>{clearResults();refreshReferences();});
+    const row=inputField("נוסחה בצעד חדש",()=>{row.bank.value="";clearResults();refreshReferences();});
+    row.bank=el("select",{class:"argument-formula-bank"},[
+      el("option",{value:"",text:"בחרו נוסחה מהמאגר…"}),
+      ...formulaBank(exercise,mapping).map(f=>el("option",{value:f,text:f})),
+    ]);
+    row.bank.addEventListener("change",()=>{
+      if(!row.bank.value)return;
+      row.input.value=row.bank.value;clearResults();refreshReferences();
+    });
     row.id=`d${++nextRow}`;
     row.legend=el("legend");
     row.rule=el("select",{class:"proof-rule"},[
@@ -189,7 +198,8 @@ export function initArgumentEditor(box) {
       if(!rows.length)addRow();refreshReferences();rows[Math.min(i,rows.length-1)].input.focus();
     });
     row.fieldset=el("fieldset",{class:"proof-step"},[
-      row.legend,el("label",{class:"proof-field"},[el("span",{text:"מה מסיקים בצעד הזה?"}),row.input]),row.keys,
+      row.legend,el("label",{class:"proof-field"},[el("span",{text:"אפשר לבחור נוסחה מהמאגר"}),row.bank]),
+      el("label",{class:"proof-field"},[el("span",{text:"הנוסחה שבחרתם — אפשר גם לכתוב או לערוך כאן"}),row.input]),row.keys,
       el("label",{class:"proof-field"},[el("span",{text:"לפי איזה כלל?"}),row.rule]),reminder,...labels,row.feedback,row.remove,
     ]);
     rows.push(row);list.append(row.fieldset);refreshReferences();if(focus)row.input.focus();

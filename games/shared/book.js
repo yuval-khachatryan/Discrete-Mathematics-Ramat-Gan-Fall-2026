@@ -52,6 +52,7 @@ import { parse, evaluate, assignments, variables, compare, format } from "./logi
 import { initOpenStatement } from "./open-statement.js";
 import { initProofEditor } from "./proof-editor.js";
 import { initArgumentEditor } from "./argument-editor.js";
+import { initPracticeChoice } from "./practice-choice.js";
 import { evaluationSteps, show } from "../gate/knights.js";
 
 const tv = b => `<span class="tv-${b ? "T" : "F"}">${b ? "T" : "F"}</span>`;
@@ -198,7 +199,9 @@ function initTTQ(box) {
     const c = cols[k];
     const sub = c.type === "not" ? "הפוך מהעמודה של " + m(format(c.arg))
       : c.args ? `מחשבים ${c.type === "and" ? "״וגם״" : "״או״"} של ${c.args.map(a => m(format(a))).join(" ו-")}`
-      : c.left ? `גרירה: שקר רק כש-${m(format(c.left))} אמת ו-${m(format(c.right))} שקר` : "";
+      : c.type === "xor" ? "או מפריד: אמת כשבדיוק אחד משני החלקים אמת"
+      : c.type === "iff" ? "אם ורק אם: אמת כששני החלקים מקבלים אותו ערך אמת"
+      : c.type === "imp" ? `גרירה: שקר רק כש-${m(format(c.left))} אמת ו-${m(format(c.right))} שקר` : "";
     say(`מילאנו את העמודה ${m(format(c))}${sub ? ": " + sub : ""}. למשל בשורה ${rowText(names, rows[0])}: ${m(chain(c, rows[0]))}.`, "info");
     if (!firstOpen()) after.forEach(x => { x.classList.remove("bk-hidden"); typeset(x); });
   }
@@ -297,6 +300,7 @@ function initTF(quiz) {
 }
 
 function init() {
+  document.querySelectorAll(".choice-exercise").forEach(initPracticeChoice);
   document.querySelectorAll(".argument-editor").forEach(initArgumentEditor);
   document.querySelectorAll(".proof-editor").forEach(initProofEditor);
   document.querySelectorAll(".open-statement-game").forEach(initOpenStatement);
