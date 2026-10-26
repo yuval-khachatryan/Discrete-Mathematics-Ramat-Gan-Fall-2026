@@ -1,0 +1,112 @@
+/* game.css — the bar scene of "הברמן". Sizes are in em so that ?present=1
+   (which enlarges the root font) scales the whole scene. */
+
+.bm-sr {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+.bm-scene { display: flex; flex-direction: column; gap: 0.55em; }
+
+/* ---- the barman behind the counter ------------------------------------ */
+.bm-back { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5em 0.7em; }
+.bm-barman { width: 3.6em; height: 3.6em; flex: none; }
+.bm-barman svg, .bm-face svg { display: block; width: 100%; height: 100%; }
+.bm-q-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 0.25em; }
+.bm-q {
+  position: relative; margin: 0;
+  background: #fff7ed; border: 2px solid #fb923c; border-radius: 1em;
+  padding: 0.35em 0.95em; font-weight: 700; font-size: 1.15em;
+}
+.bm-q::before {   /* tail towards the barman (inline-start = right in RTL) */
+  content: ""; position: absolute; top: 50%; inset-inline-start: -0.62em;
+  margin-top: -0.4em; border: 0.4em solid transparent;
+  border-inline-end: 0.6em solid #fb923c;
+}
+.bm-formula { font-size: 0.95em; color: var(--muted); padding-inline-start: 0.4em; }
+.bm-next { margin-inline-start: auto; font-weight: 700; border-color: #ea580c; color: #9a3412; }
+.bm-next:hover:not(:disabled) { background: #fff7ed; }
+
+.bm-counter {
+  height: 0.8em; border-radius: 0.4em;
+  background: linear-gradient(#b45309, #78350f);
+  box-shadow: inset 0 0.18em 0 #d97706;
+}
+
+/* ---- the customers ---------------------------------------------------- */
+.bm-row {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.55em;
+}
+.bm-card {
+  position: relative;
+  flex: 1 1 6.6em; min-width: 6.4em; max-width: 10.5em;
+  display: flex; flex-direction: column; align-items: center; gap: 0.3em;
+  background: var(--soft); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 0.5em 0.4em 0.5em;
+}
+.bm-card.bm-flagged { border-color: var(--bad); box-shadow: 0 0 0 2px var(--bad); }
+.bm-flag {
+  position: absolute; top: -0.6em; inset-inline-end: -0.3em; z-index: 1;
+  background: var(--bad); color: #fff; font-size: 0.8em; font-weight: 700;
+  border-radius: 999px; padding: 0 0.5em;
+}
+.bm-face { width: 4.2em; height: 4.2em; margin-top: -0.2em; }
+.bm-name { font-weight: 700; margin-top: -0.15em; }
+.bm-ico { display: inline-block; width: 1.25em; height: 1.25em; vertical-align: -0.28em; margin-inline-end: 0.25em; }
+.bm-ico svg { display: block; width: 100%; height: 100%; }
+
+/* bubbles: a thought (the secret wish) above the head, speech below */
+.bm-think, .bm-say {
+  position: relative; text-align: center; line-height: 1.25;
+  min-height: 1.9em; padding: 0.3em 0.55em; border-radius: 1em;
+  background: #fff; border: 2px solid #94a3b8; font-weight: 700;
+  max-width: 100%;
+}
+.bm-think {
+  border-style: dashed; border-radius: 1.2em; font-weight: 400; font-size: 0.92em;
+  margin-bottom: 0.45em;
+}
+.bm-think::before, .bm-think::after {   /* the little circles that lead to the head */
+  content: ""; position: absolute; left: 50%;
+  border: 1.5px solid #94a3b8; border-radius: 50%; background: #fff;
+}
+.bm-think::before { bottom: -0.5em; width: 0.42em; height: 0.42em; margin-left: 0.15em; }
+.bm-think::after { bottom: -0.85em; width: 0.26em; height: 0.26em; margin-left: -0.05em; }
+.bm-say { margin-top: 0.3em; }
+.bm-say::before {   /* tail up towards the face */
+  content: ""; position: absolute; top: -0.62em; left: 50%; margin-left: -0.4em;
+  border: 0.4em solid transparent; border-top: 0; border-bottom: 0.6em solid #94a3b8;
+}
+.bm-empty { color: var(--muted); font-weight: 400; }
+/* the bubble the player fills in */
+.bm-yours { border-color: var(--accent); background: var(--accent-soft); }
+.bm-yours.bm-think::before, .bm-yours.bm-think::after { border-color: var(--accent); background: var(--accent-soft); }
+.bm-say.bm-yours::before { border-bottom-color: var(--accent); }
+.bm-yours.bm-empty, .bm-think.bm-yours.bm-empty::before, .bm-think.bm-yours.bm-empty::after { background: #fff; }
+
+@keyframes bm-pop { 0% { transform: scale(0.4); opacity: 0; } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
+.bm-pop { animation: bm-pop 0.35s ease-out; }
+
+/* ---- the player's buttons inside a card -------------------------------- */
+.bm-pick { display: flex; flex-direction: column; align-items: stretch; width: 100%; gap: 0.25em; margin-top: auto; padding-top: 0.2em; }
+.bm-pick button {
+  width: 100%; padding: 0.25em 0.45em; font-size: 0.9em; line-height: 1.2;
+  color: var(--ink);
+}
+.bm-pick button[aria-pressed="true"] { color: #fff; font-weight: 700; }
+.bm-pick button:hover:not([aria-pressed="true"]) { background: #f1f5f9; }
+
+/* design levels: the two wishes side by side when there is room */
+.bm-design .bm-pick { flex-direction: row; flex-wrap: wrap; }
+.bm-design .bm-pick button { flex: 1 1 4.5em; }
+
+@media (max-width: 420px) {
+  .bm-barman { width: 3em; height: 3em; }
+  .bm-q { font-size: 1.05em; }
+  .bm-face { width: 3.6em; height: 3.6em; }
+  .bm-next { margin-inline-start: 0; width: 100%; }
+  .bm-card { padding-inline: 0.3em; }
+  .bm-pick button { font-size: 0.85em; padding-inline: 0.2em; }
+  .bm-pick .bm-ico { margin-inline-end: 0.15em; }
+}

@@ -1,0 +1,118 @@
+/* "תנו ירוק!" — circuit, levers, the two-colour signal, truth table. */
+
+.c-board { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+.c-board.c-has-side { grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
+@media (max-width: 760px) { .c-board.c-has-side { grid-template-columns: 1fr; } }
+
+.c-main { min-width: 0; }
+.c-lamp-line { margin-bottom: 0.5rem; text-align: start; }
+.c-statement { margin: 0 0 0.35rem; font-weight: 700; unicode-bidi: isolate; }
+.c-result { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 1rem; }
+.c-truth, .c-state {
+  display: inline-flex; align-items: center; gap: 0.35em;
+  unicode-bidi: isolate; white-space: nowrap;
+}
+.c-truth { font-weight: 700; }
+.c-state { color: var(--muted); }
+.c-ico { display: inline-block; width: 1.4em; height: 1.4em; vertical-align: -0.35em; }
+.c-ico svg { display: block; width: 100%; height: 100%; }
+.c-sig { flex: none; width: 1.6em; height: 1.6em; }
+.c-formula { margin: 0.2rem 0 0.6rem; color: var(--muted); }
+.c-paths { margin: 0.4rem 0; padding: 0.3rem 0.6rem; background: var(--soft); border-radius: 6px; font-size: 0.9em; }
+.c-paths p { margin: 0.15rem 0; }
+.c-paths p:first-child { color: #166534; }
+.c-paths p:last-child { color: #991b1b; }
+
+/* the drawing is a diagram, read left to right like the formula */
+.c-svg-wrap { direction: ltr; overflow-x: auto; }
+.c-svg { display: block; width: 100%; height: auto; margin: 0 auto; }
+.c-svg .wire { stroke: #64748b; stroke-width: 3; stroke-linecap: round; }
+/* exactly one path carries current: green to the green lamp, or red to the red lamp */
+.c-svg .wire.live, .c-svg .blade.live { stroke: #16a34a; stroke-width: 4.5; }
+.c-svg.is-red .wire.live, .c-svg.is-red .blade.live { stroke: #dc2626; }
+.c-svg .term.pivot { fill: #334155; }
+.c-svg .throw-label { font: 700 12px Arial, sans-serif; fill: #475569; direction: ltr; }
+/* hovering or focusing a lever lights up all of its contacts, in both circuits */
+.c-svg .contact.hl .tag { stroke: #f59e0b; stroke-width: 3px; }
+.c-svg .contact.hl .term { stroke: #f59e0b; }
+.c-svg .term { fill: #fff; stroke: #334155; stroke-width: 2.5; }
+.c-svg .blade { stroke: #334155; stroke-width: 3.5; stroke-linecap: round; }
+.c-svg .contact.neg .term { fill: #fde2e2; }
+.c-svg .tag-text { fill: #fff; font: 700 15px "Cambria Math", "STIX Two Math", "Times New Roman", serif; text-anchor: middle; }
+.c-svg .plate-long, .c-svg .plate-short { stroke: #111827; stroke-width: 4; }
+.c-svg .bat-sign { font: 700 14px Arial, sans-serif; fill: #111827; }
+/* the signal (games/shared/signal.js): only the lit lamp's halo pulses */
+@media (prefers-reduced-motion: no-preference) {
+  .c-svg .signal .sig-glow { animation: c-glow 1.6s ease-in-out infinite alternate; }
+  @keyframes c-glow { from { opacity: 0.55; } to { opacity: 0.95; } }
+}
+
+/* levers */
+.c-levers { display: grid; gap: 0.45rem; }
+.c-lever-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.7rem; }
+.c-lever {
+  display: flex; align-items: center; gap: 0.6rem;
+  min-height: var(--tap); padding: 0.35rem 0.7rem;
+  border: 1px solid var(--line); border-radius: 10px;
+  background: #fff; font: inherit; color: inherit; cursor: pointer; text-align: start;
+  flex: 1 1 18rem; max-width: 34rem;
+}
+.c-lever:hover:not(:disabled) { background: #f8fafc; }
+.c-lever:disabled { cursor: default; opacity: 1; background: #f1f5f9; }
+.c-tag {
+  display: inline-block; min-width: 1.9em; padding: 0 0.35em; border-radius: 6px;
+  color: #fff; font: 700 1rem "Cambria Math", "STIX Two Math", "Times New Roman", serif; text-align: center;
+  direction: ltr;
+}
+.c-sentence { flex: 1; }
+.c-pos { display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap; color: var(--muted); }
+.c-knob {
+  position: relative; width: 38px; height: 22px; border-radius: 11px; background: #cbd5e1;
+  transition: background 0.15s;
+}
+.c-knob::after {
+  content: ""; position: absolute; top: 3px; inset-inline-start: 3px;
+  width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.3);
+  transition: inset-inline-start 0.15s;
+}
+.c-lever.up .c-knob { background: #16a34a; }
+.c-lever.down .c-knob { background: #f87171; }
+.c-lever.up .c-knob::after { inset-inline-start: 19px; }
+.c-lock { font-size: 0.9rem; color: var(--muted); }
+.c-lock .c-ico { width: 1.2em; height: 1.2em; vertical-align: -0.25em; }
+
+/* side panel */
+.c-side:empty { display: none; }
+.c-side-title { font-size: 1rem; margin: 0 0 0.3rem; }
+/* RTL like the book's own truth tables: first variable in the rightmost column */
+.c-table { border-collapse: collapse; margin: 0 auto; }
+.c-table th, .c-table td { border: 1px solid var(--line); padding: 0.25rem 0.55rem; text-align: center; }
+.c-table thead th { background: #f1f5f9; }
+.c-table tbody tr { cursor: pointer; }
+.c-table tbody tr:hover { background: #f8fafc; }
+.c-table tr.c-current { outline: 3px solid var(--accent); outline-offset: -3px; background: var(--accent-soft); }
+.c-q { color: #94a3b8; font-weight: 700; }
+.c-cell { min-width: var(--tap); min-height: 34px; border: 1px dashed #94a3b8; border-radius: 6px; background: #fff; font: inherit; cursor: pointer; }
+.c-cell.wrong { border: 2px solid var(--bad); background: var(--bad-soft); }
+
+.c-predict, .c-impossible { min-width: 14rem; max-width: 22rem; }
+.c-round { margin: 0 0 0.5rem; font-weight: 700; }
+.c-answers { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.c-impossible p { margin: 0 0 0.4rem; }
+
+.g-present .c-svg .tag-text { font-size: 17px; }
+
+/* compare mode: the robot's claim, two circuits side by side, one set of levers */
+.c-compare { display: grid; gap: 0.8rem; }
+.c-claim { display: flex; align-items: center; gap: 0.7rem; }
+.c-claim-face { flex: none; width: 3.4em; height: 3.4em; }
+.c-claim-face svg { display: block; width: 100%; height: 100%; }
+.c-claim-text { margin: 0; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 12px; padding: 0.45rem 0.8rem; }
+.c-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+@media (max-width: 640px) { .c-pair { grid-template-columns: 1fr; } }
+.c-pair-box { border: 1px solid var(--line); border-radius: 10px; padding: 0.5rem 0.6rem; background: #fff; }
+.c-pair-title { font-size: 1rem; margin: 0 0 0.2rem; }
+.c-eq { color: var(--good); font-weight: 700; }
+.c-neq { color: var(--bad); font-weight: 700; white-space: nowrap; }
+.c-verdict { margin-top: 0.7rem; display: grid; gap: 0.4rem; max-width: 22rem; }
+.c-verdict p { margin: 0; font-weight: 700; }

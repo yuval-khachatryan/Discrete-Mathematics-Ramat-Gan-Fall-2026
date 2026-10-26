@@ -1,0 +1,53 @@
+project:
+  type: book
+  output-dir: _book
+  # The games are standalone HTML pages under games/<name>/, embedded with an
+  # <iframe> or linked from the chapter. Quarto only copies files it knows about,
+  # so the folder has to be declared here or the iframes 404 in _book/.
+  resources:
+    - games/**
+    - images/**
+  # Bundle each game into one classic script (games/<name>/game.bundle.js), so
+  # the games also work when the book is opened from disk (file://). Needs node
+  # and `npm install` once; see tools/build-games.mjs.
+  pre-render: tools/build-games.mjs
+
+book:
+  title: "מתמטיקה בדידה — מערכי הרצאה"
+  site-url: "https://yuval-khachatryan.github.io/Discrete-Mathematics-Lecture-Notes"
+  author: "ד״ר יובל חצ׳טריאן-רזיאל"
+  search: true
+  reader-mode: true
+  chapters:
+    - index.qmd
+    - 01-logic.qmd
+
+lang: he
+dir: rtl
+number-sections: true
+number-depth: 3
+
+crossref:
+  chapters: true
+  def-title: "הגדרה"
+  exm-title: "דוגמה"
+  thm-title: "משפט"
+  prp-title: "טענה"
+
+language:
+  crossref-prp-prefix: "טענה"
+
+filters:
+  - theorem-numbering.lua
+  - quarto
+
+# HTML only for now. When a print edition is wanted, copy the `pdf:` block
+# (xelatex + the RTL fixes) from the Ariel notes' _quarto.yml.
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    toc-title: "תוכן העניינים"
+    toc-expand: true
+    include-in-header: _styles.html

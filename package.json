@@ -1,0 +1,14 @@
+{
+  "name": "discrete-mathematics-lecture-notes",
+  "private": true,
+  "type": "module",
+  "description": "Dev-only tooling for the Discrete Mathematics notes: unit tests for the game checkers and browser smoke tests. Nothing here ships to the site.",
+  "scripts": {
+    "test": "node --test tests/",
+    "serve": "python3 -m http.server 8765 --bind 127.0.0.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "playwright-core": "^1.64.1"
+  }
+}
