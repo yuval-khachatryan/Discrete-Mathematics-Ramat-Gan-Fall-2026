@@ -83,17 +83,28 @@
 
 /* side panel */
 .c-side:empty { display: none; }
+.c-side { min-width: 0; max-width: 23rem; }
 .c-side-title { font-size: 1rem; margin: 0 0 0.3rem; }
+.c-table-help { margin: .3rem 0 .7rem; line-height: 1.6; }
+.c-progress { color: #4338ca; font-weight: 700; }
+.g-goal p:last-child { background: #eef2ff; border-inline-start: 4px solid #6366f1; padding: .65rem .8rem; border-radius: 6px; }
+.c-trial { min-height: var(--tap); background: #eff6ff; border: 1px solid #93c5fd; border-radius: 6px; color: #1e40af; font: inherit; cursor: pointer; padding: .2rem .5rem; }
+.c-answer[type=checkbox] { width: 1.5rem; height: 1.5rem; accent-color: #4338ca; cursor: pointer; }
+.c-error-cell { background: var(--bad-soft); outline: 2px solid var(--bad); outline-offset: -2px; }
+.c-cell:focus-visible, .c-trial:focus-visible, .c-answer:focus-visible { outline: 3px solid #4338ca; outline-offset: 2px; }
 /* RTL like the book's own truth tables: first variable in the rightmost column */
 .c-table { border-collapse: collapse; margin: 0 auto; }
 .c-table th, .c-table td { border: 1px solid var(--line); padding: 0.25rem 0.55rem; text-align: center; }
 .c-table thead th { background: #f1f5f9; }
-.c-table tbody tr { cursor: pointer; }
 .c-table tbody tr:hover { background: #f8fafc; }
 .c-table tr.c-current { outline: 3px solid var(--accent); outline-offset: -3px; background: var(--accent-soft); }
 .c-q { color: #94a3b8; font-weight: 700; }
-.c-cell { min-width: var(--tap); min-height: 34px; border: 1px dashed #94a3b8; border-radius: 6px; background: #fff; font: inherit; cursor: pointer; }
+.c-cell { min-width: var(--tap); min-height: var(--tap); border: 1px dashed #94a3b8; border-radius: 6px; background: #fff; font: inherit; cursor: pointer; }
 .c-cell.wrong { border: 2px solid var(--bad); background: var(--bad-soft); }
+@media (max-width: 420px) {
+  .c-table th, .c-table td { padding: .2rem; }
+  .c-table .c-tag { min-width: 1.5em; padding: 0 .2em; }
+}
 
 .c-predict, .c-impossible { min-width: 14rem; max-width: 22rem; }
 .c-round { margin: 0 0 0.5rem; font-weight: 700; }

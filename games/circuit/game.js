@@ -18,6 +18,25 @@ const m = s => `<span class="m">${s}</span>`;
 const rowText = (names, env) => names.map(n => m(`${n} = ${tvHTML(env[n])}`)).join(", ");
 const sameRow = (names, a, b) => names.every(n => !!a[n] === !!b[n]);
 
+// Answers belong to the learner. Exploring a setting never writes an answer.
+function answerCell(value, label, wrong, change) {
+  const button = el("button", {
+    type: "button", class: "c-cell" + (wrong ? " wrong" : ""),
+    "aria-invalid": wrong ? "true" : "false",
+    "aria-label": `${label}: ${value === null ? "טרם נענתה" : value ? "אמת" : "שקר"}. לחצו לשינוי: סימן שאלה, אמת, שקר`,
+    onclick() { change(value === null ? true : value ? false : null); },
+  }, [value === null ? el("span", { class: "c-q", text: "?" }) : tv(value)]);
+  return button;
+}
+
+function trialButton(names, row, load) {
+  return el("button", {
+    type: "button", class: "c-trial", text: "נסו",
+    "aria-label": `הציגו במעגל: ${names.map(n => `${n}=${row[n] ? "T" : "F"}`).join(", ")}`,
+    onclick: load,
+  });
+}
+
 /* The words follow the picture: a single green lamp is "lit / dark" (until De
    Morgan, F is just "no light"); the two-colour signal is "green / red". */
 const WORDS = {
@@ -68,7 +87,9 @@ function mount(level, ui) {
   const view = viewOf(level, formula), W = wordsOf(view);
   const why = e => `הפסוק ${m(format(formula))} הוא <b>${evaluate(formula, e) ? "אמת" : "שקר"}</b>. בציור: ${explain(formula, e, view)}`;
   const target = level.target !== false;
+  const hasTable = level.mode === "fill" || level.mode === "select" || level.impossible;
   let env, covered, rounds, roundIx, table, cells;
+  const progress = el("p", { class: "c-progress", "aria-live": "polite" });
 
   /* ---- pieces ---------------------------------------------------------- */
   const lampLine = el("div", { class: "c-lamp-line" });
@@ -120,7 +141,7 @@ function mount(level, ui) {
         "aria-checked": env[n] ? "true" : "false",
         "aria-label": `${n}: ${level.vars[n]}. ${env[n] ? "אמת" : "שקר"}` + (lockedWhy ? ". נעול" : ""),
         disabled: fixed,
-        onclick() { env[n] = !env[n]; changed(); },
+        onclick() { env[n] = !env[n]; changed(); levers.querySelectorAll(".c-lever")[names.indexOf(n)].focus({ preventScroll: true }); },
         onmouseenter() { highlight(n, true); }, onmouseleave() { highlight(n, false); },
         onfocus() { highlight(n, true); }, onblur() { highlight(n, false); },
       }, [
@@ -134,13 +155,23 @@ function mount(level, ui) {
     });
   }
 
-  /* ---- truth table (explore / fill) ------------------------------------ */
+  /* ---- worksheet: fill values or select all matching rows ------------- */
   function buildTable() {
     table = el("table", { class: "c-table" });
-    const head = el("tr", {}, [...names.map(n => el("th", { scope: "col" }, [el("span", { class: "c-tag", style: `background:${colours[n]}`, text: n })])), el("th", { scope: "col", "aria-label": W.noun }, [ico(W.icoT)])]);
+    const selecting = level.mode === "select";
+    const head = el("tr", {}, [...names.map(n => el("th", { scope: "col" }, [el("span", { class: "c-tag", style: `background:${colours[n]}`, text: n })])),
+      el("th", { scope: "col", text: selecting ? "בחרו" : "התשובה שלי" }),
+      el("th", { scope: "col", text: "ניסוי" }),
+    ]);
     table.append(el("thead", {}, [head]), el("tbody"));
-    cells = assignments(names).map(row => ({ env: row, mark: null }));   // mark: true/false/null
-    side.replaceChildren(el("h3", { class: "c-side-title", text: "טבלת האמת" }), table);
+    cells = assignments(names).map(row => ({ env: row, mark: selecting ? false : null }));
+    side.replaceChildren(
+      el("h3", { class: "c-side-title", text: selecting ? `בחרו את כל השורות שבהן הפסוק ${target ? "אמת" : "שקר"}` : "מלאו את ערך האמת של הפסוק" }),
+      el("p", { class: "c-table-help", text: selecting
+        ? `סמנו את כל השורות שבהן ${W.noun} ${target ? W.T : W.F}, ורק אותן. אחר כך לחצו ״בדיקה״.`
+        : "לחצו על ? כדי לבחור T (אמת) או F (שקר). כפתור ״נסו״ מציג את השורה במעגל, אך אינו ממלא תשובה. " + (level.impossible ? "אם הטבלה מראה שאין פתרון, לחצו על כפתור ״אי אפשר״ שמתחתיה." : "בסיום לחצו ״בדיקה״.") }),
+      table, progress,
+    );
   }
   function drawTable() {
     const body = table.tBodies[0];
@@ -149,25 +180,31 @@ function mount(level, ui) {
       const current = sameRow(names, c.env, env);
       const tr = el("tr", { class: current ? "c-current" : "" });
       names.forEach(n => tr.append(el("td", {}, [tv(c.env[n])])));
-      const load = () => { names.forEach(n => (env[n] = c.env[n])); changed(); };
-      if (level.mode === "fill") {
-        const val = c.mark;
-        tr.append(el("td", {}, [el("button", {
-          type: "button", class: "c-cell" + (c.wrong ? " wrong" : ""),
-          "aria-label": `שורה ${i + 1}: ${val === null ? "לא מולא" : val ? W.T : W.F}. לחצו כדי לשנות`,
-          onclick() { c.mark = c.mark === null ? true : c.mark ? false : null; c.wrong = false; drawTable(); },
-        }, [val === null ? el("span", { class: "c-q", text: "?" }) : tv(val)])]));
-        tr.addEventListener("click", e => { if (!e.target.closest("button")) load(); });
+      const load = () => {
+        names.forEach(n => (env[n] = c.env[n])); changed();
+        table.tBodies[0].rows[i].querySelector(".c-trial").focus({ preventScroll: true });
+      };
+      const edit = value => {
+        c.mark = value; c.wrong = false; ui.say(""); drawTable();
+        table.tBodies[0].rows[i].querySelector(".c-answer").focus({ preventScroll: true });
+      };
+      if (level.mode === "select") {
+        tr.append(el("td", { class: c.wrong ? "c-error-cell" : "" }, [el("input", {
+          type: "checkbox", class: "c-answer", checked: c.mark,
+          "aria-invalid": c.wrong ? "true" : "false",
+          "aria-label": `שורה ${i + 1}: הפסוק ${target ? "אמת" : "שקר"}`, onchange: e => edit(e.target.checked),
+        })]));
       } else {
-        tr.append(el("td", {}, [c.mark === null ? el("span", { class: "c-q", text: "?" }) : tv(c.mark)]));
-        tr.tabIndex = 0;
-        tr.setAttribute("role", "button");
-        tr.setAttribute("aria-label", `שורה ${i + 1}: להעביר את המתגים ל-${names.map(n => n + "=" + (c.env[n] ? "T" : "F")).join(", ")}`);
-        tr.addEventListener("click", load);
-        tr.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); load(); } });
+        const button = answerCell(c.mark, `שורה ${i + 1}`, c.wrong, edit);
+        button.classList.add("c-answer");
+        tr.append(el("td", {}, [button]));
       }
+      tr.append(el("td", {}, [trialButton(names, c.env, load)]));
       body.append(tr);
     });
+    progress.textContent = level.mode === "select"
+      ? `סימנתם ${cells.filter(c => c.mark).length} מתוך ${cells.length} שורות. אפשר לשנות את הבחירה לפני הבדיקה.`
+      : `מילאתם ${cells.filter(c => c.mark !== null).length} מתוך ${cells.length} תשובות.`;
   }
 
   /* ---- predict --------------------------------------------------------- */
@@ -219,28 +256,18 @@ function mount(level, ui) {
 
   /* ---- lifecycle ------------------------------------------------------- */
   function changed() {
+    ui.say("");
     draw();
-    if (level.mode === "play" && lampState() === target) {
-      ui.win(`נכון: הפסוק ${target ? "אמת" : "שקר"}, ולכן ${W.noun} ${target ? W.T : W.F}.`);
-    }
-    if (level.mode === "explore") {
-      const c = cells.find(x => sameRow(names, x.env, env));
-      if (c.mark === null) {
-        c.mark = lampState();
-        drawTable();
-        if (cells.every(x => x.mark !== null)) ui.win(`הטבלה מלאה: ${cells.length} שורות, ב־${cells.filter(x => x.mark).length} מהן הפסוק אמת (${W.noun} ${W.T}).`);
-      }
-    }
   }
 
   function start() {
     env = {};
     names.forEach(n => (env[n] = level.start ? !!level.start[n] : true));
-    covered = level.mode === "fill";
+    covered = false;
     table = null;
     side.replaceChildren();
-    board.classList.toggle("c-has-side", level.mode === "explore" || level.mode === "fill");
-    if (level.mode === "explore" || level.mode === "fill") buildTable();
+    board.classList.toggle("c-has-side", !!hasTable);
+    if (hasTable) buildTable();
     if (level.mode === "predict") {
       rounds = level.rounds.map(r => ({ ...r, passed: false }));
       roundIx = 0;
@@ -250,22 +277,20 @@ function mount(level, ui) {
       return;
     }
     if (level.mode === "play" && level.impossible) {
-      side.replaceChildren(el("div", { class: "c-impossible" }, [
+      side.append(el("div", { class: "c-impossible" }, [
         el("p", { text: target ? W.doubtT : W.doubtF }),
         el("button", {
           type: "button", class: "g-btn",
           text: target ? W.cantT : W.cantF,
           onclick() {
-            if (!reachable()) ui.win(`נכון: בכל אחד מ-${2 ** freeNames.length} מצבי המתגים ${W.noun} ${target ? W.F : W.T}.`);
+            const checked = checkTable();
+            if (!checked.ok) return ui.say(checked.message, checked.kind || "bad");
+            if (!reachable()) ui.win(`נכון: הטבלה שמילאתם מראה שבכל ${cells.length} המצבים ${W.noun} ${target ? W.F : W.T}. אין מצב שנותן את התוצאה המבוקשת.`);
             else ui.say("דווקא אפשר! יש מצב של המתגים שעושה את זה. נסו עוד.", "bad");
           },
         }),
       ]));
       board.classList.add("c-has-side");
-    }
-    if (level.mode === "explore") {
-      const c = cells.find(x => sameRow(names, x.env, env));
-      c.mark = lampState();
     }
     draw();
   }
@@ -276,6 +301,10 @@ function mount(level, ui) {
     reset: start,
     solve() {
       if (level.mode === "play") {
+        if (level.impossible) {
+          cells.forEach(c => { c.mark = evaluate(formula, c.env); c.wrong = false; });
+          draw();
+        }
         const row = assignments(freeNames).find(r => evaluate(formula, { ...env, ...r }) === target);
         if (row) { Object.assign(env, row); draw(); return `למשל: ${rowText(freeNames, row)}. ${why(env)}.`; }
         return `אין מצב כזה: ${why(env)}. בדקו זאת בכל מצבי המתגים האפשריים.`;
@@ -285,24 +314,31 @@ function mount(level, ui) {
         covered = false; draw();
         return `התשובות:<br>${lines}`;
       }
-      cells.forEach(c => { c.mark = evaluate(formula, c.env); c.wrong = false; });
+      cells.forEach(c => { c.mark = level.mode === "select" ? evaluate(formula, c.env) === target : evaluate(formula, c.env); c.wrong = false; });
       covered = false; draw();
-      return `זו הטבלה המלאה. בחרו שורה, ובדקו במעגל ${W.why}.`;
+      return `אלה התשובות. לחצו ״נסו״ בשורה כלשהי, ובדקו במעגל ${W.why}.`;
     },
   };
-  if (level.mode === "fill") {
-    ctl.check = () => {
+  function checkTable() {
       const empty = cells.filter(c => c.mark === null).length;
-      if (empty) return { ok: false, message: `חסרות עוד ${empty} שורות. מלאו את כל ${W.col} ואז בדקו.` };
-      const wrong = cells.filter(c => c.mark !== evaluate(formula, c.env));
+      if (empty) return { ok: false, kind: "info", message: `חסרות עוד ${empty} תשובות. מלאו את ערך האמת של הפסוק בכל שורה. אפשר להיעזר במתגים ובכפתורי ״נסו״.` };
+      const wrong = cells.filter(c => c.mark !== (level.mode === "select" ? evaluate(formula, c.env) === target : evaluate(formula, c.env)));
       cells.forEach(c => (c.wrong = wrong.includes(c)));
       drawTable();
-      if (!wrong.length) { covered = false; draw(); return { ok: true, message: "כל שמונה השורות נכונות. אפשר להסיר את הכיסוי." }; }
+      if (!wrong.length) return { ok: true, message: level.mode === "select"
+        ? `נכון! סימנתם את כל ${cells.filter(c => c.mark).length} השורות שבהן הפסוק ${target ? "אמת" : "שקר"}, ורק אותן.`
+        : `כל ${cells.length} התשובות נכונות. בניתם טבלת אמת: לכל צירוף של ערכי המתגים נתתם את ערך האמת של הפסוק.` };
       const c = wrong[0];
       return {
         ok: false,
         message: `${wrong.length === 1 ? "שורה אחת שגויה" : `${wrong.length} שורות שגויות`} (מסומנות). למשל בשורה ${rowText(names, c.env)}: ${why(c.env)}.`,
       };
+  }
+  if (hasTable && !level.impossible) ctl.check = checkTable;
+  if (level.mode === "play") {
+    ctl.check = () => {
+      if (lampState() === target) return { ok: true, message: `המצב שהגשתם מתאים: ${rowText(names, env)}. ${why(env)}.` };
+      return { ok: false, message: `במצב שהגשתם ${W.noun} ${lampState() ? W.T : W.F}, אבל במשימה צריך להביא אותה למצב ״${target ? W.T : W.F}״. ${why(env)}.${level.impossible ? " אם לדעתכם אין פתרון, מלאו את הטבלה ולחצו על כפתור ״אי אפשר״ שמתחתיה." : " שנו את המתגים ונסו שוב."}` };
     };
   }
   return ctl;
@@ -349,7 +385,11 @@ function mountCompare(level, ui) {
     el("div", { class: "c-pair" }, [p1.box, p2.box]),
     el("div", { class: "c-board c-has-side" }, [
       el("div", { class: "c-main" }, [levers]),
-      el("div", { class: "c-side" }, [el("h3", { class: "c-side-title", text: "השורות שבדקתם" }), table, verdict]),
+      el("div", { class: "c-side" }, [
+        el("h3", { class: "c-side-title", text: "הראיות שלכם: ערכי האמת של שני הפסוקים" }),
+        el("p", { class: "c-table-help", text: "כדי להראות שהפסוקים שקולים, מלאו T או F בשתי העמודות ובכל השורות, ואז לחצו ״הרובוט צודק״. כדי להראות שאינם שקולים, די להציג במתגים מצב שבו הערכים שונים וללחוץ ״הרובוט טועה״. כפתור ״נסו״ מציג שורה במעגלים בלי למלא תשובה." }),
+        table, verdict,
+      ]),
     ]),
   ]));
 
@@ -367,7 +407,7 @@ function mountCompare(level, ui) {
         type: "button", class: "c-lever" + (env[n] ? " up" : " down"), role: "switch",
         "aria-checked": env[n] ? "true" : "false",
         "aria-label": `${n}: ${level.vars[n]}. ${env[n] ? "אמת" : "שקר"}`,
-        onclick() { env[n] = !env[n]; changed(); },
+        onclick() { env[n] = !env[n]; changed(); levers.querySelectorAll(".c-lever")[names.indexOf(n)].focus({ preventScroll: true }); },
         onmouseenter() { hl(n, true); }, onmouseleave() { hl(n, false); },
         onfocus() { hl(n, true); }, onblur() { hl(n, false); },
       }, [
@@ -380,24 +420,23 @@ function mountCompare(level, ui) {
   function drawTable() {
     const head = el("tr", {}, [
       ...names.map(n => el("th", { scope: "col" }, [el("span", { class: "c-tag", style: `background:${colours[n]}`, text: n })])),
-      el("th", { scope: "col", text: "א׳" }), el("th", { scope: "col", text: "ב׳" }), el("th", { scope: "col", text: "שווה?" }),
+      el("th", { scope: "col", text: "פסוק א׳" }), el("th", { scope: "col", text: "פסוק ב׳" }), el("th", { scope: "col", text: "ניסוי" }),
     ]);
     const body = el("tbody");
     cells.forEach((c, i) => {
       const tr = el("tr", { class: sameRow(names, c.env, env) ? "c-current" : "" });
       names.forEach(n => tr.append(el("td", {}, [tv(c.env[n])])));
-      if (c.seen) {
-        const a = evaluate(f1, c.env), b = evaluate(f2, c.env);
-        tr.append(el("td", {}, [tv(a)]), el("td", {}, [tv(b)]), el("td", { class: a === b ? "c-eq" : "c-neq", text: a === b ? "✓" : "✗ שונים" }));
-      } else {
-        tr.append(...[0, 1, 2].map(() => el("td", {}, [el("span", { class: "c-q", text: "?" })])));
-      }
-      tr.tabIndex = 0;
-      tr.setAttribute("role", "button");
-      tr.setAttribute("aria-label", `שורה ${i + 1}: להעביר את המתגים ל-${names.map(n => n + "=" + (c.env[n] ? "T" : "F")).join(", ")}`);
-      const load = () => { names.forEach(n => (env[n] = c.env[n])); changed(); };
-      tr.addEventListener("click", load);
-      tr.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); load(); } });
+      [f1, f2].forEach((f, j) => {
+        tr.append(el("td", {}, [answerCell(c.marks[j], `שורה ${i + 1}, פסוק ${j === 0 ? "א׳" : "ב׳"}`, c.wrong[j], value => {
+          c.marks[j] = value; c.wrong[j] = false; ui.say(""); drawTable();
+          table.tBodies[0].rows[i].querySelectorAll(".c-cell")[j].focus({ preventScroll: true });
+        })]));
+      });
+      const load = () => {
+        names.forEach(n => (env[n] = c.env[n])); changed();
+        table.tBodies[0].rows[i].querySelector(".c-trial").focus({ preventScroll: true });
+      };
+      tr.append(el("td", {}, [trialButton(names, c.env, load)]));
       body.append(tr);
     });
     table.replaceChildren(el("thead", {}, [head]), body);
@@ -407,7 +446,7 @@ function mountCompare(level, ui) {
     for (const p of [p1, p2]) p.svg.querySelectorAll(`.contact[data-var="${n}"]`).forEach(c => c.classList.toggle("hl", on));
   }
   function changed() {
-    cells.find(c => sameRow(names, c.env, env)).seen = true;
+    ui.say("");
     draw();
   }
 
@@ -415,10 +454,17 @@ function mountCompare(level, ui) {
     const here = rowText(names, env);
     const a = evaluate(f1, env), b = evaluate(f2, env);
     if (robotRight) {
+      const empty = cells.reduce((n, c) => n + c.marks.filter(v => v === null).length, 0);
+      if (empty) return ui.say(`כדי להצדיק ״בכל השורות״, מלאו בעצמכם את שתי עמודות התוצאה. חסרות עוד ${empty} תשובות. אפשר לנסות כל שורה במעגלים.`, "info");
+      cells.forEach(c => { c.wrong = [f1, f2].map((f, j) => c.marks[j] !== evaluate(f, c.env)); });
+      const first = cells.find(c => c.wrong.some(Boolean));
+      drawTable();
+      if (first) {
+        const j = first.wrong.findIndex(Boolean), f = j === 0 ? f1 : f2;
+        return ui.say(`לפני שמסיקים מסקנה, נתקן את התאים המסומנים. למשל, בשורה ${rowText(names, first.env)}, הפסוק ${m(format(f))} הוא ${evaluate(f, first.env) ? "אמת" : "שקר"}: ${explain(f, first.env, view)}.`, "bad");
+      }
       if (!same) return ui.say(`הפסוקים אינם שקולים: יש שורה שבה ${W.differ}. עברו על השורות וחפשו אותה.`, "bad");
-      const left = cells.filter(c => !c.seen).length;
-      if (left) return ui.say(`עד עכשיו ${W.two} תמיד היו ${W.same}. אבל ״תמיד״ פירושו <b>בכל</b> השורות, ונשארו עוד ${left} שלא בדקתם.`, "info");
-      return ui.win(`נכון: בכל ${cells.length} השורות ${W.two} ${W.same}. הפסוקים <b>שקולים</b>.`);
+      return ui.win(`נכון: מילאתם את הטבלה, ושתי העמודות זהות בכל ${cells.length} השורות. הפסוקים <b>שקולים</b>.`);
     }
     if (a !== b) return ui.win(`נכון, הרובוט טועה: בשורה ${here} ${W.of} פסוק א׳ ${a ? W.T : W.F}, ו${W.of} פסוק ב׳ ${b ? W.T : W.F}. מספיקה שורה אחת כזו.`);
     return ui.say(`במצב הנוכחי של המתגים (${here}) ${W.two} ${W.same}. אם הרובוט טועה, העבירו את המתגים לשורה שבה הם שונים, ואז לחצו שוב.`, "info");
@@ -427,7 +473,7 @@ function mountCompare(level, ui) {
   function start() {
     env = {};
     names.forEach(n => (env[n] = level.start ? !!level.start[n] : true));
-    cells = assignments(names).map(row => ({ env: row, seen: false }));
+    cells = assignments(names).map(row => ({ env: row, marks: [null, null], wrong: [false, false] }));
     changed();
   }
   start();
@@ -435,7 +481,7 @@ function mountCompare(level, ui) {
     reset: start,
     solve() {
       if (same) {
-        cells.forEach(c => (c.seen = true)); draw();
+        cells.forEach(c => { c.marks = [evaluate(f1, c.env), evaluate(f2, c.env)]; c.wrong = [false, false]; }); draw();
         return `הרובוט צודק: בכל השורות ${W.two} ${W.same} (ראו בטבלה). ${level.solution || ""}`;
       }
       const row = assignments(names).find(r => evaluate(f1, r) !== evaluate(f2, r));
