@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>1&nbsp; לוגיקה: השפה של המתמטיקה – מתמטיקה בדידה — מערכי הרצאה</title>
+<title>1&nbsp; לוגיקה: הכללים לבניית משפטים ולהסקת מסקנות – מתמטיקה בדידה — מערכי הרצאה</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -475,6 +475,13 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .argument-rule-help:not(:empty), .argument-hints:not(:empty), .argument-solution:not(:empty) { padding: .6rem; margin: .5rem 0; background: #fffbeb; border: 1px dashed #d97706; border-radius: 6px; }
 .argument-rule-help p, .argument-hints p { margin: .3rem 0; }
 .argument-editor .bk-bar { margin-top: .6rem; }
+.argument-formula-bank, .choice-select { width: 100%; min-width: 0; min-height: 44px; padding: .35rem; font: inherit; border: 1px solid #7c3aed; border-radius: 6px; background: #faf5ff; }
+.argument-formula-bank { direction: ltr; }
+.choice-item { min-width: 0; margin: .8rem 0; padding: .65rem; border: 1px solid #c4b5fd; border-radius: 8px; }
+.choice-item legend { float: none; width: auto; max-width: 100%; font-size: 1em; font-weight: 700; color: #581c87; padding: 0 .25rem; }
+.choice-select[aria-invalid="true"] { border: 2px solid #b91c1c; }
+.choice-select:focus-visible, .argument-formula-bank:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.choice-ready .choice-offline { display: none; }
 .bk-keys { display: flex; flex-wrap: wrap; gap: 0.25rem; direction: ltr; }
 .bk-key { min-width: 40px; min-height: 40px; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; font: 1.1rem "Cambria Math", "STIX Two Math", serif; cursor: pointer; }
 .bk-key:hover { background: #eef2ff; }
@@ -682,7 +689,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="הצג/הסתר את סרגל הניווט" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-logic.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">לוגיקה: השפה של המתמטיקה</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-logic.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">לוגיקה: הכללים לבניית משפטים ולהסקת מסקנות</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="הצג/הסתר את סרגל הניווט" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="חפש" onclick="window.quartoOpenSearch();">
@@ -723,7 +730,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./01-logic.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">לוגיקה: השפה של המתמטיקה</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">לוגיקה: הכללים לבניית משפטים ולהסקת מסקנות</span></span></a>
   </div>
 </li>
     </ul>
@@ -791,6 +798,17 @@ window.Quarto = {
   <li><a href="#sec-quantifier-order" id="toc-sec-quantifier-order" class="nav-link" data-scroll-target="#sec-quantifier-order"><span class="header-section-number">1.13.6</span> סדר הכמתים</a></li>
   </ul></li>
   <li><a href="#sec-summary" id="toc-sec-summary" class="nav-link" data-scroll-target="#sec-summary"><span class="header-section-number">1.14</span> סיכום</a></li>
+  <li><a href="#sec-self-practice" id="toc-sec-self-practice" class="nav-link" data-scroll-target="#sec-self-practice"><span class="header-section-number">1.15</span> תרגול עצמי לפי נושאים</a>
+  <ul class="collapse">
+  <li><a href="#practice-statements" id="toc-practice-statements" class="nav-link" data-scroll-target="#practice-statements"><span class="header-section-number">1.15.1</span> פסוקים ופסוקים פתוחים</a></li>
+  <li><a href="#practice-translation" id="toc-practice-translation" class="nav-link" data-scroll-target="#practice-translation"><span class="header-section-number">1.15.2</span> ממילים לנוסחאות</a></li>
+  <li><a href="#practice-tables" id="toc-practice-tables" class="nav-link" data-scroll-target="#practice-tables"><span class="header-section-number">1.15.3</span> טבלאות אמת</a></li>
+  <li><a href="#practice-implication" id="toc-practice-implication" class="nav-link" data-scroll-target="#practice-implication"><span class="header-section-number">1.15.4</span> גרירה ואם ורק אם</a></li>
+  <li><a href="#practice-equivalence" id="toc-practice-equivalence" class="nav-link" data-scroll-target="#practice-equivalence"><span class="header-section-number">1.15.5</span> שקילויות: מצדיקים כל שינוי</a></li>
+  <li><a href="#practice-proofs" id="toc-practice-proofs" class="nav-link" data-scroll-target="#practice-proofs"><span class="header-section-number">1.15.6</span> הוכחות עם סיוע: בוחרים אותיות ומצדיקים כל צעד</a></li>
+  <li><a href="#practice-knights" id="toc-practice-knights" class="nav-link" data-scroll-target="#practice-knights"><span class="header-section-number">1.15.7</span> אבירים ונוכלים</a></li>
+  <li><a href="#practice-quantifiers" id="toc-practice-quantifiers" class="nav-link" data-scroll-target="#practice-quantifiers"><span class="header-section-number">1.15.8</span> כמתים: מה צריך להראות, ועל איזה תחום?</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -799,7 +817,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">לוגיקה: השפה של המתמטיקה</span></h1>
+<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">לוגיקה: הכללים לבניית משפטים ולהסקת מסקנות</span></h1>
 </div>
 
 
@@ -816,11 +834,19 @@ window.Quarto = {
 </header>
 
 
-<p>בפרק הזה נכיר את השפה שבה כתובה כל המתמטיקה: <strong>פסוקים</strong>, הקשרים <strong>״לא״</strong>, <strong>״וגם״</strong>, <strong>״או״</strong> ו<strong>״אם… אז…״</strong>, <strong>טבלאות אמת</strong>, <strong>חוקי דה מורגן</strong>, <strong>כללי היסק</strong> ו<span class="term"><strong>כמתים</strong></span>. נלמד לחבר פסוקים ולבדוק טיעונים, ניעזר במנורות ובציורי מעגלים כדי לראות מתי פסוק אמת ומתי הוא שקר, נתפוס את הרובוט של המזכירות בטעויות, נפתור תעלומה בקפטריה, ונבקר באי שבו חלק מהתושבים תמיד דוברים אמת וחלקם תמיד משקרים. בסעיף הכמתים נבקר גם בדוכן פלאפל שבו המתמטיקאים עונים ברצינות רבה מדי על שאלה פשוטה.</p>
+<p>איך מחברים כמה משפטים לטענה אחת ברורה? ומה מותר להסיק מן המידע שיש לנו? בפרק הזה נכיר את כללי הלוגיקה שעוזרים לענות על השאלות האלה. נתחיל ממילים מוכרות — ״לא״, ״וגם״, ״או״ ו״אם… אז…״ — ונלמד להשתמש בהן במדויק.</p>
+<p>בדרך ניעזר במתגים ובמנורות, נבדוק את הטענות של הרובוט של המזכירות ונפתור חידות על אבירים ונוכלים. בהמשך נבקר גם בדוכן פלאפל שבו המתמטיקאים עונים ברצינות רבה מדי על שאלה פשוטה. בכל פעילות נחזור לאותה מטרה: להבין מה נאמר, ואיזו מסקנה באמת נובעת מכך.</p>
 <section id="sec-about" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="sec-about"><span class="header-section-number">1.1</span> על מה הקורס הזה?</h2>
-<p>הקורס הזה הוא במידה רבה <strong>קורס שפה</strong>. למתמטיקה יש שפה משלה, עם מילים כמו ״וגם״, ״או״, ״אם… אז…״, ״לכל״ ו״קיים״. אלה מילים רגילות, אבל במתמטיקה יש לכל אחת מהן משמעות <strong>מדויקת אחת</strong>, ולפעמים היא שונה ממה שאנחנו רגילים אליו ביומיום. בקורס נלמד את המילים האלה, ואת המושגים שבנויים מהן: קבוצות, יחסים, פונקציות, אינדוקציה וספירה.</p>
-<p>המושגים האלה יופיעו בכל קורס מתמטי שתלמדו אחר כך. הם גם השפה שבה <strong>מחשבים</strong> ״חושבים״:</p>
+<p>למתמטיקה יש שפה משלה. כדי להשתמש בשפה, צריך להכיר גם <span class="term"><strong>אוצר מילים</strong></span> וגם <span class="term"><strong>כללים</strong></span> לחיבור המילים למשפטים. לדעת הרבה מילים זה התחלה טובה, אבל צריך לדעת גם איך לחבר אותן כדי לומר משהו ברור.</p>
+<p>כך גם במתמטיקה. חלק מאוצר המילים כבר מוכר לנו: למשל ״מספר״, ״שווה״ ו״גדול מ־״. בקורס הזה נוסיף מושגים חדשים, כמו קבוצה, יחס ופונקציה; נלמד מה כל אחד מהם אומר כשנגיע אליו. בקורסים אחרים אוצר המילים ימשיך לגדול.</p>
+<p><strong>הלוגיקה עוסקת בכללים שבהם משתמשים עם אוצר המילים הזה.</strong> היא מלמדת איך לחבר משפטים, איך לשלול אותם, ואיך לבדוק אם המידע שקיבלנו מצדיק מסקנה חדשה. למשל, ״המספר גדול מ־5 <strong>וגם</strong> קטן מ־10״ דורש ששני הדברים יתקיימו. אם מחליפים את ״וגם״ ב״או״, מקבלים דרישה אחרת. המילים הקטנות האלה משנות את מה שהמשפט אומר.</p>
+<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="אוצר המילים גדל; בכל פעם משתמשים בכללי הלוגיקה">
+<p><strong>חשוב לזכור — אוצר המילים גדל; בכל פעם משתמשים בכללי הלוגיקה.</strong></p>
+<p><span class="key-rule"><strong>המושגים אומרים על מה מדברים. כללי הלוגיקה עוזרים לחבר את הטענות ולבדוק מה נובע מהן.</strong></span></p>
+<p>לא צריך להכיר מראש את כל המושגים שנלמד בקורס. את כללי החיבור וההסקה אפשר להתחיל לתרגל עם משפטים פשוטים מחיי היומיום, ובהמשך להשתמש בהם גם כשמדברים על מושגים חדשים.</p>
+</div>
+<p>הכללים האלה שימושיים גם במחשבים ובאתרים שאנחנו פוגשים:</p>
 <ul>
 <li><strong>תנאי בתוכנה.</strong> שורת קוד כמו <code>if battery &gt; 20 and wifi_on</code> משתמשת ב״וגם״ בדיוק במובן שנלמד כאן.</li>
 <li><strong>סינון באתר קניות.</strong> ״מחיר עד 100 ₪ <strong>וגם</strong> (צבע שחור <strong>או</strong> כחול)״ הוא תנאי שמורכב מכמה תנאים פשוטים. האתר מציג רק את המוצרים שעומדים בתנאי הזה.</li>
@@ -2871,21 +2897,33 @@ window.Quarto = {
 </section>
 <section id="sec-quantifiers" class="level2" data-number="1.13">
 <h2 data-number="1.13" class="anchored" data-anchor-id="sec-quantifiers"><span class="header-section-number">1.13</span> כמתים</h2>
-<p>בסעיף על <a href="#sec-open-propositions">פסוקים פתוחים</a> הכרנו את <span class="math inline">\(P(x)\)</span>: ״<span class="math inline">\(x&gt;5\)</span>״, כאשר <span class="math inline">\(x\)</span> הוא מספר שלם שעדיין לא נבחר. הצבה של ערך מסוים נתנה לנו פסוק: למשל, <span class="math inline">\(P(7)\)</span> הוא הפסוק האמיתי ״<span class="math inline">\(7&gt;5\)</span>״.</p>
-<p>עכשיו נרצה לומר משהו על התחום כולו. אפשר לשאול: ״האם <strong>כל</strong> מספר שלם גדול מ־<span class="math inline">\(5\)</span>?״ ואפשר לשאול: ״האם <strong>קיים</strong> מספר שלם שגדול מ־<span class="math inline">\(5\)</span>?״ אלה שתי שאלות שונות. הטענה הראשונה שקרית, למשל בגלל המספר <span class="math inline">\(2\)</span>. הטענה השנייה אמיתית, למשל בגלל המספר <span class="math inline">\(7\)</span>. המילים ״לכל״ ו״קיים״ נקראות <span class="term"><strong>כמתים</strong></span>. הן מאפשרות להפוך את הפסוק הפתוח לפסוק בלי לבחור מראש ערך מסוים של <span class="math inline">\(x\)</span>.</p>
+<p>כשאומרים ״כולם״, צריך לדעת: <strong>כולם מתוך איזו קבוצה?</strong> כל הסטודנטים בכיתה, כל הכיסאות בחדר, או כל המספרים שבחרנו? לפני שנכתוב ״לכל״ או ״קיים״, נבהיר על מי ועל מה מדברים.</p>
+<div class="thmbox thmbox-key-point" title="עולם הדיון: אילו ערכים מותר לבחור?">
+<p><strong>חשוב לזכור — עולם הדיון: אילו ערכים מותר לבחור?.</strong></p>
+<p><span class="term"><strong>עולם הדיון</strong></span>, שנקרא גם <span class="term"><strong>התחום</strong></span>, הוא אוסף הערכים שמותר למשתנה לקבל. בדוגמאות הראשונות כאן נבחר:</p>
+<p><span class="math display">\[D=\{1,2,3,4\}.\]</span></p>
+<p>האות <span class="math inline">\(D\)</span> היא שם לאוסף הזה. הסוגריים המסולסלים מציגים את איבריו — המספרים שנמצאים בו. הסימן <span class="term"><strong><span class="math inline">\(\in\)</span></strong></span> פירושו ״שייך ל־״. לכן <span class="math inline">\(x\in D\)</span> אומר ש־<span class="math inline">\(x\)</span> הוא אחד מ־<span class="math inline">\(1,2,3,4\)</span>. למשל, <span class="math inline">\(3\in D\)</span>, אבל <span class="math inline">\(7\)</span> אינו בעולם הדיון שבחרנו.</p>
+<p><span class="key-rule"><strong>״לכל״ ו״קיים״ מתייחסים רק לאיברים בעולם הדיון שנקבע.</strong></span> על קבוצות ועל שייכות נלמד בהרחבה בהמשך הקורס. כרגע מספיק לדעת אילו ערכים מותר להציב.</p>
+</div>
+<p>נגדיר <span class="math inline">\(P(x)\)</span>: ״<span class="math inline">\(x&gt;2\)</span>״. זהו פסוק פתוח. אפשר להציב בו מספר מהתחום: <span class="math inline">\(P(1)\)</span> שקר ו־<span class="math inline">\(P(3)\)</span> אמת. עכשיו נרצה לומר משהו על התחום כולו: האם <strong>כל</strong> המספרים בו גדולים מ־<span class="math inline">\(2\)</span>? האם יש בו <strong>לפחות מספר אחד</strong> שגדול מ־<span class="math inline">\(2\)</span>? המילים האלה נקראות <span class="term"><strong>כמתים</strong></span>.</p>
 <div id="box-def-quantifiers" class="thmbox thmbox-definition">
 <p><strong>הגדרה 1.13.1.</strong></p>
-<p>ניקח פסוק פתוח <span class="math inline">\(P(x)\)</span>. נסמן ב-<span class="math inline">\(D\)</span> את התחום: אוסף הערכים שמותר להציב במקום <span class="math inline">\(.x\)</span> כל ערך מתוך האוסף נקרא גם <span class="term"><strong>איבר</strong></span> של התחום. אם נכתוב למשל <span class="math inline">\(D=\{2,5,7\}\)</span>, הסוגריים המסולסלים מציגים את הרשימה: האיברים הם <span class="math inline">\(2\)</span>, <span class="math inline">\(5\)</span> ו-<span class="math inline">\(.7\)</span></p>
+<p>נניח ש־<span class="math inline">\(D\)</span> הוא עולם הדיון וש־<span class="math inline">\(P(x)\)</span> הוא פסוק פתוח על איבריו.</p>
 <ul>
-<li>הפסוק <span class="math inline">\(\forall x\, P(x)\)</span> (קוראים: ״<strong>לכל</strong> <span class="math inline">\(x\)</span>, <span class="math inline">\(P(x)\)</span>״) הוא אמת אם <span class="math inline">\(P(a)\)</span> אמת <strong>לכל</strong> <span class="math inline">\(a\)</span> בתחום.</li>
-<li>הפסוק <span class="math inline">\(\exists x\, P(x)\)</span> (קוראים: ״<strong>קיים</strong> <span class="math inline">\(x\)</span> כך ש-<span class="math inline">\(P(x)\)</span>״) הוא אמת אם יש <strong>לפחות</strong> <span class="math inline">\(a\)</span> אחד בתחום שעבורו <span class="math inline">\(P(a)\)</span> אמת.</li>
+<li><span class="math inline">\(\forall x\in D\,P(x)\)</span> — קוראים: ״<span class="term"><strong>לכל</strong></span> <span class="math inline">\(x\)</span> ששייך ל־<span class="math inline">\(D\)</span>, מתקיים <span class="math inline">\(P(x)\)</span>״. הפסוק אמת כאשר <strong>כל</strong> איבר בתחום מקיים את התיאור.</li>
+<li><span class="math inline">\(\exists x\in D\,P(x)\)</span> — קוראים: ״<span class="term"><strong>קיים</strong></span> <span class="math inline">\(x\)</span> ששייך ל־<span class="math inline">\(D\)</span> כך שמתקיים <span class="math inline">\(P(x)\)</span>״. הפסוק אמת כאשר <strong>לפחות איבר אחד</strong> בתחום מקיים את התיאור.</li>
 </ul>
-<p><span class="math inline">\(\forall\)</span> נקרא <span class="term"><strong>הכמת הכולל</strong></span>, כי הוא מתייחס לכל הערכים בתחום. <span class="math inline">\(\exists\)</span> נקרא <span class="term"><strong>הכמת הישי</strong></span>, כי הוא אומר שיש לפחות ערך אחד מתאים. האות <span class="math inline">\(a\)</span> בהגדרה היא רק שם לערך מסוים שנבחר מהתחום; למשל, אם בחרנו <span class="math inline">\(7\)</span>, אז <span class="math inline">\(P(a)\)</span> הוא <span class="math inline">\(.P(7)\)</span></p>
+<p><span class="math inline">\(\forall\)</span> נקרא <span class="term"><strong>הכמת הכולל</strong></span>, ו־<span class="math inline">\(\exists\)</span> נקרא <span class="term"><strong>הכמת הישי</strong></span>. השמות אינם העיקר: חשוב לזכור אם צריך לבדוק את כולם או למצוא לפחות אחד, ותמיד — מתוך התחום שנבחר.</p>
 </div>
-<div class="thmbox thmbox-remark" title="עכשיו אפשר לדייק: משתנה חופשי ומשתנה קשור">
-<p><strong>הערה 1.13.2 — עכשיו אפשר לדייק: משתנה חופשי ומשתנה קשור.</strong></p>
-<p>כמת הוא הוראה בתוך המשפט: לבדוק את כל הערכים, או לבדוק אם יש לפחות ערך אחד מתאים. כשכמת חל על משתנה, אומרים שהמשתנה <span class="term"><strong>קשור</strong></span> לכמת הזה. כשהוא אינו תחת הוראה כזאת, הוא <span class="term"><strong>חופשי</strong></span>.</p>
-<p>נשווה שלושה משפטים, כאשר התחום בכל השלושה הוא המספרים <span class="math inline">\(2\)</span>, <span class="math inline">\(5\)</span> ו-<span class="math inline">\(:7\)</span></p>
+<p>אצלנו, <span class="math inline">\(D=\{1,2,3,4\}\)</span> ו־<span class="math inline">\(P(x)\)</span> אומר ״<span class="math inline">\(x&gt;2\)</span>״. לכן <span class="math inline">\(\forall x\in D\,P(x)\)</span> שקר, למשל בגלל <span class="math inline">\(1\)</span>. לעומת זאת, <span class="math inline">\(\exists x\in D\,P(x)\)</span> אמת, למשל בגלל <span class="math inline">\(3\)</span>.</p>
+<div class="thmbox thmbox-remark" title="לפעמים מקצרים את הכתיבה">
+<p><strong>הערה 1.13.2 — לפעמים מקצרים את הכתיבה.</strong></p>
+<p>כאשר עולם הדיון כבר נאמר וברור מההקשר, אפשר לקצר ולכתוב <span class="math inline">\(\forall x\,P(x)\)</span> או <span class="math inline">\(\exists x\,P(x)\)</span> בלי לחזור על <span class="math inline">\(\in D\)</span>. זו רק השמטה של מידע שכבר ידוע: המשתנה עדיין נבחר מאותו תחום. בדוגמאות הראשונות כאן התחום הוא <span class="math inline">\(\{1,2,3,4\}\)</span>; בכל מעבר לתחום אחר נציין אותו. כדי שיהיה קל לעקוב, בדרך כלל נכתוב כאן את התחום גם בתוך הנוסחה.</p>
+</div>
+<div class="thmbox thmbox-remark" title="משתנה חופשי ומשתנה קשור — בתוך העולם שבחרנו">
+<p><strong>הערה 1.13.3 — משתנה חופשי ומשתנה קשור — בתוך העולם שבחרנו.</strong></p>
+<p>גם אחרי שבחרנו תחום, עדיין יש הבדל בין ״בחרו ערך ל־<span class="math inline">\(x\)</span>״ לבין ״בדקו את כל ערכי <span class="math inline">\(x\)</span> בתחום״. הכמת אומר מה לעשות עם המשתנה. כשכמת חל עליו, המשתנה <span class="term"><strong>קשור</strong></span>; כשאין כמת שחל עליו, הוא <span class="term"><strong>חופשי</strong></span>.</p>
+<div class="table-responsive">
 <table class="caption-top table">
 <colgroup>
 <col style="width: 38%">
@@ -2901,39 +2939,38 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;"><span class="math inline">\(x&gt;5\)</span></td>
-<td style="text-align: left;">המספר שנבחר גדול מ־5</td>
-<td style="text-align: left;">חופשי: נדרש ערך מבחוץ כדי לבצע הצבה</td>
+<td style="text-align: center;"><span class="math inline">\(x&gt;2\)</span></td>
+<td style="text-align: left;">המספר שנבחר גדול מ־2</td>
+<td style="text-align: left;">חופשי: יודעים שמותר לבחור מתוך <span class="math inline">\(D\)</span>, אבל עדיין צריך ערך מסוים</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;"><span class="math inline">\(\forall x\,(x&gt;5)\)</span></td>
-<td style="text-align: left;">כל מספר בתחום גדול מ־5</td>
-<td style="text-align: left;">קשור ל״לכל״: בודקים את כל שלושת הערכים; הטענה שקרית</td>
+<td style="text-align: center;"><span class="math inline">\(\forall x\in D\,(x&gt;2)\)</span></td>
+<td style="text-align: left;">כל מספר בתחום גדול מ־2</td>
+<td style="text-align: left;">קשור: בודקים את כל ארבעת הערכים; הטענה שקרית</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;"><span class="math inline">\(\exists x\,(x&gt;5)\)</span></td>
-<td style="text-align: left;">יש לפחות מספר אחד בתחום שגדול מ־5</td>
-<td style="text-align: left;">קשור ל״קיים״: מחפשים ערך מתאים; הטענה אמיתית בגלל <span class="math inline">\(7\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\exists x\in D\,(x&gt;2)\)</span></td>
+<td style="text-align: left;">יש מספר בתחום שגדול מ־2</td>
+<td style="text-align: left;">קשור: מחפשים לפחות ערך מתאים אחד; הטענה אמיתית בגלל <span class="math inline">\(3\)</span></td>
 </tr>
 </tbody>
 </table>
-<p>לכן ״חופשי״ אינו פשוט שם אחר ל״מספר שעוד לא גילינו״. במשפט עם ״קיים״ איננו צריכים לכתוב מראש איזה מספר מתאים, ובכל זאת המשתנה קשור: ההוראה לחפש לפחות ערך אחד כבר נמצאת במשפט.</p>
-<p>גם בחירת ערך לצורך בדיקה אינה הופכת משתנה לקשור. אם מציבים ממש <span class="math inline">\(7\)</span> במקום <span class="math inline">\(x\)</span>, מקבלים <span class="math inline">\(7&gt;5\)</span>, ובתוצאה כבר אין משתנה. קשירה באמצעות כמת היא פעולה אחרת: האות נשארת במשפט, והכמת אומר כיצד להתייחס לערכים שלה.</p>
 </div>
-<p>נמשיך עם אותו תחום, <span class="math inline">\(D=\{2,5,7\}\)</span>, ועם אותו פסוק פתוח, <span class="math inline">\(P(x)\)</span>: ״<span class="math inline">\(x&gt;5\)</span>״. בתחום הזה אפשר לכתוב במפורש את כל הבדיקות שהכמת מבקש:</p>
+<p>הכתיבה <span class="math inline">\(x\in D\)</span> אומרת <strong>מאיפה</strong> מותר לבחור; היא אינה בוחרת מספר מסוים במקומנו. הכמת מוסיף את ההוראה: ״לכל״ או ״קיים״. לכן גם ב״קיים״ המשתנה קשור, אף שלא כתוב מראש איזה מספר מתאים.</p>
+<p>אם מציבים ממש <span class="math inline">\(3\)</span> במקום <span class="math inline">\(x\)</span>, מקבלים <span class="math inline">\(3&gt;2\)</span>, ובתוצאה כבר אין משתנה. הצבה וקשירה באמצעות כמת הן שתי פעולות שונות.</p>
+</div>
+<p>בתחום הקטן שלנו אפשר לכתוב את כל הבדיקות במפורש:</p>
 <ul>
-<li>״כל מספר בתחום גדול מ־5״ דורש ששלוש הבדיקות יצליחו <strong>יחד</strong>: <span class="math inline">\(P(2) \land P(5) \land P(7)\)</span>. הטענה שגויה, כי לא כל שלושת המספרים גדולים מ־5.</li>
-<li>״יש מספר בתחום שגדול מ־5״ דורש ש<strong>לפחות אחת</strong> מהבדיקות תצליח: <span class="math inline">\(P(2) \lor P(5) \lor P(7)\)</span>. הטענה נכונה, כי <span class="math inline">\(7&gt;5\)</span>.</li>
+<li><span class="math inline">\(\forall x\in D\,P(x)\)</span> דורש <span class="math inline">\(P(1)\land P(2)\land P(3)\land P(4)\)</span>. כל ארבע הבדיקות צריכות להצליח יחד; כאן זה לא קורה.</li>
+<li><span class="math inline">\(\exists x\in D\,P(x)\)</span> דורש <span class="math inline">\(P(1)\lor P(2)\lor P(3)\lor P(4)\)</span>. מספיק שאחת תצליח; כאן גם <span class="math inline">\(3\)</span> וגם <span class="math inline">\(4\)</span> מתאימים.</li>
 </ul>
-<p>כך המילים ״לכל״ ו״קיים״ מתחברות לקשרים שכבר למדנו, בלי לשנות את התחום או את משמעותו של <span class="math inline">\(P(x)\)</span>.</p>
 <div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea">
 <p><strong>חשוב לזכור.</strong></p>
-<p>בתחום <strong>סופי</strong>, <span class="math inline">\(\forall\)</span> הוא ״וגם״ ארוך ו-<span class="math inline">\(\exists\)</span> הוא ״או״ ארוך.</p>
+<p>בתחום <span class="term"><strong>סופי</strong></span>, כלומר תחום שיש בו מספר סופי של איברים, ״לכל״ הוא כמו ״וגם״ של כל הבדיקות, ו״קיים״ הוא כמו ״או״ של כל הבדיקות. חשוב לא להשמיט איברים מן התחום.</p>
 </div>
-<div class="thmbox thmbox-remark" title="תחום סופי ותחום אינסופי">
-<p><strong>הערה 1.13.3 — תחום סופי ותחום אינסופי.</strong></p>
-<p>תחום <span class="term"><strong>סופי</strong></span> מכיל מספר מוגדר של איברים. למשל, בתחום שהאיברים שלו הם <span class="math inline">\(2\)</span>, <span class="math inline">\(5\)</span> ו-<span class="math inline">\(7\)</span>, יש שלושה איברים, ואפשר לבדוק את כולם אחד אחרי השני.</p>
-<p>תחום <span class="term"><strong>אינסופי</strong></span> אינו נגמר אחרי מספר סופי של איברים. למשל, הרשימה <span class="math inline">\(0,1,2,3,\dots\)</span> ממשיכה בלי סוף: אחרי כל מספר ברשימה יש עוד אחד. שלוש הנקודות אומרות ״וכן הלאה, לפי אותו דפוס״. כשצריך להוכיח טענה על כל המספרים האלה, אי אפשר לסיים בדיקה אחד־אחד; צריך נימוק שמסביר מדוע היא נכונה לכל אחד מהם.</p>
+<div class="thmbox thmbox-remark" title="ומה אם התחום אינו נגמר?">
+<p><strong>הערה 1.13.4 — ומה אם התחום אינו נגמר?.</strong></p>
+<p>יש גם תחומים <span class="term"><strong>אינסופיים</strong></span>. למשל, <span class="math inline">\(\{0,1,2,3,\dots\}\)</span> מכיל את כל המספרים השלמים שאינם שליליים. שלוש הנקודות אומרות שהרשימה ממשיכה בלי סוף. בתחום כזה אי אפשר לסיים בדיקה של כל האיברים אחד־אחד; כדי להוכיח טענה על כולם צריך נימוק כללי. בכל דוגמה נאמר במפורש אם עברנו לתחום הזה.</p>
 </div>
 <section id="sec-bar" class="level3" data-number="1.13.1">
 <h3 data-number="1.13.1" class="anchored" data-anchor-id="sec-bar"><span class="header-section-number">1.13.1</span> שלושה מתמטיקאים ניגשים לדוכן פלאפל</h3>
@@ -2952,7 +2989,7 @@ window.Quarto = {
 </div>
 <p><strong>מה אפשר להסיק על הרצון של כל אחד, וכמה מנות פלאפל צריך להכין?</strong> במשחק בחרו לכל דמות אם היא רוצה פלאפל, אינה רוצה, או שאי אפשר לדעת. שימו לב: הדמויות עונות על השאלה אם <em>כולם</em> רוצים, ולא על השאלה אם הן עצמן רוצות.</p>
 <div id="box-game-bar" class="thmbox thmbox-game" title="דוכן הפלאפל">
-<p><strong>משחק 1.13.4 — דוכן הפלאפל.</strong></p>
+<p><strong>משחק 1.13.5 — דוכן הפלאפל.</strong></p>
 <iframe class="widget-frame" src="games/barman/index.html?level=classic&amp;embed=1" loading="lazy" title="משחק: דוכן הפלאפל"></iframe>
 </div>
 <details class="thmcollapse thmfoldable"><summary>אז מה המוכר עושה?</summary>
@@ -2969,89 +3006,90 @@ window.Quarto = {
 </section>
 <section id="sec-bar-again" class="level3" data-number="1.13.2">
 <h3 data-number="1.13.2" class="anchored" data-anchor-id="sec-bar-again"><span class="header-section-number">1.13.2</span> ״כולם״ ו״מישהו״ בשפת הכמתים</h3>
-<p>התחום בדוגמה הזאת הוא שלושת המתמטיקאים שבדוכן. נמספר אותם לפי סדר התשובות: <span class="math inline">\(1\)</span>, <span class="math inline">\(2\)</span> ו-<span class="math inline">\(3\)</span>. נסמן ב-<span class="math inline">\(W(x)\)</span> את הפסוק הפתוח ״הדמות שמספרה <span class="math inline">\(x\)</span> רוצה פלאפל״. כדי לקצר, נכתוב <span class="math inline">\(W_1\)</span> במקום <span class="math inline">\(W(1)\)</span>, ובאותו אופן <span class="math inline">\(W_2\)</span> ו-<span class="math inline">\(W_3\)</span>.</p>
-<p>שאלת המוכר ״<strong>כולם</strong> רוצים פלאפל?״ מבקשת לדעת אם הפסוק <span class="math inline">\(\forall x\,W(x)\)</span> נכון. בתחום של שלוש הדמויות זה בדיוק:</p>
+<p>התחום בדוגמה הזאת הוא שלושת המתמטיקאים שבדוכן. נמספר אותם לפי סדר התשובות: <span class="math inline">\(1\)</span>, <span class="math inline">\(2\)</span> ו-<span class="math inline">\(3\)</span>. כאן עולם הדיון הוא <span class="math inline">\(D=\{1,2,3\}\)</span>, מספרי הדמויות שבדוכן. נסמן ב-<span class="math inline">\(W(x)\)</span> את הפסוק הפתוח ״הדמות שמספרה <span class="math inline">\(x\)</span> רוצה פלאפל״. כדי לקצר, נכתוב <span class="math inline">\(W_1\)</span> במקום <span class="math inline">\(W(1)\)</span>, ובאותו אופן <span class="math inline">\(W_2\)</span> ו-<span class="math inline">\(W_3\)</span>.</p>
+<p>שאלת המוכר ״<strong>כולם</strong> רוצים פלאפל?״ מבקשת לדעת אם הפסוק <span class="math inline">\(\forall x\in D\,W(x)\)</span> נכון. בתחום של שלוש הדמויות זה בדיוק:</p>
 <p><span class="math display">\[W_1 \land W_2 \land W_3\]</span></p>
 <p>כל שלוש הדמויות צריכות לרצות. מספיק שאחת אינה רוצה כדי שהטענה על כולם תהיה שגויה.</p>
-<p>לעומת זאת, השאלה ״<strong>מישהו</strong> רוצה פלאפל?״ מבקשת לדעת אם <span class="math inline">\(\exists x\,W(x)\)</span> נכון. בתחום הזה מדובר בפסוק:</p>
+<p>לעומת זאת, השאלה ״<strong>מישהו</strong> רוצה פלאפל?״ מבקשת לדעת אם <span class="math inline">\(\exists x\in D\,W(x)\)</span> נכון. בתחום הזה מדובר בפסוק:</p>
 <p><span class="math display">\[W_1 \lor W_2 \lor W_3\]</span></p>
 <p>כאן מספיק שרק אחת הדמויות רוצה. גם שתי דמויות או שלוש דמויות שרוצות מתאימות: ״קיים״ אומר <strong>לפחות אחד</strong>, ולא ״בדיוק אחד״.</p>
 <p><span class="key-rule"><strong>לפני שמפרשים תשובה, קוראים שוב את השאלה: ״כולם?״ או ״מישהו?״</strong></span> ״לא כולם רוצים״ משאיר אפשרות שחלק כן רוצים. ״אין אף אחד שרוצה״ אומר שאף דמות אינה רוצה. במשחק הבא אותה תשובה, ״לא״, תספר משהו אחר כאשר שאלת המוכר תשתנה.</p>
 <div id="box-game-bar-more" class="thmbox thmbox-game" title="דוכן הפלאפל: כולם ומישהו">
-<p><strong>משחק 1.13.5 — דוכן הפלאפל: כולם ומישהו.</strong></p>
+<p><strong>משחק 1.13.6 — דוכן הפלאפל: כולם ומישהו.</strong></p>
 <iframe class="widget-frame" src="games/barman/index.html?levels=no-early,after-no,anyone,anyone-serve,design&amp;embed=1" loading="lazy" title="משחק: דוכן הפלאפל, כולם ומישהו"></iframe>
 </div>
 </section>
 <section id="sec-evidence" class="level3" data-number="1.13.3">
 <h3 data-number="1.13.3" class="anchored" data-anchor-id="sec-evidence"><span class="header-section-number">1.13.3</span> איזו הוכחה צריך?</h3>
-<p>לפני הכללים, נכיר שתי מילים שמתארות את התפקיד של דוגמה:</p>
+<p>נחזור לעולם המספרים <span class="math inline">\(D=\{1,2,3,4\}\)</span> ולתיאור <span class="math inline">\(P(x)\)</span>: ״<span class="math inline">\(x&gt;2\)</span>״. נכיר שתי מילים שמתארות את התפקיד של דוגמה:</p>
 <div class="thmbox thmbox-example" title="עד ודוגמה נגדית: מה הדוגמה מראה?">
-<p><strong>דוגמה 1.13.6 — עד ודוגמה נגדית: מה הדוגמה מראה?.</strong></p>
-<p>בטענה ״יש מספר בתחום שגדול מ־5״, המספר <span class="math inline">\(7\)</span> הוא <span class="term"><strong>עד</strong></span>: הוא דוגמה שמראה שהדבר שאמרנו שקיים אכן קיים. ״עד״ כאן יכול להיות מספר, ולא רק אדם.</p>
-<p>בטענה ״כל המספרים בתחום גדולים מ־5״, המספר <span class="math inline">\(2\)</span> הוא <span class="term"><strong>דוגמה נגדית</strong></span>: הוא שייך לתחום, אבל אינו מקיים את מה שהטענה מבטיחה. לכן הוא מספיק כדי להראות שהטענה על <strong>כל</strong> המספרים שגויה.</p>
+<p><strong>דוגמה 1.13.7 — עד ודוגמה נגדית: מה הדוגמה מראה?.</strong></p>
+<p>בטענה ״יש מספר בתחום שגדול מ־2״, המספר <span class="math inline">\(3\)</span> הוא <span class="term"><strong>עד</strong></span>: הוא דוגמה שמראה שהדבר שאמרנו שקיים אכן קיים. ״עד״ כאן יכול להיות מספר, ולא רק אדם.</p>
+<p>בטענה ״כל המספרים בתחום גדולים מ־2״, המספר <span class="math inline">\(1\)</span> הוא <span class="term"><strong>דוגמה נגדית</strong></span>: הוא שייך לתחום, אבל אינו מקיים את מה שהטענה מבטיחה. לכן הוא מספיק כדי להראות שהטענה על <strong>כל</strong> המספרים שגויה.</p>
 <p><span class="term"><strong>להפריך</strong></span> טענה פירושו להראות שהיא אינה נכונה. כדי להפריך טענה על כולם, דוגמה נגדית אחת מספיקה. כדי לאשר טענה על כולם, דוגמה מוצלחת אחת אינה מספיקה.</p>
 </div>
 <p>עכשיו ננסח את הכללים:</p>
 <div class="thmbox thmbox-key-point thmicon-rule" data-icon="rule">
 <p><strong>כלל.</strong></p>
 <ul>
-<li>כדי להראות ש-<span class="math inline">\(\exists x\, P(x)\)</span> <strong>אמת</strong>, <span class="key-rule"><strong>מספיקה דוגמה אחת</strong></span>: <span class="math inline">\(a\)</span> אחד שעבורו <span class="math inline">\(P(a)\)</span> אמת. היא נקראת <span class="term"><strong>עד</strong></span>.</li>
-<li>כדי להראות ש-<span class="math inline">\(\forall x\, P(x)\)</span> <strong>שקר</strong>, <span class="key-rule"><strong>מספיקה דוגמה נגדית אחת</strong></span>: <span class="math inline">\(a\)</span> אחד שעבורו <span class="math inline">\(P(a)\)</span> שקר.</li>
-<li>כדי להראות ש-<span class="math inline">\(\forall x\, P(x)\)</span> <strong>אמת</strong>, או ש-<span class="math inline">\(\exists x\, P(x)\)</span> <strong>שקר</strong>, <span class="key-rule"><strong>צריך לבדוק את כל התחום</strong></span>. בתחום אינסופי צריך טיעון כללי, כי אי אפשר לבדוק אחד-אחד.</li>
+<li>כדי להראות ש-<span class="math inline">\(\exists x\in D\, P(x)\)</span> <strong>אמת</strong>, <span class="key-rule"><strong>מספיקה דוגמה אחת</strong></span>: <span class="math inline">\(a\)</span> אחד שעבורו <span class="math inline">\(P(a)\)</span> אמת. היא נקראת <span class="term"><strong>עד</strong></span>.</li>
+<li>כדי להראות ש-<span class="math inline">\(\forall x\in D\, P(x)\)</span> <strong>שקר</strong>, <span class="key-rule"><strong>מספיקה דוגמה נגדית אחת</strong></span>: <span class="math inline">\(a\)</span> אחד שעבורו <span class="math inline">\(P(a)\)</span> שקר.</li>
+<li>כדי להראות ש-<span class="math inline">\(\forall x\in D\, P(x)\)</span> <strong>אמת</strong>, או ש-<span class="math inline">\(\exists x\in D\, P(x)\)</span> <strong>שקר</strong>, <span class="key-rule"><strong>צריך לבדוק את כל התחום</strong></span>. בתחום אינסופי צריך טיעון כללי, כי אי אפשר לבדוק אחד-אחד.</li>
 </ul>
 </div>
-<p>הרובוט טוען טענות על שישה סטודנטים. במשחק הבא תבחרו כרטיסים שמספיקים להוכיח או להפריך כל טענה, ולאחר מכן תקבעו אם היא נכונה. שימו לב להבדל בין בחירת התשובה לבין בחירת הראיות שמצדיקות אותה.</p>
+<p>במשחק הבא עוברים לעולם אחר: ששת הסטודנטים שמופיעים בכרטיסים. <span class="math inline">\(D\)</span> מציין כעת את הסטודנטים האלה, ולא את המספרים מהדוגמה הקודמת. הרובוט טוען עליהם טענות. במשחק תבחרו כרטיסים שמספיקים להוכיח או להפריך כל טענה, ולאחר מכן תקבעו אם היא נכונה. שימו לב להבדל בין בחירת התשובה לבין בחירת הראיות שמצדיקות אותה.</p>
 <div id="box-game-witness" class="thmbox thmbox-game" title="מצאו עד">
-<p><strong>משחק 1.13.7 — מצאו עד.</strong></p>
+<p><strong>משחק 1.13.8 — מצאו עד.</strong></p>
 <iframe class="widget-frame" src="games/witness/index.html?levels=witness,counter,check-all,nobody,negation,order&amp;embed=1" loading="lazy" title="משחק: מצאו עד"></iframe>
 </div>
 </section>
 <section id="sec-domain" class="level3" data-number="1.13.4">
 <h3 data-number="1.13.4" class="anchored" data-anchor-id="sec-domain"><span class="header-section-number">1.13.4</span> התחום חשוב</h3>
 <div id="box-exm-domain" class="thmbox thmbox-example">
-<p><strong>דוגמה 1.13.8.</strong></p>
-<p>הפסוק <span class="math inline">\(\exists x\, (x + 3 = 1)\)</span> הוא <strong>שקר</strong> בתחום <span class="math inline">\(\{0, 1, 2, 3, \dots\}\)</span>: כל מספר כזה ועוד <span class="math inline">\(3\)</span> גדול מ-<span class="math inline">\(.1\)</span> אבל בתחום המספרים השלמים אותו פסוק הוא <strong>אמת</strong>, עם העד <span class="math inline">\(.x = -2\)</span> לכן כשכותבים פסוק עם כמת, תמיד צריך לומר מה התחום.</p>
+<p><strong>דוגמה 1.13.9.</strong></p>
+<p>הפסוק <span class="math inline">\(\exists x\in D\, (x + 3 = 1)\)</span> הוא <strong>שקר</strong> כאשר <span class="math inline">\(D\)</span> הוא התחום <span class="math inline">\(\{0, 1, 2, 3, \dots\}\)</span>: כל מספר כזה ועוד <span class="math inline">\(3\)</span> גדול מ-<span class="math inline">\(.1\)</span> אבל כאשר <span class="math inline">\(D\)</span> הוא אוסף כל המספרים השלמים, אותו פסוק הוא <strong>אמת</strong>, עם העד <span class="math inline">\(.x = -2\)</span> לכן כשכותבים פסוק עם כמת, תמיד צריך לומר מה התחום.</p>
 </div>
 </section>
 <section id="sec-neg-quantifiers" class="level3" data-number="1.13.5">
 <h3 data-number="1.13.5" class="anchored" data-anchor-id="sec-neg-quantifiers"><span class="header-section-number">1.13.5</span> שלילה של כמתים</h3>
+<p>בכללי השלילה <span class="math inline">\(D\)</span> הוא עולם דיון קבוע: כששוללים טענה, לא משנים את התחום שלה. בדוגמה הבאה <span class="math inline">\(D\)</span> הוא הסטודנטים בכיתה.</p>
 <div class="says robot">
 <p>״לא כל הסטודנטים הגישו את העבודה. כלומר, אף אחד לא הגיש!״</p>
 </div>
 <p>הרובוט שוב קיצר. ״לא <strong>כל</strong> הסטודנטים הגישו״ אומר רק ש<strong>יש</strong> סטודנט שלא הגיש. אולי כל השאר הגישו.</p>
 <div id="box-thm-neg-quantifiers" class="thmbox thmbox-theorem" title="שלילה של כמתים">
-<p><strong>משפט 1.13.9 — שלילה של כמתים.</strong></p>
-<p><span class="math display">\[\neg \forall x\, P(x) \;\equiv\; \exists x\, \neg P(x)\]</span> <span class="math display">\[.\neg \exists x\, P(x) \;\equiv\; \forall x\, \neg P(x)\]</span></p>
+<p><strong>משפט 1.13.10 — שלילה של כמתים.</strong></p>
+<p><span class="math display">\[\neg \forall x\in D\, P(x) \;\equiv\; \exists x\in D\, \neg P(x)\]</span> <span class="math display">\[.\neg \exists x\in D\, P(x) \;\equiv\; \forall x\in D\, \neg P(x)\]</span></p>
 </div>
-<p>אלה בדיוק חוקי דה מורגן, בגרסה ארוכה: בתחום סופי, <span class="math inline">\(\neg\forall x\, P(x)\)</span> הוא <span class="math inline">\(,\neg(P(a_1) \land \dots \land P(a_n))\)</span> ולפי דה מורגן זה <span class="math inline">\(.\neg P(a_1) \lor \dots \lor \neg P(a_n)\)</span> כשמכניסים שלילה פנימה, <span class="math inline">\(\forall\)</span> הופך ל-<span class="math inline">\(\exists\)</span> ו-<span class="math inline">\(\exists\)</span> הופך ל-<span class="math inline">\(,\forall\)</span> כמו ש״וגם״ הופך ל״או״.</p>
+<p>אלה בדיוק חוקי דה מורגן, בגרסה ארוכה: בתחום סופי, <span class="math inline">\(\neg\forall x\in D\, P(x)\)</span> הוא <span class="math inline">\(,\neg(P(a_1) \land \dots \land P(a_n))\)</span> ולפי דה מורגן זה <span class="math inline">\(.\neg P(a_1) \lor \dots \lor \neg P(a_n)\)</span> כשמכניסים שלילה פנימה, <span class="math inline">\(\forall\)</span> הופך ל-<span class="math inline">\(\exists\)</span> ו-<span class="math inline">\(\exists\)</span> הופך ל-<span class="math inline">\(,\forall\)</span> כמו ש״וגם״ הופך ל״או״.</p>
 <div id="box-check-negate-exists" class="thmbox thmbox-self-check" title="פלאפל בלי חומוס: איך שוללים ״יש״?">
 <p><strong>בדיקה עצמית — פלאפל בלי חומוס: איך שוללים ״יש״?.</strong></p>
-<p>התחום הוא הסטודנטים בכיתה. נסמן ב-<span class="math inline">\(P(x)\)</span> את כל המשפט ״הסטודנט <span class="math inline">\(x\)</span> אוכל פלאפל בלי חומוס״. מה השלילה של ״<strong>יש לפחות סטודנט אחד שאוכל פלאפל בלי חומוס</strong>״?</p>
+<p>נסמן ב־<span class="math inline">\(D\)</span> את הסטודנטים בכיתה. נסמן ב-<span class="math inline">\(P(x)\)</span> את כל המשפט ״הסטודנט <span class="math inline">\(x\)</span> אוכל פלאפל בלי חומוס״. מה השלילה של ״<strong>יש לפחות סטודנט אחד שאוכל פלאפל בלי חומוס</strong>״?</p>
 <div class="tf-quiz" data-correct="false">
 <button class="tf-opt" data-val="true">״יש סטודנט שלא אוכל פלאפל בלי חומוס״</button>
 <button class="tf-opt" data-val="false">״אף סטודנט לא אוכל פלאפל בלי חומוס״</button>
 <div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why"><b>השלילה היא ״אף סטודנט לא אוכל פלאפל בלי חומוס״</b>, כלומר \(\forall x\,\neg P(x)\). כדי לשלול את ״יש לפחות אחד״, צריך שלא יהיה אף סטודנט שמתאים לתיאור. האפשרות הראשונה אינה מספיקה: למשל, דנה אוכלת פלאפל בלי חומוס, ויואב אוכל אותו עם חומוס. אז יש מי שמתאים לתיאור וגם יש מי שלא, ולכן שתי טענות הקיום נכונות יחד ואינן שלילה זו של זו.</div>
+<div class="tf-why"><b>השלילה היא ״אף סטודנט לא אוכל פלאפל בלי חומוס״</b>, כלומר \(\forall x\in D\,\neg P(x)\). כדי לשלול את ״יש לפחות אחד״, צריך שלא יהיה אף סטודנט שמתאים לתיאור. האפשרות הראשונה אינה מספיקה: למשל, דנה אוכלת פלאפל בלי חומוס, ויואב אוכל אותו עם חומוס. אז יש מי שמתאים לתיאור וגם יש מי שלא, ולכן שתי טענות הקיום נכונות יחד ואינן שלילה זו של זו.</div>
 </div>
 </div>
 </section>
 <section id="sec-quantifier-order" class="level3" data-number="1.13.6">
 <h3 data-number="1.13.6" class="anchored" data-anchor-id="sec-quantifier-order"><span class="header-section-number">1.13.6</span> סדר הכמתים</h3>
-<p>כשיש שני משתנים, חשוב <strong>באיזה סדר</strong> כותבים את הכמתים. נסמן ב-<span class="math inline">\(L(x, y)\)</span> את הטענה ״הסטודנט <span class="math inline">\(x\)</span> אוהב את הפריט <span class="math inline">\(y\)</span>״. התחום של <span class="math inline">\(x\)</span> הוא הסטודנטים בכיתה; התחום של <span class="math inline">\(y\)</span> הוא הפריטים בתפריט שמופיע במשחק:</p>
+<p>כשיש שני משתנים, חשוב <strong>באיזה סדר</strong> כותבים את הכמתים. נסמן ב-<span class="math inline">\(L(x, y)\)</span> את הטענה ״הסטודנט <span class="math inline">\(x\)</span> אוהב את הפריט <span class="math inline">\(y\)</span>״. נסמן ב־<span class="math inline">\(S\)</span> את הסטודנטים בכיתה וב־<span class="math inline">\(M\)</span> את הפריטים בתפריט שמופיע במשחק. לכן כותבים <span class="math inline">\(x\in S\)</span> ו־<span class="math inline">\(y\in M\)</span>:</p>
 <ul>
-<li><span class="math inline">\(\forall x\, \exists y\, L(x, y)\)</span>: לכל סטודנט <strong>יש</strong> פריט בתפריט שהוא אוהב. כל אחד יכול לאהוב פריט בתפריט אחר.</li>
-<li><span class="math inline">\(\exists y\, \forall x\, L(x, y)\)</span>: <strong>יש</strong> פריט בתפריט אחד שכל הסטודנטים אוהבים.</li>
+<li><span class="math display">\[\forall x\in S\, \exists y\in M\, L(x, y)\]</span>: לכל סטודנט <strong>יש</strong> פריט בתפריט שהוא אוהב. כל אחד יכול לאהוב פריט בתפריט אחר.</li>
+<li><span class="math display">\[\exists y\in M\, \forall x\in S\, L(x, y)\]</span>: <strong>יש</strong> פריט בתפריט אחד שכל הסטודנטים אוהבים.</li>
 </ul>
 <p>הפסוק השני חזק יותר: אם יש פריט בתפריט שכולם אוהבים, אז בפרט לכל סטודנט יש פריט בתפריט שהוא אוהב. ההפך לא נכון. בשלב האחרון של המשחק אפשר לראות כיתה שבה הראשון אמת והשני שקר.</p>
 <div id="box-exm-order" class="thmbox thmbox-example">
-<p><strong>דוגמה 1.13.10.</strong></p>
-<p>בתחום <span class="math inline">\(\{0, 1, 2, 3, \dots\}\)</span>, הפסוק <span class="math inline">\(\forall x\, \exists y\, (y &gt; x)\)</span> הוא <strong>אמת</strong>: לכל מספר יש מספר גדול ממנו (למשל <span class="math inline">\(y = x + 1\)</span>). אבל <span class="math inline">\(\exists y\, \forall x\, (y &gt; x)\)</span> הוא <strong>שקר</strong>: אין מספר שגדול מכל המספרים, כי הוא לא גדול מעצמו.</p>
+<p><strong>דוגמה 1.13.11.</strong></p>
+<p>בדוגמה הזאת <span class="math inline">\(D=\{0,1,2,3,\dots\}\)</span>. הפסוק <span class="math display">\[\forall x\in D\, \exists y\in D\, (y &gt; x)\]</span> הוא <strong>אמת</strong>: לכל מספר יש מספר גדול ממנו (למשל <span class="math inline">\(y = x + 1\)</span>). אבל <span class="math display">\[\exists y\in D\, \forall x\in D\, (y &gt; x)\]</span> הוא <strong>שקר</strong>: אין מספר שגדול מכל המספרים, כי הוא לא גדול מעצמו.</p>
 </div>
 <div class="thmbox thmbox-self-check">
 <p><strong>בדיקה עצמית.</strong></p>
 <p>התחום הוא <span class="math inline">\(.D = \{1, 2, 3, 4\}\)</span> אמת או שקר?</p>
 <ol type="1">
-<li><span class="math inline">\(\forall x\, (x &lt; 5)\)</span></li>
+<li><span class="math inline">\(\forall x\in D\, (x &lt; 5)\)</span></li>
 </ol>
 <div class="tf-quiz" data-correct="true">
 <button class="tf-opt" data-val="true">אמת</button>
@@ -3060,7 +3098,7 @@ window.Quarto = {
 <div class="tf-why"><b>אמת:</b> בדקנו את כל ארבעת האיברים, וכולם קטנים מ-\(5\). זה המקרה שבו צריך לבדוק את כל התחום.</div>
 </div>
 <ol start="2" type="1">
-<li><span class="math inline">\(\exists x\, (x &gt; 4)\)</span></li>
+<li><span class="math inline">\(\exists x\in D\, (x &gt; 4)\)</span></li>
 </ol>
 <div class="tf-quiz" data-correct="false">
 <button class="tf-opt" data-val="true">אמת</button>
@@ -3069,7 +3107,7 @@ window.Quarto = {
 <div class="tf-why"><b>שקר:</b> אף אחד מ-\(1, 2, 3, 4\) אינו גדול מ-\(4\). גם כאן צריך לבדוק את כולם.</div>
 </div>
 <ol start="3" type="1">
-<li><span class="math inline">\(,\forall x\, E(x)\)</span> כאשר <span class="math inline">\(E(x)\)</span> = ״<span class="math inline">\(x\)</span> זוגי״</li>
+<li><span class="math inline">\(,\forall x\in D\, E(x)\)</span> כאשר <span class="math inline">\(E(x)\)</span> = ״<span class="math inline">\(x\)</span> זוגי״</li>
 </ol>
 <div class="tf-quiz" data-correct="false">
 <button class="tf-opt" data-val="true">אמת</button>
@@ -3078,7 +3116,7 @@ window.Quarto = {
 <div class="tf-why"><b>שקר:</b> מספיקה דוגמה נגדית אחת, למשל \(x = 1\).</div>
 </div>
 <ol start="4" type="1">
-<li><span class="math inline">\(\exists x\, (x^2 = 9)\)</span></li>
+<li><span class="math inline">\(\exists x\in D\, (x^2 = 9)\)</span></li>
 </ol>
 <div class="tf-quiz" data-correct="true">
 <button class="tf-opt" data-val="true">אמת</button>
@@ -3087,7 +3125,7 @@ window.Quarto = {
 <div class="tf-why"><b>אמת:</b> העד הוא \(x = 3\). שימו לב ש-\(x = -3\) לא בתחום, אבל עד אחד מספיק.</div>
 </div>
 <ol start="5" type="1">
-<li><span class="math inline">\(\forall x\, \exists y\, (y &gt; x)\)</span></li>
+<li><span class="math display">\[\forall x\in D\, \exists y\in D\, (y &gt; x)\]</span></li>
 </ol>
 <div class="tf-quiz" data-correct="false">
 <button class="tf-opt" data-val="true">אמת</button>
@@ -3097,24 +3135,24 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-ex-negate" class="thmbox thmbox-question">
-<p><strong>שאלה 1.13.11.</strong></p>
-<p>כתבו בשפת הכמתים, ואז שללו והעבירו את השלילה פנימה: ״<strong>כל</strong> סטודנט אוהב פריט בתפריט <strong>כלשהו</strong>״. (התחום: הסטודנטים בכיתה והפריטים בתפריט בקפטריה, ו-<span class="math inline">\(L(x, y)\)</span> = ״<span class="math inline">\(x\)</span> אוהב את <span class="math inline">\(y\)</span>״.)</p>
+<p><strong>שאלה 1.13.12.</strong></p>
+<p>כתבו בשפת הכמתים, ואז שללו והעבירו את השלילה פנימה: ״<strong>כל</strong> סטודנט אוהב פריט בתפריט <strong>כלשהו</strong>״. (נסמן ב־<span class="math inline">\(S\)</span> את הסטודנטים בכיתה וב־<span class="math inline">\(M\)</span> את הפריטים בתפריט בקפטריה, ו-<span class="math inline">\(L(x, y)\)</span> = ״<span class="math inline">\(x\)</span> אוהב את <span class="math inline">\(y\)</span>״.)</p>
 </div>
 <div class="solve">
 <div class="hint">
-<p>״כל סטודנט״ הוא <span class="math inline">\(,\forall x\)</span> ו״פריט בתפריט כלשהו״ הוא <span class="math inline">\(.\exists y\)</span> באיזה סדר?</p>
+<p>״כל סטודנט״ הוא <span class="math inline">\(,\forall x\in S\)</span> ו״פריט בתפריט כלשהו״ הוא <span class="math inline">\(.\exists y\in M\)</span> באיזה סדר?</p>
 </div>
 <div class="hint">
 <p>בשלילה כל כמת מתחלף: <span class="math inline">\(\forall\)</span> הופך ל-<span class="math inline">\(\exists\)</span> ו-<span class="math inline">\(\exists\)</span> הופך ל-<span class="math inline">\(,\forall\)</span> וה-<span class="math inline">\(\neg\)</span> מגיע עד <span class="math inline">\(.L(x, y)\)</span></p>
 </div>
 <div class="step">
-<p><strong>הנוסחה:</strong> <span class="math inline">\(.\forall x\, \exists y\, L(x, y)\)</span></p>
+<p><strong>הנוסחה:</strong> <span class="math display">\[.\forall x\in S\, \exists y\in M\, L(x, y)\]</span></p>
 </div>
 <div class="step">
-<p><strong>שלילה:</strong> <span class="math inline">\(.\neg \forall x\, \exists y\, L(x, y) \;\equiv\; \exists x\, \neg \exists y\, L(x, y)\)</span></p>
+<p><strong>שלילה:</strong> <span class="math display">\[.\neg \forall x\in S\, \exists y\in M\, L(x, y) \;\equiv\; \exists x\in S\, \neg \exists y\in M\, L(x, y)\]</span></p>
 </div>
 <div class="step">
-<p><strong>ועוד פעם פנימה:</strong> <span class="math inline">\(.\exists x\, \neg \exists y\, L(x, y) \;\equiv\; \exists x\, \forall y\, \neg L(x, y)\)</span></p>
+<p><strong>ועוד פעם פנימה:</strong> <span class="math display">\[.\exists x\in S\, \neg \exists y\in M\, L(x, y) \;\equiv\; \exists x\in S\, \forall y\in M\, \neg L(x, y)\]</span></p>
 </div>
 <div class="step">
 <p><strong>במילים:</strong> ״<strong>יש</strong> סטודנט שלא אוהב <strong>אף</strong> פריט בתפריט.״ שימו לב: זו <strong>לא</strong> ״כל סטודנט לא אוהב פריט בתפריט כלשהו״.</p>
@@ -3132,10 +3170,999 @@ window.Quarto = {
 <li><strong>טבלת אמת</strong> עוברת על כל <span class="math inline">\(2^n\)</span> הצירופים. <span class="term"><strong>טאוטולוגיה</strong></span> אמת בכולם, <span class="term"><strong>סתירה</strong></span> שקר בכולם. שני פסוקים <strong>שקולים</strong> אם יש להם אותה טבלה.</li>
 <li><strong>חוקי דה מורגן:</strong> <span class="math inline">\(\neg(A \land B) \equiv \neg A \lor \neg B\)</span> ו-<span class="math inline">\(.\neg(A \lor B) \equiv \neg A \land \neg B\)</span> הם מלמדים איך לשלול משפט עם ״וגם״ או ״או״: שוללים את שני החלקים וגם מחליפים את הקשר ביניהם.</li>
 <li><strong>כללי היסק:</strong> כלל הניתוק, כלל השלילה וכלל השרשרת. <strong>כשלים:</strong> אישור המסקנה ושלילת ההנחה.</li>
-<li><strong>כמתים:</strong> <span class="math inline">\(\forall\)</span> (לכל) ו-<span class="math inline">\(\exists\)</span> (קיים). כדי להפריך ״לכל״ מספיקה דוגמה נגדית אחת, וכדי להוכיח ״קיים״ מספיק עד אחד. <span class="math inline">\(\neg\forall x\, P(x) \equiv \exists x\, \neg P(x)\)</span> ו-<span class="math inline">\(.\neg\exists x\, P(x) \equiv \forall x\, \neg P(x)\)</span> הסדר של הכמתים חשוב.</li>
+<li><strong>כמתים:</strong> עולם הדיון <span class="math inline">\(D\)</span> קובע אילו ערכים מותר לבחור; <span class="math inline">\(x\in D\)</span> אומר ש־<span class="math inline">\(x\)</span> שייך אליו. <span class="math inline">\(\forall\)</span> (לכל) ו-<span class="math inline">\(\exists\)</span> (קיים). כדי להפריך ״לכל״ מספיקה דוגמה נגדית אחת, וכדי להוכיח ״קיים״ מספיק עד אחד. <span class="math display">\[\neg\forall x\in D\, P(x) \equiv \exists x\in D\, \neg P(x)\]</span> ו-<span class="math display">\[.\neg\exists x\in D\, P(x) \equiv \forall x\in D\, \neg P(x)\]</span> הסדר של הכמתים חשוב.</li>
 </ul>
+</section>
+<section id="sec-self-practice" class="level2" data-number="1.15">
+<h2 data-number="1.15" class="anchored" data-anchor-id="sec-self-practice"><span class="header-section-number">1.15</span> תרגול עצמי לפי נושאים</h2>
+<p>התרגילים כאן מיועדים לעבודה עצמאית אחרי ההרצאה, או לחזרה לפני בוחן. <strong>לא צריך לפתור את כולם בבת אחת.</strong> בחרו נושא שתרצו לחזק, התחילו בתרגילים הראשונים שלו, וחזרו להסבר בפרק כשצריך. התרגול שבתוך ההרצאה נשאר במקומו; כאן יש הזדמנות נוספת לעבוד בעצמכם.</p>
+<div class="thmbox thmbox-key-point" title="איך כדאי לתרגל?">
+<p><strong>חשוב לזכור — איך כדאי לתרגל?.</strong></p>
+<p><span class="key-rule"><strong>קודם מנסים, אחר כך בודקים, ואז מסבירים במילים למה.</strong></span></p>
+<p>לכל תרגיל כאן יש דרך להזין תשובה ולקבל משוב. בתרגילי נוסחאות וטבלאות כותבים נוסחה או ממלאים ערכי אמת. בתרגילי ההוכחה עם הסיוע בוחרים אותיות, מתרגמים את הנתונים ומצדיקים כל צעד. בשאלות הבחירה מסמנים תשובה לכל סעיף ומקבלים הסבר. אפשר גם לכתוב נימוק על דף ולהשוות לפתרון המודרך. הרמז אינו פתרון מלא: אפשר לפתוח אותו, לנסות שוב, ורק אז להמשיך לפתרון.</p>
+<p>בכל תרגיל חדש הסימונים מתחילים מחדש. משתמשים ב־<span class="math inline">\(A\)</span>, אחר כך ב־<span class="math inline">\(B\)</span> וב־<span class="math inline">\(C\)</span> לפי הצורך. בתרגילי הוכחה אפשר לבחור אותיות אחרות. בפסוקים פתוחים נשתמש גם בשמות כמו <span class="math inline">\(P(x)\)</span>, ונאמר בכל פעם מה הם מייצגים ומה התחום.</p>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">נושא</th>
+<th style="text-align: left;">מה מתרגלים?</th>
+<th style="text-align: center;">מספר תרגילים</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><a href="#practice-statements">פסוקים ופסוקים פתוחים</a></td>
+<td style="text-align: left;">אמת ושקר, שמות והצבה</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href="#practice-translation">ממילים לנוסחאות</a></td>
+<td style="text-align: left;">״וגם״, ״או״, שלילה וגרירה</td>
+<td style="text-align: center;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href="#practice-tables">טבלאות אמת</a></td>
+<td style="text-align: left;">חישוב מסודר, כולל עמודות עזר</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href="#practice-implication">גרירה ואם ורק אם</a></td>
+<td style="text-align: left;">תנאי, הבטחה והבדל מסיבתיות</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href="#practice-equivalence">שקילויות בצעדים</a></td>
+<td style="text-align: left;">שינוי נוסחה והצדקת כל מעבר</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href="#practice-proofs">הוכחות עם בחירת סימונים</a></td>
+<td style="text-align: left;">תרגום, בחירת מקורות וכללי היסק</td>
+<td style="text-align: center;">16</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href="#practice-knights">אבירים ונוכלים</a></td>
+<td style="text-align: left;">בדיקת האפשרויות בלי לנחש</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href="#practice-quantifiers">כמתים</a></td>
+<td style="text-align: left;">תחום, עד, דוגמה נגדית ושלילה</td>
+<td style="text-align: center;">7</td>
+</tr>
+</tbody>
+</table>
+<section id="practice-statements" class="level3" data-number="1.15.1">
+<h3 data-number="1.15.1" class="anchored" data-anchor-id="practice-statements"><span class="header-section-number">1.15.1</span> פסוקים ופסוקים פתוחים</h3>
+<p>תזכורת: פסוק הוא משפט שאפשר לקבוע לגביו אמת או שקר. הוא לא חייב להיות נכון! בפסוק פתוח נשאר משתנה שצריך להתייחס אליו. כאן נתחיל בקריאה של המשפטים, לפני שמשתמשים בסימנים.</p>
+<div id="practice-q-classify" class="thmbox thmbox-question" title="מה אפשר לקבוע על כל משפט?">
+<p><strong>שאלה 1.15.1 — מה אפשר לקבוע על כל משפט?.</strong></p>
+<p>לכל משפט כתבו: <strong>פסוק</strong>, <strong>פסוק פתוח</strong>, או <strong>אינו טענה שאפשר לקבוע לה אמת או שקר</strong>. אם הוא פסוק, קבעו גם אם הוא נכון.</p>
+<ol type="1">
+<li><span class="math inline">\(8&gt;3\)</span>.</li>
+<li><span class="math inline">\(8&lt;3\)</span>.</li>
+<li><span class="math inline">\(x+1=4\)</span>, כאשר <span class="math inline">\(x\)</span> הוא מספר שלם שטרם נבחר.</li>
+<li>״סגרו את החלון, בבקשה.״</li>
+<li>״האם החלון סגור?״</li>
+</ol>
+<div class="choice-exercise" data-choice="classify">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>משפט שגוי עדיין יכול להיות פסוק. לעומת זאת, הוראה ושאלה אינן קובעות שמשהו אכן מתקיים.</p>
+</div>
+<div class="step">
+<p>שני המשפטים הראשונים הם פסוקים: <span class="math inline">\(8&gt;3\)</span> אמת, ו־<span class="math inline">\(8&lt;3\)</span> שקר.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\(x+1=4\)</span> הוא פסוק פתוח. למשל, הצבת <span class="math inline">\(3\)</span> נותנת פסוק אמיתי, והצבת <span class="math inline">\(2\)</span> נותנת פסוק שקרי.</p>
+</div>
+<div class="step">
+<p>המשפט הרביעי הוא בקשה, והחמישי הוא שאלה. אף אחד מהם אינו טוען שהחלון סגור או פתוח.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-unknown" class="thmbox thmbox-question" title="לא יודעים עדיין — האם זה פסוק?">
+<p><strong>שאלה 1.15.2 — לא יודעים עדיין — האם זה פסוק?.</strong></p>
+<p>בתיבה סגורה יש מספר קבוע של גולות. אף אחד בכיתה עדיין לא ספר אותן. האם ״יש בתיבה בדיוק עשר גולות״ הוא פסוק? האם מותר להסיק שהוא שקר רק כי איננו יודעים אם הוא נכון?</p>
+<div class="choice-exercise" data-choice="unknown">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>הבחינו בין מה שקיים בתיבה לבין מה שאנחנו יודעים על התיבה.</p>
+</div>
+<div class="step">
+<p>זהו פסוק: מספר הגולות קבוע, ולכן או שיש בדיוק עשר או שלא.</p>
+</div>
+<div class="step">
+<p>חוסר הידיעה שלנו אינו הופך את המשפט לשקר ואינו מוסיף ערך אמת שלישי. אפשר לספור כדי לברר מה נכון.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-substitute" class="thmbox thmbox-question" title="נותנים שם ואז מציבים">
+<p><strong>שאלה 1.15.3 — נותנים שם ואז מציבים.</strong></p>
+<p>התחום הוא <span class="math inline">\(D=\{1,2,3,4\}\)</span>. נגדיר <span class="math inline">\(P(x)\)</span>: ״<span class="math inline">\(x+1=4\)</span>״.</p>
+<ol type="1">
+<li>כתבו במפורש את <span class="math inline">\(P(2)\)</span> ואת <span class="math inline">\(P(3)\)</span>, וקבעו אמת או שקר.</li>
+<li>מה נשאר לברר כשכתוב רק <span class="math inline">\(P(x)\)</span>?</li>
+<li>האם האות <span class="math inline">\(P\)</span> היא המספר שבוחרים?</li>
+</ol>
+<div class="choice-exercise" data-choice="substitute">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>האות P נותנת שם לתיאור שלם. המשתנה שבתוך הסוגריים הוא המקום שבו מציבים ערך.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\(P(2)\)</span> הוא <span class="math inline">\(2+1=4\)</span>, והוא שקר. <span class="math inline">\(P(3)\)</span> הוא <span class="math inline">\(3+1=4\)</span>, והוא אמת.</p>
+</div>
+<div class="step">
+<p>ב־<span class="math inline">\(P(x)\)</span> המשתנה <span class="math inline">\(x\)</span> חופשי: כדי לבדוק הצבה מסוימת צריך לבחור עבורו ערך מהתחום. האות <span class="math inline">\(P\)</span> היא שם לפסוק הפתוח, ולא מספר.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-free" class="thmbox thmbox-question" title="איזה משתנה עדיין חופשי?">
+<p><strong>שאלה 1.15.4 — איזה משתנה עדיין חופשי?.</strong></p>
+<p>התחום של <span class="math inline">\(x\)</span> ושל <span class="math inline">\(y\)</span> הוא <span class="math inline">\(D=\{1,2,3\}\)</span>. הסתכלו על <span class="math inline">\(\forall x\in D\,(x\le y)\)</span>.</p>
+<ol type="1">
+<li>על איזה משתנה חל הכמת ״לכל״?</li>
+<li>איזה משתנה נשאר חופשי?</li>
+<li>מה קורה כשמציבים <span class="math inline">\(y=3\)</span>? ומה כשמציבים <span class="math inline">\(y=2\)</span>?</li>
+</ol>
+<p>הסימן <span class="math inline">\(\le\)</span> פירושו ״קטן או שווה״.</p>
+<div class="choice-exercise" data-choice="free">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>הכמת כתוב לפני x. הוא מורה לבדוק את כל ערכי x, אבל אינו אומר איך לבחור את y.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\(x\)</span> קשור לכמת; <span class="math inline">\(y\)</span> חופשי. בלי לבחור את <span class="math inline">\(y\)</span> אין כאן עדיין פסוק סגור.</p>
+</div>
+<div class="step">
+<p>כש־<span class="math inline">\(y=3\)</span>, כל שלושת המספרים קטנים או שווים ל־<span class="math inline">\(3\)</span>, ולכן מתקבל אמת. כש־<span class="math inline">\(y=2\)</span>, המספר <span class="math inline">\(x=3\)</span> מפריך את הטענה, ולכן מתקבל שקר.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="practice-translation" class="level3" data-number="1.15.2">
+<h3 data-number="1.15.2" class="anchored" data-anchor-id="practice-translation"><span class="header-section-number">1.15.2</span> ממילים לנוסחאות</h3>
+<p>בכל תרגיל קראו מחדש מה כל אות אומרת. כתבו את המשפט בשדה התשובה. הבודק מקבל גם ניסוח אחר ששקול לוגית לתשובה; אין צורך לנחש את סדר האותיות שהבודק מעדיף.</p>
+<div id="practice-q-pen" class="thmbox thmbox-question" title="עט, אבל בלי מחברת">
+<p><strong>שאלה 1.15.5 — עט, אבל בלי מחברת.</strong></p>
+<p>נסמן ב־<span class="math inline">\(A\)</span> את ״יש לי עט״ וב־<span class="math inline">\(B\)</span> את ״יש לי מחברת״.</p>
+<div class="fq" data-answer="A &amp; !B" data-vars="A,B" data-symbols="¬∧∨⊕→↔()">
+<p>יש לי עט, אבל אין לי מחברת.</p>
+<div class="hint">
+<p>המילה ״אבל״ מוסיפה ניגוד בסיפור, אך מבחינת הדרישות שני החלקים צריכים להתקיים.</p>
+</div>
+<div class="explain">
+<p><span class="math inline">\(A\land\neg B\)</span>: החלק הראשון אמת, והמשפט ״יש לי מחברת״ שקר.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-drink" class="thmbox thmbox-question" title="לפחות משקה אחד">
+<p><strong>שאלה 1.15.6 — לפחות משקה אחד.</strong></p>
+<p>נסמן ב־<span class="math inline">\(A\)</span> את ״יש קפה״ וב־<span class="math inline">\(B\)</span> את ״יש תה״.</p>
+<div class="fq" data-answer="A | B" data-vars="A,B" data-symbols="¬∧∨⊕→↔()">
+<p>יש לפחות אחד מהמשקאות: קפה או תה. מותר שיהיו שניהם.</p>
+<div class="hint">
+<p>איזה ״או״ מאפשר גם את שני החלקים יחד?</p>
+</div>
+<div class="explain">
+<p><span class="math inline">\(A\lor B\)</span>. השורה שבה שניהם אמת מתאימה לדרישה.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-dessert" class="thmbox thmbox-question" title="בדיוק תוספת אחת">
+<p><strong>שאלה 1.15.7 — בדיוק תוספת אחת.</strong></p>
+<p>נסמן ב־<span class="math inline">\(A\)</span> את ״בחרתי קינוח״ וב־<span class="math inline">\(B\)</span> את ״בחרתי קפה״.</p>
+<div class="fq" data-answer="A ^ B" data-vars="A,B" data-symbols="¬∧∨⊕→↔()">
+<p>בחרתי בדיוק אחת משתי התוספות: קינוח או קפה.</p>
+<div class="hint">
+<p>צריך לפחות תוספת אחת, אבל אסור לבחור את שתיהן.</p>
+</div>
+<div class="explain">
+<p><span class="math inline">\(A\oplus B\)</span>, ואפשר גם <span class="math inline">\((A\lor B)\land\neg(A\land B)\)</span>. הסימון <span class="math inline">\(A\underline{\lor}B\)</span> אומר אותו דבר.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-ready" class="thmbox thmbox-question" title="לא שניהם מוכנים">
+<p><strong>שאלה 1.15.8 — לא שניהם מוכנים.</strong></p>
+<p>נסמן ב־<span class="math inline">\(A\)</span> את ״המחשב מוכן״ וב־<span class="math inline">\(B\)</span> את ״המקרן מוכן״.</p>
+<div class="fq" data-answer="!(A &amp; B)" data-vars="A,B" data-symbols="¬∧∨⊕→↔()">
+<p>לא נכון שגם המחשב וגם המקרן מוכנים.</p>
+<div class="hint">
+<p>השלילה פועלת על כל ה״וגם״. אין כאן טענה ששניהם אינם מוכנים.</p>
+</div>
+<div class="explain">
+<p><span class="math inline">\(\neg(A\land B)\)</span>, ששקול ל־<span class="math inline">\(\neg A\lor\neg B\)</span>. מספיק שאחד מהם אינו מוכן.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-gate" class="thmbox thmbox-question" title="תנאי כניסה">
+<p><strong>שאלה 1.15.9 — תנאי כניסה.</strong></p>
+<p>נסמן ב־<span class="math inline">\(A\)</span> את ״יש לי אישור״ וב־<span class="math inline">\(B\)</span> את ״מותר לי להיכנס״.</p>
+<div class="fq" data-answer="A -> B" data-vars="A,B" data-symbols="¬∧∨⊕→↔()">
+<p>אם יש לי אישור, מותר לי להיכנס.</p>
+<div class="hint">
+<p>מהו התנאי שנמצא אחרי ״אם״, ומה מובטח כשהוא מתקיים?</p>
+</div>
+<div class="explain">
+<p><span class="math inline">\(A\to B\)</span>. לא הוספנו את הכיוון ההפוך: המשפט אינו אומר שכל מי שנכנס בהכרח מחזיק אישור.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-equipment" class="thmbox thmbox-question" title="אפשרות אחת ועוד דרישה">
+<p><strong>שאלה 1.15.10 — אפשרות אחת ועוד דרישה.</strong></p>
+<p>נסמן ב־<span class="math inline">\(A\)</span> את ״יש לי עט״, ב־<span class="math inline">\(B\)</span> את ״יש לי עיפרון״ וב־<span class="math inline">\(C\)</span> את ״יש לי דף״.</p>
+<div class="fq" data-answer="(A | B) &amp; C" data-vars="A,B,C" data-symbols="¬∧∨⊕→↔()">
+<p>יש לי עט או עיפרון, ובנוסף יש לי דף. אפשר שיהיו לי גם עט וגם עיפרון.</p>
+<div class="hint">
+<p>קבצו את שתי אפשרויות הכתיבה בסוגריים; הדרישה לדף מצטרפת לשתיהן.</p>
+</div>
+<div class="explain">
+<p><span class="math inline">\((A\lor B)\land C\)</span>. בלי דף המשפט שקר, גם אם יש עט ועיפרון.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="practice-tables" class="level3" data-number="1.15.3">
+<h3 data-number="1.15.3" class="anchored" data-anchor-id="practice-tables"><span class="header-section-number">1.15.3</span> טבלאות אמת</h3>
+<p>מלאו את תאי התוצאה בעצמכם: לחיצה מחליפה בין ?, T ו־F. התחילו בעמודות העזר, ורק אז חשבו את הפסוק השלם. לחצו ״בדיקה״ כדי לקבל משוב. אפשר לפתוח רמז או להשלים עמודה לדוגמה אם נתקעתם.</p>
+<div id="practice-q-table-not-or" class="thmbox thmbox-question" title="שלילה ואז ״או״">
+<p><strong>שאלה 1.15.11 — שלילה ואז ״או״.</strong></p>
+<p>מלאו את הטבלה של <span class="math inline">\(\neg A\lor B\)</span>. באיזו שורה בלבד הפסוק שקר?</p>
+<div class="ttq" data-vars="A,B" cols="!A; !A | B">
+<div class="after">
+<p>הפסוק שקר רק כש־<span class="math inline">\(A=T\)</span> ו־<span class="math inline">\(B=F\)</span>: אז גם <span class="math inline">\(\neg A\)</span> וגם <span class="math inline">\(B\)</span> שקר. בשאר השורות לפחות חלק אחד של ה״או״ אמת.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-table-xor" class="thmbox thmbox-question" title="מתי שני סוגי ה״או״ נבדלים?">
+<p><strong>שאלה 1.15.12 — מתי שני סוגי ה״או״ נבדלים?.</strong></p>
+<p>מלאו את שלוש העמודות. השוו בין <span class="math inline">\(A\lor B\)</span> לבין <span class="math inline">\(A\oplus B\)</span>. באיזו שורה התוצאות שונות?</p>
+<div class="ttq" data-vars="A,B" cols="A | B; A &amp; B; A ^ B">
+<div class="after">
+<p>רק בשורה <span class="math inline">\(A=T\)</span>, <span class="math inline">\(B=T\)</span>: ״או״ רגיל אמת, אבל ״בדיוק אחד״ שקר. העמודה <span class="math inline">\(A\land B\)</span> מזהה את המצב שבו שניהם מתקיימים.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-table-three" class="thmbox thmbox-question" title="עובדים לפי הסוגריים">
+<p><strong>שאלה 1.15.13 — עובדים לפי הסוגריים.</strong></p>
+<p>מלאו את הטבלה של <span class="math inline">\((A\lor B)\land\neg C\)</span>. חפשו שתי דרכים שבהן הפסוק יכול להיות שקר: מה קורה אם <span class="math inline">\(C\)</span> אמת, ומה קורה אם <span class="math inline">\(A\)</span> ו־<span class="math inline">\(B\)</span> שניהם שקר?</p>
+<div class="ttq" data-vars="A,B,C" cols="A | B; !C; (A | B) &amp; !C">
+<div class="after">
+<p>כשהחלק <span class="math inline">\(C\)</span> אמת, השלילה שלו שקר, ולכן המשפט כולו שקר. גם כאשר <span class="math inline">\(A\)</span> ו־<span class="math inline">\(B\)</span> שניהם שקר חסרה דרישה. הפסוק אמת בדיוק כש־<span class="math inline">\(C=F\)</span> ולפחות אחד מ־<span class="math inline">\(A,B\)</span> אמת.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-table-always" class="thmbox thmbox-question" title="תמיד, אף פעם, או לפעמים?">
+<p><strong>שאלה 1.15.14 — תמיד, אף פעם, או לפעמים?.</strong></p>
+<p>מלאו את הטבלה. איזה פסוק הוא <span class="term"><strong>טאוטולוגיה</strong></span>, כלומר אמת בכל שורה, ואיזה הוא <span class="term"><strong>סתירה</strong></span>, כלומר שקר בכל שורה?</p>
+<div class="ttq" data-vars="A" cols="A | !A; A &amp; !A">
+<div class="after">
+<p><span class="math inline">\(A\lor\neg A\)</span> הוא טאוטולוגיה. <span class="math inline">\(A\land\neg A\)</span> הוא סתירה. אין צורך לדעת מה המשפט <span class="math inline">\(A\)</span> אומר כדי לקבוע זאת.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="practice-implication" class="level3" data-number="1.15.4">
+<h3 data-number="1.15.4" class="anchored" data-anchor-id="practice-implication"><span class="header-section-number">1.15.4</span> גרירה ואם ורק אם</h3>
+<p><span class="key-rule"><strong>קודם בודקים כל חלק, ורק אחר כך את הגרירה כולה.</strong></span> זכרו: גרירה אינה מחייבת קשר של סיבה ותוצאה, והיא שקר רק כאשר ההנחה אמת והמסקנה שקר.</p>
+<div id="practice-q-imp-values" class="thmbox thmbox-question" title="ארבע גרירות קצרות">
+<p><strong>שאלה 1.15.15 — ארבע גרירות קצרות.</strong></p>
+<p>קבעו אמת או שקר, ובכל סעיף כתבו גם את ערכי ההנחה והמסקנה.</p>
+<ol type="1">
+<li><span class="math inline">\((3=4)\to(7&gt;2)\)</span>.</li>
+<li><span class="math inline">\((3=4)\to(7&lt;2)\)</span>.</li>
+<li><span class="math inline">\((3\ne4)\to(7&lt;2)\)</span>.</li>
+<li><span class="math inline">\((3\ne4)\to(7&gt;2)\)</span>.</li>
+</ol>
+<p>הסימן <span class="math inline">\(\ne\)</span> פירושו ״אינו שווה״.</p>
+<div class="choice-exercise" data-choice="imp-values">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>יש כאן בדיוק ארבע השורות של טבלת הגרירה. חפשו תחילה את השורה שבה ההנחה נכונה והמסקנה שגויה.</p>
+</div>
+<div class="step">
+<p>בסעיף 1 מתקבל <span class="math inline">\(F\to T\)</span>, ולכן אמת. בסעיף 2 מתקבל <span class="math inline">\(F\to F\)</span>, וגם הוא אמת.</p>
+</div>
+<div class="step">
+<p>בסעיף 3 מתקבל <span class="math inline">\(T\to F\)</span>, ולכן שקר. בסעיף 4 מתקבל <span class="math inline">\(T\to T\)</span>, ולכן אמת. האמת של הגרירה בשני הסעיפים הראשונים אינה הופכת את <span class="math inline">\(3=4\)</span> למשפט נכון.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-imp-negate" class="thmbox thmbox-question" title="מה בדיוק מפר את ההבטחה?">
+<p><strong>שאלה 1.15.16 — מה בדיוק מפר את ההבטחה?.</strong></p>
+<p>נסמן ב־<span class="math inline">\(A\)</span> את ״הגשתי בזמן״ וב־<span class="math inline">\(B\)</span> את ״קיבלתי משוב״. המרצה מבטיח: ״אם הגשת בזמן, תקבל משוב״.</p>
+<div class="fq" data-answer="A &amp; !B" data-vars="A,B" data-symbols="¬∧∨⊕→↔()">
+<p>כתבו את התנאי לכך שההבטחה הופרה.</p>
+<div class="hint">
+<p>כדי להפר את ההבטחה צריך שהדרישה התקיימה, ובכל זאת מה שהובטח לא קרה.</p>
+</div>
+<div class="explain">
+<p><span class="math inline">\(A\land\neg B\)</span>: הגשתי בזמן ולא קיבלתי משוב. זו שלילת <span class="math inline">\(A\to B\)</span>, ולא גרירה בכיוון ההפוך.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-imp-iff" class="thmbox thmbox-question" title="הבטחה אחת או שתיים?">
+<p><strong>שאלה 1.15.17 — הבטחה אחת או שתיים?.</strong></p>
+<p>נסמן ב־<span class="math inline">\(A\)</span> את ״סיימתי את המשימה״ וב־<span class="math inline">\(B\)</span> את ״קיבלתי מדבקה״. השוו בין ״אם סיימתי, קיבלתי מדבקה״ לבין ״קיבלתי מדבקה אם ורק אם סיימתי״. מלאו את הטבלה. באיזו שורה רק ההבטחה השנייה מופרת?</p>
+<div class="ttq" data-vars="A,B" cols="A -> B; A <-> B">
+<div class="after">
+<p>בשורה <span class="math inline">\(A=F\)</span>, <span class="math inline">\(B=T\)</span>: לא סיימתי ובכל זאת קיבלתי מדבקה. הגרירה אינה אוסרת זאת, אבל ״אם ורק אם״ דורש גם שמדבקה תינתן רק למי שסיים.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-imp-cause" class="thmbox thmbox-question" title="מן הסימן אל מה שאפשר להסיק">
+<p><strong>שאלה 1.15.18 — מן הסימן אל מה שאפשר להסיק.</strong></p>
+<p>לצורך התרגיל נתון הכלל: ״אם מופיעות עקבות בוץ במסדרון, מישהו נכנס אליו בנעליים בוציות״. נמצאו עקבות בוץ. מה אפשר להסיק? האם הגרירה אומרת שהעקבות גרמו לאדם להיכנס?</p>
+<div class="choice-exercise" data-choice="imp-cause">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>הכלל הוא נתון של התרגיל. הפרידו בין שימוש בו להסקת מסקנה לבין תיאור הסיבה שיצרה את העקבות.</p>
+</div>
+<div class="step">
+<p>אפשר להסיק שמישהו נכנס בנעליים בוציות: ההנחה של הגרירה מתקיימת, ולכן מפעילים את כלל הניתוק.</p>
+</div>
+<div class="step">
+<p>העקבות אינן גורמות לכניסה. בסיפור הכניסה יוצרת את העקבות, אבל מן העקבות ומהכלל הנתון אפשר להסיק על הכניסה. כיוון ההסקה אינו חייב להיות כיוון הסיבתיות.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="practice-equivalence" class="level3" data-number="1.15.5">
+<h3 data-number="1.15.5" class="anchored" data-anchor-id="practice-equivalence"><span class="header-section-number">1.15.5</span> שקילויות: מצדיקים כל שינוי</h3>
+<p>בכל תרגיל מתחילים בנוסחה הנתונה ומגיעים לנוסחת המטרה. בכל שורה כתבו נוסחה חדשה ובחרו <strong>חוק אחד</strong> שמצדיק את המעבר. אפשר להשתמש בחוק בתוך חלק מהנוסחה. אם צריך גם דה מורגן וגם שלילה כפולה, כתבו שני צעדים נפרדים.</p>
+<div id="practice-q-eq-demorgan" class="thmbox thmbox-question" title="שלילה של ״או״">
+<p><strong>שאלה 1.15.19 — שלילה של ״או״.</strong></p>
+<p>הראו בצעדים כיצד עוברים מ־<span class="math inline">\(\neg(A\lor\neg B)\)</span> ל־<span class="math inline">\(\neg A\land B\)</span>.</p>
+<div class="proof-editor" data-start="!(A | !B)" data-target="!A &amp; B">
+<div class="proof-offline">
+<p>אפשר לפתור על דף: כתבו בכל צעד נוסחה וחוק. לבדיקת צעדים באתר יש להפעיל JavaScript.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>התחילו בדה מורגן. אחר כך חפשו שלילה כפולה.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\(\neg A\land\neg\neg B\)</span> — דה מורגן.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\(\neg A\land B\)</span> — שלילה כפולה.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-eq-imp" class="thmbox thmbox-question" title="שלילה של גרירה עם מסקנה שלילית">
+<p><strong>שאלה 1.15.20 — שלילה של גרירה עם מסקנה שלילית.</strong></p>
+<p>הראו בצעדים כיצד עוברים מ־<span class="math inline">\(\neg(A\to\neg B)\)</span> ל־<span class="math inline">\(A\land B\)</span>.</p>
+<div class="proof-editor" data-start="!(A -> !B)" data-target="A &amp; B">
+<div class="proof-offline">
+<p>אפשר לפתור על דף: כתבו בכל צעד נוסחה וחוק. לבדיקת צעדים באתר יש להפעיל JavaScript.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>כתבו תחילה את הגרירה כ״או״, בלי לשנות את השלילה החיצונית.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\(\neg(\neg A\lor\neg B)\)</span> — גרירה כ״או״ בתוך הסוגריים.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\(\neg\neg A\land\neg\neg B\)</span> — דה מורגן.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\(A\land\neg\neg B\)</span> — שלילה כפולה בחלק הראשון.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\(A\land B\)</span> — שלילה כפולה בחלק השני.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-eq-distribute" class="thmbox thmbox-question" title="שתי הבטחות באותה גרירה">
+<p><strong>שאלה 1.15.21 — שתי הבטחות באותה גרירה.</strong></p>
+<p>הראו בצעדים כיצד עוברים מ־<span class="math inline">\(A\to(B\land C)\)</span> ל־<span class="math inline">\((A\to B)\land(A\to C)\)</span>.</p>
+<div class="proof-editor" data-start="A -> (B &amp; C)" data-target="(A -> B) &amp; (A -> C)">
+<div class="proof-offline">
+<p>אפשר לפתור על דף: כתבו בכל צעד נוסחה וחוק. לבדיקת צעדים באתר יש להפעיל JavaScript.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>כתבו גרירה כ״או״. אז השתמשו בחוק הפילוג של ״או״ על ״וגם״.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\(\neg A\lor(B\land C)\)</span> — גרירה כ״או״.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\((\neg A\lor B)\land(\neg A\lor C)\)</span> — פילוג.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\((A\to B)\land(\neg A\lor C)\)</span> — גרירה כ״או״ בכיוון ההפוך, בחלק הראשון.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\((A\to B)\land(A\to C)\)</span> — אותו חוק בחלק השני.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-eq-neither" class="thmbox thmbox-question" title="לא נכון ששניהם שקר">
+<p><strong>שאלה 1.15.22 — לא נכון ששניהם שקר.</strong></p>
+<p>הראו בצעדים כיצד עוברים מ־<span class="math inline">\(\neg(\neg A\land\neg B)\)</span> ל־<span class="math inline">\(A\lor B\)</span>.</p>
+<div class="proof-editor" data-start="!(!A &amp; !B)" data-target="A | B">
+<div class="proof-offline">
+<p>אפשר לפתור על דף: כתבו בכל צעד נוסחה וחוק. לבדיקת צעדים באתר יש להפעיל JavaScript.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>אחרי דה מורגן יופיעו שתי שלילות כפולות. הסירו כל אחת בצעד נפרד.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\(\neg\neg A\lor\neg\neg B\)</span> — דה מורגן.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\(A\lor\neg\neg B\)</span> — שלילה כפולה בחלק הראשון.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\(A\lor B\)</span> — שלילה כפולה בחלק השני.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="practice-proofs" class="level3" data-number="1.15.6">
+<h3 data-number="1.15.6" class="anchored" data-anchor-id="practice-proofs"><span class="header-section-number">1.15.6</span> הוכחות עם סיוע: בוחרים אותיות ומצדיקים כל צעד</h3>
+<p>בכל אחד מ־16 התרגילים הבאים בוחרים אות לכל משפט פשוט, מתרגמים את הנתונים ואת המטרה, ואז בונים הוכחה. אפשר להשאיר את A, B, C המוצעות. <strong>כל הנתונים הם הנחות לצורך התרגיל</strong>: אין צורך להחליט אם הם מתארים כלל מציאותי בכל מקום ובכל זמן.</p>
+<div class="thmbox thmbox-key-point" title="מה כותבים בכל שלב?">
+<p><strong>חשוב לזכור — מה כותבים בכל שלב?.</strong></p>
+<ol type="1">
+<li><strong>סימונים:</strong> לכל משפט פשוט נותנים אות שונה. האות היא שם למשפט; היא אינה קובעת שהוא אמת.</li>
+<li><strong>תרגום:</strong> כותבים את הנתונים ואת המטרה בעזרת האותיות שבחרתם. בודקים את התרגום לפני ההוכחה.</li>
+<li><strong>הוכחה:</strong> בכל שורה בוחרים נוסחה ממאגר האפשרויות או כותבים נוסחה בעצמכם, בוחרים כלל ומציינים את שורות המקור. לכלל היסק בוחרים שני מקורות; לשכתוב לפי חוק שקילות בוחרים מקור אחד.</li>
+</ol>
+<p><span class="key-rule"><strong>שורה שכבר הוכחתם יכולה לשמש מקור. המטרה שעדיין לא הוכחה אינה יכולה לשמש מקור.</strong></span> הבודק מקבל דרכים שונות, כל עוד כל צעד מוצדק. אפשר לבדוק גם הוכחה חלקית, לתקן, להוסיף שורות ולבקש רמז. הפתרון לדוגמה יוצג לפי האותיות שלכם.</p>
+</div>
+<section id="מתחילים-הוכחה-בצעד-אחד" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="מתחילים-הוכחה-בצעד-אחד">מתחילים: הוכחה בצעד אחד</h4>
+<p>בכל אחד מארבעת התרגילים הראשונים מספיק כלל היסק אחד. שימו לב גם למשפטים שמכילים שלילה.</p>
+<div id="practice-q-practice-ticket" class="thmbox thmbox-question" title="הכרטיס של מאיה">
+<p><strong>שאלה 1.15.23 — הכרטיס של מאיה.</strong></p>
+<p><strong>הנתונים:</strong></p>
+<ol type="1">
+<li>אם מאיה הציגה כרטיס, היא רשאית להיכנס.</li>
+<li>מאיה הציגה כרטיס.</li>
+</ol>
+<p><strong>הוכיחו:</strong> מאיה רשאית להיכנס.</p>
+<div class="argument-editor" data-argument="practice-ticket">
+<div class="argument-offline">
+<p>בחרו אותיות למשפטים, תרגמו את הנתונים וכתבו הוכחה על דף. ליד כל צעד ציינו כלל ומקורות. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-practice-charge" class="thmbox thmbox-question" title="הטלפון לא נטען">
+<p><strong>שאלה 1.15.24 — הטלפון לא נטען.</strong></p>
+<p><strong>הנתונים:</strong></p>
+<ol type="1">
+<li>אם המטען פעל, הטלפון נטען.</li>
+<li>הטלפון לא נטען.</li>
+</ol>
+<p><strong>הוכיחו:</strong> המטען לא פעל.</p>
+<div class="argument-editor" data-argument="practice-charge">
+<div class="argument-offline">
+<p>בחרו אותיות למשפטים, תרגמו את הנתונים וכתבו הוכחה על דף. ליד כל צעד ציינו כלל ומקורות. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-practice-quiet" class="thmbox thmbox-question" title="בלי מוזיקה, עם ריכוז">
+<p><strong>שאלה 1.15.25 — בלי מוזיקה, עם ריכוז.</strong></p>
+<p><strong>הנתונים:</strong></p>
+<ol type="1">
+<li>אם המוזיקה אינה פועלת, תמר יכולה להתרכז.</li>
+<li>המוזיקה אינה פועלת.</li>
+</ol>
+<p><strong>הוכיחו:</strong> תמר יכולה להתרכז.</p>
+<div class="argument-editor" data-argument="practice-quiet">
+<div class="argument-offline">
+<p>בחרו אותיות למשפטים, תרגמו את הנתונים וכתבו הוכחה על דף. ליד כל צעד ציינו כלל ומקורות. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-practice-sign" class="thmbox thmbox-question" title="השלט שחוסך שאלה">
+<p><strong>שאלה 1.15.26 — השלט שחוסך שאלה.</strong></p>
+<p><strong>הנתונים:</strong></p>
+<ol type="1">
+<li>אם השלט ״סגור״ תלוי על הדלת, אסור להיכנס לחדר.</li>
+<li>השלט ״סגור״ תלוי על הדלת.</li>
+</ol>
+<p><strong>הוכיחו:</strong> אסור להיכנס לחדר.</p>
+<div class="argument-editor" data-argument="practice-sign">
+<div class="argument-offline">
+<p>בחרו אותיות למשפטים, תרגמו את הנתונים וכתבו הוכחה על דף. ליד כל צעד ציינו כלל ומקורות. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="ממשיכים-מחברים-נתונים-ומסקנות-ביניים" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="ממשיכים-מחברים-נתונים-ומסקנות-ביניים">ממשיכים: מחברים נתונים ומסקנות ביניים</h4>
+<p>לפעמים המטרה היא גרירה חדשה, ולפעמים צריך להמשיך ממנה למסקנה על מצב מסוים. בדקו בכל תרגיל מה בדיוק מבקשים להוכיח.</p>
+<div id="practice-q-practice-bus" class="thmbox thmbox-question" title="הדרך לתרגול">
+<p><strong>שאלה 1.15.27 — הדרך לתרגול.</strong></p>
+<p><strong>הנתונים:</strong></p>
+<ol type="1">
+<li>אם האוטובוס הגיע בזמן, דנה הגיעה לקמפוס בזמן.</li>
+<li>אם דנה הגיעה לקמפוס בזמן, היא נכנסה לתרגול מתחילתו.</li>
+<li>האוטובוס הגיע בזמן.</li>
+</ol>
+<p><strong>הוכיחו:</strong> דנה נכנסה לתרגול מתחילתו.</p>
+<div class="argument-editor" data-argument="practice-bus">
+<div class="argument-offline">
+<p>בחרו אותיות למשפטים, תרגמו את הנתונים וכתבו הוכחה על דף. ליד כל צעד ציינו כלל ומקורות. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-practice-file" class="thmbox thmbox-question" title="הקובץ שלא הגיע">
+<p><strong>שאלה 1.15.28 — הקובץ שלא הגיע.</strong></p>
+<p><strong>הנתונים:</strong></p>
+<ol type="1">
+<li>אם הקובץ נשמר, הוא הועלה לאתר.</li>
+<li>אם הקובץ הועלה לאתר, המרצה קיבל אותו.</li>
+<li>המרצה לא קיבל את הקובץ.</li>
+</ol>
+<p><strong>הוכיחו:</strong> הקובץ לא נשמר.</p>
+<div class="argument-editor" data-argument="practice-file">
+<div class="argument-offline">
+<p>בחרו אותיות למשפטים, תרגמו את הנתונים וכתבו הוכחה על דף. ליד כל צעד ציינו כלל ומקורות. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-practice-chain" class="thmbox thmbox-question" title="כלל חדש למכונת המשקאות">
+<p><strong>שאלה 1.15.29 — כלל חדש למכונת המשקאות.</strong></p>
+<p><strong>הנתונים:</strong></p>
+<ol type="1">
+<li>אם נלחץ הכפתור, המכונה התחילה לפעול.</li>
+<li>אם המכונה התחילה לפעול, נמזג משקה.</li>
+</ol>
+<p><strong>הוכיחו:</strong> אם נלחץ הכפתור, נמזג משקה.</p>
+<div class="argument-editor" data-argument="practice-chain">
+<div class="argument-offline">
+<p>בחרו אותיות למשפטים, תרגמו את הנתונים וכתבו הוכחה על דף. ליד כל צעד ציינו כלל ומקורות. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-practice-route" class="thmbox thmbox-question" title="כשהמעלית אינה פועלת">
+<p><strong>שאלה 1.15.30 — כשהמעלית אינה פועלת.</strong></p>
+<p><strong>הנתונים:</strong></p>
+<ol type="1">
+<li>אם המעלית אינה פועלת, נשתמש במדרגות.</li>
+<li>אם נשתמש במדרגות, נגיע לקומה השנייה.</li>
+<li>המעלית אינה פועלת.</li>
+</ol>
+<p><strong>הוכיחו:</strong> נגיע לקומה השנייה.</p>
+<div class="argument-editor" data-argument="practice-route">
+<div class="argument-offline">
+<p>בחרו אותיות למשפטים, תרגמו את הנתונים וכתבו הוכחה על דף. ליד כל צעד ציינו כלל ומקורות. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-practice-backup" class="thmbox thmbox-question" title="עוברים לחדר החלופי">
+<p><strong>שאלה 1.15.31 — עוברים לחדר החלופי.</strong></p>
+<p><strong>הנתונים:</strong></p>
+<ol type="1">
+<li>אם החדר הראשי פתוח, המפתח נמצא אצל השומר.</li>
+<li>המפתח אינו נמצא אצל השומר.</li>
+<li>אם החדר הראשי אינו פתוח, השיעור יתקיים בחדר החלופי.</li>
+</ol>
+<p><strong>הוכיחו:</strong> השיעור יתקיים בחדר החלופי.</p>
+<div class="argument-editor" data-argument="practice-backup">
+<div class="argument-offline">
+<p>בחרו אותיות למשפטים, תרגמו את הנתונים וכתבו הוכחה על דף. ליד כל צעד ציינו כלל ומקורות. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-practice-mute" class="thmbox thmbox-question" title="הרובוט לומד לשתוק">
+<p><strong>שאלה 1.15.32 — הרובוט לומד לשתוק.</strong></p>
+<p><strong>הנתונים:</strong></p>
+<ol type="1">
+<li>אם ההרצאה התחילה, הרובוט במצב שקט.</li>
+<li>אם הרובוט במצב שקט, הוא אינו מספר בדיחה.</li>
+<li>ההרצאה התחילה.</li>
+</ol>
+<p><strong>הוכיחו:</strong> הרובוט אינו מספר בדיחה.</p>
+<div class="argument-editor" data-argument="practice-mute">
+<div class="argument-offline">
+<p>בחרו אותיות למשפטים, תרגמו את הנתונים וכתבו הוכחה על דף. ליד כל צעד ציינו כלל ומקורות. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="משלבים-שינוי-ניסוח-ואז-הסקה" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="משלבים-שינוי-ניסוח-ואז-הסקה">משלבים: שינוי ניסוח ואז הסקה</h4>
+<p>כאן לא תמיד מופיעה גרירה מוכנה לשימוש. לפעמים צריך לכתוב תחילה נוסחה שקולה בעזרת חוק שלמדנו, ורק אחר כך להפעיל כלל היסק. כל שכתוב הוא צעד בפני עצמו. בתרגיל המשקאות יש רמז מפורט לדרך הזאת.</p>
+<div id="practice-q-practice-or-rule" class="thmbox thmbox-question" title="אותו כלל, בניסוח אחר">
+<p><strong>שאלה 1.15.33 — אותו כלל, בניסוח אחר.</strong></p>
+<p><strong>הנתונים:</strong></p>
+<ol type="1">
+<li>אין לרוני אישור, או שרוני רשאי להיכנס למעבדה.</li>
+<li>יש לרוני אישור.</li>
+</ol>
+<p><strong>הוכיחו:</strong> רוני רשאי להיכנס למעבדה.</p>
+<div class="argument-editor" data-argument="practice-or-rule">
+<div class="argument-offline">
+<p>בחרו אותיות למשפטים, תרגמו את הנתונים וכתבו הוכחה על דף. ליד כל צעד ציינו כלל ומקורות. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-practice-two-drinks" class="thmbox thmbox-question" title="אין קפה, אבל יש משקה">
+<p><strong>שאלה 1.15.34 — אין קפה, אבל יש משקה.</strong></p>
+<p><strong>הנתונים:</strong></p>
+<ol type="1">
+<li>יש קפה או תה, ואפשר שיש את שניהם.</li>
+<li>אין קפה.</li>
+</ol>
+<p><strong>הוכיחו:</strong> יש תה.</p>
+<div class="argument-editor" data-argument="practice-two-drinks">
+<div class="argument-offline">
+<p>בחרו אותיות למשפטים, תרגמו את הנתונים וכתבו הוכחה על דף. ליד כל צעד ציינו כלל ומקורות. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-practice-not-both" class="thmbox thmbox-question" title="שני חדרים שלא נפתחים יחד">
+<p><strong>שאלה 1.15.35 — שני חדרים שלא נפתחים יחד.</strong></p>
+<p><strong>הנתונים:</strong></p>
+<ol type="1">
+<li>לא נכון ששני החדרים פתוחים יחד.</li>
+<li>חדר א׳ פתוח.</li>
+</ol>
+<p><strong>הוכיחו:</strong> חדר ב׳ אינו פתוח.</p>
+<div class="argument-editor" data-argument="practice-not-both">
+<div class="argument-offline">
+<p>בחרו אותיות למשפטים, תרגמו את הנתונים וכתבו הוכחה על דף. ליד כל צעד ציינו כלל ומקורות. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-practice-double" class="thmbox thmbox-question" title="אין אזעקה: מה זה אומר?">
+<p><strong>שאלה 1.15.36 — אין אזעקה: מה זה אומר?.</strong></p>
+<p><strong>הנתונים:</strong></p>
+<ol type="1">
+<li>אם הדלת אינה נעולה, האזעקה פועלת.</li>
+<li>האזעקה אינה פועלת.</li>
+</ol>
+<p><strong>הוכיחו:</strong> הדלת נעולה.</p>
+<div class="argument-editor" data-argument="practice-double">
+<div class="argument-offline">
+<p>בחרו אותיות למשפטים, תרגמו את הנתונים וכתבו הוכחה על דף. ליד כל צעד ציינו כלל ומקורות. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-practice-coupon" class="thmbox thmbox-question" title="הקופון וההנחה">
+<p><strong>שאלה 1.15.37 — הקופון וההנחה.</strong></p>
+<p><strong>הנתונים:</strong></p>
+<ol type="1">
+<li>לא נכון שנועה הציגה קופון ולא קיבלה הנחה.</li>
+<li>נועה הציגה קופון.</li>
+</ol>
+<p><strong>הוכיחו:</strong> נועה קיבלה הנחה.</p>
+<div class="argument-editor" data-argument="practice-coupon">
+<div class="argument-offline">
+<p>בחרו אותיות למשפטים, תרגמו את הנתונים וכתבו הוכחה על דף. ליד כל צעד ציינו כלל ומקורות. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-practice-network" class="thmbox thmbox-question" title="ההודעה שלא נשלחה">
+<p><strong>שאלה 1.15.38 — ההודעה שלא נשלחה.</strong></p>
+<p><strong>הנתונים:</strong></p>
+<ol type="1">
+<li>המחשב אינו מחובר לרשת, או שהמערכת זמינה.</li>
+<li>אם המערכת זמינה, ההודעה נשלחה.</li>
+<li>ההודעה לא נשלחה.</li>
+</ol>
+<p><strong>הוכיחו:</strong> המחשב אינו מחובר לרשת.</p>
+<div class="argument-editor" data-argument="practice-network">
+<div class="argument-offline">
+<p>בחרו אותיות למשפטים, תרגמו את הנתונים וכתבו הוכחה על דף. ליד כל צעד ציינו כלל ומקורות. להפעלת העורך והבודק יש להפעיל JavaScript.</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="practice-knights" class="level3" data-number="1.15.7">
+<h3 data-number="1.15.7" class="anchored" data-anchor-id="practice-knights"><span class="header-section-number">1.15.7</span> אבירים ונוכלים</h3>
+<p>תזכורת: אביר אומר רק אמת, ונוכל אומר רק שקר. בכל תרגיל שני התושבים הם אבירים או נוכלים, וכל האמירות מתייחסות לאותו מצב. אפשר לסמן A: ״אלון אביר״, B: ״בתיה אבירה״. אל תניחו מראש שיש בדיוק אביר אחד: בודקים גם את האפשרויות ששניהם אבירים או ששניהם נוכלים.</p>
+<div id="practice-q-knights-one" class="thmbox thmbox-question" title="האמירות שמכריחות תשובה">
+<p><strong>שאלה 1.15.39 — האמירות שמכריחות תשובה.</strong></p>
+<p>אלון אומר: ״בתיה נוכלת״. בתיה אומרת: ״לפחות אחד מאיתנו אביר״. מצאו את סוגו של כל אחד והסבירו מדוע האפשרויות האחרות אינן מתאימות.</p>
+<div class="choice-exercise" data-choice="knights-one">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>נסו תחילה להניח שאלון אביר. מה זה אומר על בתיה, והאם האמירה שלה מתאימה לכך?</p>
+</div>
+<div class="step">
+<p>אם אלון אביר, בתיה נוכלת. אבל אז האמירה שלה שלפחות אחד אביר היא אמת בגלל אלון. נוכלת אינה יכולה לומר אמת, ולכן האפשרות נפסלת.</p>
+</div>
+<div class="step">
+<p>אלון חייב להיות נוכל. האמירה שלו שקרית, ולכן בתיה אבירה. האמירה של בתיה נכונה בגללה עצמה. שני הדברים מתאימים.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-knights-two" class="thmbox thmbox-question" title="מותר להגיע ליותר מאפשרות אחת">
+<p><strong>שאלה 1.15.40 — מותר להגיע ליותר מאפשרות אחת.</strong></p>
+<p>אלון אומר: ״בתיה אבירה״. בתיה אומרת: ״אלון אביר״. האם אפשר לדעת בוודאות מי אביר? מצאו את כל האפשרויות שמתאימות.</p>
+<div class="choice-exercise" data-choice="knights-two">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>בדקו גם ״שניהם אבירים״ וגם ״שניהם נוכלים״. אין צורך לבחור ביניהן אם הנתונים אינם מכריעים.</p>
+</div>
+<div class="step">
+<p>אם שניהם אבירים, שניהם אומרים אמת. אם שניהם נוכלים, שניהם אומרים שקר. שתי האפשרויות מתאימות.</p>
+</div>
+<div class="step">
+<p>אם רק אחד אביר, האביר אומר על הנוכל שהוא אביר, וזה שקר. לכן שתי האפשרויות המעורבות נפסלות. הנתונים אינם מאפשרים לבחור בין שתי האפשרויות שנותרו.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-knights-none" class="thmbox thmbox-question" title="האם הסיפור אפשרי בכלל?">
+<p><strong>שאלה 1.15.41 — האם הסיפור אפשרי בכלל?.</strong></p>
+<p>אלון אומר: ״בתיה נוכלת״. בתיה אומרת: ״אלון אביר״. מצאו סידור מתאים, או הסבירו מדוע אין כזה. ״אין פתרון״ היא תשובה מותרת, אבל צריך להצדיק אותה.</p>
+<div class="choice-exercise" data-choice="knights-none">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>חלקו לשני מקרים לפי סוגו של אלון, ובדקו את האמירה של בתיה בכל מקרה.</p>
+</div>
+<div class="step">
+<p>אם אלון אביר, בתיה נוכלת. אבל בתיה אומרת שאלון אביר — אמירה נכונה, שאינה מתאימה לנוכלת.</p>
+</div>
+<div class="step">
+<p>אם אלון נוכל, האמירה שלו שקרית, ולכן בתיה אבירה. אבל היא אומרת שאלון אביר — אמירה שקרית, שאינה מתאימה לאבירה. שתי האפשרויות נפסלו, ולכן הסיפור אינו אפשרי לפי הכללים.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="practice-quantifiers" class="level3" data-number="1.15.8">
+<h3 data-number="1.15.8" class="anchored" data-anchor-id="practice-quantifiers"><span class="header-section-number">1.15.8</span> כמתים: מה צריך להראות, ועל איזה תחום?</h3>
+<p>לפני הפתרון סמנו את התחום. <span class="term"><strong>עד</strong></span> הוא איבר שמראה שטענת ״קיים״ נכונה. <span class="term"><strong>דוגמה נגדית</strong></span> היא איבר שמראה שטענת ״לכל״ שגויה. דוגמה אחת שמתאימה אינה מספיקה להוכיח ״לכל״.</p>
+<div id="practice-q-quant-finite" class="thmbox thmbox-question" title="ארבע טענות על תחום קטן">
+<p><strong>שאלה 1.15.42 — ארבע טענות על תחום קטן.</strong></p>
+<p>התחום הוא <span class="math inline">\(D=\{0,1,2,3\}\)</span>. קבעו אמת או שקר ותנו הסבר: עד, דוגמה נגדית או בדיקה של כל התחום, לפי הצורך.</p>
+<ol type="1">
+<li><span class="math inline">\(\forall x\in D\,(x\ge0)\)</span>.</li>
+<li><span class="math inline">\(\exists x\in D\,(x^2=4)\)</span>.</li>
+<li><span class="math inline">\(\forall x\in D\,(x&lt;3)\)</span>.</li>
+<li><span class="math inline">\(\exists x\in D\,(x&gt;3)\)</span>.</li>
+</ol>
+<p>הסימן <span class="math inline">\(\ge\)</span> פירושו ״גדול או שווה״. <span class="math inline">\(x^2\)</span> הוא <span class="math inline">\(x\)</span> כפול עצמו.</p>
+<div class="choice-exercise" data-choice="quant-finite">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>בדקו אם הטענה מבקשת שכל האיברים יתאימו או שלפחות אחד יתאים. אל תבחרו עד מחוץ לתחום.</p>
+</div>
+<div class="step">
+<ol type="1">
+<li>אמת: <span class="math inline">\(0,1,2,3\)</span> כולם גדולים או שווים ל־<span class="math inline">\(0\)</span>. 2. אמת: <span class="math inline">\(x=2\)</span> הוא עד, כי <span class="math inline">\(2\cdot2=4\)</span>.</li>
+</ol>
+</div>
+<div class="step">
+<ol start="3" type="1">
+<li>שקר: <span class="math inline">\(x=3\)</span> הוא דוגמה נגדית. 4. שקר: אף אחד מארבעת האיברים אינו גדול מ־<span class="math inline">\(3\)</span>.</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="practice-q-quant-domain" class="thmbox thmbox-question" title="אותה נוסחה, תחום אחר">
+<p><strong>שאלה 1.15.43 — אותה נוסחה, תחום אחר.</strong></p>
+<p>בדקו את <span class="math inline">\(\exists x\in D\,(x+2=0)\)</span> בשתי בחירות שונות של עולם הדיון <span class="math inline">\(D\)</span>:</p>
+<ol type="1">
+<li><span class="math inline">\(D=\{0,1,2,3,\ldots\}\)</span>, המספרים השלמים שאינם שליליים.</li>
+<li>כל המספרים השלמים, כולל השליליים.</li>
+</ol>
+<p>הסבירו למה התשובה משתנה.</p>
+<div class="choice-exercise" data-choice="quant-domain">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>איזה מספר צריך להציב כדי שהסכום יהיה אפס? בדקו אם מותר לבחור אותו בכל תחום.</p>
+</div>
+<div class="step">
+<p>במספרים שאינם שליליים הטענה שקרית: <span class="math inline">\(x+2\)</span> לפחות <span class="math inline">\(2\)</span>, ולכן אינו <span class="math inline">\(0\)</span>.</p>
+</div>
+<div class="step">
+<p>בכל המספרים השלמים הטענה אמיתית: <span class="math inline">\(x=-2\)</span> הוא עד. אותו עד לא היה מותר בתחום הראשון.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-quant-not-all" class="thmbox thmbox-question" title="לא כולם — אבל אולי חלק כן">
+<p><strong>שאלה 1.15.44 — לא כולם — אבל אולי חלק כן.</strong></p>
+<p>עולם הדיון <span class="math inline">\(D\)</span> הוא הסטודנטים בכיתה. נסמן ב־<span class="math inline">\(P(x)\)</span> את ״הסטודנט <span class="math inline">\(x\)</span> החזיר את הספר״. כתבו בכמתים את ״כל הסטודנטים החזירו את הספר״, ואז כתבו את שלילתו בכמתים ובמילים. האם השלילה אומרת שאף אחד לא החזיר?</p>
+<div class="choice-exercise" data-choice="quant-not-all">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>שלילת ״לכל״ דורשת לפחות דוגמה נגדית אחת, ולא כישלון של כולם.</p>
+</div>
+<div class="step">
+<p>המשפט הוא <span class="math inline">\(\forall x\in D\,P(x)\)</span>. שלילתו היא <span class="math inline">\(\exists x\in D\,\neg P(x)\)</span>.</p>
+</div>
+<div class="step">
+<p>במילים: יש לפחות סטודנט אחד שלא החזיר את הספר. ייתכן שכל האחרים החזירו. לכן אין להסיק שאף אחד לא החזיר.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-quant-nobody" class="thmbox thmbox-question" title="אין אפילו כיסא אחד">
+<p><strong>שאלה 1.15.45 — אין אפילו כיסא אחד.</strong></p>
+<p>עולם הדיון <span class="math inline">\(D\)</span> הוא הכיסאות בכיתה. נסמן ב־<span class="math inline">\(P(x)\)</span> את ״הכיסא <span class="math inline">\(x\)</span> פנוי״. כתבו את שלילת ״יש כיסא פנוי״. האם מספיק להראות כיסא אחד תפוס כדי להצדיק אותה?</p>
+<div class="choice-exercise" data-choice="quant-nobody">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>כיסא תפוס אחד אינו אומר מה קורה בשאר הכיסאות.</p>
+</div>
+<div class="step">
+<p>המשפט הוא <span class="math inline">\(\exists x\in D\,P(x)\)</span>. שלילתו היא <span class="math inline">\(\forall x\in D\,\neg P(x)\)</span>: כל הכיסאות אינם פנויים.</p>
+</div>
+<div class="step">
+<p>כדי להראות שאין כיסא פנוי בכיתה הסופית הזאת, צריך לוודא שאף כיסא אינו פנוי. כיסא תפוס אחד אינו מספיק, כי ייתכן שיש כיסא פנוי לצדו.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-quant-menu" class="thmbox thmbox-question" title="לכל אחד מנה — או מנה לכולם?">
+<p><strong>שאלה 1.15.46 — לכל אחד מנה — או מנה לכולם?.</strong></p>
+<p>נסמן ב־<span class="math inline">\(S\)</span> את הסטודנטים דנה, נועם ורותם, וב־<span class="math inline">\(M\)</span> את המנות פיתה וסלט. כל המידע מופיע בטבלה:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">סטודנט</th>
+<th style="text-align: center;">אוהב פיתה?</th>
+<th style="text-align: center;">אוהב סלט?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">דנה</td>
+<td style="text-align: center;">כן</td>
+<td style="text-align: center;">לא</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">נועם</td>
+<td style="text-align: center;">לא</td>
+<td style="text-align: center;">כן</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">רותם</td>
+<td style="text-align: center;">כן</td>
+<td style="text-align: center;">כן</td>
+</tr>
+</tbody>
+</table>
+<p>נסמן ב־<span class="math inline">\(L(x,y)\)</span> את ״הסטודנט <span class="math inline">\(x\)</span> אוהב את המנה <span class="math inline">\(y\)</span>״. קבעו אמת או שקר:</p>
+<ol type="1">
+<li><span class="math display">\[\forall x\in S\,\exists y\in M\,L(x,y)\]</span>.</li>
+<li><span class="math display">\[\exists y\in M\,\forall x\in S\,L(x,y)\]</span>.</li>
+</ol>
+<p>הסבירו במילים מדוע אלה שאלות שונות.</p>
+<div class="choice-exercise" data-choice="quant-menu">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>בסעיף הראשון מותר לבחור מנה אחרת לכל סטודנט. בשני צריך לבחור מנה אחת שמתאימה לכולם.</p>
+</div>
+<div class="step">
+<p>הראשון אמת: לדנה אפשר לבחור פיתה, לנועם סלט, ולרותם כל אחת משתי המנות.</p>
+</div>
+<div class="step">
+<p>השני שקר: פיתה אינה מתאימה לנועם, וסלט אינו מתאים לדנה. בדקנו את שתי המנות ואין אחת שכולם אוהבים.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-quant-order" class="thmbox thmbox-question" title="מספר אחר לכל אחד?">
+<p><strong>שאלה 1.15.47 — מספר אחר לכל אחד?.</strong></p>
+<p>התחום של שני המשתנים הוא <span class="math inline">\(D=\{1,2,3\}\)</span>. קבעו אמת או שקר:</p>
+<ol type="1">
+<li><span class="math display">\[\forall x\in D\,\exists y\in D\,(x+y=4)\]</span>.</li>
+<li><span class="math display">\[\exists y\in D\,\forall x\in D\,(x+y=4)\]</span>.</li>
+</ol>
+<p>בסעיף הראשון כתבו איזה <span class="math inline">\(y\)</span> מתאים לכל <span class="math inline">\(x\)</span>. בסעיף השני בדקו אם אותו <span class="math inline">\(y\)</span> יכול לעבוד לכולם.</p>
+<div class="choice-exercise" data-choice="quant-order">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>עבור x=1 צריך y=3. עבור x=2 צריך y=2. האם זה מותר בשני הסעיפים?</p>
+</div>
+<div class="step">
+<p>הראשון אמת: ל־<span class="math inline">\(x=1\)</span> בוחרים <span class="math inline">\(y=3\)</span>; ל־<span class="math inline">\(x=2\)</span> בוחרים <span class="math inline">\(y=2\)</span>; ל־<span class="math inline">\(x=3\)</span> בוחרים <span class="math inline">\(y=1\)</span>. כל הבחירות בתחום.</p>
+</div>
+<div class="step">
+<p>השני שקר: מספר יחיד <span class="math inline">\(y\)</span> אינו יכול להיות גם <span class="math inline">\(3\)</span>, כפי שנדרש עבור <span class="math inline">\(x=1\)</span>, וגם <span class="math inline">\(2\)</span>, כפי שנדרש עבור <span class="math inline">\(x=2\)</span>.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-quant-negate-order" class="thmbox thmbox-question" title="שוללים בלי לשנות את הסדר בטעות">
+<p><strong>שאלה 1.15.48 — שוללים בלי לשנות את הסדר בטעות.</strong></p>
+<p>נסמן ב־<span class="math inline">\(S\)</span> את הסטודנטים בכיתה וב־<span class="math inline">\(B\)</span> את הספרים בספרייה. לכן <span class="math inline">\(x\in S\)</span> ו־<span class="math inline">\(y\in B\)</span>. נסמן ב־<span class="math inline">\(R(x,y)\)</span> את ״הסטודנט <span class="math inline">\(x\)</span> קרא את הספר <span class="math inline">\(y\)</span>״.</p>
+<p>כתבו בכמתים: ״יש ספר שכל הסטודנטים קראו״. כתבו את שלילת המשפט והעבירו את השלילה פנימה. הסבירו במילים. האם מתקבל ״יש סטודנט שלא קרא אף ספר״?</p>
+<div class="choice-exercise" data-choice="quant-negate-order">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>מתחילים מבחירת ספר אחד: קיים y. בשלילה כל כמת מתחלף, אבל סדר המשתנים אינו מתחלף.</p>
+</div>
+<div class="step">
+<p>המשפט הוא <span class="math display">\[\exists y\in B\,\forall x\in S\,R(x,y)\]</span>.</p>
+</div>
+<div class="step">
+<p>תחילה שוללים את המשפט כולו: <span class="math display">\[\neg\exists y\in B\,\forall x\in S\,R(x,y)\]</span>.</p>
+</div>
+<div class="step">
+<p>מכניסים את השלילה מעבר ל״קיים״. הכמת מתחלף ל״לכל״: <span class="math display">\[\forall y\in B\,\neg\forall x\in S\,R(x,y)\]</span>.</p>
+</div>
+<div class="step">
+<p>מכניסים את השלילה גם מעבר ל״לכל״. הוא מתחלף ל״קיים״: <span class="math display">\[\forall y\in B\,\exists x\in S\,\neg R(x,y)\]</span>.</p>
+</div>
+<div class="step">
+<p>במילים: לכל ספר יש לפחות סטודנט אחד שלא קרא אותו. ייתכן שבכל ספר זה סטודנט אחר. לא נובע שיש סטודנט אחד שלא קרא אף ספר.</p>
+</div>
+<div class="step">
+<p>למשל, אם יש שני ספרים ושני סטודנטים, וכל סטודנט קרא רק ספר אחר, אין ספר שכולם קראו. עם זאת, כל סטודנט קרא ספר, ולכן אין סטודנט שלא קרא אף ספר.</p>
+</div>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

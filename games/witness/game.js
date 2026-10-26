@@ -73,6 +73,12 @@ function domainRow(level, tally) {
   return el("div", { class: "w-domain-row" }, [el("h3", { class: "w-domain", text: level.domainText }), tally]);
 }
 
+function domainNote(level) {
+  return el("p", { class: "w-world", html: level.mode === "order"
+    ? `${m("D")} הוא עולם הסטודנטים שבטבלה, ו־${m("M")} הוא עולם הפריטים בתפריט. ${m("x ∈ D")} אומר ש־${m("x")} הוא אחד הסטודנטים; ${m("y ∈ M")} אומר ש־${m("y")} הוא אחד הפריטים.`
+    : `${m("D")} הוא עולם הדיון: ששת הסטודנטים שבכרטיסים. ${m("x ∈ D")} אומר ש־${m("x")} הוא אחד מהם. ״לכל״ ו״קיים״ מתייחסים רק לסטודנטים האלה.` });
+}
+
 /* ======================================================================== */
 /* levels 1–4: check cards, then a verdict                                   */
 /* ======================================================================== */
@@ -114,7 +120,7 @@ function mountEvidence(level, ui) {
     el("div", { class: "g-choice", role: "group", "aria-labelledby": vid }, [vYes, vNo]),
   ]);
 
-  ui.stage.append(el("div", { class: "w-board" }, [robot.node, domainRow(level, tally), roster, expansion, verdictBox]));
+  ui.stage.append(el("div", { class: "w-board" }, [domainNote(level), robot.node, domainRow(level, tally), roster, expansion, verdictBox]));
 
   function value() {     // the long ∧ / ∨ so far: true, false or null (not settled yet)
     const seen = D.filter(x => marked.has(x.id));
@@ -242,7 +248,7 @@ function mountNegation(level, ui) {
     roster,
   ]);
 
-  ui.stage.append(el("div", { class: "w-board" }, [robot.node, step1, step2]));
+  ui.stage.append(el("div", { class: "w-board" }, [domainNote(level), robot.node, step1, step2]));
 
   function draw() {
     optBtns.forEach((b, i) => b.setAttribute("aria-pressed", String(chosen === i)));
@@ -352,6 +358,7 @@ function mountOrder(level, ui) {
   const sums = el("div", { class: "w-sums" });
 
   ui.stage.append(el("div", { class: "w-board" }, [
+    domainNote(level),
     robot.node,
     el("div", { class: "w-parts", role: "group", "aria-label": "שני חלקי השלב" }, partBtns),
     task, grid, legend, tally, sums,
@@ -372,8 +379,8 @@ function mountOrder(level, ui) {
       partStatus[i].textContent = done[i] ? " ✓ הושלם" : "";
     });
     task.innerHTML = part === 0
-      ? "<b>חלק 1:</b> בכל <b>שורה</b> בחרו פריט שהסטודנט אוהב. כך מראים ש־" + m("∀x ∃y L(x, y)") + " נכון."
-      : "<b>חלק 2:</b> בכל <b>עמודה</b> בחרו סטודנט שלא אוהב את הפריט. כך מראים ש־" + m("∃y ∀x L(x, y)") + " שקרי.";
+      ? "<b>חלק 1:</b> בכל <b>שורה</b> בחרו פריט שהסטודנט אוהב. כך מראים ש־" + m("∀x∈D ∃y∈M L(x, y)") + " נכון."
+      : "<b>חלק 2:</b> בכל <b>עמודה</b> בחרו סטודנט שלא אוהב את הפריט. כך מראים ש־" + m("∃y∈M ∀x∈D L(x, y)") + " שקרי.";
     for (const x of D) for (const y of Y) {
       const { b, mark } = cells[x.id][y.id];
       const on = part === 0 ? picks[0][x.id] === y.id : picks[1][y.id] === x.id;

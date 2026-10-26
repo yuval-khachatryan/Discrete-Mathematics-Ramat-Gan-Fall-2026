@@ -476,6 +476,13 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .argument-rule-help:not(:empty), .argument-hints:not(:empty), .argument-solution:not(:empty) { padding: .6rem; margin: .5rem 0; background: #fffbeb; border: 1px dashed #d97706; border-radius: 6px; }
 .argument-rule-help p, .argument-hints p { margin: .3rem 0; }
 .argument-editor .bk-bar { margin-top: .6rem; }
+.argument-formula-bank, .choice-select { width: 100%; min-width: 0; min-height: 44px; padding: .35rem; font: inherit; border: 1px solid #7c3aed; border-radius: 6px; background: #faf5ff; }
+.argument-formula-bank { direction: ltr; }
+.choice-item { min-width: 0; margin: .8rem 0; padding: .65rem; border: 1px solid #c4b5fd; border-radius: 8px; }
+.choice-item legend { float: none; width: auto; max-width: 100%; font-size: 1em; font-weight: 700; color: #581c87; padding: 0 .25rem; }
+.choice-select[aria-invalid="true"] { border: 2px solid #b91c1c; }
+.choice-select:focus-visible, .argument-formula-bank:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.choice-ready .choice-offline { display: none; }
 .bk-keys { display: flex; flex-wrap: wrap; gap: 0.25rem; direction: ltr; }
 .bk-key { min-width: 40px; min-height: 40px; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; font: 1.1rem "Cambria Math", "STIX Two Math", serif; cursor: pointer; }
 .bk-key:hover { background: #eef2ff; }
@@ -695,7 +702,7 @@ window.addEventListener("message", function (e) {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./01-logic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">לוגיקה: השפה של המתמטיקה</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">לוגיקה: הכללים לבניית משפטים ולהסקת מסקנות</span></span></a>
   </div>
 </li>
     </ul>
@@ -754,6 +761,7 @@ window.addEventListener("message", function (e) {
 <h2 class="unnumbered anchored" data-anchor-id="איך-לקרוא-את-מערכי-ההרצאה-האלה">איך לקרוא את מערכי ההרצאה האלה</h2>
 <p>המערכים מלווים את מהלך ההרצאה. בכל נושא נתחיל בהסבר ובדוגמה, ניתן שמות לרעיונות החדשים וננסח את ההגדרה. כשמגדירים קשר לוגי, טבלת האמת מופיעה יחד עם ההגדרה. אחר כך ניעזר בהמחשה או במשחק כדי לראות את הכלל בפעולה.</p>
 <p>השאלות והתרגילים משולבים במקום שבו לומדים את הרעיון שלהם. נעצור כדי לחשוב, לנסות ולדון בתשובה, ואז נמשיך לנושא הבא. ליד כל פעילות נמצאים ההסברים או הפתרון שלה; בחלקן אפשר לבקש רמז, לבדוק תשובה או להציג את הפתרון צעד אחר צעד.</p>
+<p>בסוף פרק הלוגיקה יש גם <a href="./01-logic.html#sec-self-practice">תרגול עצמי לפי נושאים</a>, לעבודה אחרי ההרצאה. הוא כולל שאלות עם רמזים ופתרונות, טבלאות למילוי ותרגילי הוכחה שבהם בוחרים סימונים ומצדיקים כל צעד. אפשר לבחור נושא אחד ולעבוד בקצב שלכם.</p>
 <p>לצד הדוגמאות הכתובות יש <strong>משחקים קטנים</strong>: מסיקים מסקנות משיחה, מחפשים בחירה שמתאימה לאמירות, או בונים הוכחה מכרטיסים. אחרי המשחק נקשר את מה שעשינו לרעיון המתמטי שהכרנו.</p>
 <p>במשחקים אין הגבלת זמן ואין ניקוד. אפשר לבקש רמז (יש שלוש דרגות), להתחיל מחדש או לראות את הפתרון, כמה פעמים שרוצים. ההתקדמות נשמרת רק בדפדפן שלכם. מי שלא אוהב משחקים יכול לדלג עליהם: כל מה שצריך לבחינה נמצא גם בטקסט.</p>
 <p>בקמפוס שלנו תפגשו כמה דמויות קבועות: <strong>הרובוט של המזכירות</strong>, שבטוח בעצמו הרבה יותר ממה שמגיע לו, <strong>השומר</strong> הדרמטי שבשער, <strong>היונה</strong>, וגם כמה מתמטיקאים רעבים. הם טועים לפעמים בביטחון מלא, ואתם תתקנו אותם.</p>
@@ -1242,8 +1250,8 @@ window.addEventListener("message", function (e) {
   <div class="nav-page nav-page-previous">
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./01-logic.html" class="pagination-link" aria-label="לוגיקה: השפה של המתמטיקה">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">לוגיקה: השפה של המתמטיקה</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./01-logic.html" class="pagination-link" aria-label="לוגיקה: הכללים לבניית משפטים ולהסקת מסקנות">
+        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">לוגיקה: הכללים לבניית משפטים ולהסקת מסקנות</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
