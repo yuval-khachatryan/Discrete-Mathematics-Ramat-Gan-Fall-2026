@@ -1,4 +1,4 @@
-# מתמטיקה בדידה — מערכי הרצאה (Discrete-Mathematics-Lecture-Notes)
+# מתמטיקה בדידה — מערכי הרצאה (Discrete-Mathematics-Ramat-Gan-Fall-2026)
 
 Hebrew (RTL) interactive lecture notes for the Discrete Mathematics course at the Ramat Gan Academic College, built as a **Quarto book** with small browser games next to the prose. Planning documents live in `../Resources/`.
 
@@ -9,6 +9,11 @@ Hebrew (RTL) interactive lecture notes for the Discrete Mathematics course at th
 - `_quarto.yml`: book config (HTML only for now). `_styles.html`: shared CSS and the small page scripts (T/F quizzes, iframe auto-height). `theorem-numbering.lua`: the numbered-box filter, copied from the Ariel notes, with `.thmgame` (משחק) and `.thmchk` (בדיקה עצמית) added.
 - `games/<name>/`: one folder per game, each a standalone page (`index.html`, `game.js`, `levels.js`, `game.css`).
 - `games/shared/`: `shell.js` + `shell.css` (the frame every game shares), `logic.js` (formula parser, evaluation, truth tables), `sprites.js` (the characters and icons as SVG), `sprites/` (the same pictures as files, used by the book's CSS), `autosize.js` (iframe height).
+
+## Repository and site
+
+- Source: <https://github.com/yuval-khachatryan/Discrete-Mathematics-Ramat-Gan-Fall-2026> (`main`)
+- Site: <https://yuval-khachatryan.github.io/Discrete-Mathematics-Ramat-Gan-Fall-2026/>, published with `quarto publish gh-pages` (see `../Resources/Publishing_GitHub_Pages.md`)
 
 ## Build
 
@@ -119,5 +124,5 @@ A `<div class="tf-quiz">` can contain `<div class="tf-why">…</div>`, which app
 ## Not yet done
 
 - PDF edition (copy the `pdf:` block from the Ariel notes' `_quarto.yml`, then add static figures for the circuits).
-- Git repository and GitHub Pages publishing (planned URL in `_variables.yml`).
+
 - MathJax is still loaded from Quarto's CDN. The games themselves need nothing external.

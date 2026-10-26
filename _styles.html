@@ -147,6 +147,24 @@ figure.cartoon-says { width: 190px; }
   figure.cartoon { float: none; margin: 0.3rem auto 0.6rem; width: 180px; }
 }
 /* The two-colour signal as a small picture inside the text (T = green, F = red). */
+.logic-directions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; margin: 1rem 0; }
+.logic-direction { padding: .8rem; background: #fff; border: 2px solid #cbd5e1; border-radius: 12px; text-align: center; }
+.logic-direction:first-child { border-color: #c2410c; }
+.logic-direction:nth-child(2) { border-color: #075985; }
+.logic-direction p { margin: .4rem 0 0; }
+.logic-arrow-row { display: flex; justify-content: center; align-items: center; gap: .7rem; font-size: 1.25em; font-weight: 700; margin: .4rem 0; }
+.logic-arrow { font-size: 1.7em; color: #475569; }
+.logic-directions figcaption { grid-column: 1 / -1; }
+.candy-comic { margin: 1rem 0; container-type: inline-size; }
+.candy-panels { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }
+.candy-panel { min-width: 0; padding: .6rem; border: 2px solid #7c3aed; border-radius: 14px; background: #fff; display: flex; flex-direction: column; }
+.candy-panel h4 { margin: 0 0 .6rem; color: #6b21a8; font-size: 1em; }
+.candy-speech { padding: .6rem; border: 1px solid #c4b5fd; border-radius: 12px; background: #f5f3ff; font-size: .95em; margin: 0 0 .3rem; flex: 1; }
+.candy-panel img { display: block; width: 100%; height: auto; }
+.candy-caption { font-size: .9em; margin: .3rem 0 0; color: #475569; }
+.candy-comic figcaption, .logic-directions figcaption { margin-top: .5rem; color: #475569; font-size: .9em; text-align: center; }
+@container (max-width: 32rem) { .candy-panels { grid-template-columns: 1fr; } .candy-panel img { max-width: 300px; align-self: center; } }
+@media (max-width: 600px) { .logic-directions { grid-template-columns: 1fr; } }
 img.sig-inline { height: 1.9em; width: auto; vertical-align: -0.6em; margin: 0 0.15em; }
 /* Truth tables and other small tables: compact and centred, not full width. */
 main table.table { width: auto; min-width: 10rem; margin-left: auto; margin-right: auto; }
