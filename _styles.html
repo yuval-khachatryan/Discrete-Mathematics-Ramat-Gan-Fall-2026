@@ -385,6 +385,20 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .proof-reference summary { cursor: pointer; color: #075985; }
 .proof-formula { direction: ltr; unicode-bidi: isolate; text-align: left; white-space: nowrap; overflow-x: auto; font-family: "Cambria Math", "Times New Roman", serif; margin-top: .25rem; }
 .proof-ready .proof-offline { display: none; }
+.argument-editor [hidden] { display: none !important; }
+.argument-ready .argument-offline { display: none; }
+.argument-stage { margin: .8rem 0; padding: .7rem; border: 1px solid #c4b5fd; border-radius: 10px; background: #fff; min-width: 0; }
+.argument-stage h4 { font-size: 1.1em; color: #6b21a8; margin-top: 0; }
+.argument-mapping { display: flex; align-items: center; gap: .7rem; padding: .5rem 0; }
+.argument-letter { flex: 0 0 4rem; min-height: 44px; direction: ltr; text-align: center; font: inherit; font-weight: 700; border: 1px solid #7c3aed; border-radius: 6px; color: #581c87; background: #faf5ff; }
+.argument-source { width: 100%; min-width: 0; min-height: 44px; padding: .35rem; font: inherit; border: 1px solid #94a3b8; border-radius: 6px; background: #fff; }
+.argument-letter:focus-visible, .argument-source:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.argument-translation { padding: .7rem 0; border-bottom: 1px solid #e2e8f0; }
+.argument-premises { list-style: none; padding: 0; margin: .8rem 0; }
+.argument-premises li { margin: .4rem 0; padding: .6rem; background: #f1f5f9; border-radius: 6px; }
+.argument-rule-help:not(:empty), .argument-hints:not(:empty), .argument-solution:not(:empty) { padding: .6rem; margin: .5rem 0; background: #fffbeb; border: 1px dashed #d97706; border-radius: 6px; }
+.argument-rule-help p, .argument-hints p { margin: .3rem 0; }
+.argument-editor .bk-bar { margin-top: .6rem; }
 .bk-keys { display: flex; flex-wrap: wrap; gap: 0.25rem; direction: ltr; }
 .bk-key { min-width: 40px; min-height: 40px; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; font: 1.1rem "Cambria Math", "STIX Two Math", serif; cursor: pointer; }
 .bk-key:hover { background: #eef2ff; }
