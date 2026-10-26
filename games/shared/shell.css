@@ -1,0 +1,180 @@
+/* shell.css — shared look of every game. Game-specific styles live next to
+   each game; anything two games need goes here. */
+
+:root {
+  --ink: #1f2937;
+  --muted: #475569;
+  --line: #d1d5db;
+  --soft: #f8fafc;
+  --card: #ffffff;
+  --accent: #4f46e5;
+  --accent-soft: #eef2ff;
+  --good: #15803d;
+  --good-soft: #dcfce7;
+  --bad: #b91c1c;
+  --bad-soft: #fee2e2;
+  --info: #1d4ed8;
+  --info-soft: #dbeafe;
+  --lamp: #facc15;
+  --lamp-glow: #fde68a;
+  --radius: 10px;
+  --tap: 44px;              /* minimum touch target */
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }   /* beats display:flex/grid below */
+html, body { margin: 0; padding: 0; background: transparent; }
+body {
+  font: 16px/1.5 Arial, "Helvetica Neue", "Noto Sans Hebrew", sans-serif;
+  color: var(--ink);
+}
+html:not(.g-embedded) body { background: var(--soft); }
+
+.g-root {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+.g-embed { padding: 0; }
+.g-root > * + * { margin-top: 0.8rem; }
+
+/* ---- header and level picker ------------------------------------------ */
+.g-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1.2rem; }
+.g-title { font-size: 1.6em; margin: 0; }
+.g-levels { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.g-lvl {
+  position: relative;
+  min-width: var(--tap); min-height: var(--tap);
+  border: 1px solid var(--line); border-radius: 50%;
+  background: var(--card); color: var(--ink);
+  font: inherit; font-weight: 700; cursor: pointer;
+}
+.g-lvl.g-current { border-color: var(--accent); background: var(--accent); color: #fff; }
+.g-lvl.g-done:not(.g-current) { border-color: var(--good); color: var(--good); }
+.g-tick {
+  position: absolute; top: -4px; inset-inline-end: -4px;
+  background: var(--good); color: #fff; border-radius: 50%;
+  width: 18px; height: 18px; font-size: 11px; line-height: 18px; text-align: center;
+}
+
+/* ---- mission ---------------------------------------------------------- */
+.g-mission {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.7rem 1rem;
+}
+.g-mission-title { font-size: 1.15em; margin: 0 0 0.3rem; }   /* em: scales with ?present=1 */
+.g-goal > :first-child { margin-top: 0; }
+.g-goal > :last-child { margin-bottom: 0; }
+
+.g-stage {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.9rem;
+  overflow-x: auto;
+}
+
+/* ---- buttons ---------------------------------------------------------- */
+.g-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.g-btn {
+  min-height: var(--tap);
+  padding: 0.4rem 1.1rem;
+  border: 1px solid #9ca3af;
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.g-btn:hover:not(:disabled) { background: #f1f5f9; }
+.g-btn:disabled { opacity: 0.45; cursor: default; }
+.g-primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+.g-primary:hover:not(:disabled) { background: #4338ca; }
+.g-quiet { color: var(--muted); }
+.g-next.g-ready { background: var(--good); border-color: var(--good); color: #fff; font-weight: 700; }
+.g-link {
+  border: 0; background: none; padding: 0; font: inherit; font-size: 0.85rem;
+  color: var(--muted); text-decoration: underline; cursor: pointer;
+}
+.g-foot { font-size: 0.9rem; color: var(--muted); }
+.g-foot a { color: var(--accent); }
+
+:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+
+/* ---- feedback, hints, debrief ----------------------------------------- */
+.g-feedback:empty { display: none; }
+.g-feedback {
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  border-inline-start: 5px solid var(--muted);
+  background: var(--card);
+}
+.g-feedback.g-good { border-color: var(--good); background: var(--good-soft); }
+.g-feedback.g-bad  { border-color: var(--bad);  background: var(--bad-soft); }
+.g-feedback.g-info { border-color: var(--info); background: var(--info-soft); }
+.g-feedback.g-good::before { content: "✓ "; font-weight: 700; color: var(--good); }
+.g-feedback.g-bad::before  { content: "✗ "; font-weight: 700; color: var(--bad); }
+
+.g-hints:empty { display: none; }
+.g-hints {
+  margin: 0; padding: 0.5rem 0.9rem; padding-inline-start: 2.2rem;
+  background: #fffbeb; border: 1px dashed #d97706; border-radius: 8px;
+}
+.g-hints li + li { margin-top: 0.3rem; }
+
+.g-debrief {
+  background: var(--accent-soft);
+  border: 1px solid #c7d2fe;
+  border-radius: var(--radius);
+  padding: 0.7rem 1rem;
+}
+.g-debrief h3 { margin: 0 0 0.3rem; font-size: 1.05em; color: #3730a3; }
+.g-debrief > :last-child { margin-bottom: 0; }
+
+/* ---- shared bits for game content ------------------------------------- */
+/* A formula or any Latin notation inside Hebrew text. */
+.m {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+  font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif;
+  white-space: nowrap;
+}
+.tv-T, .tv-F {
+  direction: ltr; unicode-bidi: isolate;
+  display: inline-block; min-width: 1.6em; text-align: center;
+  font-weight: 700; border-radius: 4px; padding: 0 0.2em;
+}
+/* the book's one colour code: T = green, F = red (always with the letter, never colour alone) */
+.tv-T { color: #14532d; background: #bbf7d0; }
+.tv-F { color: #7f1d1d; background: #fecaca; }
+
+.g-choice { display: inline-flex; flex-wrap: wrap; gap: 0.3rem; }
+.g-choice button {
+  min-height: var(--tap); padding: 0.3rem 0.8rem;
+  border: 1px solid #9ca3af; border-radius: 999px;
+  background: var(--card); font: inherit; cursor: pointer;
+}
+.g-choice button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ---- celebration (skipped under reduced motion) ------------------------ */
+@keyframes g-pop { 0% { transform: scale(1); } 40% { transform: scale(1.012); } 100% { transform: scale(1); } }
+.g-cheer .g-stage { animation: g-pop 0.45s ease-out; }
+
+/* ---- classroom projector ---------------------------------------------- */
+.g-present { font-size: 22px; max-width: 1400px; }
+.g-present .g-btn { padding: 0.6rem 1.5rem; }
+
+/* ---- small screens ------------------------------------------------------ */
+@media (max-width: 520px) {
+  .g-root { padding: 0.6rem; }
+  .g-embed { padding: 0; }
+  .g-btn { padding: 0.4rem 0.8rem; }
+  .g-stage { padding: 0.6rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

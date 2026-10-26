@@ -1,0 +1,213 @@
+/* game.css — "מצאו עד". Shared look comes from ../shared/shell.css;
+   everything here is prefixed w-. Sizes are in em so ?present=1 scales.
+   The board is a size container: the roster has 2, 3 or 6 columns by the
+   width it actually gets (an iframe in a chapter, a phone, a projector). */
+
+.w-board { container: w / inline-size; }
+.w-board > * + * { margin-top: 0.8em; }
+.w-sr {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* ---- the robot and its claim ------------------------------------------ */
+.w-scene { display: flex; align-items: flex-start; gap: 0.7em; }
+.w-robot { flex: none; width: 4.2em; height: 4.2em; }
+.w-robot svg, .w-face svg, .w-ico svg, svg.w-ico, .w-say-ico svg { display: block; width: 100%; height: 100%; }
+.w-bubble {
+  position: relative; flex: 1 1 auto; min-width: 0;
+  background: #f0f9ff; border: 1px solid #7dd3fc; border-radius: 14px;
+  padding: 0.55em 0.9em;
+}
+.w-bubble::before {                 /* points at the robot, who stands to the right */
+  content: ""; position: absolute; right: -7px; top: 1.3em;
+  width: 12px; height: 12px; background: inherit;
+  border: 1px solid #7dd3fc; border-left: 0; border-bottom: 0;
+  transform: rotate(45deg);
+}
+.w-say { margin: 0; font-size: 1.15em; line-height: 1.4; }
+.w-say-ico { display: inline-block; width: 1.6em; height: 1.6em; vertical-align: -0.4em; margin-inline-end: 0.25em; }
+.w-aside { margin: 0.15em 0 0; color: var(--muted); font-size: 0.92em; font-style: italic; }
+.w-formula {
+  margin: 0.45em 0 0; padding-top: 0.4em; border-top: 1px dashed #7dd3fc;
+  font-size: 0.95em; line-height: 1.6;
+}
+.w-fl { display: inline-block; margin-inline-end: 0.9em; }
+.w-big { font-size: 1.2em; font-weight: 700; }
+
+/* ---- domain line ------------------------------------------------------- */
+.w-domain-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.2em 1em; }
+.w-domain { margin: 0; font-size: 1em; }
+.w-tally { font-size: 0.9em; color: var(--muted); margin: 0; }
+
+/* ---- the roster -------------------------------------------------------- */
+.w-roster { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6em; }
+@container w (min-width: 30em) { .w-roster { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@container w (min-width: 52em) { .w-roster { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+
+.w-card {
+  position: relative; min-width: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 0.3em;
+  padding: 0.6em 0.45em 0.5em;
+  border: 2px solid var(--line); border-radius: 14px;
+  background: var(--card); color: var(--ink);
+  font: inherit; text-align: center; cursor: pointer;
+}
+.w-card:hover { border-color: #a5b4fc; }
+.w-card[aria-pressed="true"] {
+  border-color: var(--accent); background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.w-card.w-star { border-color: var(--good); box-shadow: inset 0 0 0 1px var(--good), 0 0 0 3px var(--good-soft); }
+.w-who { display: flex; flex-direction: column; align-items: center; gap: 0.15em; }
+.w-face { display: block; width: 3.4em; height: 3.4em; }
+.w-name { font-weight: 700; font-size: 1.05em; line-height: 1.2; }
+.w-attrs { display: flex; flex-direction: column; gap: 0.15em; width: 100%; }
+.w-attr {
+  display: flex; align-items: center; gap: 0.3em;
+  font-size: 0.85em; line-height: 1.2; text-align: start;
+  padding: 0.12em 0.3em; border-radius: 6px;
+}
+.w-key { font-weight: 700; background: #fef9c3; }      /* the attribute the claim is about */
+.w-ico { flex: none; display: inline-block; width: 1.6em; height: 1.6em; }
+.w-attr .w-ico { width: 1.9em; height: 1.9em; }
+.w-res {
+  margin-top: auto; width: 100%;
+  display: flex; align-items: center; justify-content: center; gap: 0.3em;
+  border-top: 1px dashed var(--line); padding-top: 0.35em;
+  font-size: 0.9em; color: var(--muted); min-height: 2.1em;
+}
+.w-res .w-ico { width: 1.3em; height: 1.3em; }
+.w-on .w-res { color: var(--ink); border-top: 1px solid #a5b4fc; font-weight: 700; }
+.w-q {
+  display: inline-block; width: 1.4em; height: 1.4em; line-height: 1.4em;
+  border-radius: 50%; background: #e2e8f0; color: var(--muted); font-weight: 700;
+}
+.w-role {
+  position: absolute; top: -0.75em; left: 50%; transform: translateX(-50%);
+  background: var(--good); color: #fff; white-space: nowrap;
+  font-size: 0.78em; font-weight: 700; padding: 0.05em 0.6em; border-radius: 999px;
+}
+.w-role::before { content: "✓ "; }
+
+/* ---- the long ∧ / ∨ ----------------------------------------------------- */
+.w-exp {
+  background: var(--soft); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 0.5em 0.8em;
+}
+.w-exp-title { margin: 0 0 0.4em; font-size: 0.9em; color: var(--muted); }
+.w-terms {
+  direction: ltr;                  /* a formula: left to right, wrapping as a unit row */
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.35em 0.3em;
+}
+.w-term {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 0.1em;
+  padding: 0.15em 0.35em; border: 1px dashed #cbd5e1; border-radius: 8px; background: #fff;
+  font-size: 0.92em;
+}
+.w-term-on { border-style: solid; border-color: #a5b4fc; }
+.w-total { min-width: 4.5em; }
+.w-total.w-term-on { border-color: var(--accent); border-width: 2px; }
+.w-total-label { direction: rtl; font-size: 0.8em; color: var(--muted); white-space: nowrap; }
+.w-exp-f { font-weight: 700; }
+.w-op { font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif; color: var(--muted); font-size: 1.1em; }
+.w-unk {
+  display: inline-block; min-width: 1.6em; text-align: center; font-weight: 700;
+  border-radius: 4px; padding: 0 0.2em; color: var(--muted);
+  background: #fff; outline: 1px dashed #94a3b8; outline-offset: -1px;
+}
+
+/* ---- verdict ------------------------------------------------------------ */
+.w-verdict { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4em 0.7em; }
+.w-verdict-label { font-weight: 700; }
+.w-verdict .g-choice button[aria-pressed="true"]::before { content: "✓ "; }
+
+/* ---- level 5: the options ----------------------------------------------- */
+.w-step h3 { margin: 0 0 0.45em; font-size: 1.02em; }
+.w-step > * + * { margin-top: 0.6em; }
+.w-opts { display: grid; gap: 0.45em; }
+@container w (min-width: 34em) { .w-opts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.w-opt {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.15em 0.7em;
+  min-height: var(--tap); padding: 0.45em 0.8em;
+  border: 1px solid #9ca3af; border-radius: 12px; background: var(--card);
+  color: var(--ink); font: inherit; text-align: start; cursor: pointer;
+}
+.w-opt:hover { border-color: var(--accent); }
+.w-opt[aria-pressed="true"] { border: 2px solid var(--accent); background: var(--accent-soft); padding: calc(0.45em - 1px) calc(0.8em - 1px); }
+.w-opt[aria-pressed="true"]::before { content: "✓"; color: var(--accent); font-weight: 700; }
+.w-opt-f { font-size: 1.15em; font-weight: 700; }
+.w-tag {
+  font-size: 0.78em; background: #fef3c7; color: #92400e;
+  border-radius: 999px; padding: 0 0.55em;
+}
+
+/* ---- level 6: the grid -------------------------------------------------- */
+.w-parts { display: grid; gap: 0.45em; }
+@container w (min-width: 34em) { .w-parts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.w-part {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0.1em;
+  padding: 0.45em 0.8em; border: 1px solid #9ca3af; border-radius: 12px;
+  background: var(--card); color: var(--ink); font: inherit; text-align: start; cursor: pointer;
+}
+.w-part:hover { border-color: var(--accent); }
+.w-part[aria-pressed="true"] { border: 2px solid var(--accent); background: var(--accent-soft); padding: calc(0.45em - 1px) calc(0.8em - 1px); }
+.w-part-n { font-size: 0.85em; font-weight: 700; color: var(--muted); }
+.w-part-st { color: var(--good); }
+.w-part-he { font-weight: 700; }
+.w-part-f { font-size: 1.05em; }
+.w-task { margin: 0; }
+
+.w-grid-wrap { overflow-x: auto; }
+.w-grid { border-collapse: separate; border-spacing: 0.3em; margin-inline: auto; }
+.w-grid thead th { font-size: 0.85em; font-weight: 700; vertical-align: bottom; padding: 0 0.1em; }
+.w-snack { display: block; width: 2.1em; height: 2.1em; margin: 0 auto 0.1em; }
+.w-grid tbody th { font-weight: 700; text-align: start; padding-inline-end: 0.3em; }
+.w-rowh { display: flex; align-items: center; gap: 0.35em; white-space: nowrap; }
+.w-rowh .w-face { width: 2.2em; height: 2.2em; }
+.w-grid td { padding: 0; }
+.w-cell {
+  position: relative; display: flex; align-items: center; justify-content: center;
+  width: 3.2em; height: 2.9em; min-height: var(--tap);
+  border: 1px solid var(--line); border-radius: 10px; background: #fff;
+  cursor: pointer; padding: 0; font: inherit;
+}
+.w-cell:hover { border-color: var(--accent); }
+.w-cell .w-ico { width: 1.6em; height: 1.6em; }
+.w-cell:not(.w-liked) .w-ico { width: 1.1em; height: 1.1em; }
+.w-cell[aria-pressed="true"] { border: 2px solid var(--accent); background: var(--accent-soft); }
+.w-mark:empty { display: none; }
+.w-mark {
+  position: absolute; top: -0.5em; inset-inline-end: -0.5em;
+  width: 1.45em; height: 1.45em; line-height: 1.45em; border-radius: 50%;
+  font-size: 0.8em; font-weight: 700; color: #fff; text-align: center;
+}
+.w-mark-yes { background: var(--good); }
+.w-mark-no { background: var(--bad); }
+.w-legend { margin: 0; font-size: 0.85em; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 0.25em; flex-wrap: wrap; }
+.w-legend .w-ico { width: 1.2em; height: 1.2em; }
+.w-sums:empty { display: none; }
+.w-sums {
+  background: var(--good-soft); border: 1px solid #86efac; border-radius: var(--radius);
+  padding: 0.4em 0.8em; font-size: 0.92em;
+}
+.w-sums p { margin: 0.15em 0; }
+
+/* ---- the rule table in the debrief of "nobody" -------------------------- */
+.w-rule { border-collapse: collapse; background: var(--card); margin: 0.3em 0 0.2em; font-size: 0.95em; }
+.w-rule th, .w-rule td { border: 1px solid #c7d2fe; padding: 0.2em 0.6em; text-align: center; }
+.w-rule thead th { background: #e0e7ff; }
+
+/* ---- narrow frames ------------------------------------------------------ */
+@container w (max-width: 26em) {
+  .w-robot { width: 3.2em; height: 3.2em; }
+  .w-scene { gap: 0.45em; }
+  .w-bubble { padding: 0.45em 0.7em; }
+  .w-who { flex-direction: row; gap: 0.4em; }
+  .w-face { width: 2.6em; height: 2.6em; }
+  .w-card { padding: 0.45em 0.35em 0.4em; gap: 0.25em; }
+  .w-attr { padding: 0.08em 0.2em; }
+  .w-cell { width: 2.8em; }
+  .w-rowh .w-face { width: 1.8em; height: 1.8em; }
+  .w-grid { border-spacing: 0.22em; }
+}
