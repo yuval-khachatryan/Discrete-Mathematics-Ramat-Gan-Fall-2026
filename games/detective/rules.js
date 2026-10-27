@@ -110,9 +110,9 @@ export function apply(rule, a, b, atoms) {
 
   if (rule === "hs") {
     if (facts.length === 2)
-      return fail(`${head} בחרתם שתי עובדות, ${C(a)} ו${C(b)}. בחרו שני כרטיסי ״אם… אז…״.`);
+      return fail(`${head} בחרתם שני פסוקים שכל אחד מהם פשוט או שלילה של פסוק פשוט, ${C(a)} ו${C(b)}. בחרו שני כרטיסי ״אם… אז…״.`);
     if (facts.length === 1)
-      return fail(`${head} בחרתם עובדה, ${C(facts[0])}. עם גרירה ועובדה עובדים כלל הניתוק או כלל השלילה: נסו אחד מהם.`);
+      return fail(`${head} בחרתם פסוק פשוט או שלילה שלו, ${C(facts[0])}. לצד גרירה, פסוק כזה עשוי להתאים לכלל הניתוק או לכלל השלילה. בדקו מה הוא אומר ובחרו כלל מתאים.`);
     if (a.to === b.from && b.to === a.from)
       return fail(`${head} כאן כל גרירה מובילה אל השנייה, והשרשרת חוזרת להתחלה: יוצא ״אם ${atoms ? litText(atoms, a.from) : litFormula(a.from)}, אז ${atoms ? litText(atoms, a.from) : litFormula(a.from)}״, וזה לא מלמד כלום. נסו זוג אחר.`);
     if (a.to === b.from) return { ok: true, card: imp(a.from, b.to) };
@@ -129,11 +129,11 @@ export function apply(rule, a, b, atoms) {
 
   // mp and mt: one implication and one fact
   if (!ifs.length)
-    return fail(`${head} בחרתם שתי עובדות, ${C(a)} ו${C(b)}. החליפו אחת מהן בכרטיס ״אם… אז…״.`);
+    return fail(`${head} בחרתם שני פסוקים שכל אחד מהם פשוט או שלילה של פסוק פשוט, ${C(a)} ו${C(b)}. החליפו אחת מהן בכרטיס ״אם… אז…״.`);
   if (!facts.length)
-    return fail(`${head} בחרתם שתי גרירות, ואין ביניהן עובדה. ` + (linked(a, b)
+    return fail(`${head} בחרתם שתי גרירות. לכלל שבחרתם דרושים גרירה ופסוק פשוט או שלילה שלו. ` + (linked(a, b)
       ? "שתי גרירות שממשיכות זו את זו הן בדיוק המקום של כלל השרשרת: נסו אותו."
-      : "החליפו אחת מהן בכרטיס עובדה."));
+      : "החליפו אחת מהן בכרטיס של פסוק פשוט או שלילה שלו, בהתאם לכלל."));
   const g = ifs[0], f = facts[0].lit;
 
   if (rule === "mp") {
@@ -288,7 +288,7 @@ export function explainChoice(arg, choice, atoms) {
   const role = roleSentence(arg, atoms);
   const need = k => {
     if (k === "hs") return f ? "כלל השרשרת מחבר שתי גרירות, וכאן יש רק גרירה אחת." : "";
-    if (!f) return `${nameOf(k)} מתחיל מגרירה ועובדה, וכאן יש שתי גרירות.`;
+    if (!f) return `${nameOf(k)} דורש גרירה ופסוק פשוט או שלילה שלו, וכאן יש שתי גרירות.`;
     return `${nameOf(k)} מתחיל ${START[NEEDS[k]]} (כאן: ${q(litText(atoms, roleLit(g, NEEDS[k])))}).`;
   };
   const counter = counterHTML(arg, atoms);
