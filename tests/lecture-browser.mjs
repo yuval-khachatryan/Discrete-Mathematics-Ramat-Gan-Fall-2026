@@ -1,0 +1,103 @@
+// Questions and givens must remain visible, with answers disclosed on demand.
+import {chromium} from 'playwright-core';
+import assert from 'node:assert/strict';
+const base=process.argv[2]||'http://127.0.0.1:8798';
+const browser=await chromium.launch({channel:'chrome',headless:true});
+const errors=[];
+try {
+ const page=await browser.newPage({viewport:{width:1280,height:1000}});
+ page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(`${base}/01-logic.html`,{waitUntil:'networkidle'});
+ await page.evaluate(async()=>{if(window.MathJax?.startup?.promise)await window.MathJax.startup.promise;});
+ assert.doesNotMatch(await page.locator('main').innerText(),/לומדים במנות קטנות|בישיבה אחת|ההסברים הבסיסיים נשארים גלויים/);
+ assert.match(await page.locator('#sec-consistency').innerText(),/טענה שגויה — אבל היא עדיין טענה/);
+ assert.equal(await page.locator('.lecture-next, .lecture-pending').count(),0);
+ const examples=page.locator('.thmbox-example');
+ assert.equal(await examples.count(),21);
+ for(const ex of await examples.all()) {
+  assert.ok(await ex.locator('details.lecture-answer').count(),await ex.innerText());
+  assert.equal(await ex.locator('details.lecture-answer[open]').count(),0);
+ }
+ const classify=page.locator('#box-exm-propositions');
+ const answers=classify.locator('details.lecture-answer');
+ assert.equal(await answers.count(),5);
+ const questions=await classify.innerText();
+ for(const text of ['2+2=4','3>5','בחדר 101','מה השעה','סגרו את הדלת'])assert.ok(questions.includes(text),text);
+ assert.doesNotMatch(questions,/כן\. זהו פסוק|השגיאה אינה מונעת/);
+ assert.equal(await classify.locator('.lecture-controls').count(),0);
+ await answers.first().locator('summary').click();
+ assert.equal(await classify.locator('details[open]').count(),1);
+ assert.match(await answers.first().innerText(),/כן\. זהו פסוק/);
+ assert.doesNotMatch(await answers.nth(1).innerText(),/השגיאה אינה מונעת/);
+ await answers.nth(1).locator('summary').click();
+ assert.match(await answers.nth(1).innerText(),/השגיאה אינה מונעת/);
+ await answers.first().locator('summary').click();
+ assert.equal(await answers.first().getAttribute('open'),null);
+ // Keyboard can open the explanation, independently of the other questions.
+ await answers.first().locator('summary').focus();await page.keyboard.press('Enter');
+ assert.notEqual(await answers.first().getAttribute('open'),null);
+ await classify.screenshot({path:'/tmp/presentation-classification-desktop.png'});
+ // The counterexample illustration is part of the hidden explanation.
+ const cat=page.locator('#box-exm-mammal-cat');
+ assert.match(await cat.innerText(),/כל החתולים הם יונקים/);
+ assert.equal(await cat.locator('figure').isVisible(),false);
+ await cat.locator('summary').click();
+ assert.equal(await cat.locator('figure').isVisible(),true);
+ // The two defining tables show all input cases, not a hidden row sequence.
+ for(const[id,rows]of [['box-def-negation',2],['box-def-and',4]]) {
+  const table=page.locator(`#${id} .lecture-table`);
+  assert.equal(await table.getAttribute('data-lecture-table-ready'),'true');
+  assert.equal(await table.locator('tbody tr:visible').count(),rows);
+  assert.equal(await table.locator('.lecture-cell-answer:visible').count(),0);
+  const cell=table.locator('.lecture-cell-trigger').first();
+  await cell.focus();await page.keyboard.press('Enter');
+  assert.equal(await table.locator('.lecture-cell-answer:visible').count(),1);
+  assert.equal(await table.locator('.lecture-cell-answer:visible').evaluate(n=>n===document.activeElement),true);
+  await table.getByRole('button',{name:'הצגת כל התוצאות',exact:true}).click();
+  assert.equal(await table.locator('.lecture-cell-answer[hidden]').count(),0);
+  await table.getByRole('button',{name:'הסתרת התוצאות',exact:true}).click();
+  assert.equal(await table.locator('.lecture-cell-answer:visible').count(),0);
+ }
+ const proof=page.locator('#box-exm-negate-implication');
+ assert.match(await proof.innerText(),/נפשט/);
+ assert.equal(await proof.locator('details.lecture-answer').count(),4);
+ for(let i=0;i<3;i++)await proof.locator('summary').nth(i).click();
+ assert.equal(await proof.locator('details[open]').count(),3);
+ // Reveal controls must not bypass the existing interactive question.
+ const candy=page.locator('#box-exm-candy-promise');
+ assert.equal(await candy.locator('.tf-quiz').isVisible(),true);
+ assert.equal(await candy.locator('.tf-why').isVisible(),false);
+ assert.equal(await candy.locator('details[open]').count(),0);
+ await candy.locator('.tf-opt').last().click();
+ assert.equal(await candy.locator('.tf-why').isVisible(),true);
+ for(const answer of await page.locator('details.lecture-answer').all())if(!await answer.getAttribute('open'))await answer.evaluate(n=>{n.open=true;});
+ for(const t of await page.locator('.lecture-table').all())await t.getByRole('button',{name:'הצגת כל התוצאות',exact:true}).click();
+ assert.equal(await page.locator('mjx-merror').count(),0);
+ assert.equal(await page.locator('#sec-self-practice [id^="practice-q-"]').count(),48);
+ const broken=await page.evaluate(()=>[...document.querySelectorAll('main a[href^="#"]')].map(a=>a.hash.slice(1)).filter(id=>id&&!document.getElementById(decodeURIComponent(id))));
+ assert.deepEqual(broken,[]);
+ for(const width of[1280,390,320]) {
+  await page.setViewportSize({width,height:1000});
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,`overflow ${width}`);
+ }
+ await answers.evaluateAll(nodes=>nodes.forEach(n=>{n.open=false;}));
+ await page.setViewportSize({width:390,height:1000});
+ await classify.screenshot({path:'/tmp/presentation-classification-390.png'});
+ const worked=page.locator('#box-exm-table-locked .lecture-table');
+ await worked.getByRole('button',{name:'הסתרת התוצאות',exact:true}).click();
+ await page.emulateMedia({media:'print'});
+ assert.equal(await worked.locator('.lecture-cell-answer:visible').count(),24);
+ assert.equal(await worked.locator('.lecture-table-controls').isVisible(),false);
+ await page.evaluate(()=>window.dispatchEvent(new Event('beforeprint')));
+ assert.equal(await classify.locator('details[open]').count(),5);
+ await page.evaluate(()=>window.dispatchEvent(new Event('afterprint')));
+ assert.equal(await classify.locator('details[open]').count(),0);
+ const plain=await browser.newContext({javaScriptEnabled:false});
+ const offline=await plain.newPage();await offline.goto(`${base}/01-logic.html`,{waitUntil:'domcontentloaded'});
+ const plainAnswer=offline.locator('#box-exm-propositions details').first();
+ assert.equal(await plainAnswer.getAttribute('open'),null);
+ await plainAnswer.locator('summary').click();assert.match(await plainAnswer.innerText(),/כן\. זהו פסוק/);
+ assert.equal(await offline.locator('#box-exm-table-locked tbody tr:visible').count(),8);
+ await plain.close();assert.deepEqual(errors,[]);
+ console.log('Passed: 21 question-first examples; independent answers, keyboard, visible table givens, cell reveals/reset, proofs, quiz feedback, 48 exercises retained, maths, links, mobile, printing, and no-JS disclosures.');
+} finally {await browser.close();}

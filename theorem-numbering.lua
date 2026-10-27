@@ -261,6 +261,9 @@ process = function(blocks, in_optional)
         local t = b.attributes and b.attributes.title
         local summary = (t and t ~= "") and t or "הצג/הסתר"
         local attrs = ' class="thmcollapse thmfoldable"'
+        if has_class(orig, "lecture-answer") then
+          attrs = ' class="thmcollapse thmfoldable lecture-answer"'
+        end
         if is_proof then
           summary = "הוכחה"
           attrs = ' class="thmcollapse"'

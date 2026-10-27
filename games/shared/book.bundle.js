@@ -2817,6 +2817,89 @@
     box.classList.add("choice-ready");
   }
 
+  // games/shared/lecture-reveal.js
+  function initLectureTable(box) {
+    if (box.dataset.lectureTableReady) return;
+    const table = box.querySelector("table");
+    if (!table) return;
+    const given = Number(box.dataset.givenCols || box.getAttribute("given-cols"));
+    if (!Number.isInteger(given) || given < 1) return;
+    box.dataset.lectureTableReady = "true";
+    const cells = [];
+    const typeset2 = () => {
+      var _a, _b;
+      return (_b = (_a = window.MathJax) == null ? void 0 : _a.typesetPromise) == null ? void 0 : _b.call(_a, [box]).catch(() => {
+      });
+    };
+    [...table.tBodies].flatMap((body) => [...body.rows]).forEach((row, r) => {
+      [...row.cells].slice(given).forEach((cell, j) => {
+        if (!cell.textContent.trim()) return;
+        const content = document.createElement("span");
+        content.className = "lecture-cell-answer";
+        while (cell.firstChild) content.append(cell.firstChild);
+        const trigger = document.createElement("button");
+        trigger.type = "button";
+        trigger.className = "bk-btn lecture-cell-trigger";
+        trigger.textContent = "?";
+        trigger.setAttribute("aria-label", `הצגת התשובה בשורה ${r + 1}, עמודה ${given + j + 1}`);
+        trigger.setAttribute("aria-expanded", "false");
+        content.hidden = true;
+        const reveal = () => {
+          content.hidden = false;
+          trigger.setAttribute("aria-expanded", "true");
+          trigger.hidden = true;
+          typeset2();
+        };
+        trigger.addEventListener("click", () => {
+          reveal();
+          content.tabIndex = -1;
+          content.focus({ preventScroll: true });
+        });
+        cell.append(trigger, content);
+        cells.push({ content, trigger, reveal });
+      });
+    });
+    const controls = document.createElement("div");
+    controls.className = "lecture-table-controls bk-bar";
+    for (const [label, action] of [
+      ["הצגת כל התוצאות", () => cells.forEach((cell) => cell.reveal())],
+      ["הסתרת התוצאות", () => cells.forEach(({ content, trigger }) => {
+        content.hidden = true;
+        trigger.hidden = false;
+        trigger.setAttribute("aria-expanded", "false");
+      })]
+    ]) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "bk-btn bk-quiet";
+      button.textContent = label;
+      button.addEventListener("click", action);
+      controls.append(button);
+    }
+    box.append(controls);
+  }
+  function initLectureAnswers() {
+    const answers = [...document.querySelectorAll("details.lecture-answer")];
+    for (const answer of answers) answer.addEventListener("toggle", () => {
+      var _a, _b;
+      if (answer.open) (_b = (_a = window.MathJax) == null ? void 0 : _a.typesetPromise) == null ? void 0 : _b.call(_a, [answer]).catch(() => {
+      });
+    });
+    let beforePrint;
+    window.addEventListener("beforeprint", () => {
+      beforePrint = answers.map((answer) => answer.open);
+      answers.forEach((answer) => {
+        answer.open = true;
+      });
+    });
+    window.addEventListener("afterprint", () => {
+      if (beforePrint) answers.forEach((answer, i) => {
+        answer.open = beforePrint[i];
+      });
+      beforePrint = void 0;
+    });
+  }
+
   // games/gate/knights.js
   var SYM2 = { and: " ∧ ", or: " ∨ ", xor: " ⊕ ", imp: " → ", iff: " ↔ " };
   function show(f, leaf, inner = false) {
@@ -3182,6 +3265,8 @@
     document.querySelectorAll(".ttq").forEach(initTTQ);
     document.querySelectorAll(".fq").forEach(initFQ);
     document.querySelectorAll(".tf-quiz").forEach(initTF);
+    document.querySelectorAll(".lecture-table").forEach(initLectureTable);
+    initLectureAnswers();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
