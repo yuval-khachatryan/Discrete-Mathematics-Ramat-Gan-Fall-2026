@@ -404,6 +404,16 @@ details.thmcollapse[open] > summary { margin-bottom: 0.4rem; }
    .solve = step-by-step solution, .ttq = truth-table exercise,
    .fq = formula answer, .tf-why = explanation inside a T/F quiz. */
 .bk-hidden { display: none !important; }
+details.lecture-answer { margin: .45rem 0 1rem; }
+details.lecture-answer > summary { color: #4338ca; cursor: pointer; font-weight: 600; }
+.lecture-cell-trigger { min-width: 2.3em; color: #4338ca; }
+.lecture-table-controls { margin-top: .6rem; }
+@media print {
+  .lecture-cell-answer[hidden] { display: inline !important; }
+  .lecture-cell-trigger, .lecture-table-controls { display: none !important; }
+  details.lecture-answer::details-content { content-visibility: visible; }
+  details.lecture-answer > :not(summary) { display: block !important; }
+}
 .bk-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .bk-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0.2rem 0 0.5rem; }
 .bk-title { font-weight: 700; color: #475569; margin-inline-end: 0.4rem; }
@@ -492,7 +502,7 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .bk-fq .explain, .bk-ttq .after { border: 1px solid #bbf7d0; background: #f0fdf4; }
 .bk-fq .hint > p:first-of-type { display: inline; }
 .tf-quiz .tf-why { display: none; margin-top: 0.4rem; padding: 0.4rem 0.7rem; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; }
-.tf-quiz.tf-answered .tf-why, .tf-quiz.tf-explained .tf-why { display: block; }
+.tf-quiz.tf-answered .tf-why { display: block; }
 .tf-why .m, .bk-msg .m, .bk-tt .m { direction: ltr; unicode-bidi: isolate; display: inline-block; white-space: nowrap; font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif; }
 .tv-T, .tv-F { display: inline-block; min-width: 1.5em; text-align: center; font-weight: 700; border-radius: 4px; padding: 0 0.2em; }
 .tv-T { color: #14532d; background: #bbf7d0; }   /* T = green, F = red, as on the signal */
@@ -718,6 +728,7 @@ window.addEventListener("message", function (e) {
   <li><a href="#פתח-דבר" id="toc-פתח-דבר" class="nav-link active" data-scroll-target="#פתח-דבר">פתח דבר</a>
   <ul class="collapse">
   <li><a href="#איך-לקרוא-את-מערכי-ההרצאה-האלה" id="toc-איך-לקרוא-את-מערכי-ההרצאה-האלה" class="nav-link" data-scroll-target="#איך-לקרוא-את-מערכי-ההרצאה-האלה">איך לקרוא את מערכי ההרצאה האלה</a></li>
+  <li><a href="#מדריך-ללמידה-עצמית" id="toc-מדריך-ללמידה-עצמית" class="nav-link" data-scroll-target="#מדריך-ללמידה-עצמית">מדריך ללמידה עצמית</a></li>
   <li><a href="#נושאי-הקורס" id="toc-נושאי-הקורס" class="nav-link" data-scroll-target="#נושאי-הקורס">נושאי הקורס</a></li>
   <li><a href="#מקורות" id="toc-מקורות" class="nav-link" data-scroll-target="#מקורות">מקורות</a></li>
   </ul></li>
@@ -765,6 +776,11 @@ window.addEventListener("message", function (e) {
 <p>לצד הדוגמאות הכתובות יש <strong>משחקים קטנים</strong>: מסיקים מסקנות משיחה, מחפשים בחירה שמתאימה לאמירות, או בונים הוכחה מכרטיסים. אחרי המשחק נקשר את מה שעשינו לרעיון המתמטי שהכרנו.</p>
 <p>במשחקים אין הגבלת זמן ואין ניקוד. אפשר לבקש רמז (יש שלוש דרגות), להתחיל מחדש או לראות את הפתרון, כמה פעמים שרוצים. ההתקדמות נשמרת רק בדפדפן שלכם. מי שלא אוהב משחקים יכול לדלג עליהם: כל מה שצריך לבחינה נמצא גם בטקסט.</p>
 <p>בקמפוס שלנו תפגשו כמה דמויות קבועות: <strong>הרובוט של המזכירות</strong>, שבטוח בעצמו הרבה יותר ממה שמגיע לו, <strong>השומר</strong> הדרמטי שבשער, <strong>היונה</strong>, וגם כמה מתמטיקאים רעבים. הם טועים לפעמים בביטחון מלא, ואתם תתקנו אותם.</p>
+</section>
+<section id="מדריך-ללמידה-עצמית" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="מדריך-ללמידה-עצמית">מדריך ללמידה עצמית</h2>
+<p>אפשר להשתמש במערכים גם לחזרה אחרי ההרצאה. בחרו נושא אחד, קראו את ההסבר ונסו לענות לפני פתיחת הפתרון. בדוגמאות השאלה והנתונים מופיעים מראש. אחרי ניסיון משלכם אפשר לפתוח את התשובה וההסבר של אותו סעיף. בטבלאות לוחצים על סימן השאלה כדי לחשוף תא מחושב; בהוכחות פותחים מעבר ואת הנימוק שלו.</p>
+<p>ב<a href="./01-logic.html#sec-self-practice">תרגול העצמי</a> אפשר לבחור נושא שדורש חיזוק. המשוב מסביר טעויות, והרמזים מאפשרים לנסות שוב לפני שרואים פתרון מלא. אין צורך לסיים את כל הפרק ברצף.</p>
 </section>
 <section id="נושאי-הקורס" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="נושאי-הקורס">נושאי הקורס</h2>

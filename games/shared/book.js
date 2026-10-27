@@ -1,7 +1,7 @@
 /* book.js — interactive exercises inside the chapters (not inside a game).
    ---------------------------------------------------------------------------
-   Worked examples remain visible; independent exercises can reveal their
-   solutions step by step. Every widget below is written in plain Quarto markdown
+   Worked examples keep questions visible and reveal answers on request; independent
+   exercises retain their own answer checkers. Widgets use plain Quarto markdown
    (a fenced div with a class) and turned interactive here. Without
    JavaScript everything simply stays visible.
 
@@ -53,6 +53,7 @@ import { initOpenStatement } from "./open-statement.js";
 import { initProofEditor } from "./proof-editor.js";
 import { initArgumentEditor } from "./argument-editor.js";
 import { initPracticeChoice } from "./practice-choice.js";
+import { initLectureTable, initLectureAnswers } from "./lecture-reveal.js";
 import { evaluationSteps, show } from "../gate/knights.js";
 
 const tv = b => `<span class="tv-${b ? "T" : "F"}">${b ? "T" : "F"}</span>`;
@@ -308,6 +309,8 @@ function init() {
   document.querySelectorAll(".ttq").forEach(initTTQ);
   document.querySelectorAll(".fq").forEach(initFQ);
   document.querySelectorAll(".tf-quiz").forEach(initTF);
+  document.querySelectorAll(".lecture-table").forEach(initLectureTable);
+  initLectureAnswers();
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
 else init();

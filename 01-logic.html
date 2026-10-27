@@ -403,6 +403,16 @@ details.thmcollapse[open] > summary { margin-bottom: 0.4rem; }
    .solve = step-by-step solution, .ttq = truth-table exercise,
    .fq = formula answer, .tf-why = explanation inside a T/F quiz. */
 .bk-hidden { display: none !important; }
+details.lecture-answer { margin: .45rem 0 1rem; }
+details.lecture-answer > summary { color: #4338ca; cursor: pointer; font-weight: 600; }
+.lecture-cell-trigger { min-width: 2.3em; color: #4338ca; }
+.lecture-table-controls { margin-top: .6rem; }
+@media print {
+  .lecture-cell-answer[hidden] { display: inline !important; }
+  .lecture-cell-trigger, .lecture-table-controls { display: none !important; }
+  details.lecture-answer::details-content { content-visibility: visible; }
+  details.lecture-answer > :not(summary) { display: block !important; }
+}
 .bk-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .bk-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0.2rem 0 0.5rem; }
 .bk-title { font-weight: 700; color: #475569; margin-inline-end: 0.4rem; }
@@ -491,7 +501,7 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .bk-fq .explain, .bk-ttq .after { border: 1px solid #bbf7d0; background: #f0fdf4; }
 .bk-fq .hint > p:first-of-type { display: inline; }
 .tf-quiz .tf-why { display: none; margin-top: 0.4rem; padding: 0.4rem 0.7rem; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; }
-.tf-quiz.tf-answered .tf-why, .tf-quiz.tf-explained .tf-why { display: block; }
+.tf-quiz.tf-answered .tf-why { display: block; }
 .tf-why .m, .bk-msg .m, .bk-tt .m { direction: ltr; unicode-bidi: isolate; display: inline-block; white-space: nowrap; font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif; }
 .tv-T, .tv-F { display: inline-block; min-width: 1.5em; text-align: center; font-weight: 700; border-radius: 4px; padding: 0 0.2em; }
 .tv-T { color: #14532d; background: #bbf7d0; }   /* T = green, F = red, as on the signal */
@@ -754,11 +764,7 @@ window.Quarto = {
   <li><a href="#sec-open-propositions" id="toc-sec-open-propositions" class="nav-link" data-scroll-target="#sec-open-propositions"><span class="header-section-number">1.3.2</span> משפט שתלוי בערך שנבחר: פסוק פתוח</a></li>
   <li><a href="#sec-proposition-check" id="toc-sec-proposition-check" class="nav-link" data-scroll-target="#sec-proposition-check"><span class="header-section-number">1.3.3</span> בודקים שההבדל ברור</a></li>
   </ul></li>
-  <li><a href="#sec-truth-tables" id="toc-sec-truth-tables" class="nav-link" data-scroll-target="#sec-truth-tables"><span class="header-section-number">1.4</span> טבלאות אמת: איך מגדירים קשר לוגי?</a>
-  <ul class="collapse">
-  <li><a href="#אילו-אפשרויות-צריך-לכלול" id="toc-אילו-אפשרויות-צריך-לכלול" class="nav-link" data-scroll-target="#אילו-אפשרויות-צריך-לכלול"><span class="header-section-number">1.4.1</span> אילו אפשרויות צריך לכלול?</a></li>
-  <li><a href="#איך-משתמשים-בטבלה" id="toc-איך-משתמשים-בטבלה" class="nav-link" data-scroll-target="#איך-משתמשים-בטבלה"><span class="header-section-number">1.4.2</span> איך משתמשים בטבלה?</a></li>
-  </ul></li>
+  <li><a href="#sec-truth-tables" id="toc-sec-truth-tables" class="nav-link" data-scroll-target="#sec-truth-tables"><span class="header-section-number">1.4</span> מפסוקים פשוטים לפסוק מורכב</a></li>
   <li><a href="#sec-connectives" id="toc-sec-connectives" class="nav-link" data-scroll-target="#sec-connectives"><span class="header-section-number">1.5</span> קשרים לוגיים: מחברים פסוקים</a>
   <ul class="collapse">
   <li><a href="#sec-negation" id="toc-sec-negation" class="nav-link" data-scroll-target="#sec-negation"><span class="header-section-number">1.5.1</span> שלילה: ״לא״</a></li>
@@ -857,47 +863,6 @@ window.Quarto = {
 <p><strong>חשוב לזכור.</strong></p>
 <p>בקורס הזה לומדים <strong>לקרוא ולכתוב מתמטיקה</strong>. כמו בכל שפה, בהתחלה מתרגמים כל מילה בזהירות, ואחר כך זה נעשה טבעי.</p>
 </div>
-<div class="thmbox thmbox-key-point" title="לומדים במנות קטנות">
-<p><strong>חשוב לזכור — לומדים במנות קטנות.</strong></p>
-<p>אין צורך לסיים את הפרק בישיבה אחת. בכל מקטע קוראים את ההסבר, מנסים את הפעילות, ובודקים את המשוב. אפשר לעצור אחרי הפעילות ולחזור להסבר אם משהו עדיין לא ברור.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th style="text-align: left;">מקטע</th>
-<th style="text-align: left;">מה מתרגלים?</th>
-<th style="text-align: left;">פעילות שאפשר לעצור אחריה</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><a href="#sec-propositions">פסוקים ושמות</a></td>
-<td style="text-align: left;">להבחין בין משפט, השם שלו והערך שמציבים במשתנה</td>
-<td style="text-align: left;"><a href="#box-game-substitution">פעילות ההצבות</a></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><a href="#sec-connectives">קשרים וטבלאות</a></td>
-<td style="text-align: left;">לחשב חלק קטן, ואז את המשפט כולו</td>
-<td style="text-align: left;"><a href="#box-q-ex-circuit">טבלת אמת עם עמודות עזר</a></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><a href="#sec-demorgan">שקילות וגרירה</a></td>
-<td style="text-align: left;">להבדיל בין ניסוח שקול, היפוך ושלילה</td>
-<td style="text-align: left;"><a href="#box-q-name-the-law">הוכחה בעזרת חוקי שקילות</a></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><a href="#sec-deduction">הסקת מסקנות</a></td>
-<td style="text-align: left;">לזהות את הנתונים, את המטרה ואת הכלל שמצדיק מעבר</td>
-<td style="text-align: left;"><a href="#practice-proofs">תרגילי הוכחה עם סיוע</a> — אפשר להתחיל בתרגיל אחד</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><a href="#sec-quantifiers">כמתים</a></td>
-<td style="text-align: left;">לזהות את התחום ולבחור עד או דוגמה נגדית מתאימים</td>
-<td style="text-align: left;"><a href="#box-game-witness">משחק ״מצאו עד״</a></td>
-</tr>
-</tbody>
-</table>
-<p>ההסברים הבסיסיים נשארים גלויים. הרמזים והפתרונות נפתחים לפי הצורך, אחרי ניסיון משלכם.</p>
-</div>
 </section>
 <section id="sec-consistency" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="sec-consistency"><span class="header-section-number">1.2</span> האם המסקנה נובעת מההנחות?</h2>
@@ -905,7 +870,7 @@ window.Quarto = {
 <div class="thmbox thmbox-remark" title="המילים של טיעון: מאיפה מתחילים ולאן מגיעים?">
 <p><strong>הערה 1.2.1 — המילים של טיעון: מאיפה מתחילים ולאן מגיעים?</strong></p>
 <ul>
-<li><span class="term"><strong>טענה</strong></span> היא משהו שאומרים שהוא נכון. למשל: ״דנה קיבלה הודעה״.</li>
+<li><span class="term"><strong>טענה</strong></span> היא אמירה שאפשר לקבוע לגביה אם היא נכונה או שגויה. למשל: ״דנה קיבלה הודעה״. אם דנה לא קיבלה הודעה, זו טענה שגויה — אבל היא עדיין טענה. <span class="key-rule"><strong>עצם השימוש במילה ״טענה״ אינו אומר שהאמירה נכונה.</strong></span> בהמשך נקרא למשפט כזה גם ״פסוק״.</li>
 <li><span class="term"><strong>הנחות</strong></span> הן הטענות שמקבלים כנקודת מוצא לבדיקה. בדוגמה: ״כל הסטודנטים בקורס קיבלו הודעה״ ו״דנה סטודנטית בקורס״.</li>
 <li><span class="term"><strong>מסקנה</strong></span> היא הטענה שמבקשים להצדיק בעזרת ההנחות. בדוגמה: ״דנה קיבלה הודעה״.</li>
 <li><span class="term"><strong>טיעון</strong></span> הוא ההנחות יחד עם המסקנה שמציעים להסיק מהן. המילה ״לכן״ מסמנת לעיתים קרובות את המעבר למסקנה.</li>
@@ -921,17 +886,27 @@ window.Quarto = {
 <li><strong>הנחה:</strong> מיצי היא חתולה.</li>
 <li><strong>מסקנה:</strong> מיצי יודעת לעוף.</li>
 </ul>
+<p><strong>האם המסקנה נובעת מן ההנחות? הסבירו.</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
 <p>ההנחה הראשונה אינה נכונה בעולם. אבל <strong>אם מניחים</strong> שכל החתולים יודעים לעוף ושמיצי חתולה, נובע שמיצי יודעת לעוף. לכן הטיעון <strong>תקף</strong>, גם כשההנחה שממנה התחיל שגויה.</p>
+</div>
+</details>
 </div>
 <div id="box-exm-mammal-cat" class="thmbox thmbox-example" title="מיצי, והפעם הפוך">
 <p><strong>דוגמה 1.2.3 — מיצי, והפעם הפוך.</strong></p>
-<figure class="cartoon cartoon-says figure"><div class="cartoon-bubble">גם כלבה היא יונקת!</div><img src="images/mitzi-dog.svg" alt="ציור: אותה חתולה ג׳ינג׳ית, עם קולר ותג בצורת עצם, אומרת: גם כלבה היא יונקת!" class="figure-img"></figure>
 <ul>
 <li><strong>הנחה:</strong> כל החתולים הם יונקים.</li>
 <li><strong>הנחה:</strong> מיצי היא יונקת.</li>
 <li><strong>מסקנה:</strong> מיצי היא חתולה.</li>
 </ul>
+<p><strong>האם המסקנה נובעת מן ההנחות? הסבירו.</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<figure class="cartoon cartoon-says figure"><div class="cartoon-bubble">גם כלבה היא יונקת!</div><img src="images/mitzi-dog.svg" alt="ציור: אותה חתולה ג׳ינג׳ית, עם קולר ותג בצורת עצם, אומרת: גם כלבה היא יונקת!" class="figure-img"></figure>
 <p>האם המסקנה חייבת להיות נכונה? לא. ייתכן שמיצי היא כלבה. במקרה כזה שתי ההנחות נכונות — כל החתולים יונקים, וגם מיצי יונקת — אבל המסקנה ״מיצי חתולה״ שגויה. לכן הטיעון <strong>אינו תקף</strong>. גם אם במקרה מיצי אכן חתולה, ההנחות האלה לבדן אינן מספיקות להוכיח זאת.</p>
+</div>
+</details>
 </div>
 <div class="thmbox thmbox-self-check">
 <p><strong>בדיקה עצמית.</strong></p>
@@ -976,13 +951,36 @@ window.Quarto = {
 </div>
 <div id="box-exm-propositions" class="thmbox thmbox-example" title="מה נחשב פסוק?">
 <p><strong>דוגמה 1.3.3 — מה נחשב פסוק?</strong></p>
-<ul>
-<li>״<span class="math inline">\(2+2=4\)</span>״ הוא פסוק. הוא נכון, ולכן ערך האמת שלו הוא <span class="math inline">\(.T\)</span></li>
-<li>״<span class="math inline">\(3&gt;5\)</span>״ הוא גם פסוק. הוא שגוי, ולכן ערך האמת שלו הוא <span class="math inline">\(.F\)</span> השגיאה אינה מונעת ממנו להיות פסוק.</li>
-<li>״בחדר 101 בקמפוס רמת גן היו בדיוק 20 כיסאות בשעה 10:00 ב־26 באוקטובר 2026״ הוא פסוק. קבענו חדר וזמן מסוימים. גם אם אף אחד מאיתנו לא ספר את הכיסאות, היו שם בדיוק 20 כיסאות או שמספרם היה אחר.</li>
-<li>״מה השעה?״ אינו פסוק. זו שאלה; היא מבקשת מידע ואינה טוענת שמשהו נכון.</li>
-<li>״סגרו את הדלת!״ אינו פסוק. זו בקשה לבצע פעולה. אפשר לציית לה או להתעלם ממנה, אבל לא לומר שהבקשה עצמה היא אמת או שקר.</li>
-</ul>
+<p><strong>״<span class="math inline">\(2+2=4\)</span>״. האם זה פסוק? מדוע?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>כן. זהו פסוק. הוא נכון, ולכן ערך האמת שלו הוא <span class="math inline">\(.T\)</span></p>
+</div>
+</details>
+<p><strong>״<span class="math inline">\(3&gt;5\)</span>״. האם זה פסוק? מדוע?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>כן. הוא גם פסוק. הוא שגוי, ולכן ערך האמת שלו הוא <span class="math inline">\(.F\)</span> השגיאה אינה מונעת ממנו להיות פסוק.</p>
+</div>
+</details>
+<p><strong>״בחדר 101 בקמפוס רמת גן היו בדיוק 20 כיסאות בשעה 10:00 ב־26 באוקטובר 2026״. האם זה פסוק גם אם לא ספרנו את הכיסאות?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>כן. קבענו חדר וזמן מסוימים. גם אם אף אחד מאיתנו לא ספר את הכיסאות, היו שם בדיוק 20 כיסאות או שמספרם היה אחר. חוסר הידיעה שלנו אינו מונע מן המשפט להיות פסוק.</p>
+</div>
+</details>
+<p><strong>״מה השעה?״. האם זה פסוק?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>לא. זו שאלה; היא מבקשת מידע ואינה טוענת שמשהו נכון.</p>
+</div>
+</details>
+<p><strong>״סגרו את הדלת!״. האם זה פסוק?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>לא. זו בקשה לבצע פעולה. אפשר לציית לה או להתעלם ממנה, אבל לא לומר שהבקשה עצמה היא אמת או שקר.</p>
+</div>
+</details>
 </div>
 <div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea">
 <p><strong>חשוב לזכור.</strong></p>
@@ -1012,8 +1010,13 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
+<p><strong>מה אומרים ״<span class="math inline">\(A\)</span> אמת״, ״<span class="math inline">\(A\)</span> שקר״ ו״<span class="math inline">\(B\)</span> אמת״? האם עצם בחירת האות אומרת שהמשפט נכון?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
 <p>אחרי שבחרנו את השמות, ״<span class="math inline">\(A\)</span> אמת״ פירושו שהמקרן עובד. ״<span class="math inline">\(A\)</span> שקר״ פירושו שהמקרן אינו עובד. באותה דרך, ״<span class="math inline">\(B\)</span> אמת״ פירושו שהמסך פתוח.</p>
 <p>האות אינה מוסיפה מידע על העולם: נתנו למשפט שם, אבל עדיין צריך לבדוק אם מה שהוא אומר נכון.</p>
+</div>
+</details>
 </div>
 <div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="שם של פסוק וערך האמת שלו הם שני דברים שונים">
 <p><strong>חשוב לזכור — שם של פסוק וערך האמת שלו הם שני דברים שונים.</strong></p>
@@ -1028,8 +1031,13 @@ window.Quarto = {
 <div class="thmbox thmbox-example" title="איזה מספר חסר?">
 <p><strong>דוגמה 1.3.5 — איזה מספר חסר?</strong></p>
 <p><strong>״המספר ___ גדול מ־5.״</strong></p>
+<p><strong>האם אפשר לקבוע שהמשפט נכון או שגוי? מה יקרה אם נבחר 7? ואם נבחר 2?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
 <p>האם המשפט נכון? עדיין אי אפשר לענות, כי לא אמרנו על איזה מספר מדברים. אם נמלא את המקום הריק ב־7, נקבל ״7 גדול מ־5״, וזה נכון. אם נמלא אותו ב־2, נקבל ״2 גדול מ־5״, וזה לא נכון.</p>
 <p>שתי הבחירות מותרות. הן פשוט יוצרות שני פסוקים שונים: אחד אמיתי ואחד שקרי.</p>
+</div>
+</details>
 </div>
 <div class="thmbox thmbox-remark" title="שלוש מילים שנשתמש בהן: משתנה, ערך והצבה">
 <p><strong>הערה 1.3.6 — שלוש מילים שנשתמש בהן: משתנה, ערך והצבה.</strong></p>
@@ -1077,6 +1085,8 @@ window.Quarto = {
 <div class="thmbox thmbox-example" title="אותו פסוק פתוח, שלוש הצבות">
 <p><strong>דוגמה 1.3.10 — אותו פסוק פתוח, שלוש הצבות.</strong></p>
 <p>ניקח את <span class="math inline">\(P(x)\)</span>: ״<span class="math inline">\(x&gt;5\)</span>״, כאשר <span class="math inline">\(x\)</span> הוא מספר שלם.</p>
+<p><strong>לכל הצבה, האם הפסוק שמתקבל אמת או שקר? הסבירו לפני פתיחת התשובה.</strong></p>
+<div class="lecture-table" data-given-cols="3">
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1107,11 +1117,18 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
+</div>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
 <p>בשורה האחרונה מתקבל שקר משום שהסימן <span class="math inline">\(&gt;\)</span> אומר ״גדול ממש״. המספר <span class="math inline">\(5\)</span> שווה ל־<span class="math inline">\(5\)</span>, ולכן אינו גדול ממנו. כל שורה בטבלה היא כבר פסוק, כי בחרנו בה מספר מסוים.</p>
+</div>
+</details>
 </div>
 <div class="thmbox thmbox-example" title="שני משתנים: מה עדיין נשאר פתוח?">
 <p><strong>דוגמה 1.3.11 — שני משתנים: מה עדיין נשאר פתוח?</strong></p>
 <p>במשפט ״<span class="math inline">\(x+y=10\)</span>״ יש שני מקומות לבחירה: <span class="math inline">\(x\)</span> ו־<span class="math inline">\(.y\)</span> שתי האותיות שונות, ולכן מותר לבחור להן ערכים שונים. נרשה כאן לבחור מספרים שלמים.</p>
+<p><strong>בכל שורה: האם נשאר ערך שצריך לבחור? האם כבר התקבל פסוק?</strong></p>
+<div class="lecture-table" data-given-cols="2">
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1138,7 +1155,12 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
+</div>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
 <p>אם בשלב האחרון נבחר דווקא <span class="math inline">\(y=4\)</span>, נקבל ״<span class="math inline">\(3+4=10\)</span>״, שהוא פסוק שקרי. גם הוא פסוק: אפשר לקבוע שהמשפט שהתקבל שגוי. <strong>״פתוח״ אינו שם אחר ל״שקרי״</strong>: פתוח אומר שעדיין נשאר משתנה חופשי; שקרי הוא תוצאה של בדיקת פסוק.</p>
+</div>
+</details>
 </div>
 <div id="box-game-substitution" class="thmbox thmbox-game" title="ממלאים את החסר">
 <p><strong>משחק 1.3.12 — ממלאים את החסר.</strong></p>
@@ -1174,7 +1196,7 @@ window.Quarto = {
 <ol type="1">
 <li>״<span class="math inline">\(7\)</span> הוא מספר זוגי.״</li>
 </ol>
-<div class="tf-quiz tf-explained" data-correct="true">
+<div class="tf-quiz" data-correct="true">
 <button class="tf-opt" data-val="true">פסוק</button>
 <button class="tf-opt" data-val="false">לא פסוק</button>
 <div class="tf-feedback"></div>
@@ -1183,7 +1205,7 @@ window.Quarto = {
 <ol start="2" type="1">
 <li>״תהיו בשקט!״</li>
 </ol>
-<div class="tf-quiz tf-explained" data-correct="false">
+<div class="tf-quiz" data-correct="false">
 <button class="tf-opt" data-val="true">פסוק</button>
 <button class="tf-opt" data-val="false">לא פסוק</button>
 <div class="tf-feedback"></div>
@@ -1192,7 +1214,7 @@ window.Quarto = {
 <ol start="3" type="1">
 <li>״<span class="math inline">\(x+1=3\)</span>״, כאשר <span class="math inline">\(x\)</span> הוא מספר שלם שעדיין לא בחרנו.</li>
 </ol>
-<div class="tf-quiz tf-explained" data-correct="false">
+<div class="tf-quiz" data-correct="false">
 <button class="tf-opt" data-val="true">פסוק</button>
 <button class="tf-opt" data-val="false">לא פסוק</button>
 <div class="tf-feedback"></div>
@@ -1212,66 +1234,9 @@ window.Quarto = {
 </section>
 </section>
 <section id="sec-truth-tables" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="sec-truth-tables"><span class="header-section-number">1.4</span> טבלאות אמת: איך מגדירים קשר לוגי?</h2>
+<h2 data-number="1.4" class="anchored" data-anchor-id="sec-truth-tables"><span class="header-section-number">1.4</span> מפסוקים פשוטים לפסוק מורכב</h2>
 <p>נניח ש־<span class="math inline">\(A\)</span> הוא הפסוק ״המחשב טעון״ ו־<span class="math inline">\(B\)</span> הוא הפסוק ״יש חיבור לרשת אלחוטית״. אפשר לשאול על כל אחד מהם בנפרד, ואפשר לחבר אותם: ״המחשב טעון <strong>וגם</strong> יש חיבור לרשת אלחוטית״. קיבלנו <span class="term"><strong>פסוק מורכב</strong></span>, שבנוי משני פסוקים בעזרת הקשר ״וגם״.</p>
 <p>המילים ״לא״, ״וגם״ ו״או״ נקראות <span class="term"><strong>קשרים לוגיים</strong></span>. לכל קשר יש כלל שקובע את ערך האמת של הפסוק המורכב מתוך ערכי האמת של החלקים. למשל, כדי שהמשפט עם ״וגם״ יהיה נכון, שני החלקים שלו צריכים להיות נכונים. בהמשך נכיר גם את הקשר ״אם… אז…״ ונשתמש בו כדי לנסח טיעונים.</p>
-<p>כדי להשתמש בקשר לוגי באופן מדויק, צריך לומר מה תהיה התוצאה <strong>בכל אפשרות</strong>: כשהחלקים אמת, כשהם שקר, וכשרק אחד מהם אמת. את הכלל הזה נכתוב בצורה מסודרת שנקראת <span class="term"><strong>טבלת אמת</strong></span>.</p>
-<div id="box-def-truth-table" class="thmbox thmbox-definition" title="מה מציגה טבלת אמת?">
-<p><strong>הגדרה 1.4.1 — מה מציגה טבלת אמת?</strong></p>
-<p>טבלת אמת מציגה את כל הצירופים האפשריים של ערכי האמת של החלקים, ולכל צירוף מציינת את ערך האמת של הפסוק שמתקבל מהם.</p>
-<p>כל <strong>שורה</strong> היא מצב אחד שבודקים. העמודות הראשונות מציגות את ערכי האמת של החלקים; עמודת התוצאה מציגה את ערך האמת של המשפט כולו. <span class="math inline">\(T\)</span> פירושו אמת, ו־<span class="math inline">\(F\)</span> פירושו שקר.</p>
-</div>
-<section id="אילו-אפשרויות-צריך-לכלול" class="level3" data-number="1.4.1">
-<h3 data-number="1.4.1" class="anchored" data-anchor-id="אילו-אפשרויות-צריך-לכלול"><span class="header-section-number">1.4.1</span> אילו אפשרויות צריך לכלול?</h3>
-<p>כאשר הקשר פועל על פסוק אחד, כמו ״לא״, יש שתי אפשרויות לבדוק: הפסוק המקורי אמת, או שהוא שקר. לכן יהיו בטבלה שתי שורות.</p>
-<p>כאשר הקשר מחבר שני פסוקים, כמו ״וגם״ או ״או״, יש ארבע אפשרויות. נרשום תחילה רק את החלקים, לפני שקבענו כיצד לחבר אותם:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th style="text-align: center;"><span class="math inline">\(A\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(B\)</span></th>
-<th style="text-align: left;">מה אומרת השורה?</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><span class="math inline">\(T\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(T\)</span></td>
-<td style="text-align: left;">שני החלקים אמת</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><span class="math inline">\(T\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(F\)</span></td>
-<td style="text-align: left;">החלק הראשון אמת והשני שקר</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><span class="math inline">\(F\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(T\)</span></td>
-<td style="text-align: left;">החלק הראשון שקר והשני אמת</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><span class="math inline">\(F\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(F\)</span></td>
-<td style="text-align: left;">שני החלקים שקר</td>
-</tr>
-</tbody>
-</table>
-<p>כדי להגדיר קשר, נוסיף לצירופים האלה עמודת תוצאה ונקבע בה <span class="math inline">\(T\)</span> או <span class="math inline">\(F\)</span> בכל שורה. למשל, ״וגם״ ייתן אמת רק בשורה שבה שני החלקים אמת. ״או״ ייתן אמת גם בשורות שבהן רק אחד החלקים אמת. נכתוב את הטבלאות המלאות מיד בסעיפים הבאים.</p>
-<div class="thmbox thmbox-key-point thmicon-rule" data-icon="rule" title="טבלת האמת מגדירה את הקשר">
-<p><strong>כלל — טבלת האמת מגדירה את הקשר.</strong></p>
-<p>כשמגדירים קשר לוגי, <span class="key-rule"><strong>עמודת התוצאה קובעת מה פירוש הקשר בכל מצב אפשרי</strong></span>. לכל צירוף של ערכי אמת יש תוצאה אחת שהכלל מחייב.</p>
-<p>שני קשרים יכולים לפעול על אותם פסוקים ובכל זאת לתת תוצאות שונות. מה שמבדיל ביניהם הוא הכלל שבעמודת התוצאה. בהמשך, המנורות והמשחקים יציגו את התוצאה שהטבלה קובעת.</p>
-</div>
-</section>
-<section id="איך-משתמשים-בטבלה" class="level3" data-number="1.4.2">
-<h3 data-number="1.4.2" class="anchored" data-anchor-id="איך-משתמשים-בטבלה"><span class="header-section-number">1.4.2</span> איך משתמשים בטבלה?</h3>
-<ol type="1">
-<li>בודקים מה ערך האמת של כל חלק במשפט.</li>
-<li>מוצאים את השורה שבה מופיעים הערכים האלה בעמודות החלקים.</li>
-<li>קוראים באותה שורה את עמודת התוצאה. זה ערך האמת של המשפט כולו.</li>
-</ol>
-<p>למשל, אם <span class="math inline">\(A\)</span> אמת ו־<span class="math inline">\(B\)</span> שקר, מחפשים את השורה <span class="math inline">\(A=T\)</span>, <span class="math inline">\(B=F\)</span>. אחר כך קוראים את התוצאה <strong>בטבלה של הקשר שבו השתמשנו</strong>. אותה שורה תופיע גם בטבלת ״וגם״ וגם בטבלת ״או״, אבל התוצאות בהן יכולות להיות שונות.</p>
-</section>
 </section>
 <section id="sec-connectives" class="level2" data-number="1.5">
 <h2 data-number="1.5" class="anchored" data-anchor-id="sec-connectives"><span class="header-section-number">1.5</span> קשרים לוגיים: מחברים פסוקים</h2>
@@ -1282,25 +1247,32 @@ window.Quarto = {
 <div id="box-def-negation" class="thmbox thmbox-definition">
 <p><strong>הגדרה 1.5.1.</strong></p>
 <p>ה<strong>שלילה</strong> של פסוק <span class="math inline">\(,A\)</span> שמסומנת <span class="math inline">\(\neg A\)</span> (קוראים: ״לא <span class="math inline">\(A\)</span>״), היא הפסוק שאמת בדיוק כאשר <span class="math inline">\(A\)</span> שקר.</p>
-<p>הטבלה הבאה מגדירה את ערך האמת של הפסוק בכל אפשרות:</p>
+<p><span id="box-def-truth-table"></span></p>
+<p>נרשום את הכלל בדוגמת הפקק בצורה שנקראת <span class="term"><strong>טבלת אמת</strong></span>. בעמודה <span class="math inline">\(A\)</span> נכתוב אם ״יש פקק בכביש״ אמת או שקר. בעמודה <span class="math inline">\(\neg A\)</span> נכתוב אם ״אין פקק בכביש״ אמת או שקר. <span class="math inline">\(T\)</span> מסמן אמת, ו־<span class="math inline">\(F\)</span> מסמן שקר.</p>
+<p><span class="key-rule"><strong>כל שורה מתארת מצב אחד. קוראים את שתי העמודות באותה שורה.</strong></span> כאן יש רק שתי אפשרויות לפסוק המקורי: אמת או שקר. עמודת השלילה קובעת את התוצאה בכל אחת מהן — כך הטבלה מגדירה את הקשר ״לא״.</p>
+<div class="lecture-table" data-given-cols="1" aria-label="טבלת השלילה בדוגמת הפקק">
 <table class="caption-top table">
 <thead>
 <tr class="header">
 <th style="text-align: center;"><span class="math inline">\(A\)</span></th>
 <th style="text-align: center;"><span class="math inline">\(\neg A\)</span></th>
+<th style="text-align: left;">מה אומרת השורה בדוגמה?</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: center;"><span class="math inline">\(T\)</span></td>
 <td style="text-align: center;"><span class="math inline">\(F\)</span></td>
+<td style="text-align: left;">יש פקק, ולכן ״אין פקק״ שקר.</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><span class="math inline">\(F\)</span></td>
 <td style="text-align: center;"><span class="math inline">\(T\)</span></td>
+<td style="text-align: left;">אין פקק: ״יש פקק״ שקר, ושלילתו אמת.</td>
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 <p>נקרא את השורות: אם <span class="math inline">\(A\)</span> אמת, <span class="math inline">\(\neg A\)</span> שקר; אם <span class="math inline">\(A\)</span> שקר, <span class="math inline">\(\neg A\)</span> אמת. זהו הכלל שמגדיר את השלילה. לדוגמה, כשאין פקק, ״יש פקק״ שקר ו״אין פקק״ אמת.</p>
 <div class="thmbox thmbox-key-point thmicon-rule" data-icon="rule" title="הכלל של ״לא״">
@@ -1336,10 +1308,18 @@ window.Quarto = {
 </div>
 <div id="box-exm-negation" class="thmbox thmbox-example">
 <p><strong>דוגמה 1.5.4.</strong></p>
-<ul>
-<li>אם <span class="math inline">\(A\)</span> הוא ״<span class="math inline">\(5\)</span> הוא מספר ראשוני״ (אמת), אז <span class="math inline">\(\neg A\)</span> הוא ״<span class="math inline">\(5\)</span> אינו מספר ראשוני״ (שקר).</li>
-<li>אם <span class="math inline">\(B\)</span> הוא ״יש פקק בכביש״, אז <span class="math inline">\(\neg B\)</span> הוא ״אין פקק בכביש״. שני הניסוחים ״אין פקק בכביש״ ו״לא נכון שיש פקק בכביש״ מבטאים אותה שלילה.</li>
-</ul>
+<p>אם <span class="math inline">\(A\)</span> הוא ״<span class="math inline">\(5\)</span> הוא מספר ראשוני״ (אמת), <strong>מה אומר <span class="math inline">\(\neg A\)</span>, ומה ערך האמת שלו?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p><span class="math inline">\(\neg A\)</span> הוא ״<span class="math inline">\(5\)</span> אינו מספר ראשוני״ (שקר).</p>
+</div>
+</details>
+<p>אם <span class="math inline">\(B\)</span> הוא ״יש פקק בכביש״, <strong>איך ננסח את <span class="math inline">\(\neg B\)</span> במילים?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p><span class="math inline">\(\neg B\)</span> הוא ״אין פקק בכביש״. שני הניסוחים ״אין פקק בכביש״ ו״לא נכון שיש פקק בכביש״ מבטאים אותה שלילה.</p>
+</div>
+</details>
 </div>
 <div id="box-q-translate-not" class="thmbox thmbox-question" title="מתחילים ממשפט אחד">
 <p><strong>שאלה 1.5.5 — מתחילים ממשפט אחד.</strong></p>
@@ -1358,17 +1338,26 @@ window.Quarto = {
 </section>
 <section id="sec-and" class="level3" data-number="1.5.2">
 <h3 data-number="1.5.2" class="anchored" data-anchor-id="sec-and"><span class="header-section-number">1.5.2</span> וגם</h3>
-<p>נחזור למשפט ״המחשב טעון <strong>וגם</strong> יש חיבור לרשת אלחוטית״. אם המחשב טעון אבל אין חיבור לרשת, רק החלק הראשון נכון, ולכן המשפט כולו שקרי. המילה ״וגם״ דורשת ששני החלקים יהיו נכונים יחד.</p>
+<p>נסמן ב־<span class="math inline">\(A\)</span> את ״המחשב טעון״ וב־<span class="math inline">\(B\)</span> את ״יש חיבור לרשת אלחוטית״. נחזור למשפט ״המחשב טעון <strong>וגם</strong> יש חיבור לרשת אלחוטית״. אם המחשב טעון אבל אין חיבור לרשת, רק החלק הראשון נכון, ולכן המשפט כולו שקרי. המילה ״וגם״ דורשת ששני החלקים יהיו נכונים יחד.</p>
 <div id="box-def-and" class="thmbox thmbox-definition">
 <p><strong>הגדרה 1.5.6.</strong></p>
 <p>הפסוק ״<span class="math inline">\(A\)</span> <strong>וגם</strong> <span class="math inline">\(B\)</span>״, שמסומן <span class="math inline">\(,A \land B\)</span> הוא אמת בדיוק כאשר <strong>שני</strong> הפסוקים <span class="math inline">\(A\)</span> ו־<span class="math inline">\(B\)</span> אמת.</p>
-<p>הטבלה הבאה מגדירה את ערך האמת של הפסוק בכל אפשרות:</p>
+<p>כעת יש שני חלקים, ולכן צריך לבדוק ארבע אפשרויות. כשהמחשב טעון, ייתכן שיש חיבור לרשת וייתכן שאין; וכשהמחשב אינו טעון, שוב ייתכן שיש חיבור וייתכן שאין. כל אפשרות מקבלת שורה משלה.</p>
+<p>בשתי העמודות הראשונות נרשום את המצב של <span class="math inline">\(A\)</span> ושל <span class="math inline">\(B\)</span>. בעמודה השלישית נרשום את ערך האמת של <strong>המשפט כולו</strong>, <span class="math inline">\(A\land B\)</span>. <span class="key-rule"><strong>עמודת התוצאה מגדירה את ״וגם״: היא נותנת אמת רק כשהחלק הראשון וגם החלק השני אמת.</strong></span></p>
+<div class="lecture-table" data-given-cols="2" aria-label="טבלת וגם בדוגמת המחשב והרשת">
 <table class="caption-top table">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 21%">
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: center;"><span class="math inline">\(A\)</span></th>
 <th style="text-align: center;"><span class="math inline">\(B\)</span></th>
 <th style="text-align: center;"><span class="math inline">\(A \land B\)</span></th>
+<th style="text-align: left;">מה אומרת השורה בדוגמה?</th>
 </tr>
 </thead>
 <tbody>
@@ -1376,24 +1365,29 @@ window.Quarto = {
 <td style="text-align: center;"><span class="math inline">\(T\)</span></td>
 <td style="text-align: center;"><span class="math inline">\(T\)</span></td>
 <td style="text-align: center;"><span class="math inline">\(T\)</span></td>
+<td style="text-align: left;">המחשב טעון ויש חיבור לרשת. שתי הדרישות מתקיימות.</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><span class="math inline">\(T\)</span></td>
 <td style="text-align: center;"><span class="math inline">\(F\)</span></td>
 <td style="text-align: center;"><span class="math inline">\(F\)</span></td>
+<td style="text-align: left;">המחשב טעון, אבל אין חיבור לרשת. הדרישה השנייה אינה מתקיימת.</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;"><span class="math inline">\(F\)</span></td>
 <td style="text-align: center;"><span class="math inline">\(T\)</span></td>
 <td style="text-align: center;"><span class="math inline">\(F\)</span></td>
+<td style="text-align: left;">יש חיבור לרשת, אבל המחשב אינו טעון. הדרישה הראשונה אינה מתקיימת.</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><span class="math inline">\(F\)</span></td>
 <td style="text-align: center;"><span class="math inline">\(F\)</span></td>
 <td style="text-align: center;"><span class="math inline">\(F\)</span></td>
+<td style="text-align: left;">המחשב אינו טעון וגם אין חיבור לרשת. שתי הדרישות אינן מתקיימות.</td>
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 <p>למשל, בשורה <span class="math inline">\(A=T\)</span>, <span class="math inline">\(B=F\)</span>, המחשב טעון אבל אין חיבור לרשת. בעמודת <span class="math inline">\(A\land B\)</span> מופיע <span class="math inline">\(F\)</span>, ולכן המשפט ״המחשב טעון וגם יש חיבור לרשת״ שקר. רק השורה הראשונה נותנת אמת.</p>
 <p>במשחק הבא ערכי האמת כבר נבחרו עבורכם. קראו את שני החלקים ובחרו אם המשפט כולו אמת (המנורה דולקת) או שקר (המנורה כבויה). בציור, שני מגעים בזה אחר זה ממחישים את הדרישה הזאת: המסלול סגור רק כששניהם סגורים. לחיבור הזה קוראים חיבור <strong>בטור</strong>.</p>
@@ -1403,11 +1397,24 @@ window.Quarto = {
 </div>
 <div id="box-exm-and" class="thmbox thmbox-example">
 <p><strong>דוגמה 1.5.8.</strong></p>
-<ul>
-<li>״<span class="math inline">\(2\)</span> זוגי <strong>וגם</strong> <span class="math inline">\(2\)</span> ראשוני״: שני החלקים אמת, ולכן הפסוק כולו <strong>אמת</strong>.</li>
-<li>״<span class="math inline">\(2\)</span> זוגי <strong>וגם</strong> <span class="math inline">\(2&gt;3\)</span>״: החלק השני שקר, ולכן הפסוק כולו <strong>שקר</strong>.</li>
-<li>״קר בחוץ, <strong>אבל</strong> נעים״: מבחינה לוגית זה ״קר בחוץ וגם נעים״. המילה ״אבל״ מדגישה ניגוד בשיחה, אך מבחינת ערכי האמת שני החלקים צריכים להיות נכונים.</li>
-</ul>
+<p><strong>״<span class="math inline">\(2\)</span> זוגי וגם <span class="math inline">\(2\)</span> ראשוני״. אמת או שקר? מדוע?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>שני החלקים אמת, ולכן הפסוק כולו <strong>אמת</strong>.</p>
+</div>
+</details>
+<p><strong>״<span class="math inline">\(2\)</span> זוגי וגם <span class="math inline">\(2&gt;3\)</span>״. אמת או שקר? מדוע?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>החלק השני שקר, ולכן הפסוק כולו <strong>שקר</strong>.</p>
+</div>
+</details>
+<p><strong>״קר בחוץ, אבל נעים״. איזה קשר לוגי מבטאת כאן המילה ״אבל״?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>מבחינה לוגית זה ״קר בחוץ וגם נעים״. המילה ״אבל״ מדגישה ניגוד בשיחה, אך מבחינת ערכי האמת שני החלקים צריכים להיות נכונים.</p>
+</div>
+</details>
 </div>
 <div id="box-q-translate-and" class="thmbox thmbox-question" title="מנסחים משפט עם ״וגם״ ו״לא״">
 <p><strong>שאלה 1.5.9 — מנסחים משפט עם ״וגם״ ו״לא״.</strong></p>
@@ -1577,11 +1584,24 @@ window.Quarto = {
 </div>
 <div id="box-exm-xor" class="thmbox thmbox-example">
 <p><strong>דוגמה 1.5.17.</strong></p>
-<ul>
-<li>״בארוחה העסקית מקבלים קינוח <strong>או</strong> קפה״: כמעט תמיד הכוונה ל־<span class="math inline">\(:\oplus\)</span> אחד מהם, לא שניהם.</li>
-<li>״אפשר להיכנס עם כרטיס סטודנט <strong>או</strong> עם אישור כניסה״: כאן הכוונה ל־<span class="math inline">\(:\lor\)</span> מי שמחזיק גם בכרטיס סטודנט וגם באישור כניסה רשאי להיכנס. מדובר ברשות להיכנס, ולא בקביעה שהוא אכן ייכנס.</li>
-<li>במעגל המדרגות שבמשחק, האור דולק כשבדיוק אחד מהמתגים במצב <span class="math inline">\(T\)</span>, ולכן שינוי במצבו של אחד המתגים, למטה או למעלה, משנה גם את מצב המנורה: מדולקת לכבויה ולהפך. זה <span class="math inline">\(.\oplus\)</span></li>
-</ul>
+<p><strong>״בארוחה העסקית מקבלים קינוח או קפה״. איזה סוג של ״או״ מתאים כאן בדרך כלל?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>כמעט תמיד הכוונה ל־<span class="math inline">\(:\oplus\)</span> אחד מהם, לא שניהם.</p>
+</div>
+</details>
+<p><strong>״אפשר להיכנס עם כרטיס סטודנט או עם אישור כניסה״. האם מי שמחזיק בשניהם רשאי להיכנס? איזה ״או״ מתאים?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>כאן הכוונה ל־<span class="math inline">\(:\lor\)</span> מי שמחזיק גם בכרטיס סטודנט וגם באישור כניסה רשאי להיכנס. מדובר ברשות להיכנס, ולא בקביעה שהוא אכן ייכנס.</p>
+</div>
+</details>
+<p>במעגל המדרגות שבמשחק, האור דולק כשבדיוק אחד מהמתגים במצב <span class="math inline">\(T\)</span>. <strong>איזה קשר מתאר זאת? מה יקרה אם נשנה את מצבו של אחד המתגים?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>זה <span class="math inline">\(.\oplus\)</span> שינוי במצבו של אחד המתגים, למטה או למעלה, משנה גם את מצב המנורה: מדולקת לכבויה ולהפך.</p>
+</div>
+</details>
 </div>
 <div class="thmbox thmbox-self-check">
 <p><strong>בדיקה עצמית.</strong></p>
@@ -1762,6 +1782,8 @@ window.Quarto = {
 <div id="box-exm-table-locked" class="thmbox thmbox-example" title="טבלת האמת של $(A \lor B) \land \neg C$">
 <p><strong>דוגמה 1.6.3 — טבלת האמת של <span class="math inline">\((A \lor B) \land \neg C\)</span>.</strong></p>
 <p>נוסיף עמודת עזר לכל חלק: <span class="math inline">\(A \lor B\)</span> (לפי טבלת ה״או״) ו־<span class="math inline">\(\neg C\)</span> (הפוך מ־<span class="math inline">\(C\)</span>). העמודה האחרונה היא ״וגם״ של שתי עמודות העזר:</p>
+<p><strong>חשבו את עמודות העזר ואת התוצאה. באילו שורות הפסוק אמת?</strong></p>
+<div class="lecture-table" data-given-cols="3">
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1840,7 +1862,12 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
+</div>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
 <p>הפסוק אמת בשלוש שורות: בדיוק כשיש קפה או תה, והתור לא ארוך.</p>
+</div>
+</details>
 </div>
 <div id="box-q-half-table" class="thmbox thmbox-question" title="עכשיו אתם">
 <p><strong>שאלה 1.6.4 — עכשיו אתם.</strong></p>
@@ -2009,6 +2036,7 @@ window.Quarto = {
 <div class="thmbox thmbox-proof">
 <p><strong>הוכחה.</strong></p>
 <p>נבדוק את החוק הראשון בטבלת אמת. העמודות של שני הצדדים זהות:</p>
+<div class="lecture-table" data-given-cols="2">
 <table class="caption-top table">
 <colgroup>
 <col style="width: 14%">
@@ -2069,7 +2097,12 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
+</div>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת מסקנת הבדיקה</summary>
+<div class="lecture-answer foldable" title="הצגת מסקנת הבדיקה">
 <p>את החוק השני תבדקו בעצמכם <a href="#box-q-ex-demorgan2">בתרגול שבהמשך הסעיף</a>. גם שם נחשב את שני הניסוחים באותן שורות ונשווה את התוצאות.</p>
+</div>
+</details>
 </div>
 </section>
 <section id="sec-full-signal" class="level3" data-number="1.8.2">
@@ -2116,7 +2149,12 @@ window.Quarto = {
 <div id="box-exm-gate-sign" class="thmbox thmbox-example" title="השלט של השומר">
 <p><strong>דוגמה 1.8.5 — השלט של השומר.</strong></p>
 <p>השומר קבע כלל: ״מותר להיכנס אם ורק אם יש כרטיס <strong>וגם</strong> השם מופיע ברשימה״. הרובוט התבקש לכתוב מי <strong>אינו עומד בתנאי הכניסה</strong>, והדפיס בגאווה: ״מי שאין לו כרטיס <strong>וגם</strong> לא מופיע ברשימה״.</p>
+<p><strong>האם הרובוט ניסח את השלילה נכון? מה צריך לתקן?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
 <p>לפי הרובוט, מי שיש לו כרטיס אבל לא מופיע ברשימה לא נמצא באף אחד מהשלטים. בדומה לטעות של הרובוט במשחק, הוא שלל את שני החלקים אך השאיר ביניהם ״וגם״. לפי חוק דה מורגן, השלילה של ״כרטיס <strong>וגם</strong> רשימה״ היא ״אין כרטיס <strong>או</strong> לא ברשימה״. זה השלט הנכון.</p>
+</div>
+</details>
 </div>
 <div class="thmbox thmbox-self-check">
 <p><strong>בדיקה עצמית.</strong></p>
@@ -2200,14 +2238,7 @@ window.Quarto = {
 </div>
 <div id="box-exm-smoke-fire" class="thmbox thmbox-example" title="״אין עשן בלי אש״ — לאיזה כיוון הולך החץ?">
 <p><strong>דוגמה 1.9.2 — ״אין עשן בלי אש״ — לאיזה כיוון הולך החץ?</strong></p>
-<p>לצורך הדוגמה נקבל את הכלל ״אין עשן בלי אש״. נסמן ב־<span class="math inline">\(S\)</span> את ״יש עשן״ וב־<span class="math inline">\(H\)</span> את ״יש אש״. המשפט אומר: <strong>אם יש עשן, אז יש אש</strong>. לכן נכתוב <span class="math inline">\(S \to H\)</span>.</p>
-<p>בסיפור הזה האש היא שיוצרת את העשן. אבל כשרואים עשן, משתמשים בכלל כדי להסיק שיש אש. אלה שני כיוונים שונים:</p>
-<figure class="logic-directions figure" aria-label="הבחנה בין כיוון הסיבה לכיוון ההסקה">
-  <div class="logic-direction"><strong>בסיפור: מה יוצר מה?</strong><div class="logic-arrow-row" dir="ltr"><span dir="rtl">אש</span><span class="logic-arrow" aria-label="יוצרת">⟶</span><span dir="rtl">עשן</span></div><p>האש יוצרת את העשן.</p></div>
-  <div class="logic-direction"><strong>בהסקה: ממה מסיקים מה?</strong><div class="logic-arrow-row" dir="ltr"><span dir="rtl">עשן</span><span class="logic-arrow" aria-label="ממנו מסיקים שיש">⟶</span><span dir="rtl">אש</span></div><p>רואים עשן; לפי הכלל, מסיקים שיש אש.</p></div>
-  <figcaption>כיוון ההסקה יכול להיות הפוך מכיוון הסיבה והתוצאה.</figcaption>
-</figure>
-<p><span class="key-rule"><strong>מהעובדה שהאש גורמת לעשן לא מחליטים לאיזה כיוון לכתוב את הגרירה. קוראים מה המשפט טוען.</strong></span></p>
+<p>לצורך הדוגמה נקבל את הכלל ״אין עשן בלי אש״. נסמן ב־<span class="math inline">\(S\)</span> את ״יש עשן״ וב־<span class="math inline">\(H\)</span> את ״יש אש״.</p>
 <p><strong>בדיקה קצרה:</strong> איזה ניסוח מתרגם את ״אין עשן בלי אש״?</p>
 <div class="tf-quiz" data-correct="true">
 <button class="tf-opt" data-val="true">אם יש עשן, אז יש אש.</button>
@@ -2215,6 +2246,18 @@ window.Quarto = {
 <div class="tf-feedback" aria-live="polite"></div>
 <div class="tf-why">הניסוח המתאים הוא <b>״אם יש עשן, אז יש אש״</b>. המשפט שולל מצב שבו יש עשן ואין אש. המשפט ההפוך, ״אם יש אש, אז יש עשן״, הוא טענה אחרת; הוא אינו התרגום של הפתגם.</div>
 </div>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת ההסבר והאיור</summary>
+<div class="lecture-answer foldable" title="הצגת ההסבר והאיור">
+<p>המשפט אומר: <strong>אם יש עשן, אז יש אש</strong>. לכן נכתוב <span class="math inline">\(S \to H\)</span>.</p>
+<p>בסיפור הזה האש היא שיוצרת את העשן. אבל כשרואים עשן, משתמשים בכלל כדי להסיק שיש אש. אלה שני כיוונים שונים:</p>
+<figure class="logic-directions figure" aria-label="הבחנה בין כיוון הסיבה לכיוון ההסקה">
+  <div class="logic-direction"><strong>בסיפור: מה יוצר מה?</strong><div class="logic-arrow-row" dir="ltr"><span dir="rtl">אש</span><span class="logic-arrow" aria-label="יוצרת">⟶</span><span dir="rtl">עשן</span></div><p>האש יוצרת את העשן.</p></div>
+  <div class="logic-direction"><strong>בהסקה: ממה מסיקים מה?</strong><div class="logic-arrow-row" dir="ltr"><span dir="rtl">עשן</span><span class="logic-arrow" aria-label="ממנו מסיקים שיש">⟶</span><span dir="rtl">אש</span></div><p>רואים עשן; לפי הכלל, מסיקים שיש אש.</p></div>
+  <figcaption>כיוון ההסקה יכול להיות הפוך מכיוון הסיבה והתוצאה.</figcaption>
+</figure>
+<p><span class="key-rule"><strong>מהעובדה שהאש גורמת לעשן לא מחליטים לאיזה כיוון לכתוב את הגרירה. קוראים מה המשפט טוען.</strong></span></p>
+</div>
+</details>
 </div>
 <div id="box-check-false-implies-true" class="thmbox thmbox-self-check" title="רגע, גם זה נחשב גרירה אמיתית?">
 <p><strong>בדיקה עצמית — רגע, גם זה נחשב גרירה אמיתית?</strong></p>
@@ -2235,11 +2278,17 @@ window.Quarto = {
 </div>
 <div id="box-exm-russell-again" class="thmbox thmbox-example" title="למה F גורר T מקבל T בטבלה?">
 <p><strong>דוגמה 1.9.4 — למה F גורר T מקבל T בטבלה?</strong></p>
+<p>נניח שלאדם אין כרטיס, ובכל זאת השומר מכניס אותו. <span class="math inline">\(A\)</span> הוא ״יש לאדם כרטיס״ ו־<span class="math inline">\(B\)</span> הוא ״השומר מכניס אותו״. לכן <span class="math inline">\(A=F\)</span> ו־<span class="math inline">\(B=T\)</span>.</p>
+<p><strong>האם השומר הפר את הכלל ״אם יש לאדם כרטיס, השומר מכניס אותו״? איזה ערך מקבלת הגרירה?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
 <p>נניח שלאדם אין כרטיס. בין שהשומר מכניס אותו ובין שאינו מכניס אותו, לא הופר הכלל ״אם יש לאדם כרטיס, השומר מכניס אותו״. לכן בשתי השורות שבהן <span class="math inline">\(A\)</span> שקר, הגרירה <span class="math inline">\(A \to B\)</span> אמת.</p>
 <p>נתעכב דווקא על המקרה שנראה מוזר: <strong>אין כרטיס, ובכל זאת השומר מכניס את האדם</strong>. אולי הוא מכיר אותו. כאן <span class="math inline">\(A=F\)</span> ו־<span class="math inline">\(B=T\)</span>. האם השומר הפר את ההבטחה? לא: הוא הבטיח להכניס את מי שיש לו כרטיס. הוא <strong>לא</strong> אמר שרק בעלי כרטיס ייכנסו.</p>
 <p><span class="key-rule"><strong>הגרירה אוסרת מצב אחד: ההנחה נכונה והמסקנה שגויה. היא אינה אוסרת מסקנה נכונה כשההנחה שגויה.</strong></span> לכן בשורה <span class="math inline">\(A=F\)</span>, <span class="math inline">\(B=T\)</span> התוצאה של <span class="math inline">\(A \to B\)</span> היא <span class="math inline">\(T\)</span>.</p>
 <p>זאת קריאה של <strong>פסוק מורכב</strong> בטבלת האמת. היא אינה אומרת ש״שקר יוצר אמת״, ואינה אומרת שהוכחנו את <span class="math inline">\(B\)</span> בעזרת <span class="math inline">\(A\)</span> השקרי. נתון לנו כאן ש־<span class="math inline">\(A\)</span> שקר וש־<span class="math inline">\(B\)</span> אמת, ואנחנו מחשבים את ערך הגרירה כולה. אילו <span class="math inline">\(B\)</span> היה שקר, גם אז הגרירה הייתה אמת: כשהתנאי <span class="math inline">\(A\)</span> אינו מתקיים, הכלל אינו דורש תוצאה מסוימת עבור <span class="math inline">\(B\)</span>.</p>
 <p>הרושם שהשומר כן הפר את ההבטחה נובע לעיתים מהוספת המילה <strong>״רק״</strong> בראש: ״יכניסו אותי אם ורק אם יש לי כרטיס״. זה כלל חזק יותר, עם דרישה בשני הכיוונים. נכיר אותו <a href="#sec-iff">בהמשך, בסעיף ״אם ורק אם״</a>. קודם נראה את הבלבול בסיפור שקשה לשכוח.</p>
+</div>
+</details>
 </div>
 <div id="box-exm-candy-promise" class="thmbox thmbox-example" title="הארוחה נגמרה. גם הממתק.">
 <p><strong>דוגמה 1.9.5 — הארוחה נגמרה. גם הממתק.</strong></p>
@@ -2259,6 +2308,8 @@ window.Quarto = {
 <div class="tf-feedback" aria-live="polite"></div>
 <div class="tf-why"><b>מבחינת התנאי שנאמר, אמא לא סתרה את דבריה.</b> היא אמרה: ״אם לא תסיים את הארוחה, אני אוכל את הממתק שלך״. היא לא אמרה: ״אם תסיים, לא אוכל אותו״. טבעי שהילד יבין גם את ההבטחה השנייה מתוך השיחה, אבל היא אינה נובעת לוגית מן התנאי הראשון. זה הפער שעליו בנויה הבדיחה.</div>
 </div>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת הפירוק הלוגי</summary>
+<div class="lecture-answer foldable" title="הצגת הפירוק הלוגי">
 <p>נפרק את הסיפור לאט. התנאי של אמא הוא <strong>״אם לא תסיים״</strong>. כדי לא להסתבך עם עוד סימן שלילה, ניתן לכל התנאי הזה שם:</p>
 <ul>
 <li><span class="math inline">\(A\)</span>: ״הילד <strong>לא סיים</strong> את הארוחה״.</li>
@@ -2267,6 +2318,8 @@ window.Quarto = {
 <p>התנאי שאמא אמרה הוא <span class="math inline">\(A \to B\)</span>. מה קרה בפועל? הילד <strong>כן סיים</strong>, ולכן <span class="math inline">\(A=F\)</span>. אמא אכלה את הממתק, ולכן <span class="math inline">\(B=T\)</span>. זו בדיוק השורה המבלבלת: <span class="math inline">\(F \to T\)</span>, והערך של הגרירה כולה הוא <span class="math inline">\(T\)</span>.</p>
 <p>מה היה סותר את דבריה? אילו הילד <strong>לא סיים</strong> ובכל זאת אמא <strong>לא אכלה את הממתק</strong>. זה המצב <span class="math inline">\(A=T\)</span>, <span class="math inline">\(B=F\)</span>, והוא היחיד שהכלל שולל.</p>
 <p><span class="key-rule"><strong>מ״אם לא תסיים, אוכל את הממתק״ לא נובע ״אם תסיים, לא אוכל את הממתק״.</strong></span> המשפט השני הוא הבטחה נוספת. בשיחה יומיומית טבעי להבין אותה מתוך ההקשר; בתרגיל בלוגיקה צריך לבדוק אם היא נאמרה או נובעת מן הנתונים.</p>
+</div>
+</details>
 </div>
 <p>כעת נחזור לדוגמת הכניסה: <span class="math inline">\(A\)</span> מציין שיש לאדם כרטיס, ו־<span class="math inline">\(B\)</span> מציין שהשומר מכניס אותו. אלה השמות שנשתמש בהם בפסקה הבאה, ולא השמות מסיפור הממתק.</p>
 <p>אפשר לתאר את אותה טבלת אמת גם בעזרת ״לא״ ו״או״. ההבטחה אינה מופרת כאשר אין כרטיס, או כאשר השומר מכניס את האדם. לעומת זאת, היא מופרת רק כשיש כרטיס והשומר אינו מכניס אותו. לכן הפסוק <span class="math inline">\(A \to B\)</span> מקבל בכל שורה אותו ערך אמת כמו <span class="math inline">\(\neg A \lor B\)</span>. המנורה במשחק ממחישה את הכלל: היא דולקת במצבים שבהם ההבטחה אינה מופרת, וכבויה במצב היחיד שבו היא מופרת. כאן מספיק להציג את הפסוק במעגל רגיל.</p>
@@ -2396,8 +2449,13 @@ window.Quarto = {
 <li>אם לא יסיים, אמא תאכל את הממתק.</li>
 <li>אם יסיים, אמא לא תאכל את הממתק.</li>
 </ol>
+<p><strong>איזה קשר מבטא את שני הכללים יחד? איך הוא שונה מן ההבטחה הראשונה?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
 <p>שני הכללים יחד אומרים: ״אמא תאכל את הממתק <strong>אם ורק אם</strong> הילד לא יסיים את הארוחה״. זהו <span class="math inline">\(A \leftrightarrow B\)</span>. לפי הכלל הזה, אמא אינה יכולה לאכול את הממתק כשהילד סיים את הארוחה.</p>
 <p>בטבלה למעלה רואים בדיוק את ההבדל: <span class="key-rule"><strong>בשורה <span class="math inline">\(A=F\)</span>, <span class="math inline">\(B=T\)</span>, הגרירה אמת, אבל ״אם ורק אם״ שקר.</strong></span> זה מה שקרה בסיפור. אילו אמא הייתה אומרת במפורש ״אם תסיים, לא אוכל את הממתק״, היא אכן הייתה סותרת את דבריה.</p>
+</div>
+</details>
 <p><strong>שינוי קטן בסיפור:</strong> אמא אומרת במפורש את שני הכללים. הילד מסיים, ואמא בכל זאת אוכלת את הממתק. האם הפעם היא הפרה את ההבטחה?</p>
 <div class="tf-quiz" data-correct="true">
 <button class="tf-opt" data-val="true">כן. הפעם נאמר במפורש שאם יסיים, היא לא תאכל את הממתק.</button>
@@ -2540,9 +2598,28 @@ window.Quarto = {
 <p>את כל החוקים האלה אפשר לבדוק בטבלת אמת קטנה. בטבלה הם כתובים עם <span class="math inline">\(A, B, C\)</span>, אבל מותר להציב במקומם כל פסוק, גם מורכב.</p>
 <div id="box-exm-negate-implication" class="thmbox thmbox-example" title="מה השלילה של ״אם... אז...״?">
 <p><strong>דוגמה 1.10.2 — מה השלילה של ״אם… אז…״?</strong></p>
-<p>נפשט את <span class="math inline">\(\neg(A \to B)\)</span> בשלושה צעדים: <span class="math display">\[.\neg(A \to B) \;\equiv\; \neg(\neg A \lor B) \;\equiv\; \neg\neg A \land \neg B \;\equiv\; A \land \neg B\]</span> בצעד הראשון השתמשנו בגרירה כ״או״, בשני בחוק דה מורגן, ובשלישי בשלילה כפולה.</p>
+<p>נפשט את <span class="math inline">\(\neg(A \to B)\)</span> בשלושה צעדים.</p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת מעבר 1 והנימוק</summary>
+<div class="lecture-answer foldable" title="הצגת מעבר 1 והנימוק">
+<p><strong>גרירה כ״או״.</strong> מחליפים את <span class="math inline">\(A\to B\)</span> בתוך השלילה בנוסחה שקולה: <span class="math display">\[\neg(A\to B)\equiv\neg(\neg A\lor B).\]</span></p>
+</div>
+</details>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת מעבר 2 והנימוק</summary>
+<div class="lecture-answer foldable" title="הצגת מעבר 2 והנימוק">
+<p><strong>חוק דה מורגן.</strong> שוללים את שני החלקים ומחליפים ״או״ ב״וגם״: <span class="math display">\[\neg(\neg A\lor B)\equiv\neg\neg A\land\neg B.\]</span></p>
+</div>
+</details>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת מעבר 3 והנימוק</summary>
+<div class="lecture-answer foldable" title="הצגת מעבר 3 והנימוק">
+<p><strong>שלילה כפולה.</strong> שתי השלילות על <span class="math inline">\(A\)</span> מתבטלות: <span class="math display">\[\neg\neg A\land\neg B\equiv A\land\neg B.\]</span></p>
+</div>
+</details>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת הפירוש במילים</summary>
+<div class="lecture-answer foldable" title="הצגת הפירוש במילים">
 <p>כלומר: השלילה של ״אם יש לך כרטיס, אז תיכנס״ היא ״יש לך כרטיס, <strong>ולא תיכנס</strong>״. שני המשפטים מתייחסים לאותה כניסה ולאותו זמן.</p>
 <p><span class="key-rule"><strong>הגרירה נשללת כאשר התנאי מתקיים, אבל מה שהובטח אינו מתקיים.</strong></span> לכן שלילת <span class="math inline">\(A \to B\)</span> שקולה ל־<span class="math inline">\(A \land \neg B\)</span>. שלילת שני חלקי הגרירה אינה נותנת את שלילת המשפט כולו.</p>
+</div>
+</details>
 </div>
 <div id="box-q-name-the-law" class="thmbox thmbox-question" title="עכשיו אתם">
 <p><strong>שאלה 1.10.3 — עכשיו אתם.</strong></p>
@@ -2642,6 +2719,7 @@ window.Quarto = {
 <div class="thmbox thmbox-proof">
 <p><strong>הוכחה.</strong></p>
 <p>נבדוק את כלל הניתוק. ההנחות הן <span class="math inline">\(A \to B\)</span> ו־<span class="math inline">\(.A\)</span> נחפש בטבלה את השורות שבהן <strong>שתיהן</strong> אמת:</p>
+<div class="lecture-table" data-given-cols="2">
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2683,7 +2761,12 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
+</div>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת מסקנת הבדיקה</summary>
+<div class="lecture-answer foldable" title="הצגת מסקנת הבדיקה">
 <p>יש רק שורה אחת כזו, ובה המסקנה <span class="math inline">\(B\)</span> אמת. לכן הטיעון תקף. מיד נבדוק את כלל השלילה בטבלה. בהמשך אותו סעיף נשלב את כלל השרשרת ואת כלל השלילה בשאלה על הגשם.</p>
+</div>
+</details>
 </div>
 <div class="thmbox thmbox-key-point thmicon-method" data-icon="method" title="ממשפטים במילים להוכחה שאתם כותבים">
 <p><strong>שיטת הוכחה — ממשפטים במילים להוכחה שאתם כותבים.</strong></p>
@@ -2808,6 +2891,8 @@ window.Quarto = {
 <p><strong>דוגמה 1.12.1 — ״שנינו נוכלים״.</strong></p>
 <p>אלון אומר: ״שנינו נוכלים״ (הוא ובתיה). בתיה שותקת. מי אביר ומי נוכל?</p>
 <p>נסמן <span class="math inline">\(A\)</span> = ״אלון אביר״, <span class="math inline">\(B\)</span> = ״בתיה אבירה״. הטענה של אלון היא <span class="math inline">\(.\neg A \land \neg B\)</span> נעבור על כל ארבע השורות, ונבדוק בכל שורה אם <span class="term"><strong>ערך האמת</strong></span> של הטענה של אלון שווה לערכו של <span class="math inline">\(:A\)</span></p>
+<p><strong>אילו שורות מתאימות לכך שאביר אומר אמת ונוכל משקר?</strong></p>
+<div class="lecture-table" data-given-cols="2">
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2844,7 +2929,12 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
+</div>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
 <p>רק שורה אחת מתאימה לכללי האי: <strong>אלון נוכל, ובתיה אבירה.</strong> שימו לב לשורה האחרונה: אילו שניהם היו נוכלים, אלון היה אומר אמת, ונוכל לא יכול לעשות את זה. ועוד דבר: הטענה של אלון שקרית, אבל זה <strong>לא</strong> אומר ששניהם אבירים. השלילה של ״שנינו נוכלים״ היא ״לפחות אחד מאיתנו אביר״.</p>
+</div>
+</details>
 </div>
 <p>כל ניחוש במשחק הבא הוא שורה אחת בטבלת אמת. פתרון החידה הוא בחירה בסוגי התושבים שלפיה כל אביר אומר אמת וכל נוכל משקר. כל בחירה כזו מופיעה בשורה בטבלה.</p>
 <div id="box-game-gate" class="thmbox thmbox-game" title="מי עובר בשער?">
@@ -3075,8 +3165,18 @@ window.Quarto = {
 <p>נחזור לעולם המספרים <span class="math inline">\(D=\{1,2,3,4\}\)</span> ולתיאור <span class="math inline">\(P(x)\)</span>: ״<span class="math inline">\(x&gt;2\)</span>״. נכיר שתי מילים שמתארות את התפקיד של דוגמה:</p>
 <div class="thmbox thmbox-example" title="עד ודוגמה נגדית: מה הדוגמה מראה?">
 <p><strong>דוגמה 1.13.7 — עד ודוגמה נגדית: מה הדוגמה מראה?</strong></p>
+<p>בטענה ״יש מספר בתחום שגדול מ־2״, <strong>איזה מספר מתוך <span class="math inline">\(D=\{1,2,3,4\}\)</span> מצדיק את הטענה?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
 <p>בטענה ״יש מספר בתחום שגדול מ־2״, המספר <span class="math inline">\(3\)</span> הוא <span class="term"><strong>עד</strong></span>: הוא דוגמה שמראה שהדבר שאמרנו שקיים אכן קיים. ״עד״ כאן יכול להיות מספר, ולא רק אדם.</p>
+</div>
+</details>
+<p>בטענה ״כל המספרים בתחום גדולים מ־2״, <strong>איזה מספר מתוך אותו תחום מראה שהטענה שגויה?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
 <p>בטענה ״כל המספרים בתחום גדולים מ־2״, המספר <span class="math inline">\(1\)</span> הוא <span class="term"><strong>דוגמה נגדית</strong></span>: הוא שייך לתחום, אבל אינו מקיים את מה שהטענה מבטיחה. לכן הוא מספיק כדי להראות שהטענה על <strong>כל</strong> המספרים שגויה.</p>
+</div>
+</details>
 <p><span class="term"><strong>להפריך</strong></span> טענה פירושו להראות שהיא אינה נכונה. כדי להפריך טענה על כולם, דוגמה נגדית אחת מספיקה. כדי לאשר טענה על כולם, דוגמה מוצלחת אחת אינה מספיקה.</p>
 </div>
 <p>עכשיו ננסח את הכללים:</p>
@@ -3100,7 +3200,20 @@ window.Quarto = {
 <h3 data-number="1.13.4" class="anchored" data-anchor-id="sec-domain"><span class="header-section-number">1.13.4</span> התחום חשוב</h3>
 <div id="box-exm-domain" class="thmbox thmbox-example">
 <p><strong>דוגמה 1.13.9.</strong></p>
-<p>הפסוק <span class="math inline">\(\exists x\in D\, (x + 3 = 1)\)</span> הוא <strong>שקר</strong> כאשר <span class="math inline">\(D\)</span> הוא התחום <span class="math inline">\(\{0, 1, 2, 3, \dots\}\)</span>: כל מספר כזה ועוד <span class="math inline">\(3\)</span> גדול מ־<span class="math inline">\(.1\)</span> אבל כאשר <span class="math inline">\(D\)</span> הוא אוסף כל המספרים השלמים, אותו פסוק הוא <strong>אמת</strong>, עם העד <span class="math inline">\(.x = -2\)</span> לכן כשכותבים פסוק עם כמת, תמיד צריך לומר מה התחום.</p>
+<p>נבדוק את <span class="math inline">\(\exists x\in D\, (x+3=1)\)</span>.</p>
+<p><strong>האם הטענה נכונה כאשר <span class="math inline">\(D=\{0,1,2,3,\dots\}\)</span>?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>הפסוק <span class="math inline">\(\exists x\in D\, (x + 3 = 1)\)</span> הוא <strong>שקר</strong> כאשר <span class="math inline">\(D\)</span> הוא התחום <span class="math inline">\(\{0, 1, 2, 3, \dots\}\)</span>: כל מספר כזה ועוד <span class="math inline">\(3\)</span> גדול מ־<span class="math inline">\(.1\)</span></p>
+</div>
+</details>
+<p><strong>האם הטענה נכונה כאשר <span class="math inline">\(D\)</span> הוא אוסף כל המספרים השלמים?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>אבל כאשר <span class="math inline">\(D\)</span> הוא אוסף כל המספרים השלמים, אותו פסוק הוא <strong>אמת</strong>, עם העד <span class="math inline">\(.x = -2\)</span></p>
+</div>
+</details>
+<p>לכן כשכותבים פסוק עם כמת, תמיד צריך לומר מה התחום.</p>
 </div>
 </section>
 <section id="sec-neg-quantifiers" class="level3" data-number="1.13.5">
@@ -3136,7 +3249,21 @@ window.Quarto = {
 <p>הפסוק השני חזק יותר: אם יש פריט בתפריט שכולם אוהבים, אז בפרט לכל סטודנט יש פריט בתפריט שהוא אוהב. ההפך לא נכון. בשלב האחרון של המשחק אפשר לראות כיתה שבה הראשון אמת והשני שקר.</p>
 <div id="box-exm-order" class="thmbox thmbox-example">
 <p><strong>דוגמה 1.13.11.</strong></p>
-<p>בדוגמה הזאת <span class="math inline">\(D=\{0,1,2,3,\dots\}\)</span>. הפסוק <span class="math display">\[\forall x\in D\, \exists y\in D\, (y &gt; x)\]</span> הוא <strong>אמת</strong>: לכל מספר יש מספר גדול ממנו (למשל <span class="math inline">\(y = x + 1\)</span>). אבל <span class="math display">\[\exists y\in D\, \forall x\in D\, (y &gt; x)\]</span> הוא <strong>שקר</strong>: אין מספר שגדול מכל המספרים, כי הוא לא גדול מעצמו.</p>
+<p>בדוגמה הזאת <span class="math inline">\(D=\{0,1,2,3,\dots\}\)</span>.</p>
+<p><span class="math display">\[\forall x\in D\,\exists y\in D\,(y&gt;x)\]</span></p>
+<p><strong>אמת או שקר? נמקו.</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>הפסוק <span class="math display">\[\forall x\in D\, \exists y\in D\, (y &gt; x)\]</span> הוא <strong>אמת</strong>: לכל מספר יש מספר גדול ממנו (למשל <span class="math inline">\(y = x + 1\)</span>).</p>
+</div>
+</details>
+<p><span class="math display">\[\exists y\in D\,\forall x\in D\,(y&gt;x)\]</span></p>
+<p><strong>אמת או שקר? נמקו.</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>אבל <span class="math display">\[\exists y\in D\, \forall x\in D\, (y &gt; x)\]</span> הוא <strong>שקר</strong>: אין מספר שגדול מכל המספרים, כי הוא לא גדול מעצמו.</p>
+</div>
+</details>
 </div>
 <div class="thmbox thmbox-self-check">
 <p><strong>בדיקה עצמית.</strong></p>
@@ -3264,7 +3391,7 @@ window.Quarto = {
 </section>
 <section id="sec-self-practice" class="level2" data-number="1.15">
 <h2 data-number="1.15" class="anchored" data-anchor-id="sec-self-practice"><span class="header-section-number">1.15</span> תרגול עצמי לפי נושאים</h2>
-<p>התרגילים כאן מיועדים לעבודה עצמאית אחרי ההרצאה, או לחזרה לפני בוחן. <strong>לא צריך לפתור את כולם בבת אחת.</strong> בחרו נושא שתרצו לחזק, התחילו בתרגילים הראשונים שלו, וחזרו להסבר בפרק כשצריך. התרגול שבתוך ההרצאה נשאר במקומו; כאן יש הזדמנות נוספת לעבוד בעצמכם.</p>
+<p>תרגילים נוספים לפי נושאים, עם תשובות לבדיקה ופתרונות בצעדים.</p>
 <div class="thmbox thmbox-key-point" title="איך כדאי לתרגל?">
 <p><strong>חשוב לזכור — איך כדאי לתרגל?</strong></p>
 <p><span class="key-rule"><strong>קודם מנסים, אחר כך בודקים, ואז מסבירים במילים למה.</strong></span></p>
