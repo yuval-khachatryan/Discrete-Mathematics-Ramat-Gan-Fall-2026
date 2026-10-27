@@ -50,7 +50,7 @@ function cardHTML(atoms, c) {
   if (c.kind === "fact") return D.litText(atoms, c.lit);
   return `<b class="d-kw">אם</b> ${D.litText(atoms, c.from)}, <b class="d-kw">אז</b> ${D.litText(atoms, c.to)}`;
 }
-const kindWord = c => (c.kind === "if" ? "אם… אז…" : "עובדה");
+const kindWord = c => (c.kind === "if" ? "אם… אז…" : "פסוק פשוט או שלילתו");
 
 /** The inside of a card: head (number, kind, flags), sentence, formula, origin. */
 function cardParts(atoms, c, { n, origin, flags = true, label } = {}) {

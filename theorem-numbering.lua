@@ -113,7 +113,24 @@ local function label_para(text, title)
     inlines[#inlines + 1] = pandoc.Space()
     for _, il in ipairs(title_inlines(title)) do inlines[#inlines + 1] = il end
   end
-  inlines[#inlines + 1] = pandoc.Str(".")
+  -- Inspect the rendered title, including punctuation inside closing quotes.
+  -- Otherwise a question title becomes "?." and a sentence title becomes "..".
+  local ending = pandoc.utils.stringify(inlines):gsub("%s+$", "")
+  local closing_quotes = { '"', "'", "״", "”", "’" }
+  local stripped = true
+  while stripped do
+    stripped = false
+    for _, quote in ipairs(closing_quotes) do
+      if ending:sub(-#quote) == quote then
+        ending = ending:sub(1, -#quote - 1):gsub("%s+$", "")
+        stripped = true
+        break
+      end
+    end
+  end
+  if not ending:match("[.!?:;]$") and ending:sub(-#"…") ~= "…" then
+    inlines[#inlines + 1] = pandoc.Str(".")
+  end
   return pandoc.Para({ pandoc.Strong(inlines) })
 end
 
