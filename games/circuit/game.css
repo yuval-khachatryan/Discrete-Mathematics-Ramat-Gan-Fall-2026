@@ -127,3 +127,8 @@
 .c-neq { color: var(--bad); font-weight: 700; white-space: nowrap; }
 .c-verdict { margin-top: 0.7rem; display: grid; gap: 0.4rem; max-width: 22rem; }
 .c-verdict p { margin: 0; font-weight: 700; }
+
+/* Intermediate columns need room; keep wide worksheets scrollable on phones. */
+.c-table-scroll { max-width: 100%; overflow-x: auto; }
+.c-board.c-multi-table { grid-template-columns: minmax(0, 1fr); }
+.c-multi-table .c-side { max-width: none; }

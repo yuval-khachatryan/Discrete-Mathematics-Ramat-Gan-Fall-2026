@@ -183,6 +183,21 @@ iframe.widget-frame {
 .thmbox > :first-child { margin-top: 0; }
 .thmbox > :last-child { margin-bottom: 0; }
 .thmbox-definition  { border-color: #4f46e5; background: #eef2ff; }
+.thmbox-terminology { border-color: #0369a1; background: #f0f9ff; }
+.thmbox-terminology > p:first-child > strong { color: #075985; }
+.thmbox-terminology > p:first-child > strong::before { content: "📖"; display: inline-block; margin-inline-end: .4em; }
+/* Summaries and component legends have their own labels and visual identity. */
+.thmbox-summary { border-color: #0f766e; background: #f0fdfa; }
+.thmbox-components { border-color: #64748b; background: #f8fafc; }
+.thmbox-summary > p:first-child > strong::before { content: "📋"; margin-inline-end: .4em; }
+.thmbox-components > p:first-child > strong::before { content: "🧩"; margin-inline-end: .4em; }
+.component-figures { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; margin: .75rem 0; }
+.component-figures figure { margin: 0; padding: .4rem; border: 1px solid #cbd5e1; border-radius: .5rem; background: white; text-align: center; }
+.component-figures svg { display: block; width: 100%; max-width: 180px; margin: auto; }
+.component-figures figcaption { font-size: .85rem; color: #334155; }
+@media (max-width: 480px) { .component-figures { grid-template-columns: 1fr; } }
+.thmbox-method { border-color: #0f766e; background: #f0fdfa; }
+.thmbox-method > p:first-child > strong { color: #115e59; }
 .thmbox-theorem     { border-color: #0d9488; background: #f0fdfa; }
 .thmbox-proposition { border-color: #0d9488; background: #f0fdfa; }
 .thmbox-lemma       { border-color: #14b8a6; background: #f0fdfa; }
@@ -472,7 +487,57 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .proof-reference summary { cursor: pointer; color: #075985; }
 .proof-formula { direction: ltr; unicode-bidi: isolate; text-align: left; white-space: nowrap; overflow-x: auto; font-family: "Cambria Math", "Times New Roman", serif; margin-top: .25rem; }
 .proof-ready .proof-offline { display: none; }
+.proof-start-input { width: 100%; }
+.proof-start-input[aria-invalid="true"] { border: 2px solid #b91c1c; }
+.proof-preview { margin-top: 1rem; padding: 1rem; border: 1px solid #99c8c0; border-inline-start: 4px solid #0f766e; border-radius: 8px; background: #fcfffe; }
+.proof-preview > strong { color: #115e59; font-size: 1.1em; }
+.proof-preview > p { margin: .4rem 0 .8rem; }
+.proof-chain { display: grid; grid-template-columns: 1.2em fit-content(65%) minmax(0, max-content); gap: .65rem 1rem; align-items: baseline; direction: ltr; overflow-x: auto; padding: .7rem .2rem; }
+.proof-chain > p { grid-column: 1 / -1; direction: rtl; }
+.proof-chain-line { display: contents; }
+.proof-chain-sign { font-family: "Cambria Math", serif; font-size: 1.25em; color: #0f766e; }
+.proof-chain-line .proof-formula { margin: 0; font-size: 1.2em; line-height: 1.6; }
+.proof-chain-reason { text-align: left; color: #655080; font-size: .95em; unicode-bidi: isolate; }
+.proof-local { margin-top: .8rem; padding: .65rem; background: white; border-top: 2px solid #99c8c0; }
+.proof-local > strong { color: #115e59; }
+.proof-editor [hidden] { display: none !important; }
+.proof-paper { padding-top: .65rem; border-top: 1px solid #d1e5df; }
+.proof-goal { margin: .65rem 0; }
+.proof-goal > p { margin: 0; }
+.proof-goal .proof-formula { display: block; color: #115e59; }
+@media (max-width: 600px) {
+  .proof-chain { grid-template-columns: 1.2em minmax(0, 1fr); gap: .25rem .5rem; }
+  .proof-chain-reason { grid-column: 2; text-align: left; font-size: .9em; margin-bottom: .7rem; }
+}
 .argument-editor [hidden] { display: none !important; }
+.argument-proof-scroll { overflow-x: auto; }
+.argument-proof-table { width: 100%; margin: .6rem 0; border-collapse: collapse; }
+.argument-proof-table th, .argument-proof-table td { padding: .55rem; border-bottom: 1px solid #cbded9; vertical-align: top; }
+.argument-proof-table thead { background: #edf6f3; }
+.argument-proof-table .proof-formula { white-space: normal; overflow-wrap: anywhere; }
+.argument-line-words { margin-top: .3rem; font-size: .93em; }
+.argument-line-reason { color: #655080; width: 28%; }
+.argument-line-reason > span { display: block; }
+.argument-line-refs { white-space: nowrap; }
+@media (max-width: 600px) {
+  .argument-proof-table, .argument-proof-table tbody { display: block; }
+  .argument-proof-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .argument-proof-table tbody tr { display: grid; grid-template-columns: 1.8em minmax(0, 1fr); border-bottom: 1px solid #cbded9; padding: .45rem 0; }
+  .argument-proof-table tbody th { grid-row: 1 / 3; }
+  .argument-proof-table td, .argument-proof-table tbody th { padding: .25rem; border: 0; min-width: 0; }
+  .argument-proof-table .argument-line-reason { grid-column: 2; width: auto; font-size: .9em; }
+  .argument-line-reason > span { display: inline; }
+  .argument-line-refs { white-space: normal; }
+  .argument-line-refs::before { content: " — "; }
+}
+.argument-local .argument-written > p { margin: .5rem 0; }
+.table-evidence { min-width: 0; border: 1px solid #9cb9c7; border-radius: 8px; padding: .7rem; margin: .7rem 0; background: #f5faff; }
+.table-evidence legend { float: none; width: auto; font-size: 1.1em; font-weight: bold; }
+.table-evidence:disabled { opacity: .65; }
+.table-evidence p { margin: .35rem 0; }
+.inference-rule { width: max-content; max-width: 100%; margin: .7rem auto; padding: 0 .5rem; }
+.inference-rule .proof-formula { text-align: center; padding: .2rem .5rem; }
+.inference-conclusion { border-top: 1px solid currentColor; margin-top: .25rem; }
 .argument-ready .argument-offline { display: none; }
 .argument-stage { margin: .8rem 0; padding: .7rem; border: 1px solid #c4b5fd; border-radius: 10px; background: #fff; min-width: 0; }
 .argument-stage h4 { font-size: 1.1em; color: #6b21a8; margin-top: 0; }
@@ -522,13 +587,18 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .os-title { font-size: 1.1rem; margin: .5rem 0; }
 .os-choices, .os-answers { display: flex; flex-wrap: wrap; gap: .6rem; margin: .7rem 0; }
 .os-choice { display: flex; align-items: center; flex-wrap: wrap; gap: .45rem; }
-.os-choice select { min-height: 44px; font: inherit; padding: .3rem .55rem; border: 1px solid #64748b; border-radius: 6px; background: #fff; color: #1e293b; }
+.os-choice input { min-height: 44px; width: 10rem; max-width: 100%; font: inherit; padding: .3rem .55rem; border: 1px solid #64748b; border-radius: 6px; background: #fff; color: #1e293b; }
+.os-choice input:disabled { background: #f1f5f9; }
+.os-choice input[aria-invalid="true"] { border-color: #be123c; }
+.os-stage { font-weight: 700; color: #4338ca; }
+.os-first { padding: .6rem; border-inline-start: 4px solid #0f766e; background: #f0fdfa; overflow-wrap: anywhere; }
+.os-card { min-width: 0; }
 .os-formula { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; margin: .8rem 0; }
 .os-card { display: flex; flex-direction: column; align-items: center; gap: .6rem; padding: .7rem; border: 2px dashed #a78bfa; background: #faf5ff; border-radius: 9px; }
 .os-card.os-complete { border-style: solid; }
-.os-expression { font: 1.25rem "Cambria Math", "Times New Roman", serif; unicode-bidi: isolate; white-space: nowrap; }
+.os-expression { font: 1.25rem "Cambria Math", "Times New Roman", serif; unicode-bidi: isolate; white-space: nowrap; max-width: 100%; overflow-x: auto; }
 .os-status { padding: .5rem .7rem; background: #f1f5f9; border-radius: 6px; }
-.open-statement-game button[hidden] { display: none; }
+.open-statement-game [hidden] { display: none; }
 .open-statement-game :focus-visible { outline: 3px solid #7c3aed; outline-offset: 3px; }
 @media (max-width: 480px) { .os-formula { grid-template-columns: 1fr; } }
 @media print { .term { color: #111; background: transparent; text-decoration: underline; } }
@@ -715,6 +785,12 @@ window.addEventListener("message", function (e) {
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">לוגיקה: הכללים לבניית משפטים ולהסקת מסקנות</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-sets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">קבוצות וכמתים</span></span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -726,7 +802,7 @@ window.addEventListener("message", function (e) {
    
   <ul>
   <li><a href="#פתח-דבר" id="toc-פתח-דבר" class="nav-link active" data-scroll-target="#פתח-דבר">פתח דבר</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#איך-לקרוא-את-מערכי-ההרצאה-האלה" id="toc-איך-לקרוא-את-מערכי-ההרצאה-האלה" class="nav-link" data-scroll-target="#איך-לקרוא-את-מערכי-ההרצאה-האלה">איך לקרוא את מערכי ההרצאה האלה</a></li>
   <li><a href="#מדריך-ללמידה-עצמית" id="toc-מדריך-ללמידה-עצמית" class="nav-link" data-scroll-target="#מדריך-ללמידה-עצמית">מדריך ללמידה עצמית</a></li>
   <li><a href="#נושאי-הקורס" id="toc-נושאי-הקורס" class="nav-link" data-scroll-target="#נושאי-הקורס">נושאי הקורס</a></li>
@@ -772,7 +848,7 @@ window.addEventListener("message", function (e) {
 <h2 class="unnumbered anchored" data-anchor-id="איך-לקרוא-את-מערכי-ההרצאה-האלה">איך לקרוא את מערכי ההרצאה האלה</h2>
 <p>המערכים מלווים את מהלך ההרצאה. בכל נושא נתחיל בהסבר ובדוגמה, ניתן שמות לרעיונות החדשים וננסח את ההגדרה. כשמגדירים קשר לוגי, טבלת האמת מופיעה יחד עם ההגדרה. אחר כך ניעזר בהמחשה או במשחק כדי לראות את הכלל בפעולה.</p>
 <p>השאלות והתרגילים משולבים במקום שבו לומדים את הרעיון שלהם. נעצור כדי לחשוב, לנסות ולדון בתשובה, ואז נמשיך לנושא הבא. ליד כל פעילות נמצאים ההסברים או הפתרון שלה; בחלקן אפשר לבקש רמז, לבדוק תשובה או להציג את הפתרון צעד אחר צעד.</p>
-<p>בסוף פרק הלוגיקה יש גם <a href="./01-logic.html#sec-self-practice">תרגול עצמי לפי נושאים</a>, לעבודה אחרי ההרצאה. הוא כולל שאלות עם רמזים ופתרונות, טבלאות למילוי ותרגילי הוכחה שבהם בוחרים סימונים ומצדיקים כל צעד. אפשר לבחור נושא אחד ולעבוד בקצב שלכם.</p>
+<p>בסוף פרק 1 יש <a href="./01-logic.html#sec-self-practice">תרגול עצמי בלוגיקה לפי נושאים</a>, לעבודה אחרי ההרצאה. הוא כולל שאלות עם רמזים ופתרונות, טבלאות למילוי ותרגילי הוכחה שבהם בוחרים סימונים ומצדיקים כל צעד. אפשר לבחור נושא אחד ולעבוד בקצב שלכם. <a href="./02-sets.html#practice-quantifiers">תרגילי הכמתים</a> מופיעים בסוף פרק 2.</p>
 <p>לצד הדוגמאות הכתובות יש <strong>משחקים קטנים</strong>: מסיקים מסקנות משיחה, מחפשים בחירה שמתאימה לאמירות, או בונים הוכחה מכרטיסים. אחרי המשחק נקשר את מה שעשינו לרעיון המתמטי שהכרנו.</p>
 <p>במשחקים אין הגבלת זמן ואין ניקוד. אפשר לבקש רמז (יש שלוש דרגות), להתחיל מחדש או לראות את הפתרון, כמה פעמים שרוצים. ההתקדמות נשמרת רק בדפדפן שלכם. מי שלא אוהב משחקים יכול לדלג עליהם: כל מה שצריך לבחינה נמצא גם בטקסט.</p>
 <p>בקמפוס שלנו תפגשו כמה דמויות קבועות: <strong>הרובוט של המזכירות</strong>, שבטוח בעצמו הרבה יותר ממה שמגיע לו, <strong>השומר</strong> הדרמטי שבשער, <strong>היונה</strong>, וגם כמה מתמטיקאים רעבים. הם טועים לפעמים בביטחון מלא, ואתם תתקנו אותם.</p>
@@ -784,6 +860,7 @@ window.addEventListener("message", function (e) {
 </section>
 <section id="נושאי-הקורס" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="נושאי-הקורס">נושאי הקורס</h2>
+<p>סדר ההצגה במערכים מותאם ללמידה: <a href="./01-logic.html">פרק 1</a> עוסק בלוגיקה של פסוקים; <a href="./02-sets.html">פרק 2</a> מתחיל בקבוצות ועובר לכמתים אחרי הגדרת הקבוצות; בסוף כל פרק מופיעים התרגילים המתאימים לו. הטבלה הבאה מפרטת את נושאי הסילבוס, ולא את מספרי הפרקים באתר.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 4%">

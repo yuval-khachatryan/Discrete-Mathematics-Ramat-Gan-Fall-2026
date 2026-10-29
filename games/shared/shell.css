@@ -178,3 +178,6 @@ html:not(.g-embedded) body { background: var(--soft); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Past completion is history, not a success mark for the current attempt. */
+.g-history { color: var(--muted); margin-inline-start: .25em; }

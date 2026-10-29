@@ -61,6 +61,14 @@
           ok = false;
         }
       },
+      forget(lvl) {
+        delete memory.done[lvl];
+        if (ok) try {
+          window.localStorage.setItem(key, JSON.stringify(memory));
+        } catch (e) {
+          ok = false;
+        }
+      },
       clear() {
         memory = { done: {} };
         if (ok) try {
@@ -88,6 +96,7 @@
     }
     let index = Math.max(0, levels.findIndex((l) => l.id === params.get("level")));
     const store = storage(game.id);
+    const completedHere = /* @__PURE__ */ new Set();
     const root = document.getElementById("game") || document.body.appendChild(el("div", { id: "game" }));
     root.className = "g-root" + (embed ? " g-embed" : "") + (present ? " g-present" : "");
     document.documentElement.classList.toggle("g-embedded", embed);
@@ -121,7 +130,8 @@
         text: "איפוס ההתקדמות השמורה",
         onclick() {
           store.clear();
-          drawNav();
+          completedHere.clear();
+          go(index);
         }
       }));
     }
@@ -135,22 +145,25 @@
       nav.replaceChildren();
       nav.hidden = levels.length < 2;
       levels.forEach((l, i) => {
+        const done = completedHere.has(l.id);
+        const saved = !done && store.isDone(l.id);
         nav.append(el("button", {
           type: "button",
-          class: "g-lvl" + (i === index ? " g-current" : "") + (store.isDone(l.id) ? " g-done" : ""),
+          class: "g-lvl" + (i === index ? " g-current" : "") + (done ? " g-done" : saved ? " g-saved" : ""),
           "aria-current": i === index ? "step" : false,
-          "aria-label": `שלב ${i + 1}: ${l.title}` + (store.isDone(l.id) ? " (הושלם)" : ""),
-          title: l.title,
+          "aria-label": `שלב ${i + 1}: ${l.title}` + (done ? " (הושלם כעת)" : saved ? " (הושלם קודם; אפשר לפתור שוב)" : ""),
+          title: l.title + (saved ? " — הושלם קודם" : ""),
           onclick() {
             go(i);
           }
-        }, [String(i + 1), store.isDone(l.id) ? el("span", { class: "g-tick", "aria-hidden": "true", text: "✓" }) : null]));
+        }, [String(i + 1), done ? el("span", { class: "g-tick", "aria-hidden": "true", text: "✓" }) : saved ? el("span", { class: "g-history", "aria-hidden": "true", text: "↺" }) : null]));
       });
     }
     function win(html) {
       if (won) return;
       won = true;
       store.markDone(levels[index].id);
+      completedHere.add(levels[index].id);
       say(html || "כל הכבוד! הצלחתם.", "good");
       showDebrief();
       btnNext.hidden = index >= levels.length - 1;
@@ -169,6 +182,7 @@
     function go(i) {
       index = Math.max(0, Math.min(levels.length - 1, i));
       const lvl = levels[index];
+      completedHere.delete(lvl.id);
       won = false;
       hintsShown = 0;
       missionTitle.textContent = (levels.length > 1 ? `שלב ${index + 1} — ` : "") + lvl.title;
@@ -216,8 +230,12 @@
       if (!ctl || !ctl.reset) return;
       ctl.reset();
       won = false;
+      completedHere.delete(levels[index].id);
+      store.forget(levels[index].id);
+      drawNav();
       debrief.hidden = true;
       btnNext.hidden = true;
+      btnNext.classList.remove("g-ready");
       say("");
     });
     btnSolve.addEventListener("click", () => {
@@ -802,7 +820,7 @@
       vars: { A: "המחשב טעון", B: "יש חיבור לרשת אלחוטית" },
       lamp: "המחשב טעון ויש חיבור לרשת אלחוטית",
       rounds: [{ A: true, B: false }, { A: true, B: true }, { A: false, B: false }, { A: false, B: true }],
-      goal: "<p><b>המצב:</b> A הוא ״המחשב טעון״, ו־B הוא ״יש חיבור לרשת אלחוטית״. בודקים את המשפט ״המחשב טעון וגם יש חיבור לרשת אלחוטית״. כדי שיהיה נכון, שני חלקיו צריכים להיות נכונים.</p><p><b>המשימה:</b> בכל סיבוב קראו את ערכי A ו־B ובחרו אם המשפט כולו אמת (המנורה דולקת) או שקר (המנורה כבויה). המתגים קבועים בסיבוב הזה. שני המגעים שבציור ממחישים את הדרישה ששני החלקים יתקיימו.</p>",
+      goal: "<p><b>המצב:</b> A הוא ״המחשב טעון״, ו־B הוא ״יש חיבור לרשת אלחוטית״. בודקים את המשפט ״המחשב טעון וגם יש חיבור לרשת אלחוטית״. כדי שיהיה נכון, שני חלקיו צריכים להיות נכונים.</p><p><b>המשימה:</b> מצב המנורה מוסתר בסימן ?. בכל סיבוב קראו את ערכי A ו־B ובחרו אם המשפט כולו אמת (המנורה דולקת) או שקר (המנורה כבויה). המתגים קבועים בסיבוב הזה. שני המגעים שבציור ממחישים את הדרישה ששני החלקים יתקיימו.</p>",
       hints: ["בדקו כל חלק בנפרד: האם המחשב טעון? האם יש חיבור לרשת?", "אם אפילו אחד מהחלקים שקר, אי אפשר לומר ששניהם נכונים.", "בחרו ״דולקת״ רק כאשר גם A וגם B הם T. בכל מצב אחר בחרו ״כבויה״."],
       debrief: "<p>הקשר <strong>״וגם״</strong> דורש ששני החלקים יהיו אמת. אם המחשב טעון אבל אין חיבור לרשת, המשפט כולו שקר. כך גם אם רק החלק השני אמת, או אם שניהם שקר. המנורה מדגימה את הכלל: היא דולקת רק בשורה T, T.</p>"
     },
@@ -814,7 +832,7 @@
       vars: { A: "יש לי כרטיס סטודנט", B: "השומר מכיר אותי" },
       lamp: "יש לי כרטיס סטודנט או שהשומר מכיר אותי",
       rounds: [{ A: false, B: true }, { A: false, B: false }, { A: true, B: true }, { A: true, B: false }],
-      goal: "<p><b>המצב:</b> A הוא ״יש לי כרטיס סטודנט״, ו־B הוא ״השומר מכיר אותי״. בודקים את המשפט ״יש לי כרטיס סטודנט או שהשומר מכיר אותי״. מספיק שלפחות אחד מהחלקים יהיה נכון; מותר גם ששניהם יהיו נכונים.</p><p><b>המשימה:</b> בכל סיבוב קראו את ערכי A ו־B ובחרו אם המשפט כולו אמת (המנורה דולקת) או שקר (המנורה כבויה). שני המסלולים שבציור עוזרים לראות שדי באפשרות אחת שמתקיימת.</p>",
+      goal: "<p><b>המצב:</b> A הוא ״יש לי כרטיס סטודנט״, ו־B הוא ״השומר מכיר אותי״. בודקים את המשפט ״יש לי כרטיס סטודנט או שהשומר מכיר אותי״. מספיק שלפחות אחד מהחלקים יהיה נכון; מותר גם ששניהם יהיו נכונים.</p><p><b>המשימה:</b> מצב המנורה מוסתר בסימן ?. בכל סיבוב קראו את ערכי A ו־B ובחרו אם המשפט כולו אמת (המנורה דולקת) או שקר (המנורה כבויה). שני המסלולים שבציור עוזרים לראות שדי באפשרות אחת שמתקיימת.</p>",
       hints: ["האם לפחות אחד משני החלקים אמת? אם כן, גם המשפט עם ״או״ אמת.", "גם כששני החלקים אמת, המשפט עם ״או״ אמת. זו המשמעות של ״או״ בלוגיקה.", "בחרו ״כבויה״ רק כאשר גם A וגם B הם F. בכל מצב אחר בחרו ״דולקת״."],
       debrief: "<p>חיבור במקביל ממחיש את הקשר ״או״: די בכך ש־A אמת או ש־B אמת כדי שהמנורה תידלק. היא דולקת גם כששניהם אמת. לכן ״יש לי כרטיס סטודנט או שהשומר מכיר אותי״ הוא פסוק אמיתי גם כאשר שני התנאים מתקיימים.</p>"
     },
@@ -835,12 +853,13 @@
       title: "כל האפשרויות",
       mode: "fill",
       formula: "A & !B",
+      helpers: ["!B"],
       vars: { A: "יש בחינה מחר", B: "כבר למדתי" },
       lamp: "יש בחינה מחר ועדיין לא למדתי",
       start: { A: false, B: false },
-      goal: "<p><b>המצב:</b> A הוא ״יש בחינה מחר״, ו־B הוא ״כבר למדתי״. המנורה מייצגת את הפסוק ״יש בחינה מחר ועדיין לא למדתי״.</p><p><b>המשימה:</b> מלאו בעצמכם את ערך האמת של הפסוק בכל אחת מארבע השורות: T כשהמשפט נכון, F כשהוא שגוי. אפשר לשחק במתגים או ללחוץ ״נסו״ ליד שורה ולהיעזר במנורה. הניסוי אינו כותב תשובה במקומכם. בסיום לחצו ״בדיקה״.</p>",
-      hints: ["קראו את המשפט כולו: יש בחינה מחר, וגם עדיין לא למדתי.", "החלק הראשון דורש A אמת. החלק השני דורש B שקר, כי B אומר שכבר למדתי.", "בשורה A=T, B=F כתבו T. בשלוש השורות האחרות כתבו F. לחצו ״בדיקה״."],
-      debrief: '<p>טבלת אמת מציגה את כל צירופי ערכי האמת של חלקי הפסוק ואת התוצאה בכל צירוף. כאן הפסוק <span class="m">A ∧ ¬B</span> אמת בשורה אחת בלבד: יש בחינה מחר, ועדיין לא למדתי. בכל שורה אחרת לפחות אחד משני החלקים אינו מתקיים. המנורה מציגה את אותו מידע: היא דולקת בדיוק בשורה שבה הפסוק אמת.</p>'
+      goal: '<p><b>המצב:</b> A הוא ״יש בחינה מחר״, ו־B הוא ״כבר למדתי״. המנורה מייצגת את הפסוק ״יש בחינה מחר ועדיין לא למדתי״.</p><p><b>המשימה:</b> בכל שורה מלאו תחילה את עמודת <span class="m">¬B</span>, ואחריה את עמודת <span class="m">A ∧ ¬B</span>. כותבים T לאמת ו־F לשקר. אפשר לשחק במתגים או ללחוץ ״נסו״ ליד שורה ולהיעזר במנורה. הניסוי אינו כותב תשובה במקומכם. בסיום לחצו ״בדיקה״.</p>',
+      hints: ['בעמודת <span class="m">¬B</span> כותבים את ההפך מ־B. אחר כך מחברים את <span class="m">A</span> ואת <span class="m">¬B</span> בעזרת ״וגם״.', "החלק הראשון דורש A אמת. החלק השני דורש B שקר, כי B אומר שכבר למדתי.", 'בעמודת התוצאה <span class="m">A ∧ ¬B</span> כתבו T רק בשורה A=T, B=F, ובשאר השורות F. בעמודת העזר <span class="m">¬B</span> כתבו בכל שורה את ההפך מ־B. לחצו ״בדיקה״.'],
+      debrief: '<p>בעמודת העזר <span class="m">¬B</span> הופכים את ערכו של B. בעמודה האחרונה דורשים שגם <span class="m">A</span> וגם <span class="m">¬B</span> יהיו אמת. לכן הפסוק <span class="m">A ∧ ¬B</span> אמת בשורה אחת בלבד: יש בחינה מחר, ועדיין לא למדתי. בכל שורה אחרת לפחות אחד משני החלקים אינו מתקיים. המנורה מציגה את אותו מידע: היא דולקת בדיוק בשורה שבה הפסוק אמת.</p>'
     },
     {
       id: "locked",
@@ -860,12 +879,13 @@
       title: "אתם משלימים את הטבלה",
       mode: "fill",
       formula: "(A | B) & C",
+      helpers: ["A | B"],
       vars: { A: "יש לי כרטיס אשראי", B: "יש לי מזומן", C: "החנות פתוחה" },
       lamp: "החנות פתוחה, ובנוסף יש לי כרטיס אשראי או מזומן",
       start: { A: true, B: true, C: true },
-      goal: "<p><b>המצב:</b> המנורה מייצגת את התנאי: החנות פתוחה, ובנוסף יש לי כרטיס אשראי או מזומן. המתגים והמנורה הם כלי עזר: אפשר לבדוק בעזרתם כל מצב לפני שכותבים תשובה.</p><p><b>המשימה:</b> מלאו בעצמכם את עמודת התוצאה: T כשהפסוק נכון, F כשהוא שגוי. אפשר להיעזר במתגים ובמנורה, או ללחוץ ״נסו״ ליד שורה. לחיצה על תא תשובה מחליפה בין ?, T ו־F. אחרי שמילאתם את כל השורות, לחצו ״בדיקה״.</p>",
-      hints: ["המשפט דורש שהחנות תהיה פתוחה. מה יהיה ערך האמת שלו כאשר C הוא F?", "בכל שורה שבה החנות סגורה, הפסוק כולו שקר. נשאר לבדוק את ארבע השורות שבהן C הוא T.", 'כאשר החנות פתוחה, מספיק שיהיה כרטיס אשראי או מזומן. לכן הפסוק שקר בשורה <span class="m">A = F, B = F, C = T</span>, ואמת בשלוש השורות האחרות שבהן C הוא T.'],
-      debrief: '<p>הפסוק <span class="m">(A ∨ B) ∧ C</span> אמיתי בשלוש משמונה השורות. תחילה בודקים אם החנות פתוחה: כש־C שקר, הפסוק כולו שקר. בארבע השורות שבהן C אמת, בודקים אם לפחות אחד מ־A ו־B אמת. מבין אלה, רק השורה <span class="m">A = F, B = F, C = T</span> נותנת שקר.</p>'
+      goal: '<p><b>המצב:</b> המנורה מייצגת את התנאי: החנות פתוחה, ובנוסף יש לי כרטיס אשראי או מזומן. המתגים והמנורה הם כלי עזר: אפשר לבדוק בעזרתם כל מצב לפני שכותבים תשובה.</p><p><b>המשימה:</b> בכל שורה מלאו תחילה את עמודת <span class="m">A ∨ B</span>, ואחריה את עמודת <span class="m">(A ∨ B) ∧ C</span>. כותבים T לאמת ו־F לשקר. אפשר להיעזר במתגים ובמנורה, או ללחוץ ״נסו״ ליד שורה. לחיצה על תא תשובה מחליפה בין ?, T ו־F. אחרי שמילאתם את כל השורות, לחצו ״בדיקה״.</p>',
+      hints: ['חשבו קודם את <span class="m">A ∨ B</span>: האם יש לפחות אמצעי תשלום אחד? אחר כך חברו את התוצאה ב״וגם״ עם C: האם החנות פתוחה?', "בכל שורה שבה החנות סגורה, הפסוק כולו שקר. נשאר לבדוק את ארבע השורות שבהן C הוא T.", 'כאשר החנות פתוחה, מספיק שיהיה כרטיס אשראי או מזומן. לכן הפסוק שקר בשורה <span class="m">A = F, B = F, C = T</span>, ואמת בשלוש השורות האחרות שבהן C הוא T.'],
+      debrief: '<p>הפסוק <span class="m">(A ∨ B) ∧ C</span> אמיתי בשלוש משמונה השורות. עמודת העזר <span class="m">A ∨ B</span> בודקת אם יש כרטיס אשראי או מזומן. בעמודת התוצאה דורשים שגם עמודת העזר וגם C יהיו אמת: יש אמצעי תשלום והחנות פתוחה. כשהחנות סגורה, התוצאה שקר. כשהיא פתוחה, התוצאה שקר רק בשורה <span class="m">A = F, B = F, C = T</span>.</p>'
     },
     {
       id: "never",
@@ -990,7 +1010,7 @@
       vars: { A: "יש לך כרטיס", B: "השומר מכניס אותך" },
       lamp: "אם יש לך כרטיס, אז השומר מכניס אותך",
       rounds: [{ A: true, B: true }, { A: true, B: false }, { A: false, B: false }, { A: false, B: true }],
-      goal: "<p><b>המצב:</b> השומר מבטיח: ״אם יש לך כרטיס, אכניס אותך״. A מציין אם יש כרטיס, ו־B מציין אם השומר מכניס אותך. מנורה דולקת פירושה שהפסוק נכון: ההבטחה לא הופרה. מנורה כבויה פירושה שהפסוק שגוי: ההבטחה הופרה.</p><p><b>המשימה:</b> בכל סיבוב קבעו אם הפסוק נכון או שגוי, ובחרו בהתאם מנורה דולקת או כבויה. חפשו את המצב שבו יש כרטיס ובכל זאת השומר אינו מכניס אותך. אם אין כרטיס, ההבטחה אינה מחייבת את השומר להכניס או לסרב.</p>",
+      goal: "<p><b>המצב:</b> השומר מבטיח: ״אם יש לך כרטיס, אכניס אותך״. A מציין אם יש כרטיס, ו־B מציין אם השומר מכניס אותך. מנורה דולקת פירושה שהפסוק נכון: ההבטחה לא הופרה. מנורה כבויה פירושה שהפסוק שגוי: ההבטחה הופרה.</p><p><b>המשימה:</b> מצב המנורה מוסתר בסימן ?. בכל סיבוב קבעו אם הפסוק נכון או שגוי, ובחרו בהתאם מנורה דולקת או כבויה. לאחר הבחירה יתגלה מצב המנורה. חפשו את המצב שבו יש כרטיס ובכל זאת השומר אינו מכניס אותך. אם אין כרטיס, ההבטחה אינה מחייבת את השומר להכניס או לסרב.</p>",
       hints: [
         "מתי אפשר לבוא בטענות לשומר? רק כשהוא הבטיח משהו ולא עשה אותו.",
         "ההבטחה מדברת רק על מי שיש לו כרטיס. על מי שאין לו כרטיס היא לא אומרת כלום.",
@@ -1287,6 +1307,7 @@
     const why = (e) => `הפסוק ${m3(format(formula))} הוא <b>${evaluate(formula, e) ? "אמת" : "שקר"}</b>. בציור: ${explain(formula, e, view)}`;
     const target = level.target !== false;
     const hasTable = level.mode === "fill" || level.mode === "select" || level.impossible;
+    const columns = [...level.helpers || [], level.formula].map(parse);
     let env, covered, rounds, roundIx, table, cells;
     const progress = el("p", { class: "c-progress", "aria-live": "polite" });
     const lampLine = el("div", { class: "c-lamp-line" });
@@ -1360,15 +1381,19 @@
       const selecting = level.mode === "select";
       const head2 = el("tr", {}, [
         ...names.map((n) => el("th", { scope: "col" }, [el("span", { class: "c-tag", style: `background:${colours[n]}`, text: n })])),
-        el("th", { scope: "col", text: selecting ? "בחרו" : "התשובה שלי" }),
+        ...selecting ? [el("th", { scope: "col", text: "בחרו" })] : columns.map((f) => el("th", { scope: "col", html: m3(format(f)) })),
         el("th", { scope: "col", text: "ניסוי" })
       ]);
       table.append(el("thead", {}, [head2]), el("tbody"));
-      cells = assignments(names).map((row) => ({ env: row, mark: selecting ? false : null }));
+      cells = assignments(names).map((row) => ({
+        env: row,
+        mark: selecting ? false : null,
+        answers: columns.map(() => ({ mark: null, wrong: false }))
+      }));
       side.replaceChildren(
-        el("h3", { class: "c-side-title", text: selecting ? `בחרו את כל השורות שבהן הפסוק ${target ? "אמת" : "שקר"}` : "מלאו את ערך האמת של הפסוק" }),
+        el("h3", { class: "c-side-title", text: selecting ? `בחרו את כל השורות שבהן הפסוק ${target ? "אמת" : "שקר"}` : columns.length > 1 ? "מלאו את עמודות העזר ואת התוצאה" : "מלאו את ערך האמת של הפסוק" }),
         el("p", { class: "c-table-help", text: selecting ? `סמנו את כל השורות שבהן ${W.noun} ${target ? W.T : W.F}, ורק אותן. אחר כך לחצו ״בדיקה״.` : "לחצו על ? כדי לבחור T (אמת) או F (שקר). כפתור ״נסו״ מציג את השורה במעגל, אך אינו ממלא תשובה. " + (level.impossible ? "אם הטבלה מראה שאין פתרון, לחצו על כפתור ״אי אפשר״ שמתחתיה." : "בסיום לחצו ״בדיקה״.") }),
-        table,
+        el("div", { class: "c-table-scroll" }, [table]),
         progress
       );
     }
@@ -1401,14 +1426,22 @@
             onchange: (e) => edit(e.target.checked)
           })]));
         } else {
-          const button = answerCell(c.mark, `שורה ${i + 1}`, c.wrong, edit);
-          button.classList.add("c-answer");
-          tr.append(el("td", {}, [button]));
+          c.answers.forEach((a, j) => {
+            const button = answerCell(a.mark, `שורה ${i + 1}, עמודת ${format(columns[j])}`, a.wrong, (value) => {
+              a.mark = value;
+              a.wrong = false;
+              ui.say("");
+              drawTable();
+              table.tBodies[0].rows[i].querySelectorAll(".c-answer")[j].focus({ preventScroll: true });
+            });
+            button.classList.add("c-answer");
+            tr.append(el("td", {}, [button]));
+          });
         }
         tr.append(el("td", {}, [trialButton(names, c.env, load)]));
         body2.append(tr);
       });
-      progress.textContent = level.mode === "select" ? `סימנתם ${cells.filter((c) => c.mark).length} מתוך ${cells.length} שורות. אפשר לשנות את הבחירה לפני הבדיקה.` : `מילאתם ${cells.filter((c) => c.mark !== null).length} מתוך ${cells.length} תשובות.`;
+      progress.textContent = level.mode === "select" ? `סימנתם ${cells.filter((c) => c.mark).length} מתוך ${cells.length} שורות. אפשר לשנות את הבחירה לפני הבדיקה.` : `מילאתם ${cells.flatMap((c) => c.answers).filter((a) => a.mark !== null).length} מתוך ${cells.length * columns.length} תשובות.`;
     }
     const predict = el("div", { class: "c-predict" });
     function drawRound() {
@@ -1468,6 +1501,7 @@
       table = null;
       side.replaceChildren();
       board.classList.toggle("c-has-side", !!hasTable);
+      board.classList.toggle("c-multi-table", hasTable && columns.length > 1);
       if (hasTable) buildTable();
       if (level.mode === "predict") {
         rounds = level.rounds.map((r) => ({ ...r, passed: false }));
@@ -1502,10 +1536,7 @@
       solve() {
         if (level.mode === "play") {
           if (level.impossible) {
-            cells.forEach((c) => {
-              c.mark = evaluate(formula, c.env);
-              c.wrong = false;
-            });
+            fillAnswers();
             draw();
           }
           const row = assignments(freeNames).find((r) => evaluate(formula, { ...env, ...r }) === target);
@@ -1522,27 +1553,37 @@
           draw();
           return `התשובות:<br>${lines}`;
         }
-        cells.forEach((c) => {
-          c.mark = level.mode === "select" ? evaluate(formula, c.env) === target : evaluate(formula, c.env);
+        if (level.mode === "select") cells.forEach((c) => {
+          c.mark = evaluate(formula, c.env) === target;
           c.wrong = false;
         });
+        else fillAnswers();
         covered = false;
         draw();
         return `אלה התשובות. לחצו ״נסו״ בשורה כלשהי, ובדקו במעגל ${W.why}.`;
       }
     };
+    function fillAnswers() {
+      cells.forEach((c) => c.answers.forEach((a, j) => {
+        a.mark = evaluate(columns[j], c.env);
+        a.wrong = false;
+      }));
+    }
     function checkTable() {
-      const empty = cells.filter((c2) => c2.mark === null).length;
-      if (empty) return { ok: false, kind: "info", message: `חסרות עוד ${empty} תשובות. מלאו את ערך האמת של הפסוק בכל שורה. אפשר להיעזר במתגים ובכפתורי ״נסו״.` };
-      const wrong = cells.filter((c2) => c2.mark !== (level.mode === "select" ? evaluate(formula, c2.env) === target : evaluate(formula, c2.env)));
-      cells.forEach((c2) => c2.wrong = wrong.includes(c2));
+      const selecting = level.mode === "select";
+      const entries = cells.flatMap((c2) => selecting ? [{ a: c2, c: c2, f: formula }] : c2.answers.map((a, j) => ({ a, c: c2, f: columns[j] })));
+      const empty = entries.filter(({ a }) => a.mark === null).length;
+      if (empty) return { ok: false, kind: "info", message: `חסרות עוד ${empty} תשובות. מלאו את כל התאים, כולל עמודות העזר. אפשר להיעזר במתגים ובכפתורי ״נסו״.` };
+      const wrong = entries.filter(({ a, c: c2, f: f2 }) => {
+        const expected = evaluate(f2, c2.env);
+        a.wrong = a.mark !== (selecting ? expected === target : expected);
+        return a.wrong;
+      });
       drawTable();
-      if (!wrong.length) return { ok: true, message: level.mode === "select" ? `נכון! סימנתם את כל ${cells.filter((c2) => c2.mark).length} השורות שבהן הפסוק ${target ? "אמת" : "שקר"}, ורק אותן.` : `כל ${cells.length} התשובות נכונות. בניתם טבלת אמת: לכל צירוף של ערכי המתגים נתתם את ערך האמת של הפסוק.` };
-      const c = wrong[0];
-      return {
-        ok: false,
-        message: `${wrong.length === 1 ? "שורה אחת שגויה" : `${wrong.length} שורות שגויות`} (מסומנות). למשל בשורה ${rowText(names, c.env)}: ${why(c.env)}.`
-      };
+      if (!wrong.length) return { ok: true, message: selecting ? `נכון! סימנתם את כל ${cells.filter((c2) => c2.mark).length} השורות שבהן הפסוק ${target ? "אמת" : "שקר"}, ורק אותן.` : `כל ${entries.length} התשובות נכונות. חישבתם את ערכי האמת בכל עמודה ובכל שורה.` };
+      const { c, f } = wrong[0];
+      const rule = f.type === "not" ? "שלילה הופכת את ערך האמת של החלק שבתוכה." : f.type === "and" ? "״וגם״ נותן אמת רק כששני החלקים אמת." : f.type === "or" ? "״או״ נותן אמת כשלפחות אחד החלקים אמת." : "בדקו לפי טבלת האמת של הקשר.";
+      return { ok: false, message: `${wrong.length} תשובות שגויות מסומנות. למשל, בשורה ${rowText(names, c.env)}, בעמודת ${m3(format(f))} צריך להיות ${tvHTML(evaluate(f, c.env))}. ${rule}` };
     }
     if (hasTable && !level.impossible) ctl.check = checkTable;
     if (level.mode === "play") {

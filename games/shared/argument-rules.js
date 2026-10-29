@@ -3,9 +3,9 @@ import { RULES, checkStep } from "./proof-rules.js";
 
 export const LETTERS = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"].filter(x => x !== "T" && x !== "F");
 export const INFERENCE_RULES = [
-  { id: "mp", name: "כלל הניתוק", help: "מגרירה ומההנחה שלה מסיקים את המסקנה.", example: "P → Q, P ⟹ Q" },
-  { id: "mt", name: "כלל השלילה", help: "מגרירה ומשלילת המסקנה שלה מסיקים את שלילת ההנחה.", example: "P → Q, ¬Q ⟹ ¬P" },
-  { id: "hs", name: "כלל השרשרת", help: "מחברים שתי גרירות: המסקנה של הראשונה היא ההנחה של השנייה.", example: "P → Q, Q → R ⟹ P → R" },
+  { id: "mp", name: "כלל הניתוק", help: "מגרירה ומההנחה שלה מסיקים את המסקנה.", premises: ["P → Q", "P"], conclusion: "Q" },
+  { id: "mt", name: "כלל השלילה", help: "מגרירה ומשלילת המסקנה שלה מסיקים את שלילת ההנחה.", premises: ["P → Q", "¬Q"], conclusion: "¬P" },
+  { id: "hs", name: "כלל השרשרת", help: "מחברים שתי גרירות: המסקנה של הראשונה היא ההנחה של השנייה.", premises: ["P → Q", "Q → R"], conclusion: "P → R" },
 ];
 export const ruleName = id => INFERENCE_RULES.find(r => r.id === id)?.name || RULES.find(r => `eq:${r.id}` === id)?.name || "";
 export const rename = (formula, mapping) => format(formula, mapping);
@@ -91,7 +91,7 @@ export function checkArgument(exercise, mapping, premises, goal, steps) {
       result = { ok: false, message: isRewrite ? "בחרו שורת מקור קודמת אחת. אי אפשר להשתמש בשורה עצמה או בשורה שעדיין לא הוכחה." : "בחרו שתי שורות מקור קודמות ושונות. אי אפשר להשתמש בשורה עצמה או בשורה שעדיין לא הוכחה." };
     } else if (result.ok && isRewrite) {
       const rewrite = checkStep(known.get(step.refs[0]),step.formula,step.rule.slice(3),allowed);
-      result = { ...result, ok: rewrite.kind === "valid", message: rewrite.message, row: rewrite.row };
+      result = { ...result, ok: rewrite.kind === "valid", message: rewrite.message, row: rewrite.row, kind: rewrite.kind, intermediate: rewrite.intermediate };
     } else if (result.ok) {
       const sources = step.refs.map(id => parse(known.get(id)));
       const candidates = consequences(step.rule,...sources);

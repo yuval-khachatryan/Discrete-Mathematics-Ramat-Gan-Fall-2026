@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="he" xml:lang="he" dir="rtl"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2&nbsp; קבוצות וכמתים – מתמטיקה בדידה — מערכי הרצאה</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./01-logic.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "אין תוצאות",
+    "search-matching-documents-text": "מסמכים תואמים",
+    "search-copy-link-title": "העתק קישור לחיפוש",
+    "search-hide-matches-text": "הסתר התאמות נוספות",
+    "search-more-match-text": "התאמה נוספת במסמך זה",
+    "search-more-matches-text": "התאמות נוספות במסמך זה",
+    "search-clear-button-title": "נקה",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "בטל",
+    "search-submit-button-title": "שלח",
+    "search-label": "חפש"
+  }
+}</script>
+<style>
+.todo {
+  color: #8a8a8a;
+  font-style: italic;
+  background: #fafafa;
+  border: 1px dashed #cccccc;
+  border-radius: 4px;
+  padding: 1.2rem 1rem;
+  margin: 0.4rem 0 1.2rem;
+}
+.tf-quiz {
+  margin: 0.6rem 0 1rem;
+}
+.tf-quiz .tf-opt {
+  margin: 0 0 0 0.5rem;
+  padding: 0.35rem 1.4rem;
+  cursor: pointer;
+  border: 1px solid #bbbbbb;
+  border-radius: 4px;
+  background: #f5f5f5;
+  font: inherit;
+  color: inherit;
+}
+.tf-quiz .tf-opt:hover {
+  background: #ececec;
+}
+.tf-quiz .tf-opt.correct {
+  background: #d4edda;
+  border-color: #28a745;
+}
+.tf-quiz .tf-opt.incorrect {
+  background: #f8d7da;
+  border-color: #dc3545;
+}
+.tf-quiz .tf-feedback {
+  margin-top: 0.45rem;
+  font-weight: bold;
+  min-height: 1.2em;
+}
+.set-quiz {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.4rem 0;
+}
+.set-quiz .set-label {
+  min-width: 5rem;
+}
+.set-quiz .set-input {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #bbbbbb;
+  border-radius: 4px;
+  font: inherit;
+  direction: ltr;
+  text-align: left;
+  min-width: 12rem;
+}
+.set-quiz .set-input.correct {
+  border-color: #28a745;
+  background: #d4edda;
+}
+.set-quiz .set-input.incorrect {
+  border-color: #dc3545;
+  background: #f8d7da;
+}
+.set-quiz .set-check {
+  padding: 0.25rem 0.9rem;
+  cursor: pointer;
+  border: 1px solid #bbbbbb;
+  border-radius: 4px;
+  background: #f5f5f5;
+  font: inherit;
+  color: inherit;
+}
+.set-quiz .set-check:hover {
+  background: #ececec;
+}
+.set-quiz .set-feedback {
+  font-weight: bold;
+  min-height: 1.2em;
+}
+/* Interactive widgets embedded from widgets/<chapter>/*.html.
+   They live in an iframe so their CSS (which styles body/table/button
+   unscoped) cannot leak into the page, and so several copies on one
+   page do not collide on element ids. The height below is a first guess;
+   each widget posts its real height and the listener at the bottom of this
+   file applies it. */
+iframe.widget-frame {
+  display: block;
+  width: 100%;
+  height: 440px;      /* replaced by the widget's own reported height */
+  border: 0;          /* the widget draws its own frame */
+  background: transparent;
+  margin: 1.2rem 0 0;
+}
+/* Inside a .thmsim box the frame sits flush; the box supplies the padding. */
+.thmbox-simulation iframe.widget-frame { margin: 0.5rem 0 0.2rem; }
+.thmbox {
+  border-inline-start: 4px solid #9ca3af;
+  background: #fafafa;
+  border-radius: 4px;
+  padding: 0.6rem 1rem;
+  margin: 1rem 0;
+}
+.thmbox > :first-child { margin-top: 0; }
+.thmbox > :last-child { margin-bottom: 0; }
+.thmbox-definition  { border-color: #4f46e5; background: #eef2ff; }
+.thmbox-terminology { border-color: #0369a1; background: #f0f9ff; }
+.thmbox-terminology > p:first-child > strong { color: #075985; }
+.thmbox-terminology > p:first-child > strong::before { content: "📖"; display: inline-block; margin-inline-end: .4em; }
+/* Summaries and component legends have their own labels and visual identity. */
+.thmbox-summary { border-color: #0f766e; background: #f0fdfa; }
+.thmbox-components { border-color: #64748b; background: #f8fafc; }
+.thmbox-summary > p:first-child > strong::before { content: "📋"; margin-inline-end: .4em; }
+.thmbox-components > p:first-child > strong::before { content: "🧩"; margin-inline-end: .4em; }
+.component-figures { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; margin: .75rem 0; }
+.component-figures figure { margin: 0; padding: .4rem; border: 1px solid #cbd5e1; border-radius: .5rem; background: white; text-align: center; }
+.component-figures svg { display: block; width: 100%; max-width: 180px; margin: auto; }
+.component-figures figcaption { font-size: .85rem; color: #334155; }
+@media (max-width: 480px) { .component-figures { grid-template-columns: 1fr; } }
+.thmbox-method { border-color: #0f766e; background: #f0fdfa; }
+.thmbox-method > p:first-child > strong { color: #115e59; }
+.thmbox-theorem     { border-color: #0d9488; background: #f0fdfa; }
+.thmbox-proposition { border-color: #0d9488; background: #f0fdfa; }
+.thmbox-lemma       { border-color: #14b8a6; background: #f0fdfa; }
+.thmbox-corollary   { border-color: #14b8a6; background: #f0fdfa; }
+.thmbox-example     { border-color: #ea580c; background: #fff7ed; }
+/* Question: kin to .thmbox-example, so same hue family, one shade deeper. Its
+   solution reuses the proof's slate — a solution is to a question what a proof
+   is to a theorem, and the reader already reads that grey as "the working". */
+.thmbox-question    { border-color: #9333ea; background: #faf5ff; }
+.thmbox-solution    { border-color: #64748b; background: #f8fafc; }
+.thmbox-solution > p:first-child > strong { font-weight: 600; color: #64748b; }
+.thmbox-simulation  { border-color: #7c3aed; background: #f7f5ff; }
+/* Self-check (.thmchk), ported from the BGU book: a light beat, thin edge. */
+.thmbox-self-check  { border-color: #db2777; background: #fdf2f8; }
+/* Game (.thmgame): the embedded game sits flush; the box supplies the padding. */
+.thmbox-game        { border-color: #ca8a04; background: #fefce8; }
+.thmbox-game > p:first-child > strong::before { content: "🎮"; margin-inline-end: 0.35em; }
+.thmbox-game iframe.widget-frame { margin: 0.5rem 0 0.2rem; }
+.thmbox-game .game-link { font-size: 0.92em; margin: 0.3rem 0 0; }
+/* Caricatures inside a box (Mitzi in §1.3): beside the text on wide screens, centred above it on phones. */
+.thmbox { display: flow-root; }   /* keep floated pictures inside their box */
+figure.cartoon { float: left; width: 210px; margin: 0 0 0.4rem 0; margin-right: 1.2rem; text-align: center; }
+figure.cartoon img { display: block; width: 100%; height: auto; }
+figure.cartoon-says { width: 190px; }
+.cartoon-bubble {
+  position: relative; display: inline-block; margin-bottom: 14px; padding: 0.35rem 0.85rem;
+  background: #fff; border: 2px solid #1f2937; border-radius: 16px;
+  font-weight: 700; font-size: 0.98rem; line-height: 1.35;
+}
+.cartoon-bubble::after {   /* the tail, pointing down at the cat */
+  content: ""; position: absolute; left: 50%; bottom: -12px; margin-left: -9px;
+  border-left: 9px solid transparent; border-right: 9px solid transparent; border-top: 12px solid #1f2937;
+}
+.cartoon-bubble::before {
+  content: ""; position: absolute; left: 50%; bottom: -8px; margin-left: -6px; z-index: 1;
+  border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid #fff;
+}
+@media (max-width: 600px) {
+  figure.cartoon { float: none; margin: 0.3rem auto 0.6rem; width: 180px; }
+}
+/* The two-colour signal as a small picture inside the text (T = green, F = red). */
+.logic-directions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; margin: 1rem 0; }
+.logic-direction { padding: .8rem; background: #fff; border: 2px solid #cbd5e1; border-radius: 12px; text-align: center; }
+.logic-direction:first-child { border-color: #c2410c; }
+.logic-direction:nth-child(2) { border-color: #075985; }
+.logic-direction p { margin: .4rem 0 0; }
+.logic-arrow-row { display: flex; justify-content: center; align-items: center; gap: .7rem; font-size: 1.25em; font-weight: 700; margin: .4rem 0; }
+.logic-arrow { font-size: 1.7em; color: #475569; }
+.logic-directions figcaption { grid-column: 1 / -1; }
+.candy-comic { margin: 1rem 0; container-type: inline-size; }
+.candy-panels { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }
+.candy-panel { min-width: 0; padding: .6rem; border: 2px solid #7c3aed; border-radius: 14px; background: #fff; display: flex; flex-direction: column; }
+.candy-panel h4 { margin: 0 0 .6rem; color: #6b21a8; font-size: 1em; }
+.candy-speech { padding: .6rem; border: 1px solid #c4b5fd; border-radius: 12px; background: #f5f3ff; font-size: .95em; margin: 0 0 .3rem; flex: 1; }
+.candy-panel img { display: block; width: 100%; height: auto; }
+.candy-caption { font-size: .9em; margin: .3rem 0 0; color: #475569; }
+.candy-comic figcaption, .logic-directions figcaption { margin-top: .5rem; color: #475569; font-size: .9em; text-align: center; }
+@container (max-width: 32rem) { .candy-panels { grid-template-columns: 1fr; } .candy-panel img { max-width: 300px; align-self: center; } }
+@media (max-width: 600px) { .logic-directions { grid-template-columns: 1fr; } }
+img.sig-inline { height: 1.9em; width: auto; vertical-align: -0.6em; margin: 0 0.15em; }
+/* Truth tables and other small tables: compact and centred, not full width. */
+main table.table { width: auto; min-width: 10rem; margin-left: auto; margin-right: auto; }
+main table.table th, main table.table td { padding: 0.3rem 1rem; text-align: center; }
+/* On a phone a 6–7 column truth table is wider than the screen: tighten it, and
+   let it scroll inside its own box instead of pushing the whole page sideways. */
+@media (max-width: 600px) {
+  main table.table { display: block; width: fit-content; max-width: 100%; overflow-x: auto; margin-left: auto; margin-right: auto; }
+  main table.table th, main table.table td { padding: 0.25rem 0.45rem; }
+}
+/* A campus character says something (usually something wrong). */
+.says {
+  position: relative;
+  margin: 1rem 0;
+  padding: 0.55rem 0.9rem;
+  padding-inline-start: 3.3rem;
+  min-height: 3rem;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 14px;
+}
+.says::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0.45rem;
+  top: 50%;
+  margin-top: -1.2rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  background: center / contain no-repeat;
+}
+.says > :first-child { margin-top: 0; }
+.says > :last-child { margin-bottom: 0; }
+/* The characters are the games' own sprites (games/shared/sprites/, built by
+   tools/build-sprites.mjs). The URL is relative to the chapter page. */
+.says.robot::before     { background-image: url("games/shared/sprites/robot.svg"); }
+.says.guard::before     { background-image: url("games/shared/sprites/guard.svg"); }
+.says.pigeon::before    { background-image: url("games/shared/sprites/pigeon.svg"); }
+.says.barman::before    { background-image: url("games/shared/sprites/barman.svg"); }
+.says.student::before   { background-image: url("games/shared/sprites/student.svg"); }
+.says.euler::before     { background-image: url("games/shared/sprites/euler.svg"); }
+.says.ada::before       { background-image: url("games/shared/sprites/ada.svg"); }
+.says.gauss::before     { background-image: url("games/shared/sprites/gauss.svg"); }
+.thmbox-proof       { border-color: #64748b; background: #f8fafc; }
+.thmbox-proof > p:first-child > strong { font-weight: 600; color: #64748b; }
+.thmbox-remark      { border-color: #94a3b8; background: #f8fafc; }
+.thmbox-remark > p:first-child > strong { font-weight: 600; color: #64748b; }
+/* Warning (.thmwarn, red) and key point (.thmkey, blue): ported from the BGU book with
+   this course's own hues. Thicker edge, because they mark what students must not miss. */
+.thmbox-warning     { border-color: #e11d48; border-inline-start-width: 6px; background: #fff1f2; }
+.thmbox-warning > p:first-child > strong { font-weight: 700; color: #be123c; }
+.thmbox-key-point   { border-color: #0891b2; border-inline-start-width: 6px; background: #ecfeff; }
+.thmbox-key-point > p:first-child > strong { font-weight: 700; color: #0e7490; }
+/* Role badges (icon="..."), HTML only. */
+.thmbox[class*="thmicon-"] > p:first-child > strong::before {
+  margin-inline-end: 0.35em;
+  font-size: 1.45em;
+  vertical-align: -0.18em;
+}
+.thmbox.thmicon-method     > p:first-child > strong::before { content: "🛠️"; }
+.thmbox.thmicon-calc       > p:first-child > strong::before { content: "🧮"; }
+.thmbox.thmicon-rule       > p:first-child > strong::before { content: "✅"; }
+.thmbox.thmicon-convention > p:first-child > strong::before { content: "🤝"; }
+.thmbox.thmicon-idea       > p:first-child > strong::before { content: "💡"; }
+/* ---------------------------------------------------------------------------
+   Math must never inherit the page's RTL direction. <html dir="rtl"> makes the
+   whole document a right-to-left bidi context, and two things go wrong inside it:
+
+   1. The renderer's own output boxes lay out right-to-left, so a formula mixed
+      into a Hebrew sentence reads backwards.
+   2. Until MathJax runs, the page literally contains the raw source \( ... \).
+      If the CDN is slow or unreachable that source is what stays on screen, and
+      the bidi algorithm reorders it -- the same failure the widgets have with
+      KaTeX (see mathrender.js).
+
+   `unicode-bidi: isolate` makes every formula its own bidi context: it can
+   neither be reordered by the Hebrew around it nor reorder that Hebrew.
+   --------------------------------------------------------------------------- */
+span.math,
+mjx-container,
+.katex,
+.katex-display {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+mjx-container *,
+.katex * {
+  direction: ltr;
+}
+
+/* Keep inline math on one line. This backs up the MathJax linebreak config
+   below; see the comment there for why v4 needs it at all. Display math is
+   left alone -- MathJax gives it its own scroll box. */
+mjx-container:not([display="true"]),
+.katex:not(.katex-display) {
+  white-space: nowrap;
+}
+
+/* Optional box (.optional): foldable, collapsed by default; same gray look as .extra,
+   but the gray bar is the clickable <summary>. */
+details.thmoptional {
+  border: 1px solid #9ca3af;
+  border-radius: 0;
+  margin: 1.5rem 0;
+  background: #ffffff;
+  overflow: hidden;
+}
+details.thmoptional > summary {
+  background: #d1d5db;
+  color: #374151;
+  font-weight: 700;
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+}
+details.thmoptional[open] > summary { border-bottom: 1px solid #9ca3af; }
+details.thmoptional > .optional { padding: 0.7rem 0.9rem; }
+details.thmoptional > .optional > :first-child { margin-top: 0; }
+details.thmoptional > .optional > :last-child { margin-bottom: 0; }
+/* .foldable: hidden calculations / derivations. Distinct from .optional (which is a
+   whole gray-boxed aside) — this is a light inline disclosure inside the running text. */
+details.thmfoldable {
+  margin: 1rem 0;
+  border-inline-start: 3px solid #cbd5e1;
+  padding-inline-start: 0.8rem;
+}
+details.thmfoldable > summary {
+  cursor: pointer;
+  color: #475569;
+  font-weight: 600;
+}
+details.thmfoldable[open] > summary { margin-bottom: 0.5rem; }
+details.thmcollapse { margin: 1rem 0; }
+details.thmcollapse > summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: #475569;
+  padding: 0.2rem 0;
+}
+details.thmcollapse[open] > summary { margin-bottom: 0.4rem; }
+/* Enrichment box (.extra): non-foldable, gray box; the section heading becomes a gray
+   header bar. Quarto merges the div into <section class="... extra">, so we style .extra. */
+.extra {
+  border: 1px solid #9ca3af;
+  border-radius: 0;
+  margin: 1.5rem 0;
+  background: #ffffff;
+  padding: 0.7rem 0.9rem;
+}
+.extra > h2, .extra > h3, .extra > .extra-title {
+  background: #d1d5db;
+  color: #374151;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: -0.7rem -0.9rem 0.8rem;
+  padding: 0.45rem 0.8rem;
+  border-bottom: 1px solid #9ca3af;
+}
+.extra > :last-child { margin-bottom: 0; }
+/* ---- interactive exercises (games/shared/book.js) ------------------------
+   .solve = step-by-step solution, .ttq = truth-table exercise,
+   .fq = formula answer, .tf-why = explanation inside a T/F quiz. */
+.bk-hidden { display: none !important; }
+details.lecture-answer { margin: .45rem 0 1rem; }
+details.lecture-answer > summary { color: #4338ca; cursor: pointer; font-weight: 600; }
+.lecture-cell-trigger { min-width: 2.3em; color: #4338ca; }
+.lecture-table-controls { margin-top: .6rem; }
+@media print {
+  .lecture-cell-answer[hidden] { display: inline !important; }
+  .lecture-cell-trigger, .lecture-table-controls { display: none !important; }
+  details.lecture-answer::details-content { content-visibility: visible; }
+  details.lecture-answer > :not(summary) { display: block !important; }
+}
+.bk-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.bk-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0.2rem 0 0.5rem; }
+.bk-title { font-weight: 700; color: #475569; margin-inline-end: 0.4rem; }
+.bk-btn {
+  min-height: 40px; padding: 0.3rem 0.9rem; border: 1px solid #94a3b8; border-radius: 8px;
+  background: #fff; color: inherit; font: inherit; font-size: 0.95em; cursor: pointer;
+}
+.bk-btn:hover:not(:disabled) { background: #f1f5f9; }
+.bk-btn:disabled { opacity: 0.5; cursor: default; }
+.bk-main { background: #4f46e5; border-color: #4f46e5; color: #fff; font-weight: 700; }
+.bk-main:hover:not(:disabled) { background: #4338ca; }
+.bk-quiet { color: #475569; }
+.bk-btn:focus-visible, .bk-cell:focus-visible, .bk-key:focus-visible, .bk-input:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.bk-label {
+  display: inline-block; margin-inline-end: 0.5rem; padding: 0 0.5rem; border-radius: 999px;
+  font-size: 0.85em; font-weight: 700; background: #e2e8f0; color: #334155;
+}
+.solve.bk-solve {
+  border-inline-start: 4px solid #64748b; background: #f8fafc; border-radius: 4px;
+  padding: 0.5rem 1rem; margin: 0.6rem 0 1.2rem;
+}
+.solve .hint, .solve .step { margin: 0.45rem 0; padding: 0.45rem 0.7rem; border-radius: 8px; background: #fff; border: 1px solid #e2e8f0; }
+.solve .hint { border-style: dashed; border-color: #d97706; background: #fffbeb; }
+.solve .hint .bk-label { background: #fde68a; color: #92400e; }
+.solve .step > p:first-of-type, .solve .hint > p:first-of-type { display: inline; }
+.bk-ttq, .bk-fq { margin: 0.6rem 0 1.2rem; padding: 0.6rem 0.9rem; border: 1px solid #c7d2fe; border-radius: 10px; background: #f8faff; }
+.bk-tt-wrap { overflow-x: auto; }
+table.bk-tt { border-collapse: collapse; margin: 0.2rem auto 0.4rem; }
+table.bk-tt th, table.bk-tt td { border: 1px solid #d1d5db; padding: 0.2rem 0.45rem; text-align: center; }
+table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
+.bk-cell { min-width: 2.6rem; min-height: 34px; border: 1px dashed #94a3b8; border-radius: 6px; background: #fff; font: inherit; cursor: pointer; }
+.bk-cell.bk-wrong { border: 2px solid #b91c1c; background: #fee2e2; }
+.bk-cell.bk-focus { outline: 3px solid #f59e0b; outline-offset: 1px; }
+.bk-q { color: #94a3b8; font-weight: 700; }
+.bk-msg:empty { display: none; }
+.bk-msg { margin: 0.3rem 0; padding: 0.45rem 0.8rem; border-radius: 8px; border-inline-start: 4px solid #64748b; background: #fff; }
+.bk-msg.bk-good { border-color: #15803d; background: #dcfce7; }
+.bk-msg.bk-good::before { content: "✓ "; font-weight: 700; color: #15803d; }
+.bk-msg.bk-bad { border-color: #b91c1c; background: #fee2e2; }
+.bk-msg.bk-info { border-color: #1d4ed8; background: #dbeafe; }
+.bk-fq-row { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin: 0.4rem 0; }
+.bk-input {
+  flex: 1 1 16rem; min-height: 40px; padding: 0.3rem 0.6rem; border: 1px solid #94a3b8; border-radius: 8px;
+  font: 1.05rem "Cambria Math", "STIX Two Math", "Times New Roman", serif; direction: ltr; text-align: left;
+}
+.proof-editor { margin: .8rem 0; }
+.proof-start { padding: .65rem; border-inline-start: 4px solid #075985; background: #e0f2fe; border-radius: 6px; color: #075985; }
+.proof-step { min-width: 0; margin: .7rem 0; padding: .7rem; border: 1px solid #c7d2fe; border-radius: 10px; background: #f8faff; }
+.proof-step legend { float: none; width: auto; padding: 0 .4rem; margin: 0; font-size: 1.05em; font-weight: 700; color: #581c87; }
+.proof-field { display: grid; gap: .3rem; margin: .45rem 0; font-weight: 600; }
+.proof-input, .proof-rule { width: 100%; min-width: 0; }
+.proof-rule { min-height: 44px; padding: .4rem; border: 1px solid #94a3b8; border-radius: 8px; background: white; font: inherit; }
+.proof-rule:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.proof-input[aria-invalid="true"], .proof-rule[aria-invalid="true"] { border: 2px solid #b91c1c; }
+.proof-reference { margin: .5rem 0; padding: .4rem; background: #e0f2fe; border-radius: 6px; }
+.proof-reference summary { cursor: pointer; color: #075985; }
+.proof-formula { direction: ltr; unicode-bidi: isolate; text-align: left; white-space: nowrap; overflow-x: auto; font-family: "Cambria Math", "Times New Roman", serif; margin-top: .25rem; }
+.proof-ready .proof-offline { display: none; }
+.proof-start-input { width: 100%; }
+.proof-start-input[aria-invalid="true"] { border: 2px solid #b91c1c; }
+.proof-preview { margin-top: 1rem; padding: 1rem; border: 1px solid #99c8c0; border-inline-start: 4px solid #0f766e; border-radius: 8px; background: #fcfffe; }
+.proof-preview > strong { color: #115e59; font-size: 1.1em; }
+.proof-preview > p { margin: .4rem 0 .8rem; }
+.proof-chain { display: grid; grid-template-columns: 1.2em fit-content(65%) minmax(0, max-content); gap: .65rem 1rem; align-items: baseline; direction: ltr; overflow-x: auto; padding: .7rem .2rem; }
+.proof-chain > p { grid-column: 1 / -1; direction: rtl; }
+.proof-chain-line { display: contents; }
+.proof-chain-sign { font-family: "Cambria Math", serif; font-size: 1.25em; color: #0f766e; }
+.proof-chain-line .proof-formula { margin: 0; font-size: 1.2em; line-height: 1.6; }
+.proof-chain-reason { text-align: left; color: #655080; font-size: .95em; unicode-bidi: isolate; }
+.proof-local { margin-top: .8rem; padding: .65rem; background: white; border-top: 2px solid #99c8c0; }
+.proof-local > strong { color: #115e59; }
+.proof-editor [hidden] { display: none !important; }
+.proof-paper { padding-top: .65rem; border-top: 1px solid #d1e5df; }
+.proof-goal { margin: .65rem 0; }
+.proof-goal > p { margin: 0; }
+.proof-goal .proof-formula { display: block; color: #115e59; }
+@media (max-width: 600px) {
+  .proof-chain { grid-template-columns: 1.2em minmax(0, 1fr); gap: .25rem .5rem; }
+  .proof-chain-reason { grid-column: 2; text-align: left; font-size: .9em; margin-bottom: .7rem; }
+}
+.argument-editor [hidden] { display: none !important; }
+.argument-proof-scroll { overflow-x: auto; }
+.argument-proof-table { width: 100%; margin: .6rem 0; border-collapse: collapse; }
+.argument-proof-table th, .argument-proof-table td { padding: .55rem; border-bottom: 1px solid #cbded9; vertical-align: top; }
+.argument-proof-table thead { background: #edf6f3; }
+.argument-proof-table .proof-formula { white-space: normal; overflow-wrap: anywhere; }
+.argument-line-words { margin-top: .3rem; font-size: .93em; }
+.argument-line-reason { color: #655080; width: 28%; }
+.argument-line-reason > span { display: block; }
+.argument-line-refs { white-space: nowrap; }
+@media (max-width: 600px) {
+  .argument-proof-table, .argument-proof-table tbody { display: block; }
+  .argument-proof-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .argument-proof-table tbody tr { display: grid; grid-template-columns: 1.8em minmax(0, 1fr); border-bottom: 1px solid #cbded9; padding: .45rem 0; }
+  .argument-proof-table tbody th { grid-row: 1 / 3; }
+  .argument-proof-table td, .argument-proof-table tbody th { padding: .25rem; border: 0; min-width: 0; }
+  .argument-proof-table .argument-line-reason { grid-column: 2; width: auto; font-size: .9em; }
+  .argument-line-reason > span { display: inline; }
+  .argument-line-refs { white-space: normal; }
+  .argument-line-refs::before { content: " — "; }
+}
+.argument-local .argument-written > p { margin: .5rem 0; }
+.table-evidence { min-width: 0; border: 1px solid #9cb9c7; border-radius: 8px; padding: .7rem; margin: .7rem 0; background: #f5faff; }
+.table-evidence legend { float: none; width: auto; font-size: 1.1em; font-weight: bold; }
+.table-evidence:disabled { opacity: .65; }
+.table-evidence p { margin: .35rem 0; }
+.inference-rule { width: max-content; max-width: 100%; margin: .7rem auto; padding: 0 .5rem; }
+.inference-rule .proof-formula { text-align: center; padding: .2rem .5rem; }
+.inference-conclusion { border-top: 1px solid currentColor; margin-top: .25rem; }
+.argument-ready .argument-offline { display: none; }
+.argument-stage { margin: .8rem 0; padding: .7rem; border: 1px solid #c4b5fd; border-radius: 10px; background: #fff; min-width: 0; }
+.argument-stage h4 { font-size: 1.1em; color: #6b21a8; margin-top: 0; }
+.argument-mapping { display: flex; align-items: center; gap: .7rem; padding: .5rem 0; }
+.argument-letter { flex: 0 0 4rem; min-height: 44px; direction: ltr; text-align: center; font: inherit; font-weight: 700; border: 1px solid #7c3aed; border-radius: 6px; color: #581c87; background: #faf5ff; }
+.argument-source { width: 100%; min-width: 0; min-height: 44px; padding: .35rem; font: inherit; border: 1px solid #94a3b8; border-radius: 6px; background: #fff; }
+.argument-letter:focus-visible, .argument-source:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.argument-translation { padding: .7rem 0; border-bottom: 1px solid #e2e8f0; }
+.argument-premises { list-style: none; padding: 0; margin: .8rem 0; }
+.argument-premises li { margin: .4rem 0; padding: .6rem; background: #f1f5f9; border-radius: 6px; }
+.argument-rule-help:not(:empty), .argument-hints:not(:empty), .argument-solution:not(:empty) { padding: .6rem; margin: .5rem 0; background: #fffbeb; border: 1px dashed #d97706; border-radius: 6px; }
+.argument-rule-help p, .argument-hints p { margin: .3rem 0; }
+.argument-editor .bk-bar { margin-top: .6rem; }
+.argument-formula-bank, .choice-select { width: 100%; min-width: 0; min-height: 44px; padding: .35rem; font: inherit; border: 1px solid #7c3aed; border-radius: 6px; background: #faf5ff; }
+.argument-formula-bank { direction: ltr; }
+.choice-item { min-width: 0; margin: .8rem 0; padding: .65rem; border: 1px solid #c4b5fd; border-radius: 8px; }
+.choice-item legend { float: none; width: auto; max-width: 100%; font-size: 1em; font-weight: 700; color: #581c87; padding: 0 .25rem; }
+.choice-select[aria-invalid="true"] { border: 2px solid #b91c1c; }
+.choice-select:focus-visible, .argument-formula-bank:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.choice-ready .choice-offline { display: none; }
+.bk-keys { display: flex; flex-wrap: wrap; gap: 0.25rem; direction: ltr; }
+.bk-key { min-width: 40px; min-height: 40px; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; font: 1.1rem "Cambria Math", "STIX Two Math", serif; cursor: pointer; }
+.bk-key:hover { background: #eef2ff; }
+.bk-fq .hint, .bk-fq .explain, .bk-ttq .after { margin: 0.4rem 0; padding: 0.4rem 0.7rem; border-radius: 8px; }
+.bk-fq .hint { border: 1px dashed #d97706; background: #fffbeb; }
+.bk-fq .hint .bk-label { background: #fde68a; color: #92400e; }
+.bk-fq .explain, .bk-ttq .after { border: 1px solid #bbf7d0; background: #f0fdf4; }
+.bk-fq .hint > p:first-of-type { display: inline; }
+.tf-quiz .tf-why { display: none; margin-top: 0.4rem; padding: 0.4rem 0.7rem; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; }
+.tf-quiz.tf-answered .tf-why { display: block; }
+.tf-why .m, .bk-msg .m, .bk-tt .m { direction: ltr; unicode-bidi: isolate; display: inline-block; white-space: nowrap; font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif; }
+.tv-T, .tv-F { display: inline-block; min-width: 1.5em; text-align: center; font-weight: 700; border-radius: 4px; padding: 0 0.2em; }
+.tv-T { color: #14532d; background: #bbf7d0; }   /* T = green, F = red, as on the signal */
+.tv-F { color: #7f1d1d; background: #fecaca; }
+/* New terminology has a consistent accent, alongside explicit explanations. */
+.term { white-space: nowrap; color: #6b21a8; background: #f3e8ff; border-radius: .22em; padding: .04em .2em; font-weight: 700; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+/* Whole rules can wrap; purple terms and blue rules have distinct roles. */
+.key-rule { color: #075985; background: #e0f2fe; font-weight: 700; padding: .08em .25em; border-radius: .2em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.fq > p:first-child { color: #581c87; background: #f3e8ff; border-inline-start: 4px solid #9333ea; padding: .55rem .75rem; border-radius: 6px; font-size: 1.08em; font-weight: 700; }
+.pair-figure { margin: .8rem 0; padding: .6rem; background: #fff; border-radius: 8px; }
+.pair-row { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin: .6rem 0; }
+.pair-dots { display: flex; flex-wrap: wrap; gap: .35rem; direction: ltr; }
+.pair-dots > span { color: #075985; background: #e0f2fe; border: 1px solid #7dd3fc; border-radius: 6px; padding: .1rem .35rem; white-space: nowrap; }
+.pair-dots > .pair-single { color: #92400e; background: #fef3c7; border-color: #d97706; }
+.pair-figure figcaption { font-size: .9rem; }
+.open-statement-game { margin-top: .75rem; }
+.os-title { font-size: 1.1rem; margin: .5rem 0; }
+.os-choices, .os-answers { display: flex; flex-wrap: wrap; gap: .6rem; margin: .7rem 0; }
+.os-choice { display: flex; align-items: center; flex-wrap: wrap; gap: .45rem; }
+.os-choice input { min-height: 44px; width: 10rem; max-width: 100%; font: inherit; padding: .3rem .55rem; border: 1px solid #64748b; border-radius: 6px; background: #fff; color: #1e293b; }
+.os-choice input:disabled { background: #f1f5f9; }
+.os-choice input[aria-invalid="true"] { border-color: #be123c; }
+.os-stage { font-weight: 700; color: #4338ca; }
+.os-first { padding: .6rem; border-inline-start: 4px solid #0f766e; background: #f0fdfa; overflow-wrap: anywhere; }
+.os-card { min-width: 0; }
+.os-formula { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; margin: .8rem 0; }
+.os-card { display: flex; flex-direction: column; align-items: center; gap: .6rem; padding: .7rem; border: 2px dashed #a78bfa; background: #faf5ff; border-radius: 9px; }
+.os-card.os-complete { border-style: solid; }
+.os-expression { font: 1.25rem "Cambria Math", "Times New Roman", serif; unicode-bidi: isolate; white-space: nowrap; max-width: 100%; overflow-x: auto; }
+.os-status { padding: .5rem .7rem; background: #f1f5f9; border-radius: 6px; }
+.open-statement-game [hidden] { display: none; }
+.open-statement-game :focus-visible { outline: 3px solid #7c3aed; outline-offset: 3px; }
+@media (max-width: 480px) { .os-formula { grid-template-columns: 1fr; } }
+@media print { .term { color: #111; background: transparent; text-decoration: underline; } }
+</style>
+<script src="games/shared/book.bundle.js" defer=""></script>
+<script>
+/* ---------------------------------------------------------------------------
+   MathJax line breaking.
+
+   Quarto now loads mathjax@4, and v4 switched on automatic line breaking that
+   v3 did not do:
+
+     * inline math may be broken at a relation or a binary operator, so a short
+       formula such as \( \phi : U \to V \) comes out split after the U;
+     * display math wider than the column is broken instead of being left to
+       run on.
+
+   Inside an RTL paragraph a break in the middle of a formula does not read as
+   a wrap, it reads as a mistake. So turn the AUTOMATIC breaking off:
+   `linebreaks.inline = false` for inline math, and `displayOverflow = scroll`
+   so that over-wide display math gets a scroll box rather than being chopped.
+
+   Breaks we wrote ourselves are unaffected: `\\` inside aligned/cases/matrix
+   still starts a new row, which is the "unless specifically required" case.
+
+   Both `output` and `chtml` are set because v4 accepts these keys on the
+   generic output block and on the specific output jax, and tex-chtml.js loads
+   CHTML. The more specific one wins; setting both costs nothing.
+
+   This has to run before the MathJax script does. That script carries `defer`,
+   so it runs after parsing, while this inline script runs during parsing --
+   hence anywhere in the head is early enough.
+   --------------------------------------------------------------------------- */
+window.MathJax = {
+  output: {
+    displayOverflow: "scroll",
+    linebreaks: { inline: false }
+  },
+  chtml: {
+    displayOverflow: "scroll",
+    linebreaks: { inline: false }
+  }
+};
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".tf-quiz").forEach(function (quiz) {
+    var correct = quiz.getAttribute("data-correct");
+    var feedback = quiz.querySelector(".tf-feedback");
+    quiz.querySelectorAll(".tf-opt").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        quiz.querySelectorAll(".tf-opt").forEach(function (b) {
+          b.classList.remove("correct", "incorrect");
+        });
+        if (btn.getAttribute("data-val") === correct) {
+          btn.classList.add("correct");
+          if (feedback) feedback.textContent = "✓ נכון!";
+        } else {
+          btn.classList.add("incorrect");
+          if (feedback) feedback.textContent = "✗ לא מדויק — קראו את ההסבר ונסו שוב.";
+        }
+        /* Opt-in via a bare data-reveal attribute (ported from the BGU book): answering
+           opens the next foldable solution, so the reasoning appears once the reader
+           has committed. Found by document order, not by id: a Div carrying an id
+           together with .thmsol .foldable crashes Quarto's main.lua. */
+        if (quiz.hasAttribute("data-reveal")) {
+          var box = null;
+          for (var node = quiz; node && node.tagName !== "MAIN" && !box; node = node.parentElement) {
+            for (var sib = node.nextElementSibling; sib && !box; sib = sib.nextElementSibling) {
+              box = sib.tagName === "DETAILS" ? sib
+                  : (sib.querySelector ? sib.querySelector("details") : null);
+            }
+          }
+          if (box) box.open = true;
+        }
+      });
+    });
+  });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  function normSet(str) {
+    if (!str) return [];
+    return Array.from(new Set(
+      str.split(/[\s,;]+/).filter(function (s) { return s.length; }).map(Number)
+    )).filter(function (n) { return !Number.isNaN(n); }).sort(function (a, b) { return a - b; });
+  }
+  function eqSet(a, b) {
+    if (a.length !== b.length) return false;
+    for (var i = 0; i < a.length; i++) { if (a[i] !== b[i]) return false; }
+    return true;
+  }
+  document.querySelectorAll(".set-quiz").forEach(function (q) {
+    var answer = normSet(q.getAttribute("data-answer"));
+    var input = q.querySelector(".set-input");
+    var feedback = q.querySelector(".set-feedback");
+    var btn = q.querySelector(".set-check");
+    function check() {
+      input.classList.remove("correct", "incorrect");
+      if (eqSet(normSet(input.value), answer)) {
+        input.classList.add("correct");
+        if (feedback) feedback.textContent = "✓ נכון!";
+      } else {
+        input.classList.add("incorrect");
+        if (feedback) feedback.textContent = "✗ נסו שוב";
+      }
+    }
+    if (btn) btn.addEventListener("click", check);
+    if (input) input.addEventListener("keydown", function (e) { if (e.key === "Enter") check(); });
+  });
+});
+</script>
+<script>
+// Widgets embedded from widgets/<chapter>/ report their own height, so the
+// iframe does not need a hard-coded one (which breaks on narrow screens,
+// where the control panel stacks above the plot).
+window.addEventListener("message", function (e) {
+  var d = e.data;
+  if (!d || d.type !== "widget-height" || typeof d.height !== "number") return;
+  var frames = document.querySelectorAll("iframe.widget-frame");
+  for (var i = 0; i < frames.length; i++) {
+    if (frames[i].contentWindow === e.source) {
+      frames[i].style.height = Math.max(160, Math.min(2400, d.height)) + "px";
+      return;
+    }
+  }
+});
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="הצג/הסתר את סרגל הניווט" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-sets.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">קבוצות וכמתים</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="הצג/הסתר את סרגל הניווט" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="חפש" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">מתמטיקה בדידה — מערכי הרצאה</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="הצג/הסתר מצב קריאה">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="חפש"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">פתח דבר</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-logic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">לוגיקה: הכללים לבניית משפטים ולהסקת מסקנות</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-sets.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">קבוצות וכמתים</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">תוכן העניינים</h2>
+   
+  <ul>
+  <li><a href="#sec-sets-membership" id="toc-sec-sets-membership" class="nav-link active" data-scroll-target="#sec-sets-membership"><span class="header-section-number">2.1</span> קבוצות, איברים ושייכות</a></li>
+  <li><a href="#sec-set-equality-inclusion" id="toc-sec-set-equality-inclusion" class="nav-link" data-scroll-target="#sec-set-equality-inclusion"><span class="header-section-number">2.2</span> שוויון קבוצות והכלה</a></li>
+  <li><a href="#sec-set-union-intersection" id="toc-sec-set-union-intersection" class="nav-link" data-scroll-target="#sec-set-union-intersection"><span class="header-section-number">2.3</span> איחוד וחיתוך</a></li>
+  <li><a href="#sec-set-difference-complement" id="toc-sec-set-difference-complement" class="nav-link" data-scroll-target="#sec-set-difference-complement"><span class="header-section-number">2.4</span> הפרש, משלים והפרש סימטרי</a></li>
+  <li><a href="#sec-power-set" id="toc-sec-power-set" class="nav-link" data-scroll-target="#sec-power-set"><span class="header-section-number">2.5</span> קבוצת החזקה</a></li>
+  <li><a href="#sec-cartesian-product" id="toc-sec-cartesian-product" class="nav-link" data-scroll-target="#sec-cartesian-product"><span class="header-section-number">2.6</span> זוגות סדורים ומכפלה קרטזית</a></li>
+  <li><a href="#sec-quantifiers" id="toc-sec-quantifiers" class="nav-link" data-scroll-target="#sec-quantifiers"><span class="header-section-number">2.7</span> כמתים</a>
+  <ul>
+  <li><a href="#sec-bar" id="toc-sec-bar" class="nav-link" data-scroll-target="#sec-bar"><span class="header-section-number">2.7.1</span> שלושה מתמטיקאים ניגשים לדוכן פלאפל</a></li>
+  <li><a href="#sec-bar-again" id="toc-sec-bar-again" class="nav-link" data-scroll-target="#sec-bar-again"><span class="header-section-number">2.7.2</span> ״כולם״ ו״מישהו״ בשפת הכמתים</a></li>
+  <li><a href="#sec-evidence" id="toc-sec-evidence" class="nav-link" data-scroll-target="#sec-evidence"><span class="header-section-number">2.7.3</span> איזו הוכחה צריך?</a></li>
+  <li><a href="#sec-domain" id="toc-sec-domain" class="nav-link" data-scroll-target="#sec-domain"><span class="header-section-number">2.7.4</span> התחום חשוב</a></li>
+  <li><a href="#sec-neg-quantifiers" id="toc-sec-neg-quantifiers" class="nav-link" data-scroll-target="#sec-neg-quantifiers"><span class="header-section-number">2.7.5</span> שלילה של כמתים</a></li>
+  <li><a href="#sec-quantifier-order" id="toc-sec-quantifier-order" class="nav-link" data-scroll-target="#sec-quantifier-order"><span class="header-section-number">2.7.6</span> סדר הכמתים</a></li>
+  </ul></li>
+  <li><a href="#sec-set-proofs" id="toc-sec-set-proofs" class="nav-link" data-scroll-target="#sec-set-proofs"><span class="header-section-number">2.8</span> משתמשים בכמתים כדי לנסח טענות על קבוצות</a></li>
+  <li><a href="#practice-quantifiers" id="toc-practice-quantifiers" class="nav-link" data-scroll-target="#practice-quantifiers"><span class="header-section-number">2.9</span> תרגול עצמי: כמתים</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">קבוצות וכמתים</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="sec-sets-membership" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="sec-sets-membership"><span class="header-section-number">2.1</span> קבוצות, איברים ושייכות</h2>
+<p>TODO</p>
+</section>
+<section id="sec-set-equality-inclusion" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="sec-set-equality-inclusion"><span class="header-section-number">2.2</span> שוויון קבוצות והכלה</h2>
+<p>TODO</p>
+</section>
+<section id="sec-set-union-intersection" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="sec-set-union-intersection"><span class="header-section-number">2.3</span> איחוד וחיתוך</h2>
+<p>TODO</p>
+</section>
+<section id="sec-set-difference-complement" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="sec-set-difference-complement"><span class="header-section-number">2.4</span> הפרש, משלים והפרש סימטרי</h2>
+<p>TODO</p>
+</section>
+<section id="sec-power-set" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="sec-power-set"><span class="header-section-number">2.5</span> קבוצת החזקה</h2>
+<p>TODO</p>
+</section>
+<section id="sec-cartesian-product" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="sec-cartesian-product"><span class="header-section-number">2.6</span> זוגות סדורים ומכפלה קרטזית</h2>
+<p>TODO</p>
+</section>
+<section id="sec-quantifiers" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="sec-quantifiers"><span class="header-section-number">2.7</span> כמתים</h2>
+<p>כשאומרים ״כולם״, צריך לדעת: <strong>כולם מתוך איזו קבוצה?</strong> כל הסטודנטים בכיתה, כל הכיסאות בחדר, או כל המספרים שבחרנו? לפני שנכתוב ״לכל״ או ״קיים״, נבהיר על מי ועל מה מדברים.</p>
+<div class="thmbox thmbox-key-point" title="עולם הדיון: אילו ערכים מותר לבחור?">
+<p><strong>חשוב לזכור — עולם הדיון: אילו ערכים מותר לבחור?</strong></p>
+<p><span class="term"><strong>עולם הדיון</strong></span>, שנקרא גם <span class="term"><strong>התחום</strong></span>, הוא אוסף הערכים שמותר למשתנה לקבל. בדוגמאות הראשונות כאן נבחר:</p>
+<p><span class="math display">\[D=\{1,2,3,4\}.\]</span></p>
+<p>האות <span class="math inline">\(D\)</span> היא שם לאוסף הזה. הסוגריים המסולסלים מציגים את איבריו — המספרים שנמצאים בו. הסימן <span class="term"><strong><span class="math inline">\(\in\)</span></strong></span> פירושו ״שייך ל־״. לכן <span class="math inline">\(x\in D\)</span> אומר ש־<span class="math inline">\(x\)</span> הוא אחד מ־<span class="math inline">\(1,2,3,4\)</span>. למשל, <span class="math inline">\(3\in D\)</span>, אבל <span class="math inline">\(7\)</span> אינו בעולם הדיון שבחרנו.</p>
+<p><span class="key-rule"><strong>״לכל״ ו״קיים״ מתייחסים רק לאיברים בעולם הדיון שנקבע.</strong></span> כאן משתמשים בשייכות לקבוצה כדי לציין במדויק אילו ערכים מותר להציב.</p>
+</div>
+<p>נגדיר <span class="math inline">\(P(x)\)</span>: ״<span class="math inline">\(x&gt;2\)</span>״. זהו פסוק פתוח. אפשר להציב בו מספר מהתחום: <span class="math inline">\(P(1)\)</span> שקר ו־<span class="math inline">\(P(3)\)</span> אמת. עכשיו נרצה לומר משהו על התחום כולו: האם <strong>כל</strong> המספרים בו גדולים מ־<span class="math inline">\(2\)</span>? האם יש בו <strong>לפחות מספר אחד</strong> שגדול מ־<span class="math inline">\(2\)</span>? המילים האלה נקראות <span class="term"><strong>כמתים</strong></span>.</p>
+<div id="box-def-quantifiers" class="thmbox thmbox-definition">
+<p><strong>הגדרה 2.7.1.</strong></p>
+<p>נניח ש־<span class="math inline">\(D\)</span> הוא עולם הדיון וש־<span class="math inline">\(P(x)\)</span> הוא פסוק פתוח על איבריו.</p>
+<ul>
+<li><span class="math inline">\(\forall x\in D\,P(x)\)</span> — קוראים: ״<span class="term"><strong>לכל</strong></span> <span class="math inline">\(x\)</span> ששייך ל־<span class="math inline">\(D\)</span>, מתקיים <span class="math inline">\(P(x)\)</span>״. הפסוק אמת כאשר <strong>כל</strong> איבר בתחום מקיים את התיאור.</li>
+<li><span class="math inline">\(\exists x\in D\,P(x)\)</span> — קוראים: ״<span class="term"><strong>קיים</strong></span> <span class="math inline">\(x\)</span> ששייך ל־<span class="math inline">\(D\)</span> כך שמתקיים <span class="math inline">\(P(x)\)</span>״. הפסוק אמת כאשר <strong>לפחות איבר אחד</strong> בתחום מקיים את התיאור.</li>
+</ul>
+<p><span class="math inline">\(\forall\)</span> נקרא <span class="term"><strong>הכמת הכולל</strong></span>, ו־<span class="math inline">\(\exists\)</span> נקרא <span class="term"><strong>הכמת הישי</strong></span>. השמות אינם העיקר: חשוב לזכור אם צריך לבדוק את כולם או למצוא לפחות אחד, ותמיד — מתוך התחום שנבחר.</p>
+</div>
+<p>אצלנו, <span class="math inline">\(D=\{1,2,3,4\}\)</span> ו־<span class="math inline">\(P(x)\)</span> אומר ״<span class="math inline">\(x&gt;2\)</span>״. לכן <span class="math inline">\(\forall x\in D\,P(x)\)</span> שקר, למשל בגלל <span class="math inline">\(1\)</span>. לעומת זאת, <span class="math inline">\(\exists x\in D\,P(x)\)</span> אמת, למשל בגלל <span class="math inline">\(3\)</span>.</p>
+<div class="thmbox thmbox-remark" title="לפעמים מקצרים את הכתיבה">
+<p><strong>הערה 2.7.2 — לפעמים מקצרים את הכתיבה.</strong></p>
+<p>כאשר עולם הדיון כבר נאמר וברור מההקשר, אפשר לקצר ולכתוב <span class="math inline">\(\forall x\,P(x)\)</span> או <span class="math inline">\(\exists x\,P(x)\)</span> בלי לחזור על <span class="math inline">\(\in D\)</span>. זו רק השמטה של מידע שכבר ידוע: המשתנה עדיין נבחר מאותו תחום. בדוגמאות הראשונות כאן התחום הוא <span class="math inline">\(\{1,2,3,4\}\)</span>; בכל מעבר לתחום אחר נציין אותו. כדי שיהיה קל לעקוב, בדרך כלל נכתוב כאן את התחום גם בתוך הנוסחה.</p>
+</div>
+<p><span id="sec-free-variable"></span></p>
+<div id="box-def-free-variable" class="thmbox thmbox-definition" title="משתנה חופשי ומשתנה קשור — בתוך העולם שבחרנו">
+<p><strong>הגדרה 2.7.3 — משתנה חופשי ומשתנה קשור — בתוך העולם שבחרנו.</strong></p>
+<p>גם אחרי שבחרנו תחום, עדיין יש הבדל בין ״בחרו ערך ל־<span class="math inline">\(x\)</span>״ לבין ״בדקו את כל ערכי <span class="math inline">\(x\)</span> בתחום״. הכמת אומר מה לעשות עם המשתנה. כשכמת חל עליו, המשתנה <span class="term"><strong>קשור</strong></span>; כשאין כמת שחל עליו, הוא <span class="term"><strong>חופשי</strong></span>.</p>
+<div class="table-responsive">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 38%">
+<col style="width: 30%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">מה כתוב?</th>
+<th style="text-align: left;">איך קוראים?</th>
+<th style="text-align: left;">מה תפקידו של <span class="math inline">\(x\)</span>?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(x&gt;2\)</span></td>
+<td style="text-align: left;">המספר שנבחר גדול מ־2</td>
+<td style="text-align: left;">חופשי: יודעים שמותר לבחור מתוך <span class="math inline">\(D\)</span>, אבל עדיין צריך ערך מסוים</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(\forall x\in D\,(x&gt;2)\)</span></td>
+<td style="text-align: left;">כל מספר בתחום גדול מ־2</td>
+<td style="text-align: left;">קשור: בודקים את כל ארבעת הערכים; הטענה שקרית</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(\exists x\in D\,(x&gt;2)\)</span></td>
+<td style="text-align: left;">יש מספר בתחום שגדול מ־2</td>
+<td style="text-align: left;">קשור: מחפשים לפחות ערך מתאים אחד; הטענה אמיתית בגלל <span class="math inline">\(3\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>הכתיבה <span class="math inline">\(x\in D\)</span> אומרת <strong>מאיפה</strong> מותר לבחור; היא אינה בוחרת מספר מסוים במקומנו. הכמת מוסיף את ההוראה: ״לכל״ או ״קיים״. לכן גם ב״קיים״ המשתנה קשור, אף שלא כתוב מראש איזה מספר מתאים.</p>
+<p>אם מציבים ממש <span class="math inline">\(3\)</span> במקום <span class="math inline">\(x\)</span>, מקבלים <span class="math inline">\(3&gt;2\)</span>, ובתוצאה כבר אין משתנה. הצבה וקשירה באמצעות כמת הן שתי פעולות שונות.</p>
+</div>
+<p>בתחום הקטן שלנו אפשר לכתוב את כל הבדיקות במפורש:</p>
+<ul>
+<li><span class="math inline">\(\forall x\in D\,P(x)\)</span> דורש <span class="math inline">\(P(1)\land P(2)\land P(3)\land P(4)\)</span>. כל ארבע הבדיקות צריכות להצליח יחד; כאן זה לא קורה.</li>
+<li><span class="math inline">\(\exists x\in D\,P(x)\)</span> דורש <span class="math inline">\(P(1)\lor P(2)\lor P(3)\lor P(4)\)</span>. מספיק שאחת תצליח; כאן גם <span class="math inline">\(3\)</span> וגם <span class="math inline">\(4\)</span> מתאימים.</li>
+</ul>
+<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea">
+<p><strong>חשוב לזכור.</strong></p>
+<p>בתחום שמספר האיברים בו סופי, ״לכל״ הוא כמו ״וגם״ של כל הבדיקות, ו״קיים״ הוא כמו ״או״ של כל הבדיקות. חשוב לא להשמיט איברים מן התחום.</p>
+</div>
+<div class="thmbox thmbox-terminology" data-terms="plural" title="תחום סופי ותחום אינסופי">
+<p><strong>מונחים חדשים 2.7.4 — תחום סופי ותחום אינסופי.</strong></p>
+<p>תחום הוא <span class="term"><strong>סופי</strong></span> אם יש בו מספר סופי של איברים, כמו התחום <span class="math inline">\(\{1,2,3,4\}\)</span> שבדקנו.</p>
+<p>יש גם תחומים <span class="term"><strong>אינסופיים</strong></span>. למשל, <span class="math inline">\(\{0,1,2,3,\dots\}\)</span> מכיל את כל המספרים השלמים שאינם שליליים. שלוש הנקודות אומרות שהרשימה ממשיכה בלי סוף. בתחום כזה אי אפשר לסיים בדיקה של כל האיברים אחד־אחד; כדי להוכיח טענה על כולם צריך נימוק כללי. בכל דוגמה נאמר במפורש אם עברנו לתחום הזה.</p>
+</div>
+<section id="sec-bar" class="level3" data-number="2.7.1">
+<h3 data-number="2.7.1" class="anchored" data-anchor-id="sec-bar"><span class="header-section-number">2.7.1</span> שלושה מתמטיקאים ניגשים לדוכן פלאפל</h3>
+<p>שלושה מתמטיקאים ניגשים לדוכן פלאפל. כל אחד יודע אם הוא עצמו רוצה פלאפל, אך אינו יודע מה רוצים האחרים. הם עונים לפי הסדר, שומעים את התשובות שלפניהם ומסיקים מהן מסקנות. כולם עונים בכנות: ״כן״ או ״לא״ רק כשהמידע מספיק, ו״אני לא יודע״ כשאינו מספיק. המוכר שואל את שלושתם אותה שאלה:</p>
+<div class="says barman">
+<p>״כולם רוצים פלאפל?״</p>
+</div>
+<div class="says euler">
+<p>הראשון: ״אני לא יודע.״</p>
+</div>
+<div class="says ada">
+<p>השנייה: ״אני לא יודעת.״</p>
+</div>
+<div class="says gauss">
+<p>השלישי: ״כן!״</p>
+</div>
+<p><strong>מה אפשר להסיק על הרצון של כל אחד, וכמה מנות פלאפל צריך להכין?</strong></p>
+<div id="box-game-bar" class="thmbox thmbox-game" title="דוכן הפלאפל">
+<p><strong>משחק 2.7.5 — דוכן הפלאפל.</strong></p>
+<iframe class="widget-frame" src="games/barman/index.html?level=classic&amp;embed=1" loading="lazy" title="משחק: דוכן הפלאפל"></iframe>
+</div>
+<details class="thmcollapse thmfoldable"><summary>אז מה המוכר עושה?</summary>
+<div class="foldable" title="אז מה המוכר עושה?">
+<p>המוכר מכין <strong>שלוש</strong> מנות פלאפל.</p>
+<ul>
+<li><strong>הראשון</strong> רוצה פלאפל. אילו לא היה רוצה, הוא היה יודע מיד שהתשובה היא ״לא״: מספיק אחד שלא רוצה כדי שלא <em>כולם</em> רוצים. אבל הוא לא יודע מה רוצים השניים האחרים, ולכן הוא עונה ״אני לא יודע״.</li>
+<li><strong>השנייה</strong> שמעה את הראשון, ולכן היא כבר יודעת שהוא רוצה. גם היא רוצה (אחרת הייתה עונה ״לא״), אבל על השלישי היא לא יודעת כלום.</li>
+<li><strong>השלישי</strong> שמע את שניהם, ולכן הוא יודע ששניהם רוצים. הוא עצמו רוצה, ולכן הוא היחיד שיכול לענות על השאלה כולה: ״כן!״</li>
+</ul>
+</div>
+</details>
+<p>הבדיחה מצחיקה (לפחות את המתמטיקאים) כי שלושתם עונים <strong>בדיוק</strong> על השאלה שנשאלה, ורק לפי מה שהם יודעים. המוכר שאל על <em>כולם</em>, לא על כל אחד בנפרד. ושימו לב: ״אני לא יודע״ אינה תשובה ריקה. היא מספרת למוכר משהו. כאן רואים יחד שני רעיונות: מה פירוש ״כולם״, ומה כל דמות יכולה להסיק מן המידע שבידיה. ״אני לא יודע״ אינו ערך אמת שלישי; הוא מתאר את מה שהדמות יודעת. עכשיו נכתוב את שאלות המוכר בעזרת הכמתים שלמדנו.</p>
+</section>
+<section id="sec-bar-again" class="level3" data-number="2.7.2">
+<h3 data-number="2.7.2" class="anchored" data-anchor-id="sec-bar-again"><span class="header-section-number">2.7.2</span> ״כולם״ ו״מישהו״ בשפת הכמתים</h3>
+<p>התחום בדוגמה הזאת הוא שלושת המתמטיקאים שבדוכן. נמספר אותם לפי סדר התשובות: <span class="math inline">\(1\)</span>, <span class="math inline">\(2\)</span> ו־<span class="math inline">\(3\)</span>. כאן עולם הדיון הוא <span class="math inline">\(D=\{1,2,3\}\)</span>, מספרי הדמויות שבדוכן. נסמן ב־<span class="math inline">\(W(x)\)</span> את הפסוק הפתוח ״הדמות שמספרה <span class="math inline">\(x\)</span> רוצה פלאפל״. כדי לקצר, נכתוב <span class="math inline">\(W_1\)</span> במקום <span class="math inline">\(W(1)\)</span>, ובאותו אופן <span class="math inline">\(W_2\)</span> ו־<span class="math inline">\(W_3\)</span>.</p>
+<p>שאלת המוכר ״<strong>כולם</strong> רוצים פלאפל?״ מבקשת לדעת אם הפסוק <span class="math inline">\(\forall x\in D\,W(x)\)</span> נכון. בתחום של שלוש הדמויות זה בדיוק:</p>
+<p><span class="math display">\[W_1 \land W_2 \land W_3\]</span></p>
+<p>כל שלוש הדמויות צריכות לרצות. מספיק שאחת אינה רוצה כדי שהטענה על כולם תהיה שגויה.</p>
+<p>לעומת זאת, השאלה ״<strong>מישהו</strong> רוצה פלאפל?״ מבקשת לדעת אם <span class="math inline">\(\exists x\in D\,W(x)\)</span> נכון. בתחום הזה מדובר בפסוק:</p>
+<p><span class="math display">\[W_1 \lor W_2 \lor W_3\]</span></p>
+<p>כאן מספיק שרק אחת הדמויות רוצה. גם שתי דמויות או שלוש דמויות שרוצות מתאימות: ״קיים״ אומר <strong>לפחות אחד</strong>, ולא ״בדיוק אחד״.</p>
+<p><span class="key-rule"><strong>״לא כולם״ שונה מ״אף אחד״.</strong></span> במשחק הבא נראה איך השאלה ״כולם?״ או ״מישהו?״ משנה את משמעות התשובות.</p>
+<div id="box-game-bar-more" class="thmbox thmbox-game" title="דוכן הפלאפל: כולם ומישהו">
+<p><strong>משחק 2.7.6 — דוכן הפלאפל: כולם ומישהו.</strong></p>
+<iframe class="widget-frame" src="games/barman/index.html?levels=no-early,after-no,anyone,anyone-serve,design&amp;embed=1" loading="lazy" title="משחק: דוכן הפלאפל, כולם ומישהו"></iframe>
+</div>
+</section>
+<section id="sec-evidence" class="level3" data-number="2.7.3">
+<h3 data-number="2.7.3" class="anchored" data-anchor-id="sec-evidence"><span class="header-section-number">2.7.3</span> איזו הוכחה צריך?</h3>
+<p>נחזור לעולם המספרים <span class="math inline">\(D=\{1,2,3,4\}\)</span> ולתיאור <span class="math inline">\(P(x)\)</span>: ״<span class="math inline">\(x&gt;2\)</span>״. נכיר שתי מילים שמתארות את התפקיד של דוגמה:</p>
+<div class="thmbox thmbox-example" title="עד ודוגמה נגדית: מה הדוגמה מראה?">
+<p><strong>דוגמה 2.7.7 — עד ודוגמה נגדית: מה הדוגמה מראה?</strong></p>
+<p><strong>א.</strong> בטענה ״יש מספר בתחום שגדול מ־2״, <strong>איזה מספר מתוך <span class="math inline">\(D=\{1,2,3,4\}\)</span> מצדיק את הטענה?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>בטענה ״יש מספר בתחום שגדול מ־2״, המספר <span class="math inline">\(3\)</span> הוא <span class="term"><strong>עד</strong></span>: הוא דוגמה שמראה שהדבר שאמרנו שקיים אכן קיים. ״עד״ כאן יכול להיות מספר, ולא רק אדם.</p>
+</div>
+</details>
+<p><strong>ב.</strong> בטענה ״כל המספרים בתחום גדולים מ־2״, <strong>איזה מספר מתוך אותו תחום מראה שהטענה שגויה?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>בטענה ״כל המספרים בתחום גדולים מ־2״, המספר <span class="math inline">\(1\)</span> הוא <span class="term"><strong>דוגמה נגדית</strong></span>: הוא שייך לתחום, אבל אינו מקיים את מה שהטענה מבטיחה. לכן הוא מספיק כדי להראות שהטענה על <strong>כל</strong> המספרים שגויה.</p>
+</div>
+</details>
+<p><span class="term"><strong>להפריך</strong></span> טענה פירושו להראות שהיא אינה נכונה. כדי להפריך טענה על כולם, דוגמה נגדית אחת מספיקה. כדי לאשר טענה על כולם, דוגמה מוצלחת אחת אינה מספיקה.</p>
+</div>
+<p>עכשיו ננסח את הכללים:</p>
+<div class="thmbox thmbox-key-point thmicon-rule" data-icon="rule">
+<p><strong>כלל.</strong></p>
+<ul>
+<li>כדי להראות ש־<span class="math inline">\(\exists x\in D\, P(x)\)</span> <strong>אמת</strong>, <span class="key-rule"><strong>מספיקה דוגמה אחת</strong></span>: <span class="math inline">\(a\in D\)</span> שעבורו <span class="math inline">\(P(a)\)</span> אמת — כלומר, איבר מתוך התחום שמקיים את הדרישה. היא נקראת <span class="term"><strong>עד</strong></span>.</li>
+<li>כדי להראות ש־<span class="math inline">\(\forall x\in D\, P(x)\)</span> <strong>שקר</strong>, <span class="key-rule"><strong>מספיקה דוגמה נגדית אחת</strong></span>: <span class="math inline">\(a\in D\)</span> שעבורו <span class="math inline">\(P(a)\)</span> שקר — כלומר, איבר מתוך התחום שאינו מקיים את הדרישה.</li>
+<li>כדי להראות ש־<span class="math inline">\(\forall x\in D\, P(x)\)</span> <strong>אמת</strong>, צריך לתת נימוק שמראה שכל איבר בתחום מקיים את הדרישה.</li>
+<li>כדי להראות ש־<span class="math inline">\(\exists x\in D\, P(x)\)</span> <strong>שקר</strong>, צריך לתת נימוק שמראה שאין בתחום אף איבר שמקיים את הדרישה.</li>
+</ul>
+<p><span class="key-rule"><strong>בשני המקרים האחרונים הנימוק צריך לכסות את כל איברי התחום.</strong></span> בתחום סופי אפשר לבדוק אותם אחד־אחד, אבל אפשר גם להשתמש בנימוק כללי שמתאים לכולם. בתחום אינסופי אי אפשר לסיים בדיקה אחד־אחד, ולכן צריך נימוק כללי.</p>
+</div>
+<p>נבחר ראיות שמספיקות להוכיח או להפריך טענה על קבוצה.</p>
+<div id="box-game-witness" class="thmbox thmbox-game" title="מצאו עד">
+<p><strong>משחק 2.7.8 — מצאו עד.</strong></p>
+<p><strong>עולם הדיון בתחילת המשחק:</strong> ששת הסטודנטים שבכרטיסים. כאן <span class="math inline">\(D\)</span> מציין את הסטודנטים האלה, ולא את המספרים מהדוגמה הקודמת.</p>
+<iframe class="widget-frame" src="games/witness/index.html?levels=witness,counter,check-all,nobody,negation,order&amp;embed=1" loading="lazy" title="משחק: מצאו עד"></iframe>
+</div>
+</section>
+<section id="sec-domain" class="level3" data-number="2.7.4">
+<h3 data-number="2.7.4" class="anchored" data-anchor-id="sec-domain"><span class="header-section-number">2.7.4</span> התחום חשוב</h3>
+<div id="box-exm-domain" class="thmbox thmbox-example">
+<p><strong>דוגמה 2.7.9.</strong></p>
+<p>נבדוק את <span class="math inline">\(\exists x\in D\, (x+3=1)\)</span>.</p>
+<p><strong>א.</strong> <strong>האם הטענה נכונה כאשר <span class="math inline">\(D=\{0,1,2,3,\dots\}\)</span>?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>הפסוק <span class="math inline">\(\exists x\in D\, (x + 3 = 1)\)</span> הוא <strong>שקר</strong> כאשר <span class="math inline">\(D\)</span> הוא התחום <span class="math inline">\(\{0, 1, 2, 3, \dots\}\)</span>: כל מספר כזה ועוד <span class="math inline">\(3\)</span> גדול מ־<span class="math inline">\(.1\)</span></p>
+</div>
+</details>
+<p><strong>ב.</strong> <strong>האם הטענה נכונה כאשר <span class="math inline">\(D\)</span> הוא אוסף כל המספרים השלמים?</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>אבל כאשר <span class="math inline">\(D\)</span> הוא אוסף כל המספרים השלמים, אותו פסוק הוא <strong>אמת</strong>, עם העד <span class="math inline">\(.x = -2\)</span></p>
+</div>
+</details>
+<p>לכן כשכותבים פסוק עם כמת, תמיד צריך לומר מה התחום.</p>
+</div>
+</section>
+<section id="sec-neg-quantifiers" class="level3" data-number="2.7.5">
+<h3 data-number="2.7.5" class="anchored" data-anchor-id="sec-neg-quantifiers"><span class="header-section-number">2.7.5</span> שלילה של כמתים</h3>
+<p>בכללי השלילה <span class="math inline">\(D\)</span> הוא עולם דיון קבוע: כששוללים טענה, לא משנים את התחום שלה. בדוגמה הבאה <span class="math inline">\(D\)</span> הוא הסטודנטים בכיתה.</p>
+<div class="says robot">
+<p>״לא כל הסטודנטים הגישו את העבודה. כלומר, אף אחד לא הגיש!״</p>
+</div>
+<p>הרובוט שוב קיצר. ״לא <strong>כל</strong> הסטודנטים הגישו״ אומר רק ש<strong>יש</strong> סטודנט שלא הגיש. אולי כל השאר הגישו.</p>
+<div id="box-thm-neg-quantifiers" class="thmbox thmbox-theorem" title="שלילה של כמתים">
+<p><strong>משפט 2.7.10 — שלילה של כמתים.</strong></p>
+<p><span class="math display">\[\neg \forall x\in D\, P(x) \;\equiv\; \exists x\in D\, \neg P(x)\]</span> <span class="math display">\[.\neg \exists x\in D\, P(x) \;\equiv\; \forall x\in D\, \neg P(x)\]</span></p>
+</div>
+<p>אלה בדיוק חוקי דה מורגן, בגרסה ארוכה: בתחום סופי, <span class="math inline">\(\neg\forall x\in D\, P(x)\)</span> הוא <span class="math inline">\(,\neg(P(a_1) \land \dots \land P(a_n))\)</span> ולפי דה מורגן זה <span class="math inline">\(.\neg P(a_1) \lor \dots \lor \neg P(a_n)\)</span> כשמכניסים שלילה פנימה, <span class="math inline">\(\forall\)</span> הופך ל־<span class="math inline">\(\exists\)</span> ו־<span class="math inline">\(\exists\)</span> הופך ל־<span class="math inline">\(,\forall\)</span> כמו ש״וגם״ הופך ל״או״.</p>
+<div id="box-check-negate-exists" class="thmbox thmbox-self-check" title="פלאפל בלי חומוס: איך שוללים ״יש״?">
+<p><strong>בדיקה עצמית — פלאפל בלי חומוס: איך שוללים ״יש״?</strong></p>
+<p>נסמן ב־<span class="math inline">\(D\)</span> את הסטודנטים בכיתה. נסמן ב־<span class="math inline">\(P(x)\)</span> את כל המשפט ״הסטודנט <span class="math inline">\(x\)</span> אוכל פלאפל בלי חומוס״. מה השלילה של ״<strong>יש לפחות סטודנט אחד שאוכל פלאפל בלי חומוס</strong>״?</p>
+<div class="tf-quiz" data-correct="false">
+<button class="tf-opt" data-val="true">״יש סטודנט שלא אוכל פלאפל בלי חומוס״</button>
+<button class="tf-opt" data-val="false">״אף סטודנט לא אוכל פלאפל בלי חומוס״</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why"><b>השלילה היא ״אף סטודנט לא אוכל פלאפל בלי חומוס״</b>, כלומר \(\forall x\in D\,\neg P(x)\). כדי לשלול את ״יש לפחות אחד״, צריך שלא יהיה אף סטודנט שמתאים לתיאור. האפשרות הראשונה אינה מספיקה: למשל, דנה אוכלת פלאפל בלי חומוס, ויואב אוכל אותו עם חומוס. אז יש מי שמתאים לתיאור וגם יש מי שלא, ולכן שתי טענות הקיום נכונות יחד ואינן שלילה זו של זו.</div>
+</div>
+</div>
+</section>
+<section id="sec-quantifier-order" class="level3" data-number="2.7.6">
+<h3 data-number="2.7.6" class="anchored" data-anchor-id="sec-quantifier-order"><span class="header-section-number">2.7.6</span> סדר הכמתים</h3>
+<p>כשיש שני משתנים, חשוב <strong>באיזה סדר</strong> כותבים את הכמתים. נסמן ב־<span class="math inline">\(L(x, y)\)</span> את הטענה ״הסטודנט <span class="math inline">\(x\)</span> אוהב את הפריט <span class="math inline">\(y\)</span>״. נסמן ב־<span class="math inline">\(S\)</span> את קבוצת הסטודנטים בכיתה וב־<span class="math inline">\(M\)</span> את קבוצת הפריטים בתפריט שמופיע במשחק. לכן כותבים <span class="math inline">\(x\in S\)</span> ו־<span class="math inline">\(y\in M\)</span>:</p>
+<ul>
+<li><span class="math display">\[\forall x\in S\, \exists y\in M\, L(x, y)\]</span>: לכל סטודנט <strong>יש לפחות פריט אחד בתפריט שהוא אוהב</strong>. הבחירה בפריט יכולה להיות תלויה בסטודנט; מותר גם לבחור אותו פריט לכמה סטודנטים. התפריט עצמו נשאר קבוע.</li>
+<li><span class="math display">\[\exists y\in M\, \forall x\in S\, L(x, y)\]</span>: <strong>יש לפחות פריט אחד בתפריט שכל הסטודנטים אוהבים</strong>. כאן מחפשים פריט משותף לכולם; ייתכן שיש יותר מפריט אחד כזה.</li>
+</ul>
+<p>הפסוק השני חזק יותר: אם יש פריט בתפריט שכולם אוהבים, אז בפרט לכל סטודנט יש פריט בתפריט שהוא אוהב. ההפך לא נכון. בשלב האחרון של המשחק אפשר לראות כיתה שבה הראשון אמת והשני שקר.</p>
+<div id="box-exm-order" class="thmbox thmbox-example">
+<p><strong>דוגמה 2.7.11.</strong></p>
+<p>בדוגמה הזאת <span class="math inline">\(D=\{0,1,2,3,\dots\}\)</span>.</p>
+<p><strong>א.</strong></p>
+<p><span class="math display">\[\forall x\in D\,\exists y\in D\,(y&gt;x)\]</span></p>
+<p><strong>אמת או שקר? נמקו.</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>הפסוק <span class="math display">\[\forall x\in D\, \exists y\in D\, (y &gt; x)\]</span> הוא <strong>אמת</strong>: לכל מספר יש מספר גדול ממנו (למשל <span class="math inline">\(y = x + 1\)</span>).</p>
+</div>
+</details>
+<p><strong>ב.</strong></p>
+<p><span class="math display">\[\exists y\in D\,\forall x\in D\,(y&gt;x)\]</span></p>
+<p><strong>אמת או שקר? נמקו.</strong></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
+<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p>אבל <span class="math display">\[\exists y\in D\, \forall x\in D\, (y &gt; x)\]</span> הוא <strong>שקר</strong>: אין מספר שגדול מכל המספרים, כי הוא לא גדול מעצמו.</p>
+</div>
+</details>
+</div>
+<div class="thmbox thmbox-self-check">
+<p><strong>בדיקה עצמית.</strong></p>
+<p>התחום הוא <span class="math inline">\(.D = \{1, 2, 3, 4\}\)</span> אמת או שקר?</p>
+<ol type="1">
+<li><span class="math inline">\(\forall x\in D\, (x &lt; 5)\)</span></li>
+</ol>
+<div class="tf-quiz" data-correct="true">
+<button class="tf-opt" data-val="true">אמת</button>
+<button class="tf-opt" data-val="false">שקר</button>
+<div class="tf-feedback"></div>
+<div class="tf-why"><b>אמת:</b> בדקנו את כל ארבעת האיברים, וכולם קטנים מ-\(5\). זה המקרה שבו צריך לבדוק את כל התחום.</div>
+</div>
+<ol start="2" type="1">
+<li><span class="math inline">\(\exists x\in D\, (x &gt; 4)\)</span></li>
+</ol>
+<div class="tf-quiz" data-correct="false">
+<button class="tf-opt" data-val="true">אמת</button>
+<button class="tf-opt" data-val="false">שקר</button>
+<div class="tf-feedback"></div>
+<div class="tf-why"><b>שקר:</b> אף אחד מ-\(1, 2, 3, 4\) אינו גדול מ-\(4\). גם כאן צריך לבדוק את כולם.</div>
+</div>
+<ol start="3" type="1">
+<li><span class="math inline">\(,\forall x\in D\, E(x)\)</span> כאשר <span class="math inline">\(E(x)\)</span> = ״<span class="math inline">\(x\)</span> זוגי״</li>
+</ol>
+<div class="tf-quiz" data-correct="false">
+<button class="tf-opt" data-val="true">אמת</button>
+<button class="tf-opt" data-val="false">שקר</button>
+<div class="tf-feedback"></div>
+<div class="tf-why"><b>שקר:</b> מספיקה דוגמה נגדית אחת, למשל \(x = 1\).</div>
+</div>
+<ol start="4" type="1">
+<li><span class="math inline">\(\exists x\in D\, (x^2 = 9)\)</span></li>
+</ol>
+<div class="tf-quiz" data-correct="true">
+<button class="tf-opt" data-val="true">אמת</button>
+<button class="tf-opt" data-val="false">שקר</button>
+<div class="tf-feedback"></div>
+<div class="tf-why"><b>אמת:</b> העד הוא \(x = 3\). שימו לב ש-\(x = -3\) לא בתחום, אבל עד אחד מספיק.</div>
+</div>
+<ol start="5" type="1">
+<li><span class="math display">\[\forall x\in D\, \exists y\in D\, (y &gt; x)\]</span></li>
+</ol>
+<div class="tf-quiz" data-correct="false">
+<button class="tf-opt" data-val="true">אמת</button>
+<button class="tf-opt" data-val="false">שקר</button>
+<div class="tf-feedback"></div>
+<div class="tf-why"><b>שקר!</b> בתחום הסופי הזה, עבור \(x = 4\) אין אף \(y\) בתחום שגדול ממנו. השוו לדוגמה הקודמת, שבה התחום היה אינסופי. התחום חשוב.</div>
+</div>
+</div>
+<div id="box-q-ex-negate" class="thmbox thmbox-question">
+<p><strong>שאלה 2.7.12.</strong></p>
+<p>כתבו בשפת הכמתים, ואז שללו והעבירו את השלילה פנימה: ״כל סטודנט אוהב <strong>לפחות פריט אחד בתפריט</strong>״. (נסמן ב־<span class="math inline">\(S\)</span> את קבוצת הסטודנטים בכיתה וב־<span class="math inline">\(M\)</span> את קבוצת הפריטים בתפריט בקפטריה, ו־<span class="math inline">\(L(x, y)\)</span> = ״<span class="math inline">\(x\)</span> אוהב את <span class="math inline">\(y\)</span>״.)</p>
+</div>
+<div class="solve">
+<div class="hint">
+<p>״כל סטודנט״ הוא <span class="math inline">\(,\forall x\in S\)</span> ו״לפחות פריט אחד בתפריט״ מתואר בעזרת <span class="math inline">\(.\exists y\in M\)</span> באיזה סדר?</p>
+</div>
+<div class="hint">
+<p>בשלילה כל כמת מתחלף: <span class="math inline">\(\forall\)</span> הופך ל־<span class="math inline">\(\exists\)</span> ו־<span class="math inline">\(\exists\)</span> הופך ל־<span class="math inline">\(,\forall\)</span> וה־<span class="math inline">\(\neg\)</span> מגיע עד <span class="math inline">\(.L(x, y)\)</span></p>
+</div>
+<div class="step">
+<p><strong>הנוסחה:</strong> <span class="math display">\[.\forall x\in S\, \exists y\in M\, L(x, y)\]</span></p>
+</div>
+<div class="step">
+<p><strong>שלילה:</strong> <span class="math display">\[.\neg \forall x\in S\, \exists y\in M\, L(x, y) \;\equiv\; \exists x\in S\, \neg \exists y\in M\, L(x, y)\]</span></p>
+</div>
+<div class="step">
+<p><strong>ועוד פעם פנימה:</strong> <span class="math display">\[.\exists x\in S\, \neg \exists y\in M\, L(x, y) \;\equiv\; \exists x\in S\, \forall y\in M\, \neg L(x, y)\]</span></p>
+</div>
+<div class="step">
+<p><strong>במילים:</strong> ״<strong>יש</strong> סטודנט שלא אוהב <strong>אף</strong> פריט בתפריט.״ שימו לב להבדל: השלילה אומרת שיש סטודנט מסוים שאינו אוהב אף פריט בתפריט. היא אינה טוענת שלכל סטודנט יש פריט שאינו אוהב.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-set-proofs" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="sec-set-proofs"><span class="header-section-number">2.8</span> משתמשים בכמתים כדי לנסח טענות על קבוצות</h2>
+<p>TODO</p>
+</section>
+<section id="practice-quantifiers" class="level2" data-number="2.9">
+<h2 data-number="2.9" class="anchored" data-anchor-id="practice-quantifiers"><span class="header-section-number">2.9</span> תרגול עצמי: כמתים</h2>
+<p>תרגילים על <a href="#sec-quantifiers">הכמתים שלמדנו בפרק</a>, עם קלט, משוב ופתרונות בצעדים. נסו לענות לפני פתיחת הרמזים והפתרון.</p>
+<p>לפני הפתרון סמנו את התחום. <span class="term"><strong>עד</strong></span> הוא איבר שמראה שטענת ״קיים״ נכונה. <span class="term"><strong>דוגמה נגדית</strong></span> היא איבר שמראה שטענת ״לכל״ שגויה. דוגמה אחת שמתאימה אינה מספיקה להוכיח ״לכל״.</p>
+<div id="practice-q-free" class="thmbox thmbox-question" title="איזה משתנה עדיין חופשי?">
+<p><strong>שאלה 2.9.1 — איזה משתנה עדיין חופשי?</strong></p>
+<p>התחום של <span class="math inline">\(x\)</span> ושל <span class="math inline">\(y\)</span> הוא <span class="math inline">\(D=\{1,2,3\}\)</span>. הסתכלו על <span class="math inline">\(\forall x\in D\,(x\le y)\)</span>.</p>
+<ol type="1">
+<li>על איזה משתנה חל הכמת ״לכל״?</li>
+<li>איזה משתנה נשאר חופשי?</li>
+<li>מה קורה כשמציבים <span class="math inline">\(y=3\)</span>? ומה כשמציבים <span class="math inline">\(y=2\)</span>?</li>
+</ol>
+<p>הסימן <span class="math inline">\(\le\)</span> פירושו ״קטן או שווה״.</p>
+<div class="choice-exercise" data-choice="free">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>הכמת כתוב לפני x. הוא מורה לבדוק את כל ערכי x, אבל אינו אומר איך לבחור את y.</p>
+</div>
+<div class="step">
+<p><span class="math inline">\(x\)</span> קשור לכמת; <span class="math inline">\(y\)</span> חופשי. בלי לבחור את <span class="math inline">\(y\)</span> אין כאן עדיין פסוק סגור.</p>
+</div>
+<div class="step">
+<p>כש־<span class="math inline">\(y=3\)</span>, כל שלושת המספרים קטנים או שווים ל־<span class="math inline">\(3\)</span>, ולכן מתקבל אמת. כש־<span class="math inline">\(y=2\)</span>, המספר <span class="math inline">\(x=3\)</span> מפריך את הטענה, ולכן מתקבל שקר.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-quant-finite" class="thmbox thmbox-question" title="ארבע טענות על תחום קטן">
+<p><strong>שאלה 2.9.2 — ארבע טענות על תחום קטן.</strong></p>
+<p>התחום הוא <span class="math inline">\(D=\{0,1,2,3\}\)</span>. קבעו אמת או שקר ותנו הסבר: עד, דוגמה נגדית או בדיקה של כל התחום, לפי הצורך.</p>
+<ol type="1">
+<li><span class="math inline">\(\forall x\in D\,(x\ge0)\)</span>.</li>
+<li><span class="math inline">\(\exists x\in D\,(x^2=4)\)</span>.</li>
+<li><span class="math inline">\(\forall x\in D\,(x&lt;3)\)</span>.</li>
+<li><span class="math inline">\(\exists x\in D\,(x&gt;3)\)</span>.</li>
+</ol>
+<p>הסימן <span class="math inline">\(\ge\)</span> פירושו ״גדול או שווה״. <span class="math inline">\(x^2\)</span> הוא <span class="math inline">\(x\)</span> כפול עצמו.</p>
+<div class="choice-exercise" data-choice="quant-finite">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>בדקו אם הטענה מבקשת שכל האיברים יתאימו או שלפחות אחד יתאים. אל תבחרו עד מחוץ לתחום.</p>
+</div>
+<div class="step">
+<p><strong>סעיף 1 — אמת:</strong> <span class="math inline">\(0,1,2,3\)</span> כולם גדולים או שווים ל־<span class="math inline">\(0\)</span>.</p>
+</div>
+<div class="step">
+<p><strong>סעיף 2 — אמת:</strong> <span class="math inline">\(x=2\)</span> הוא עד, כי <span class="math inline">\(2\cdot2=4\)</span>.</p>
+</div>
+<div class="step">
+<p><strong>סעיף 3 — שקר:</strong> <span class="math inline">\(x=3\)</span> הוא דוגמה נגדית.</p>
+</div>
+<div class="step">
+<p><strong>סעיף 4 — שקר:</strong> אף אחד מארבעת האיברים אינו גדול מ־<span class="math inline">\(3\)</span>.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-quant-domain" class="thmbox thmbox-question" title="אותה נוסחה, תחום אחר">
+<p><strong>שאלה 2.9.3 — אותה נוסחה, תחום אחר.</strong></p>
+<p>בדקו את <span class="math inline">\(\exists x\in D\,(x+2=0)\)</span> בשתי בחירות שונות של עולם הדיון <span class="math inline">\(D\)</span>:</p>
+<ol type="1">
+<li><span class="math inline">\(D=\{0,1,2,3,\ldots\}\)</span>, המספרים השלמים שאינם שליליים.</li>
+<li>כל המספרים השלמים, כולל השליליים.</li>
+</ol>
+<p>הסבירו למה התשובה משתנה.</p>
+<div class="choice-exercise" data-choice="quant-domain">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>איזה מספר צריך להציב כדי שהסכום יהיה אפס? בדקו אם מותר לבחור אותו בכל תחום.</p>
+</div>
+<div class="step">
+<p>כאשר עולם הדיון כולל רק מספרים שלמים שאינם שליליים, טענת הקיום שקרית: לכל מספר בתחום, <span class="math inline">\(x+2\)</span> הוא לפחות <span class="math inline">\(2\)</span>, ולכן אין בתחום פתרון למשוואה.</p>
+</div>
+<div class="step">
+<p>כאשר עולם הדיון הוא קבוצת המספרים השלמים, טענת הקיום נכונה: המספר <span class="math inline">\(-2\)</span> שייך לתחום ומקיים את המשוואה. הוא עד לטענה. איננו טוענים שכל מספר שלם מקיים את המשוואה; מספיק שיש אחד שכן.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-quant-not-all" class="thmbox thmbox-question" title="לא כולם — אבל אולי חלק כן">
+<p><strong>שאלה 2.9.4 — לא כולם — אבל אולי חלק כן.</strong></p>
+<p>עולם הדיון <span class="math inline">\(D\)</span> הוא הסטודנטים בכיתה. נסמן ב־<span class="math inline">\(P(x)\)</span> את ״הסטודנט <span class="math inline">\(x\)</span> החזיר את הספר״. כתבו בכמתים את ״כל הסטודנטים החזירו את הספר״, ואז כתבו את שלילתו בכמתים ובמילים. האם השלילה אומרת שאף אחד לא החזיר?</p>
+<div class="choice-exercise" data-choice="quant-not-all">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>שלילת ״לכל״ דורשת לפחות דוגמה נגדית אחת, ולא כישלון של כולם.</p>
+</div>
+<div class="step">
+<p>המשפט הוא <span class="math inline">\(\forall x\in D\,P(x)\)</span>. שלילתו היא <span class="math inline">\(\exists x\in D\,\neg P(x)\)</span>.</p>
+</div>
+<div class="step">
+<p>במילים: יש לפחות סטודנט אחד שלא החזיר את הספר. ייתכן שכל האחרים החזירו. לכן אין להסיק שאף אחד לא החזיר.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-quant-nobody" class="thmbox thmbox-question" title="אין כיסאות פנויים">
+<p><strong>שאלה 2.9.5 — אין כיסאות פנויים.</strong></p>
+<p>עולם הדיון <span class="math inline">\(D\)</span> הוא הכיסאות בכיתה. נסמן ב־<span class="math inline">\(P(x)\)</span> את ״הכיסא <span class="math inline">\(x\)</span> פנוי״. כתבו את שלילת ״יש כיסא פנוי״. האם מספיק להראות כיסא אחד תפוס כדי להצדיק אותה?</p>
+<div class="choice-exercise" data-choice="quant-nobody">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>כיסא תפוס אחד אינו אומר מה קורה בשאר הכיסאות.</p>
+</div>
+<div class="step">
+<p>המשפט הוא <span class="math inline">\(\exists x\in D\,P(x)\)</span>. שלילתו היא <span class="math inline">\(\forall x\in D\,\neg P(x)\)</span>: אף כיסא בכיתה אינו פנוי.</p>
+</div>
+<div class="step">
+<p>מספר הכיסאות בכיתה סופי, ולכן אפשר לבדוק את כולם ולוודא שאף כיסא אינו פנוי. כיסא תפוס אחד אינו מספיק, כי ייתכן שיש כיסא פנוי לצדו.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-quant-menu" class="thmbox thmbox-question" title="לכל אחד מנה — או מנה לכולם?">
+<p><strong>שאלה 2.9.6 — לכל אחד מנה — או מנה לכולם?</strong></p>
+<p>נסמן ב־<span class="math inline">\(S\)</span> את קבוצת הסטודנטים דנה, נועם ורותם, וב־<span class="math inline">\(M\)</span> את קבוצת המנות פיתה וסלט. כל המידע מופיע בטבלה:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">סטודנט</th>
+<th style="text-align: center;">אוהב פיתה?</th>
+<th style="text-align: center;">אוהב סלט?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">דנה</td>
+<td style="text-align: center;">כן</td>
+<td style="text-align: center;">לא</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">נועם</td>
+<td style="text-align: center;">לא</td>
+<td style="text-align: center;">כן</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">רותם</td>
+<td style="text-align: center;">כן</td>
+<td style="text-align: center;">כן</td>
+</tr>
+</tbody>
+</table>
+<p>נסמן ב־<span class="math inline">\(L(x,y)\)</span> את ״הסטודנט <span class="math inline">\(x\)</span> אוהב את המנה <span class="math inline">\(y\)</span>״. קבעו אמת או שקר:</p>
+<ol type="1">
+<li><span class="math display">\[\forall x\in S\,\exists y\in M\,L(x,y)\]</span>.</li>
+<li><span class="math display">\[\exists y\in M\,\forall x\in S\,L(x,y)\]</span>.</li>
+</ol>
+<p>הסבירו במילים מדוע אלה שאלות שונות.</p>
+<div class="choice-exercise" data-choice="quant-menu">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>בסעיף הראשון מותר לבחור מנה אחרת לכל סטודנט. בשני צריך לבחור מנה אחת שמתאימה לכולם.</p>
+</div>
+<div class="step">
+<p>הראשון אמת: לדנה אפשר לבחור פיתה, לנועם סלט, ולרותם כל אחת משתי המנות.</p>
+</div>
+<div class="step">
+<p>השני שקר: פיתה אינה מתאימה לנועם, וסלט אינו מתאים לדנה. בדקנו את שתי המנות ואין אחת שכולם אוהבים.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-quant-order" class="thmbox thmbox-question" title="מספר אחר לכל אחד?">
+<p><strong>שאלה 2.9.7 — מספר אחר לכל אחד?</strong></p>
+<p>התחום של שני המשתנים הוא <span class="math inline">\(D=\{1,2,3\}\)</span>. קבעו אמת או שקר:</p>
+<ol type="1">
+<li><span class="math display">\[\forall x\in D\,\exists y\in D\,(x+y=4)\]</span>.</li>
+<li><span class="math display">\[\exists y\in D\,\forall x\in D\,(x+y=4)\]</span>.</li>
+</ol>
+<p>בסעיף הראשון כתבו איזה <span class="math inline">\(y\)</span> מתאים לכל <span class="math inline">\(x\)</span>. בסעיף השני בדקו אם אותו <span class="math inline">\(y\)</span> יכול לעבוד לכולם.</p>
+<div class="choice-exercise" data-choice="quant-order">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>עבור x=1 צריך y=3. עבור x=2 צריך y=2. האם זה מותר בשני הסעיפים?</p>
+</div>
+<div class="step">
+<p>הראשון אמת: ל־<span class="math inline">\(x=1\)</span> בוחרים <span class="math inline">\(y=3\)</span>; ל־<span class="math inline">\(x=2\)</span> בוחרים <span class="math inline">\(y=2\)</span>; ל־<span class="math inline">\(x=3\)</span> בוחרים <span class="math inline">\(y=1\)</span>. כל הבחירות בתחום.</p>
+</div>
+<div class="step">
+<p>השני שקר: מספר יחיד <span class="math inline">\(y\)</span> אינו יכול להיות גם <span class="math inline">\(3\)</span>, כפי שנדרש עבור <span class="math inline">\(x=1\)</span>, וגם <span class="math inline">\(2\)</span>, כפי שנדרש עבור <span class="math inline">\(x=2\)</span>.</p>
+</div>
+</div>
+</div>
+<div id="practice-q-quant-negate-order" class="thmbox thmbox-question" title="שוללים בלי לשנות את הסדר בטעות">
+<p><strong>שאלה 2.9.8 — שוללים בלי לשנות את הסדר בטעות.</strong></p>
+<p>נסמן ב־<span class="math inline">\(S\)</span> את קבוצת הסטודנטים בכיתה וב־<span class="math inline">\(B\)</span> את קבוצת הספרים בספרייה. לכן <span class="math inline">\(x\in S\)</span> ו־<span class="math inline">\(y\in B\)</span>. נסמן ב־<span class="math inline">\(R(x,y)\)</span> את ״הסטודנט <span class="math inline">\(x\)</span> קרא את הספר <span class="math inline">\(y\)</span>״.</p>
+<p>כתבו בכמתים: ״יש ספר שכל הסטודנטים קראו״. כתבו את שלילת המשפט והעבירו את השלילה פנימה. הסבירו במילים. האם מתקבל ״יש סטודנט שלא קרא אף ספר״?</p>
+<div class="choice-exercise" data-choice="quant-negate-order">
+<div class="choice-offline">
+<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+</div>
+</div>
+<div class="solve">
+<div class="hint">
+<p>מתחילים מבחירת ספר אחד: קיים y. בשלילה כל כמת מתחלף, אבל סדר המשתנים אינו מתחלף.</p>
+</div>
+<div class="step">
+<p>המשפט הוא <span class="math display">\[\exists y\in B\,\forall x\in S\,R(x,y)\]</span>.</p>
+</div>
+<div class="step">
+<p>תחילה שוללים את המשפט כולו: <span class="math display">\[\neg\exists y\in B\,\forall x\in S\,R(x,y)\]</span>.</p>
+</div>
+<div class="step">
+<p>מכניסים את השלילה מעבר ל״קיים״. הכמת מתחלף ל״לכל״: <span class="math display">\[\forall y\in B\,\neg\forall x\in S\,R(x,y)\]</span>.</p>
+</div>
+<div class="step">
+<p>מכניסים את השלילה גם מעבר ל״לכל״. הוא מתחלף ל״קיים״: <span class="math display">\[\forall y\in B\,\exists x\in S\,\neg R(x,y)\]</span>.</p>
+</div>
+<div class="step">
+<p>במילים: לכל ספר יש לפחות סטודנט אחד שלא קרא אותו. ייתכן שבכל ספר זה סטודנט אחר. לא נובע שיש סטודנט אחד שלא קרא אף ספר.</p>
+</div>
+<div class="step">
+<p>נניח שיש שני ספרים ושני סטודנטים. סטודנט אחד קרא רק את הספר הראשון, והסטודנט האחר קרא רק את הספר השני. אין ספר ששניהם קראו, אך כל אחד מהם קרא ספר. לכן אין סטודנט שלא קרא אף ספר.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "הועתק!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "הועתק!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/yuval-khachatryan\.github\.io\/Discrete-Mathematics-Ramat-Gan-Fall-2026");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./01-logic.html" class="pagination-link" aria-label="לוגיקה: הכללים לבניית משפטים ולהסקת מסקנות">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">לוגיקה: הכללים לבניית משפטים ולהסקת מסקנות</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
