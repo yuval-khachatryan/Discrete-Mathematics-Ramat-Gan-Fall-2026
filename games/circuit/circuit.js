@@ -1,6 +1,7 @@
 /* Switch circuits: literals are contacts, AND is series, OR is parallel.
-   A compound NOT is an isolated control circuit driving a normally closed
-   output contact. The dashed control link is not an electrical wire.
+   NOT uses a compact logical control inset and a reversed output contact.
+   The inset illustrates the controlling expression, not another power circuit.
+   The dashed arrow is control, not an electrical wire.
    Keep written negation scope in the green/lamp network. Only the red network
    in the explicit complementary-traffic-light view uses NNF (De Morgan).
    layout(), networks(), explain() remain DOM-free. */
@@ -31,13 +32,13 @@ function wiringTree(n) {
 }
 
 /** Block tree with sizes and child offsets, preserving whole-group NOT. */
-function layoutTree(tree) {
+function layoutTree(tree, showNot = false) {
   function lay(n) {
-    if (n.type === "not" && n.arg.type !== "var") {
+    if (n.type === "not" && (n.arg.type !== "var" || (showNot && n === tree))) {
       const child = lay(n.arg);
-      const w = Math.max(280, child.w + 124, 32 + format(n).length * 11);
-      const rail = child.h + 132;
-      return { kind: "inverter", node: n, child, w, h: rail + 36, rail };
+      const w = Math.max(180, child.w + 48);
+      const rail = child.h + 48;
+      return { kind: "inverter", node: n, child, w, h: rail + 26, rail };
     }
     if (n.type === "var" || n.type === "not" || n.type === "const") {
       return { kind: "contact", node: n, w: CW, h: CH, rail: RAIL };
@@ -65,14 +66,14 @@ function layoutTree(tree) {
 }
 
 /** The written formula, plus an explicitly expanded complementary red path. */
-export function networks(formula) {
+export function networks(formula, { showNot = false } = {}) {
   const f = parse(formula);
-  return { green: layoutTree(wiringTree(f)), red: layoutTree(nnf({ type: "not", arg: f })) };
+  return { green: layoutTree(wiringTree(f), showNot), red: layoutTree(nnf({ type: "not", arg: f })) };
 }
 
 /** The green network (kept for the tests and for size estimates). */
-export function layout(formula) {
-  return networks(formula).green;
+export function layout(formula, options) {
+  return networks(formula, options).green;
 }
 
 /** A single variable or its negation: drawn as one two-way switch. */
@@ -166,10 +167,10 @@ function tag(g, x, y, label, colour) {
  *   lamp     "on" (green) | "off" (red / dark) | "covered" (hooded: predict / fill)
  *   view     "switch" | "lamp" | "dual"   (default: switch for one variable, else lamp)
  */
-export function render(svg, formula, env, { colours = {}, lamp, view } = {}) {
+export function render(svg, formula, env, { colours = {}, lamp, view, showNot = false } = {}) {
   const f = parse(formula);
   view = view || defaultView(f);
-  if (view === "lamp") return renderLamp(svg, f, env, colours, lamp);
+  if (view === "lamp") return renderLamp(svg, f, env, colours, lamp, showNot);
   const on = evaluate(f, env);
   const covered = lamp === "covered";
   const anyLive = !covered;                        // current always flows somewhere
@@ -269,11 +270,11 @@ export function render(svg, formula, env, { colours = {}, lamp, view } = {}) {
 /* ---- one network, one green lamp ----------------------------------------
    Before De Morgan, F is simply "no light": the lamp is lit exactly when
    current can get through the formula's network. */
-function renderLamp(svg, f, env, colours, lamp) {
+function renderLamp(svg, f, env, colours, lamp, showNot) {
   const on = evaluate(f, env);
   const covered = lamp === "covered";
   const live = !covered && on;
-  const G = networks(f).green;
+  const G = networks(f, { showNot }).green;
   const PAD = 14, LB = 64, HW = 19;
   const Y = PAD + G.rail;
   const bottom = Math.max(PAD + G.h + 26, Y + HW + 22);
@@ -319,37 +320,24 @@ function drawNetwork(svg, top, ox0, oy0, liveTop, env, colours, wire, revealed =
     if (b.kind === "inverter") {
       const input = evaluate(b.node.arg, env), output = !input;
       const g = s("g", { class: "not-module", "data-input": input, "data-output": output }, svg);
-      s("rect", { x: ox + 2, y: oy + 2, width: b.w - 4, height: b.h - 4, rx: 12, class: "not-frame" }, g);
-      s("text", { x: ox + b.w / 2, y: oy + 24, class: "not-label" }, g).textContent = format(b.node.arg);
-      // The input has its own power supply. Its current never feeds the output.
+      const insetW = b.child.w + 36, ix = ox + (b.w - insetW) / 2;
+      const insetH = b.child.h + 8;
+      s("rect", { x: ix, y: oy, width: insetW, height: insetH, rx: 8, class: "not-frame" }, g);
       const control = s("g", { class: "not-control" }, g);
-      const cx = ox + 44, cy = oy + 38, cr = cy + b.child.rail;
-      const coilX = cx + b.child.w + 30, back = cy + b.child.h + 12;
-      const hot = revealed && input;
       const cw = (x1,y1,x2,y2,on,parent) => wire(x1,y1,x2,y2,on,parent || control);
-      drawNetwork(control, b.child, cx, cy, hot, env, colours, cw, revealed);
-      cw(ox + 22, cr, cx, cr, hot);
-      cw(cx + b.child.w, cr, coilX - 17, cr, hot);
-      cw(coilX + 17, cr, ox + b.w - 14, cr, hot);
-      cw(ox + b.w - 14, cr, ox + b.w - 14, back, hot);
-      cw(ox + b.w - 14, back, ox + 22, back, hot);
-      const by = (cr + back) / 2;
-      cw(ox + 22, cr, ox + 22, by - 6, hot);
-      cw(ox + 22, by + 6, ox + 22, back, hot);
-      s("line", {x1:ox+11,y1:by-4,x2:ox+33,y2:by-4,class:"plate-long"}, control);
-      s("line", {x1:ox+16,y1:by+4,x2:ox+28,y2:by+4,class:"plate-short"}, control);
-      s("rect", { x: coilX - 17, y: cr - 14, width: 34, height: 28, rx: 5, class: "not-sensor" }, control);
-      s("text", { x: coilX, y: cr + 5, class: "not-value" }, control).textContent = revealed ? (input ? "T" : "F") : "?";
-      // Dashed line = control, NOT a conducting connection.
+      drawNetwork(control, b.child, ix + 6, oy + 4, revealed && input, env, colours, cw, revealed);
+      s("text", {x:ix+insetW-12,y:oy+23,class:"not-value"},g).textContent = revealed ? (input ? "T" : "F") : "?";
+      // A short arrow visibly connects the expression to the contact it flips.
       const mid = ox + b.w / 2;
-      s("path", { d: `M${coilX},${cr+14} V${back+14} H${mid} V${r-58}`, class: "not-link" }, g);
-      tag(g, mid, r - 40, "NOT", "#7c3aed");
+      s("path", { d: `M${mid},${oy+insetH+2} V${r-7}`, class: "not-link" }, g);
+      s("path", { d: `M${mid-4},${r-12} L${mid},${r-6} L${mid+4},${r-12}`, class: "not-arrow" }, g);
+      s("text", {x:mid+45,y:r-16,class:"not-label"},g).textContent = "NOT";
       const t1 = mid - 25, t2 = mid + 25, active = live && output;
       wire(ox, r, t1, r, active, g); wire(t2, r, ox + b.w, r, active, g);
       s("circle", {cx:t1,cy:r,r:4,class:"term"},g);
       s("circle", {cx:t2,cy:r,r:4,class:"term"},g);
-      s("line", {x1:t1,y1:r,x2:output?t2:t2-8,y2:output?r:r-22,class:"blade"+(active?" live":"")},g);
-      s("text", {x:mid,y:r+25,class:"not-label"},g).textContent = `${format(b.node)} = ${revealed ? (output ? "T" : "F") : "?"}`;
+      s("line", {x1:t1,y1:r,x2:output?t2:t2-8,y2:output?r:r-22,class:"blade not-blade"+(active?" live":"")},g);
+      s("text", {x:mid,y:r+21,class:"not-label"},g).textContent = revealed ? (output ? "T" : "F") : "?";
       return;
     }
     if (b.kind === "contact") {

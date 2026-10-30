@@ -79,13 +79,11 @@ function pathLabels(formula) {
   ]);
 }
 
-function notHelp(...formulas) {
+function notHelp(formulas, showNot = false) {
   function hasModule(b) { return b.kind === "inverter" || (b.kids || []).some(hasModule); }
-  if (!formulas.some(f => hasModule(layout(f)))) return null;
+  if (!formulas.some(f => hasModule(layout(f, { showNot })))) return null;
   return el("div", { class: "c-not-help", dir: "rtl" }, [
-    el("p", { html: "<b>איך קוראים NOT של קבוצה?</b> קודם בודקים את המעגל הקטן שבתיבה הסגולה. T או F לידו הם התוצאה לפני השלילה." }),
-    el("p", { html: "רכיב <b>NOT</b> שולט במגע שמתחתיו: כשהתוצאה למעלה T, המגע נפתח; כשהיא F, המגע נסגר. הנוסחה שמתחת למגע מציגה את התוצאה אחרי השלילה." }),
-    el("p", { text: "הקו המקווקו מסמן שליטה במגע, ולא מסלול לזרם. למעגל הקטן יש סוללה משלו; הוא אינו מחובר בטור למנורה. הכחול מסמן זרם במעגל הקטן." }),
+    el("p", { html: "<b>NOT הופך את מצב המגע:</b> כשהמסלול במסגרת סגור (T), המגע שמתחתיו נפתח (F). כשהמסלול פתוח (F), המגע נסגר (T). החץ המקווקו מראה איזה מגע נשלט; הוא אינו חוט." }),
   ]);
 }
 
@@ -116,7 +114,7 @@ function mount(level, ui) {
   const levers = el("div", { class: "c-levers", role: "group", "aria-label": "המתגים" });
   const side = el("div", { class: "c-side" });
   const board = el("div", { class: "c-board" }, [el("div", { class: "c-main" }, [lampLine, view === "dual" ? pathLabels(formula) : null, el("div", { class: "c-svg-wrap" }, [svg]), formulaLine, levers]), side]);
-  ui.stage.append(...[notHelp(formula), board].filter(Boolean));
+  ui.stage.append(...[notHelp([formula], level.showNot), board].filter(Boolean));
 
   function lampState() {
     return evaluate(formula, env);
@@ -128,7 +126,7 @@ function mount(level, ui) {
 
   function draw() {
     const on = lampState();
-    render(svg, formula, env, { colours, lamp: covered ? "covered" : on ? "on" : "off", view });
+    render(svg, formula, env, { colours, lamp: covered ? "covered" : on ? "on" : "off", view, showNot: level.showNot });
     if (ui.present) svg.style.maxWidth = Math.round(parseFloat(svg.getAttribute("width")) * 1.8) + "px";   // projector: bigger drawing
     svg.setAttribute("aria-label", `מעגל של הפסוק ${format(formula)}. ` +
       `${W.noun} ` + (covered ? "מכוסה." : on ? W.T + "." : W.F + "."));
@@ -408,7 +406,7 @@ function mountCompare(level, ui) {
     el("button", { type: "button", class: "g-btn", text: "הרובוט טועה: בשורה הזו ערכי האמת שונים", onclick: () => judge(false) }),
   ]);
   ui.stage.append(el("div", { class: "c-compare" }, [
-    claim, notHelp(f1, f2),
+    claim, notHelp([f1, f2]),
     el("div", { class: "c-pair" }, [p1.box, p2.box]),
     el("div", { class: "c-board c-has-side" }, [
       el("div", { class: "c-main" }, [levers]),
