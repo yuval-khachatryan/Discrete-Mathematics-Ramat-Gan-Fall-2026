@@ -12,7 +12,7 @@ function run(ex,steps=ex.solution,mapping=identity(ex),premises=ex.premises.map(
 const step=(id,formula,rule,refs)=>({id,formula,rule,refs});
 
 test("all assisted arguments are embedded and have valid authored proofs under different letter choices",()=>{
-  const qmd=readFileSync(new URL("../01-logic.qmd",import.meta.url),"utf8");
+  const qmd=["01-logic.qmd","02-sets.qmd"].map(f=>readFileSync(new URL(`../${f}`,import.meta.url),"utf8")).join("\n");
   for(const [id,ex] of Object.entries(ARGUMENTS)) {
     assert.ok(qmd.includes(`data-argument="${id}"`));
     for(const names of [["A","B","C"],["C","A","B"],["G","M","H"],["Z","Y","X"]]) {
@@ -106,4 +106,13 @@ test("earlier mistakes invalidate dependent steps; malformed and foreign-variabl
     const r=checkArgument(ARGUMENTS.library,{A:"A",B:"B"},["A -> B","A"],"B",[step("s1",formula,"mp",["p1","p2"])]);
     assert.equal(r.ok,false);
   }
+});
+
+test("assisted argument rewrites preserve omitted-double-negation guidance",()=>{
+  const ex={atoms:[{id:"A"},{id:"B"}],premises:[{formula:"!(!A | B)"}],goal:{formula:"A & !B"}};
+  const result=run(ex,[step("s1","A & !B","eq:demorgan",["p1"])]);
+  assert.equal(result.ok,false);
+  assert.equal(result.results[0].kind,"missing-step");
+  assert.equal(result.results[0].intermediate,"¬¬A ∧ ¬B");
+  assert.match(result.results[0].message,/התוצאה נכונה/);
 });

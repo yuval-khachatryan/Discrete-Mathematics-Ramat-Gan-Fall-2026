@@ -88,6 +88,7 @@ function mount(level, ui) {
   const why = e => `הפסוק ${m(format(formula))} הוא <b>${evaluate(formula, e) ? "אמת" : "שקר"}</b>. בציור: ${explain(formula, e, view)}`;
   const target = level.target !== false;
   const hasTable = level.mode === "fill" || level.mode === "select" || level.impossible;
+  const columns = [...(level.helpers || []), level.formula].map(parse);
   let env, covered, rounds, roundIx, table, cells;
   const progress = el("p", { class: "c-progress", "aria-live": "polite" });
 
@@ -160,17 +161,18 @@ function mount(level, ui) {
     table = el("table", { class: "c-table" });
     const selecting = level.mode === "select";
     const head = el("tr", {}, [...names.map(n => el("th", { scope: "col" }, [el("span", { class: "c-tag", style: `background:${colours[n]}`, text: n })])),
-      el("th", { scope: "col", text: selecting ? "בחרו" : "התשובה שלי" }),
+      ...(selecting ? [el("th", { scope: "col", text: "בחרו" })] : columns.map(f => el("th", { scope: "col", html: m(format(f)) }))),
       el("th", { scope: "col", text: "ניסוי" }),
     ]);
     table.append(el("thead", {}, [head]), el("tbody"));
-    cells = assignments(names).map(row => ({ env: row, mark: selecting ? false : null }));
+    cells = assignments(names).map(row => ({ env: row, mark: selecting ? false : null,
+      answers: columns.map(() => ({ mark: null, wrong: false })) }));
     side.replaceChildren(
-      el("h3", { class: "c-side-title", text: selecting ? `בחרו את כל השורות שבהן הפסוק ${target ? "אמת" : "שקר"}` : "מלאו את ערך האמת של הפסוק" }),
+      el("h3", { class: "c-side-title", text: selecting ? `בחרו את כל השורות שבהן הפסוק ${target ? "אמת" : "שקר"}` : columns.length > 1 ? "מלאו את עמודות העזר ואת התוצאה" : "מלאו את ערך האמת של הפסוק" }),
       el("p", { class: "c-table-help", text: selecting
         ? `סמנו את כל השורות שבהן ${W.noun} ${target ? W.T : W.F}, ורק אותן. אחר כך לחצו ״בדיקה״.`
         : "לחצו על ? כדי לבחור T (אמת) או F (שקר). כפתור ״נסו״ מציג את השורה במעגל, אך אינו ממלא תשובה. " + (level.impossible ? "אם הטבלה מראה שאין פתרון, לחצו על כפתור ״אי אפשר״ שמתחתיה." : "בסיום לחצו ״בדיקה״.") }),
-      table, progress,
+      el("div", { class: "c-table-scroll" }, [table]), progress,
     );
   }
   function drawTable() {
@@ -195,16 +197,21 @@ function mount(level, ui) {
           "aria-label": `שורה ${i + 1}: הפסוק ${target ? "אמת" : "שקר"}`, onchange: e => edit(e.target.checked),
         })]));
       } else {
-        const button = answerCell(c.mark, `שורה ${i + 1}`, c.wrong, edit);
-        button.classList.add("c-answer");
-        tr.append(el("td", {}, [button]));
+        c.answers.forEach((a, j) => {
+          const button = answerCell(a.mark, `שורה ${i + 1}, עמודת ${format(columns[j])}`, a.wrong, value => {
+            a.mark = value; a.wrong = false; ui.say(""); drawTable();
+            table.tBodies[0].rows[i].querySelectorAll(".c-answer")[j].focus({ preventScroll: true });
+          });
+          button.classList.add("c-answer");
+          tr.append(el("td", {}, [button]));
+        });
       }
       tr.append(el("td", {}, [trialButton(names, c.env, load)]));
       body.append(tr);
     });
     progress.textContent = level.mode === "select"
       ? `סימנתם ${cells.filter(c => c.mark).length} מתוך ${cells.length} שורות. אפשר לשנות את הבחירה לפני הבדיקה.`
-      : `מילאתם ${cells.filter(c => c.mark !== null).length} מתוך ${cells.length} תשובות.`;
+      : `מילאתם ${cells.flatMap(c => c.answers).filter(a => a.mark !== null).length} מתוך ${cells.length * columns.length} תשובות.`;
   }
 
   /* ---- predict --------------------------------------------------------- */
@@ -267,6 +274,7 @@ function mount(level, ui) {
     table = null;
     side.replaceChildren();
     board.classList.toggle("c-has-side", !!hasTable);
+    board.classList.toggle("c-multi-table", hasTable && columns.length > 1);
     if (hasTable) buildTable();
     if (level.mode === "predict") {
       rounds = level.rounds.map(r => ({ ...r, passed: false }));
@@ -302,7 +310,7 @@ function mount(level, ui) {
     solve() {
       if (level.mode === "play") {
         if (level.impossible) {
-          cells.forEach(c => { c.mark = evaluate(formula, c.env); c.wrong = false; });
+          fillAnswers();
           draw();
         }
         const row = assignments(freeNames).find(r => evaluate(formula, { ...env, ...r }) === target);
@@ -314,25 +322,34 @@ function mount(level, ui) {
         covered = false; draw();
         return `התשובות:<br>${lines}`;
       }
-      cells.forEach(c => { c.mark = level.mode === "select" ? evaluate(formula, c.env) === target : evaluate(formula, c.env); c.wrong = false; });
+      if (level.mode === "select") cells.forEach(c => { c.mark = evaluate(formula, c.env) === target; c.wrong = false; });
+      else fillAnswers();
       covered = false; draw();
       return `אלה התשובות. לחצו ״נסו״ בשורה כלשהי, ובדקו במעגל ${W.why}.`;
     },
   };
+  function fillAnswers() {
+    cells.forEach(c => c.answers.forEach((a, j) => { a.mark = evaluate(columns[j], c.env); a.wrong = false; }));
+  }
   function checkTable() {
-      const empty = cells.filter(c => c.mark === null).length;
-      if (empty) return { ok: false, kind: "info", message: `חסרות עוד ${empty} תשובות. מלאו את ערך האמת של הפסוק בכל שורה. אפשר להיעזר במתגים ובכפתורי ״נסו״.` };
-      const wrong = cells.filter(c => c.mark !== (level.mode === "select" ? evaluate(formula, c.env) === target : evaluate(formula, c.env)));
-      cells.forEach(c => (c.wrong = wrong.includes(c)));
-      drawTable();
-      if (!wrong.length) return { ok: true, message: level.mode === "select"
-        ? `נכון! סימנתם את כל ${cells.filter(c => c.mark).length} השורות שבהן הפסוק ${target ? "אמת" : "שקר"}, ורק אותן.`
-        : `כל ${cells.length} התשובות נכונות. בניתם טבלת אמת: לכל צירוף של ערכי המתגים נתתם את ערך האמת של הפסוק.` };
-      const c = wrong[0];
-      return {
-        ok: false,
-        message: `${wrong.length === 1 ? "שורה אחת שגויה" : `${wrong.length} שורות שגויות`} (מסומנות). למשל בשורה ${rowText(names, c.env)}: ${why(c.env)}.`,
-      };
+    const selecting = level.mode === "select";
+    const entries = cells.flatMap(c => selecting ? [{ a: c, c, f: formula }] : c.answers.map((a, j) => ({ a, c, f: columns[j] })));
+    const empty = entries.filter(({ a }) => a.mark === null).length;
+    if (empty) return { ok: false, kind: "info", message: `חסרות עוד ${empty} תשובות. מלאו את כל התאים, כולל עמודות העזר. אפשר להיעזר במתגים ובכפתורי ״נסו״.` };
+    const wrong = entries.filter(({ a, c, f }) => {
+      const expected = evaluate(f, c.env);
+      a.wrong = a.mark !== (selecting ? expected === target : expected);
+      return a.wrong;
+    });
+    drawTable();
+    if (!wrong.length) return { ok: true, message: selecting
+      ? `נכון! סימנתם את כל ${cells.filter(c => c.mark).length} השורות שבהן הפסוק ${target ? "אמת" : "שקר"}, ורק אותן.`
+      : `כל ${entries.length} התשובות נכונות. חישבתם את ערכי האמת בכל עמודה ובכל שורה.` };
+    const { c, f } = wrong[0];
+    const rule = f.type === "not" ? "שלילה הופכת את ערך האמת של החלק שבתוכה."
+      : f.type === "and" ? "״וגם״ נותן אמת רק כששני החלקים אמת."
+      : f.type === "or" ? "״או״ נותן אמת כשלפחות אחד החלקים אמת." : "בדקו לפי טבלת האמת של הקשר.";
+    return { ok: false, message: `${wrong.length} תשובות שגויות מסומנות. למשל, בשורה ${rowText(names, c.env)}, בעמודת ${m(format(f))} צריך להיות ${tvHTML(evaluate(f, c.env))}. ${rule}` };
   }
   if (hasTable && !level.impossible) ctl.check = checkTable;
   if (level.mode === "play") {

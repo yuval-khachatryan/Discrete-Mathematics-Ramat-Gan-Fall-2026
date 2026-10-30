@@ -21,11 +21,12 @@ book:
   chapters:
     - index.qmd
     - 01-logic.qmd
+    - 02-sets.qmd
 
 lang: he
 dir: rtl
 number-sections: true
-number-depth: 3
+number-depth: 4
 
 crossref:
   chapters: true
@@ -47,7 +48,7 @@ format:
   html:
     theme: cosmo
     toc: true
-    toc-depth: 3
+    toc-depth: 4
     toc-title: "תוכן העניינים"
     toc-expand: true
     include-in-header: _styles.html

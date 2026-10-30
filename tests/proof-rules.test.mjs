@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { checkStep, checkProof, RULES, ruleExamples } from "../games/shared/proof-rules.js";
+import { checkStep, checkProof, checkStart, RULES, ruleExamples } from "../games/shared/proof-rules.js";
 import { compare, parse } from "../games/shared/logic.js";
 
 const first = [
@@ -43,8 +43,8 @@ test("rule schemas are equivalent and work in both directions with compound subs
 test("an equivalent answer is rejected when the selected law does not justify it", () => {
   assert.equal(checkStep("!(A & B)","!A | !B","double",["A","B"]).kind,"wrong-rule");
   assert.equal(checkStep("!(A & !B)","A -> B","demorgan",["A","B"]).kind,"wrong-rule");
-  assert.equal(checkStep("!(A & !B)","!A | B","demorgan",["A","B"]).kind,"wrong-rule");
-  assert.equal(checkStep("!!A & !!B","A & B","double",["A","B"]).kind,"wrong-rule");
+  assert.equal(checkStep("!(A & !B)","!A | B","demorgan",["A","B"]).kind,"missing-step");
+  assert.equal(checkStep("!!A & !!B","A & B","double",["A","B"]).kind,"missing-step");
   assert.equal(checkStep("A | !A","B | !B","complement",["A","B"]).kind,"wrong-rule");
 });
 
@@ -86,4 +86,45 @@ test("proof checking stops at the first error and does not accept an unchanged s
   assert.equal(result.valid,false);
   assert.equal(result.complete,false);
   assert.equal(checkProof("!(A & !B)","A -> B",[{formula:"!(A & !B)",rule:"double"}]).complete,false);
+});
+
+
+test("a starting expression must be an authored endpoint, not an unjustified equivalent", () => {
+  const start = "!(A & !B)", target = "A -> B";
+  for (const input of ["", "!(", "!A | B", "B -> A", "A & B"])
+    assert.equal(checkStart(input, start, target, true).valid, false, input);
+  assert.equal(checkStart(" ¬(a ∧ ¬b) ", start, target).valid, true);
+  assert.equal(checkStart(target, start, target).valid, false);
+  const reverse = checkStart(target, start, target, true);
+  assert.equal(reverse.target, start);
+  assert.ok(checkProof(reverse.start, reverse.target, [
+    { formula: "!A | B", rule: "implication" },
+    { formula: "!A | !!B", rule: "double" },
+    { formula: start, rule: "demorgan" },
+  ]).complete);
+});
+
+
+test("omitted double negation gets a correct-result message and a justified intermediate", () => {
+  for (const [before,after,rule] of [
+    ["!(A & !B)","!A | B","demorgan"],
+    ["!(!A | B)","A & !B","demorgan"],
+    ["!(!A & !B)","A | B","demorgan"],
+    ["!A | B","!(A & !B)","demorgan"],
+    ["!!A & !!B","A & B","double"],
+    ["!(A & !B) -> C","(!A | B) -> C","demorgan"],
+  ]) {
+    const result = checkStep(before,after,rule,["A","B","C"]);
+    assert.equal(result.kind,"missing-step");
+    assert.match(result.message,/התוצאה נכונה/);
+    assert.ok(compare(before,result.intermediate).equal);
+    assert.ok(compare(result.intermediate,after).equal);
+    assert.ok(checkStep(before,result.intermediate,rule,["A","B","C"]).kind === "valid"
+      || checkStep(result.intermediate,after,rule,["A","B","C"]).kind === "valid");
+  }
+  assert.equal(checkStep("!(A & !B)","!A & B","demorgan",["A","B"]).kind,"different");
+  assert.equal(checkStep("!(A & !B)","B | !A","demorgan",["A","B"]).kind,"wrong-rule");
+  assert.equal(checkStep("!(A & !B)","!A | B","commute",["A","B"]).kind,"wrong-rule");
+  assert.equal(checkStep("!(A & !B)","!A | !!B","demorgan",["A","B"]).kind,"valid");
+  assert.equal(checkProof("!(A & !B)","!A | B",[{formula:"!A | B",rule:"demorgan"}]).complete,false);
 });

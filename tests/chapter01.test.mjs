@@ -90,7 +90,7 @@ test("the last evaluation item: B → (A ∧ ¬C) with A=T, B=F, C=T", () => {
   assert.equal(evaluate("B -> (A & !C)", { A: true, B: false, C: true }), true);
 });
 test("every interactive exercise in the chapter has formulas that parse", () => {
-  const qmd = readFileSync(new URL("../01-logic.qmd", import.meta.url), "utf8");
+  const qmd = ["01-logic.qmd","02-sets.qmd"].map(f=>readFileSync(new URL(`../${f}`,import.meta.url),"utf8")).join("\n");
   const cols = [...qmd.matchAll(/\.ttq[^}]*cols="([^"]+)"/g)].flatMap(m => m[1].split(";"));
   const answers = [...qmd.matchAll(/\.fq answer="([^"]+)"/g)].map(m => m[1]);
   const proofs = [...qmd.matchAll(/\.proof-editor data-start="([^"]+)" data-target="([^"]+)"/g)];

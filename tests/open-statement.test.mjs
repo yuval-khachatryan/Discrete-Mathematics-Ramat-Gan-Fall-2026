@@ -22,9 +22,21 @@ test('all occurrences of the same variable receive the same selected value', () 
 });
 test('every round offers true and false results within its stated domain', () => {
   for (const r of rounds) {
-    const choices = r.vars.reduce((rows, v) => rows.flatMap(row => r.domain.map(n => ({ ...row, [v]: n }))), [{}]);
+    const choices = r.vars.reduce((rows, v) => rows.flatMap(row => r.samples.map(n => ({ ...row, [v]: n }))), [{}]);
     const truths = choices.map(row => state(r, row).truth);
     assert.ok(truths.includes(true) && truths.includes(false), r.title);
-    assert.throws(() => state(r, { [r.vars[0]]: 999 }), RangeError);
+    assert.doesNotThrow(() => state(r, { [r.vars[0]]: 999 }));
+  }
+});
+
+test('integer entry accepts zero, negatives and exact large integers', () => {
+  assert.equal(state(rounds[0], {x: 0}).truth, false);
+  assert.equal(state(rounds[0], {x: '−3'}).truth, false);
+  assert.equal(state(rounds[0], {x: '  +7  '}).truth, true);
+  assert.equal(state(rounds[1], {x: '9007199254740993', y: '-9007199254740983'}).truth, true);
+  assert.equal(state(rounds[1], {x: '9007199254740993', y: '-9007199254740982'}).truth, false);
+  assert.equal(state(rounds[0], {x: '  '}).truth, null);
+  for (const x of ['1.5', 'abc', '1e2', NaN, Infinity, 9007199254740992]) {
+    assert.throws(() => state(rounds[0], {x}), RangeError);
   }
 });

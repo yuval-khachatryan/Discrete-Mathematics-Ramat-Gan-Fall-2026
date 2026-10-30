@@ -5,7 +5,9 @@ Hebrew (RTL) interactive lecture notes for the Discrete Mathematics course at th
 ## Source
 
 - `index.qmd`: front page (course details, how to read the notes, topic list, sources).
-- `01-logic.qmd`: chapter 1, all of logic (lecture 1): propositions, connectives, truth tables, implication, equivalence and De Morgan, propositional calculus, deduction rules, knights and knaves, quantifiers.
+- `01-logic.qmd`: chapter 1, all of logic (lecture 1): propositions, connectives, truth tables, implication, equivalence and De Morgan, propositional calculus, deduction rules, knights and knaves.
+- `02-sets.qmd`: chapter 2, syllabus-based set theory outline (TODOs), followed by the quantifier material and games.
+- Self-practice is at the end of each chapter: 40 logic exercises in chapter 1, and 8 quantifier exercises in chapter 2.
 - `_quarto.yml`: book config (HTML only for now). `_styles.html`: shared CSS and the small page scripts (T/F quizzes, iframe auto-height). `theorem-numbering.lua`: the numbered-box filter, copied from the Ariel notes, with `.thmgame` (משחק) and `.thmchk` (בדיקה עצמית) added.
 - `games/<name>/`: one folder per game, each a standalone page (`index.html`, `game.js`, `levels.js`, `game.css`).
 - `games/shared/`: `shell.js` + `shell.css` (the frame every game shares), `logic.js` (formula parser, evaluation, truth tables), `sprites.js` (the characters and icons as SVG), `sprites/` (the same pictures as files, used by the book's CSS), `autosize.js` (iframe height).

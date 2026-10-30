@@ -115,3 +115,18 @@ test("the stairwell light is the exclusive or, and differs from ∨ only when bo
   assert.deepEqual(col(l.formula), [false, true, true, false]);
   assert.deepEqual(col("A | B"), [true, true, true, false]);
 });
+
+
+test("introductory worksheets expose the intermediate expressions in calculation order", () => {
+  const cases = [
+    ["explore", ["!B"], [[false, false], [true, true], [false, false], [true, false]]],
+    ["fill", ["A | B"], [[true, true], [true, false], [true, true], [true, false], [true, true], [true, false], [false, false], [false, false]]],
+  ];
+  for (const [id, helpers, expected] of cases) {
+    const level = LEVELS.find(l => l.id === id);
+    assert.deepEqual(level.helpers, helpers);
+    const columns = [...level.helpers, level.formula];
+    const results = assignments(Object.keys(level.vars)).map(row => columns.map(f => evaluate(f, row)));
+    assert.deepEqual(results, expected, id);
+  }
+});

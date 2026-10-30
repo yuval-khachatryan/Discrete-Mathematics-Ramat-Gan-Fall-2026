@@ -52,6 +52,7 @@ import { parse, evaluate, assignments, variables, compare, format } from "./logi
 import { initOpenStatement } from "./open-statement.js";
 import { initProofEditor } from "./proof-editor.js";
 import { initArgumentEditor } from "./argument-editor.js";
+import { initTableEvidence } from "./table-evidence.js";
 import { initPracticeChoice } from "./practice-choice.js";
 import { initLectureTable, initLectureAnswers } from "./lecture-reveal.js";
 import { evaluationSteps, show } from "../gate/knights.js";
@@ -143,6 +144,15 @@ function initTTQ(box) {
   ]);
   box.classList.add("bk-ttq");
   box.prepend(el("div", { class: "bk-tt-wrap" }, [table]), bar, msg);
+  const evidence=initTableEvidence(box,rows,()=>{say("");after.forEach(x=>x.classList.add("bk-hidden"));});
+  if(evidence){
+    bar.before(evidence.node);
+    bar.append(btn("בדיקת הטבלה", checkTable));
+    evidence.node.append(el("p", {text:"מילוי הטבלה הוא רשות. אפשר לבחור שורה בלי למלא אותה. ״בדיקה״ בודק את התשובה שבחרתם; ״בדיקת הטבלה״ בודק בנפרד את תאי העזר שמילאתם."}));
+  }
+  function invalidateEvidence(){
+    if(evidence){evidence.invalidate();say("");after.forEach(x=>x.classList.add("bk-hidden"));}
+  }
 
   function say(html, kind) { msg.className = "bk-msg" + (kind ? " bk-" + kind : ""); msg.innerHTML = html; }
   function draw() {
@@ -157,7 +167,7 @@ function initTTQ(box) {
           class: "bk-cell" + (wrong[r][k] ? " bk-wrong" : "") + (focus && focus[0] === r && focus[1] === k ? " bk-focus" : ""),
           "aria-label": `שורה ${r + 1}, עמודה ${format(c)}: ${v === null ? "ריק" : v ? "T" : "F"}. לחצו כדי לשנות`,
           html: v === null ? '<span class="bk-q">?</span>' : tv(v),
-          onclick() { marks[r][k] = v === null ? true : v ? false : null; wrong[r][k] = false; focus = null; draw(); },
+          onclick() { marks[r][k] = v === null ? true : v ? false : null; wrong[r][k] = false; focus = null; invalidateEvidence();draw(); },
         })]));
       });
       body.append(tr);
@@ -166,6 +176,15 @@ function initTTQ(box) {
   }
   const truth = (r, k) => evaluate(cols[k], rows[r]);
   function check() {
+    if(evidence){
+      if(!evidence.check()){say("בדקו את ההסבר ליד השורה שבחרתם ונסו שוב.","info");return;}
+      say("התשובה נכונה! אפשר להיעזר בטבלה, אבל אין חובה למלא אותה.","good");
+      after.forEach(x=>{x.classList.remove("bk-hidden");typeset(x);});
+      return;
+    }
+    checkTable();
+  }
+  function checkTable() {
     let empty = 0, bad = 0;
     rows.forEach((_, r) => cols.forEach((_, k) => {
       if (marks[r][k] === null) empty++;
@@ -174,8 +193,8 @@ function initTTQ(box) {
     focus = null; draw();
     if (bad) return say(`${bad === 1 ? "תא אחד שגוי" : `${bad} תאים שגויים`} (מסומנים באדום). לחצו ״רמז״ כדי לקבל הסבר לאחד מהם.`, "bad");
     if (empty) return say(`עד עכשיו הכול נכון. נשארו עוד ${empty} תאים ריקים.`, "info");
-    say("כל התאים נכונים!", "good");
-    after.forEach(x => { x.classList.remove("bk-hidden"); typeset(x); });
+    say(evidence?"כל התאים נכונים. בחרו את התשובה ולחצו ״בדיקה״ כדי לבדוק אותה.":"כל התאים נכונים!", "good");
+    if(!evidence)after.forEach(x => { x.classList.remove("bk-hidden"); typeset(x); });
   }
   function firstOpen() {
     for (let k = 0; k < cols.length; k++) for (let r = 0; r < rows.length; r++) {
@@ -192,8 +211,9 @@ function initTTQ(box) {
     say(`${verb} (מסומן במסגרת): בשורה ${rowText(names, rows[r])}, ${m(chain(cols[k], rows[r]))}.`, "info");
   }
   function nextCol() {
+    invalidateEvidence();
     const f = firstOpen();
-    if (!f) return say("כל העמודות כבר נכונות.", "info");
+    if (!f) {if(evidence)evidence.enable();return say("כל העמודות כבר נכונות.", "info");}
     const k = f[1];
     rows.forEach((_, r) => { marks[r][k] = truth(r, k); wrong[r][k] = false; });
     focus = null; draw();
@@ -204,15 +224,17 @@ function initTTQ(box) {
       : c.type === "iff" ? "אם ורק אם: אמת כששני החלקים מקבלים אותו ערך אמת"
       : c.type === "imp" ? `גרירה: שקר רק כש-${m(format(c.left))} אמת ו-${m(format(c.right))} שקר` : "";
     say(`מילאנו את העמודה ${m(format(c))}${sub ? ": " + sub : ""}. למשל בשורה ${rowText(names, rows[0])}: ${m(chain(c, rows[0]))}.`, "info");
-    if (!firstOpen()) after.forEach(x => { x.classList.remove("bk-hidden"); typeset(x); });
+    if (!firstOpen()) {if(evidence)evidence.enable();else after.forEach(x => { x.classList.remove("bk-hidden"); typeset(x); });}
   }
   function solveAll() {
     rows.forEach((_, r) => cols.forEach((_, k) => { marks[r][k] = truth(r, k); wrong[r][k] = false; }));
     focus = null; draw();
     say("זו הטבלה המלאה.", "info");
+    if(evidence)evidence.reveal();
     after.forEach(x => { x.classList.remove("bk-hidden"); typeset(x); });
   }
   function reset() {
+    if(evidence)evidence.reset();
     marks = rows.map(() => cols.map(() => null));
     wrong = rows.map(() => cols.map(() => false));
     focus = null; draw(); say("");
@@ -272,6 +294,9 @@ function initFQ(box) {
     }
     const extra = variables(f).filter(v => !allowed.includes(v));
     if (extra.length) return say(`הנוסחה משתמשת ב-${m(extra.join(", "))}, אבל במשפט יש רק ${m(allowed.join(", "))}.`, "bad");
+    const required = (box.dataset.requiredVars || "").split(",").filter(Boolean);
+    const missing = required.filter(v => !variables(f).includes(v));
+    if(missing.length)return say(`בתרגיל הזה צריך להשתמש בשתי האותיות. הוסיפו לנוסחה גם את ${m(missing.join(", "))}.`,"bad");
     const r = compare(f, answer);
     if (r.equal) {
       const exact = format(f) === format(answer);

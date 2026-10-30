@@ -48,6 +48,8 @@ are still labelled. Top-level boxes are numbered; boxes inside .optional are not
 
 local BOX = {
   thmdef = { word = "הגדרה", css = "definition"  },
+  thmterm = { word = "מונח חדש", css = "terminology" },
+  thmmethod = { word = "שיטה", css = "method" },
   thmthm = { word = "משפט",  css = "theorem"     },
   thmprp = { word = "טענה",  css = "proposition" },
   thmexm = { word = "דוגמה", css = "example"     },
@@ -60,6 +62,9 @@ local BOX = {
 
 -- Labelled but UNNUMBERED (see the header).
 local UNNUMBERED = {
+  thmsummary = { word = "סיכום", css = "summary" },
+  thmcomponents = { word = "רכיבי המשחק", css = "components" },
+  thmerror = { word = "טעות נפוצה", css = "warning" },
   thmwarn = { word = "שימו לב",    css = "warning"   },
   thmkey  = { word = "חשוב לזכור", css = "key-point" },
   thmchk  = { word = "בדיקה עצמית", css = "self-check" },
@@ -234,12 +239,16 @@ process = function(blocks, in_optional)
       else
         local box = box_for(orig)
         if box then
+          local word = box.word
+          if has_class(orig, "thmterm") and b.attributes.terms == "plural" then
+            word = "מונחים חדשים"
+          end
           local text
-          if in_optional or not chap then
-            text = box.word                              -- unnumbered
+          if in_optional or not chap or has_class(orig, "unnumbered") then
+            text = word                                  -- unnumbered
           else
             item = item + 1
-            text = box.word .. " " .. chap .. "." .. section .. "." .. item
+            text = word .. " " .. chap .. "." .. section .. "." .. item
           end
           local t = b.attributes and b.attributes.title  -- optional title, e.g. "סדרת פיבונאצ׳י"
           if b.identifier and b.identifier ~= "" then labels[b.identifier] = text end

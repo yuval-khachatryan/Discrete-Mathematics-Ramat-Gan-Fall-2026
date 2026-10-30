@@ -71,6 +71,10 @@ function storage(id) {
       memory.done[lvl] = true;
       if (ok) try { window.localStorage.setItem(key, JSON.stringify(memory)); } catch (e) { ok = false; }
     },
+    forget(lvl) {
+      delete memory.done[lvl];
+      if (ok) try { window.localStorage.setItem(key, JSON.stringify(memory)); } catch (e) { ok = false; }
+    },
     clear() {
       memory = { done: {} };
       if (ok) try { window.localStorage.removeItem(key); } catch (e) { ok = false; }
@@ -98,6 +102,7 @@ export function startGame(game) {
   let index = Math.max(0, levels.findIndex(l => l.id === params.get("level")));
 
   const store = storage(game.id);
+  const completedHere = new Set();
   const root = document.getElementById("game") || document.body.appendChild(el("div", { id: "game" }));
   root.className = "g-root" + (embed ? " g-embed" : "") + (present ? " g-present" : "");
   document.documentElement.classList.toggle("g-embedded", embed);
@@ -131,7 +136,7 @@ export function startGame(game) {
   } else {
     foot.append(el("button", {
       class: "g-link", type: "button", text: "איפוס ההתקדמות השמורה",
-      onclick() { store.clear(); drawNav(); },
+      onclick() { store.clear(); completedHere.clear(); go(index); },
     }));
   }
 
@@ -149,14 +154,16 @@ export function startGame(game) {
     nav.replaceChildren();
     nav.hidden = levels.length < 2;
     levels.forEach((l, i) => {
+      const done = completedHere.has(l.id);
+      const saved = !done && store.isDone(l.id);
       nav.append(el("button", {
         type: "button",
-        class: "g-lvl" + (i === index ? " g-current" : "") + (store.isDone(l.id) ? " g-done" : ""),
+        class: "g-lvl" + (i === index ? " g-current" : "") + (done ? " g-done" : saved ? " g-saved" : ""),
         "aria-current": i === index ? "step" : false,
-        "aria-label": `שלב ${i + 1}: ${l.title}` + (store.isDone(l.id) ? " (הושלם)" : ""),
-        title: l.title,
+        "aria-label": `שלב ${i + 1}: ${l.title}` + (done ? " (הושלם כעת)" : saved ? " (הושלם קודם; אפשר לפתור שוב)" : ""),
+        title: l.title + (saved ? " — הושלם קודם" : ""),
         onclick() { go(i); },
-      }, [String(i + 1), store.isDone(l.id) ? el("span", { class: "g-tick", "aria-hidden": "true", text: "✓" }) : null]));
+      }, [String(i + 1), done ? el("span", { class: "g-tick", "aria-hidden": "true", text: "✓" }) : saved ? el("span", { class: "g-history", "aria-hidden": "true", text: "↺" }) : null]));
     });
   }
 
@@ -164,6 +171,7 @@ export function startGame(game) {
     if (won) return;
     won = true;
     store.markDone(levels[index].id);
+    completedHere.add(levels[index].id);
     say(html || "כל הכבוד! הצלחתם.", "good");
     showDebrief();
     btnNext.hidden = index >= levels.length - 1;
@@ -182,6 +190,7 @@ export function startGame(game) {
   function go(i) {
     index = Math.max(0, Math.min(levels.length - 1, i));
     const lvl = levels[index];
+    completedHere.delete(lvl.id);
     won = false; hintsShown = 0;
     missionTitle.textContent = (levels.length > 1 ? `שלב ${index + 1} — ` : "") + lvl.title;
     goal.innerHTML = lvl.goal || "";
@@ -225,8 +234,12 @@ export function startGame(game) {
     if (!ctl || !ctl.reset) return;
     ctl.reset();
     won = false;
+    completedHere.delete(levels[index].id);
+    store.forget(levels[index].id);
+    drawNav();
     debrief.hidden = true;
     btnNext.hidden = true;
+    btnNext.classList.remove("g-ready");
     say("");
   });
   btnSolve.addEventListener("click", () => {

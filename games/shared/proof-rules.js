@@ -55,6 +55,48 @@ function applies(before, after, pairs) {
   return changed.length === 1 && applies(a[changed[0]], b[changed[0]], pairs);
 }
 
+// Generate one justified rewrite, retaining grouping and order. Schemas whose
+// reverse direction introduces an unbound letter cannot supply a concrete hint.
+function instantiate(pattern, bindings) {
+  if (pattern.type === "var") return bindings.get(pattern.name);
+  const parts = children(pattern).map(n => instantiate(n, bindings));
+  if (parts.some(n => !n)) return null;
+  return rebuild(pattern, parts);
+}
+function rebuild(node, parts) {
+  if (node.args) return { ...node, args: parts };
+  if (node.arg) return { ...node, arg: parts[0] };
+  if (node.left) return { ...node, left: parts[0], right: parts[1] };
+  return node;
+}
+function* rewrites(node, pairs) {
+  for (const [a,b] of pairs) for (const [from,to] of [[a,b],[b,a]]) {
+    const bindings = new Map();
+    if (match(from, node, bindings)) {
+      const result = instantiate(to, bindings);
+      if (result) yield result;
+    }
+  }
+  const parts = children(node);
+  for (let i=0; i<parts.length; i++) for (const changed of rewrites(parts[i], pairs)) {
+    yield rebuild(node, parts.map((p,j) => i === j ? changed : p));
+  }
+}
+function removeDouble(node) {
+  if (node.type === "not" && node.arg.type === "not") return removeDouble(node.arg.arg);
+  return rebuild(node, children(node).map(removeDouble));
+}
+function skippedDouble(before, after, pairs) {
+  for (const mid of rewrites(before, pairs)) {
+    if (!same(mid, after) && same(removeDouble(mid), after)) return mid;
+  }
+  // Also recognize a double negation that must be inserted before a reverse law.
+  for (const mid of rewrites(after, pairs)) {
+    if (!same(mid, before) && same(removeDouble(mid), before)) return mid;
+  }
+  return null;
+}
+
 // Only completion ignores ordering/grouping of ∧ and ∨. Rule checking above
 // requires those changes to be justified, rather than silently allowing them.
 function goalKey(n) {
@@ -84,11 +126,26 @@ export function checkStep(beforeText, afterText, ruleId, allowed) {
     message: `הנוסחה החדשה אינה שקולה לקודמת. במצב הבא הנוסחה הקודמת ${evaluate(before, comparison.row) ? "נכונה" : "שגויה"}, והנוסחה החדשה ${evaluate(after, comparison.row) ? "נכונה" : "שגויה"}:` };
   if (!applies(before, after, patterns.get(ruleId))) {
     const other = RULES.find(r => applies(before, after, patterns.get(r.id)));
+    const intermediate = !other && skippedDouble(before, after, patterns.get(ruleId));
+    if (intermediate) return { kind: "missing-step", intermediate: format(intermediate),
+      message: "התוצאה נכונה ושקולה לנוסחה הקודמת. עם זאת, המעבר כולל גם שימוש בשלילה כפולה שלא נכתב בנפרד. בשלב הזה נתרגל כתיבה מפורטת: הוסיפו את שורת הביניים שלהלן, וציינו בכל מעבר את החוק המתאים. השלילה הכפולה היא צעד נכון — רק חשוב להראות אותו." };
     return { kind: "wrong-rule", message: other
       ? `הנוסחאות שקולות, אבל החוק שבחרתם אינו מסביר את השינוי. המעבר הזה מתאים לחוק ״${other.name}״.`
       : "הנוסחאות שקולות, אבל לא מצאתי כאן הפעלה אחת של החוק שבחרתם. שנו חלק אחד בכל צעד. אם השתמשתם בכמה חוקים, או שיניתם גם את סדר החלקים, הוסיפו שורות ביניים." };
   }
   return { kind: "valid", message: `הצעד נכון, והחוק ״${RULES.find(r => r.id === ruleId).name}״ מתאים לשינוי.`, formula: format(after) };
+}
+
+export function checkStart(input, start, target, reversible = false) {
+  if (!input.trim()) return { valid: false, message: "כתבו תחילה את הנוסחה שממנה אתם מתחילים." };
+  let parsed;
+  try { parsed = tree(input.trim().toUpperCase()); }
+  catch { return { valid: false, message: "כתבו נוסחה אחת בלבד, ובדקו את הסוגריים והסמלים." }; }
+  if (same(parsed, tree(start))) return { valid: true, start: input.trim().toUpperCase(), target };
+  if (reversible && same(parsed, tree(target))) return { valid: true, start: input.trim().toUpperCase(), target: start };
+  return { valid: false, message: reversible
+    ? "התחילו באחד משני אגפי השקילות שבשאלה. כל שינוי ממנו צריך להופיע בצעד מנומק."
+    : "התחילו בנוסחה הנתונה בשאלה. אם כבר שיניתם אותה, כתבו את השינוי בצעד הבא והצדיקו אותו." };
 }
 
 export function checkProof(start, target, steps) {

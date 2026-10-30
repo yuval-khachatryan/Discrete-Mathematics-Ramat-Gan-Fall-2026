@@ -6,14 +6,15 @@ import { checkProof } from "../games/shared/proof-rules.js";
 import { ARGUMENTS } from "../games/shared/argument-exercises.js";
 import { PRACTICE_CHOICES } from "../games/shared/practice-choices.js";
 
-const qmd = readFileSync(new URL("../01-logic.qmd", import.meta.url), "utf8");
-const practice = qmd.slice(qmd.indexOf("## תרגול עצמי לפי נושאים"));
+const qmd = readFileSync(new URL("../02-sets.qmd", import.meta.url), "utf8");
+const logic = readFileSync(new URL("../01-logic.qmd", import.meta.url), "utf8");
+const practice = logic.slice(logic.indexOf("## תרגול עצמי לפי נושאים")) + "\n" + qmd.slice(qmd.indexOf("## תרגול עצמי: כמתים"));
 test("practice bank has eight topics, 48 exercises and 20 assisted proofs", () => {
-  assert.equal((practice.match(/^### /gm) || []).length, 8);
+  assert.equal((practice.match(/^### |^## תרגול עצמי: כמתים/gm) || []).length, 8);
   assert.equal((practice.match(/#practice-q-/g) || []).length, 48);
   assert.equal((practice.match(/\.argument-editor /g) || []).length, 16);
   assert.equal((practice.match(/\.proof-editor /g) || []).length, 4);
-  assert.equal((practice.match(/\.choice-exercise /g) || []).length, 16);
+  assert.equal((practice.match(/\.choice-exercise /g) || []).length, 19);
   for(const exercise of practice.split(/^:::::: \{/m).slice(1)) {
     assert.match(exercise,/\.(choice-exercise|argument-editor|proof-editor|fq|ttq) /);
   }
@@ -29,8 +30,8 @@ test("practice bank has eight topics, 48 exercises and 20 assisted proofs", () =
 });
 
 test("choice questions have one answer and an explanation for every option, including every classification item",()=>{
-  assert.equal(Object.keys(PRACTICE_CHOICES).length,16);
-  assert.equal(Object.values(PRACTICE_CHOICES).flat().length,45);
+  assert.equal(Object.keys(PRACTICE_CHOICES).length,19);
+  assert.equal(Object.values(PRACTICE_CHOICES).flat().length,49);
   for(const [id,items] of Object.entries(PRACTICE_CHOICES)) {
     assert.ok(practice.includes(`data-choice="${id}"`));
     for(const item of items) {
@@ -68,14 +69,16 @@ test("knight puzzles have respectively one, two and no consistent possibilities"
 test("quantifier answers respect domains, order and negation", () => {
   const d = [0, 1, 2, 3];
   assert.deepEqual([d.every(x => x >= 0), d.some(x => x*x === 4), d.every(x => x < 3), d.some(x => x > 3)], [true, true, false, false]);
+  assert.ok([1,2,3].every(x=>x!==0));
+  assert.equal([0,1,2,3].every(x=>x!==0),false);
   const numbers = [1, 2, 3];
   assert.ok(numbers.every(x => numbers.some(y => x + y === 4)));
   assert.equal(numbers.some(y => numbers.every(x => x + y === 4)), false);
   assert.ok(numbers.every(x => x <= 3));
   assert.equal(numbers.every(x => x <= 2), false);
-  const menu = [[true, false], [false, true], [true, true]];
-  assert.ok(menu.every(row => row.some(Boolean)));
-  assert.equal([0, 1].some(y => menu.every(row => row[y])), false);
+  const availability = [[true, false], [false, true], [true, true]];
+  assert.ok(availability.every(row => row.some(Boolean)));
+  assert.equal([0, 1].some(y => availability.every(row => row[y])), false);
   const books = [[true, false], [false, true]];
   assert.ok([0, 1].every(y => books.some(row => !row[y])));
   assert.equal(books.some(row => row.every(read => !read)), false);
@@ -85,7 +88,8 @@ test("quantifiers name their worlds; the only omitted domain is an explicitly ex
   const body=qmd.replace(/::: \{\.thmrem title="לפעמים מקצרים את הכתיבה"\}[\s\S]*?\n:::/,'');
   assert.doesNotMatch(body,/\\(?:forall|exists) [xy](?!\\in)/);
   assert.ok(qmd.includes('D=\\{1,2,3,4\\}'));
-  assert.ok(qmd.includes('על קבוצות ועל שייכות נלמד בהרחבה בהמשך הקורס'));
+  assert.ok(qmd.indexOf('## קבוצות, איברים ושייכות') < qmd.indexOf('## כמתים'));
+  assert.ok(qmd.includes('כאן משתמשים בשייכות לקבוצה'));
   for(const items of Object.values(PRACTICE_CHOICES))for(const item of items)for(const option of item.options) {
     assert.doesNotMatch(option.text,/[∀∃][xy](?!∈)/);
   }

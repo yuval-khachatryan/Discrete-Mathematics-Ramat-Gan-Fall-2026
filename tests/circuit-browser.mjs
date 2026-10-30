@@ -37,7 +37,7 @@ try {
   async function fill(level, wrongFirst = false) {
     const rows = assignments(Object.keys(level.vars));
     for (const [i, row] of rows.entries()) {
-      for (const [j, formula] of [level.formula, level.formula2].filter(Boolean).entries()) {
+      for (const [j, formula] of [...(level.helpers || []), level.formula, level.formula2].filter(Boolean).entries()) {
         const expected = evaluate(formula, row);
         await setCell(i, j, wrongFirst && i === 0 && j === 0 ? !expected : expected);
       }
@@ -102,6 +102,12 @@ try {
         assert.ok((await page.locator(".c-cell").allTextContents()).every(x => x === "?"));
         const submit = level.impossible ? () => page.locator(".c-impossible button").click() : check;
         await submit(); await notPassed();
+        if (level.helpers?.length) {
+          // Correct final results cannot conceal unanswered intermediate work.
+          for (const [i, row] of rows.entries()) await setCell(i, level.helpers.length, evaluate(level.formula, row));
+          await submit(); await notPassed();
+          assert.match(await page.locator(".g-feedback").innerText(), /חסרות/);
+        }
         await fill(level, true); await submit(); await notPassed();
         assert.ok(await page.locator(".c-cell.wrong").count());
         await fill(level); await notPassed(); await submit(); await passed();
