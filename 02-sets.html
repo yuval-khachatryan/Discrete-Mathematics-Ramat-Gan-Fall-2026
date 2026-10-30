@@ -555,6 +555,9 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .choice-item { min-width: 0; margin: .8rem 0; padding: .65rem; border: 1px solid #c4b5fd; border-radius: 8px; }
 .choice-item legend { float: none; width: auto; max-width: 100%; font-size: 1em; font-weight: 700; color: #581c87; padding: 0 .25rem; }
 .choice-select[aria-invalid="true"] { border: 2px solid #b91c1c; }
+.substitution-entry label { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; margin: .5rem 0; }
+.substitution-entry .bk-input { width: 18rem; max-width: 100%; min-width: 0; }
+.substitution-entry input[aria-invalid="true"] { border: 2px solid #b91c1c; }
 .choice-select:focus-visible, .argument-formula-bank:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
 .choice-ready .choice-offline { display: none; }
 .bk-keys { display: flex; flex-wrap: wrap; gap: 0.25rem; direction: ltr; }
@@ -1271,28 +1274,28 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div id="practice-q-quant-domain" class="thmbox thmbox-question" title="אותה נוסחה, תחום אחר">
-<p><strong>שאלה 2.9.3 — אותה נוסחה, תחום אחר.</strong></p>
-<p>בדקו את <span class="math inline">\(\exists x\in D\,(x+2=0)\)</span> בשתי בחירות שונות של עולם הדיון <span class="math inline">\(D\)</span>:</p>
+<div id="practice-q-quant-domain" class="thmbox thmbox-question" title="איבר חדש משנה את התשובה">
+<p><strong>שאלה 2.9.3 — איבר חדש משנה את התשובה.</strong></p>
+<p>בדקו את <span class="math inline">\(\forall x\in D\,(x\ne0)\)</span> בשני עולמות דיון:</p>
 <ol type="1">
-<li><span class="math inline">\(D=\{0,1,2,3,\ldots\}\)</span>, המספרים השלמים שאינם שליליים.</li>
-<li>כל המספרים השלמים, כולל השליליים.</li>
+<li><span class="math inline">\(D=\{1,2,3\}\)</span>.</li>
+<li><span class="math inline">\(D=\{0,1,2,3\}\)</span>.</li>
 </ol>
-<p>הסבירו למה התשובה משתנה.</p>
+<p>הסימן <span class="math inline">\(\ne\)</span> פירושו ״אינו שווה״. בשני הסעיפים בודקים אותה טענה: ״כל מספר בתחום שונה מאפס״. הסבירו מדוע הוספת איבר לתחום משנה את התשובה.</p>
 <div class="choice-exercise" data-choice="quant-domain">
 <div class="choice-offline">
-<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+<p>קבעו אמת או שקר לכל תחום, והסבירו את השפעת האיבר שנוסף.</p>
 </div>
 </div>
 <div class="solve">
 <div class="hint">
-<p>איזה מספר צריך להציב כדי שהסכום יהיה אפס? בדקו אם מותר לבחור אותו בכל תחום.</p>
+<p>איזה איבר יש בתחום השני שלא היה בראשון? האם גם הוא שונה מאפס?</p>
 </div>
 <div class="step">
-<p>כאשר עולם הדיון כולל רק מספרים שלמים שאינם שליליים, טענת הקיום שקרית: לכל מספר בתחום, <span class="math inline">\(x+2\)</span> הוא לפחות <span class="math inline">\(2\)</span>, ולכן אין בתחום פתרון למשוואה.</p>
+<p>בתחום הראשון הטענה אמת: <span class="math inline">\(1\)</span>, <span class="math inline">\(2\)</span> ו־<span class="math inline">\(3\)</span> שונים מאפס.</p>
 </div>
 <div class="step">
-<p>כאשר עולם הדיון הוא קבוצת המספרים השלמים, טענת הקיום נכונה: המספר <span class="math inline">\(-2\)</span> שייך לתחום ומקיים את המשוואה. הוא עד לטענה. איננו טוענים שכל מספר שלם מקיים את המשוואה; מספיק שיש אחד שכן.</p>
+<p>בתחום השני הטענה שקר: <span class="math inline">\(0\)</span> שייך לתחום ואינו מקיים <span class="math inline">\(x\ne0\)</span>. הוא דוגמה נגדית. הכמת ״לכל״ לא השתנה; נוספה לו בדיקה שהטענה אינה עומדת בה.</p>
 </div>
 </div>
 </div>
@@ -1336,15 +1339,15 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div id="practice-q-quant-menu" class="thmbox thmbox-question" title="לכל אחד מנה — או מנה לכולם?">
-<p><strong>שאלה 2.9.6 — לכל אחד מנה — או מנה לכולם?</strong></p>
-<p>נסמן ב־<span class="math inline">\(S\)</span> את קבוצת הסטודנטים דנה, נועם ורותם, וב־<span class="math inline">\(M\)</span> את קבוצת המנות פיתה וסלט. כל המידע מופיע בטבלה:</p>
+<div id="practice-q-quant-menu" class="thmbox thmbox-question" title="מועד לכל מתנדב — או מועד משותף?">
+<p><strong>שאלה 2.9.6 — מועד לכל מתנדב — או מועד משותף?</strong></p>
+<p>נסמן ב־<span class="math inline">\(S\)</span> את קבוצת המתנדבים דנה, נועם ורותם, וב־<span class="math inline">\(M\)</span> את קבוצת המועדים רביעי ושישי בשבוע הבא. אלה המועדים שבהם כל אחד פנוי:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th style="text-align: left;">סטודנט</th>
-<th style="text-align: center;">אוהב פיתה?</th>
-<th style="text-align: center;">אוהב סלט?</th>
+<th style="text-align: left;">מתנדב</th>
+<th style="text-align: center;">פנוי ברביעי?</th>
+<th style="text-align: center;">פנוי בשישי?</th>
 </tr>
 </thead>
 <tbody>
@@ -1365,26 +1368,26 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p>נסמן ב־<span class="math inline">\(L(x,y)\)</span> את ״הסטודנט <span class="math inline">\(x\)</span> אוהב את המנה <span class="math inline">\(y\)</span>״. קבעו אמת או שקר:</p>
+<p>נסמן ב־<span class="math inline">\(L(x,y)\)</span> את ״המתנדב <span class="math inline">\(x\)</span> פנוי במועד <span class="math inline">\(y\)</span>״. קבעו אמת או שקר:</p>
 <ol type="1">
 <li><span class="math display">\[\forall x\in S\,\exists y\in M\,L(x,y)\]</span>.</li>
 <li><span class="math display">\[\exists y\in M\,\forall x\in S\,L(x,y)\]</span>.</li>
 </ol>
-<p>הסבירו במילים מדוע אלה שאלות שונות.</p>
+<p>הסבירו את ההבדל בין בחירת מועד לכל מתנדב בנפרד לבין קביעת מפגש משותף לכולם.</p>
 <div class="choice-exercise" data-choice="quant-menu">
 <div class="choice-offline">
-<p>אפשר לבחור תשובות ולקבל משוב כאשר JavaScript פעיל. בלי JavaScript אפשר לענות על דף ולהיעזר בפתרון המודרך.</p>
+<p>קבעו אמת או שקר לכל טענה לפי הטבלה.</p>
 </div>
 </div>
 <div class="solve">
 <div class="hint">
-<p>בסעיף הראשון מותר לבחור מנה אחרת לכל סטודנט. בשני צריך לבחור מנה אחת שמתאימה לכולם.</p>
+<p>האם מותר לבחור מועדים שונים למתנדבים שונים? בדקו מה מאפשר סדר הכמתים בכל סעיף.</p>
 </div>
 <div class="step">
-<p>הראשון אמת: לדנה אפשר לבחור פיתה, לנועם סלט, ולרותם כל אחת משתי המנות.</p>
+<p>הראשון אמת: לדנה מתאים רביעי, לנועם שישי, ולרותם כל אחד משני המועדים.</p>
 </div>
 <div class="step">
-<p>השני שקר: פיתה אינה מתאימה לנועם, וסלט אינו מתאים לדנה. בדקנו את שתי המנות ואין אחת שכולם אוהבים.</p>
+<p>השני שקר: נועם אינו פנוי ברביעי ודנה אינה פנויה בשישי. בדקנו את שני המועדים, ואין ביניהם מועד שמתאים לכולם.</p>
 </div>
 </div>
 </div>

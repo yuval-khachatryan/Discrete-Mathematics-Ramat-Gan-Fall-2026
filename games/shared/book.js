@@ -145,7 +145,11 @@ function initTTQ(box) {
   box.classList.add("bk-ttq");
   box.prepend(el("div", { class: "bk-tt-wrap" }, [table]), bar, msg);
   const evidence=initTableEvidence(box,rows,()=>{say("");after.forEach(x=>x.classList.add("bk-hidden"));});
-  if(evidence)bar.before(evidence.node);
+  if(evidence){
+    bar.before(evidence.node);
+    bar.append(btn("בדיקת הטבלה", checkTable));
+    evidence.node.append(el("p", {text:"מילוי הטבלה הוא רשות. אפשר לבחור שורה בלי למלא אותה. ״בדיקה״ בודק את התשובה שבחרתם; ״בדיקת הטבלה״ בודק בנפרד את תאי העזר שמילאתם."}));
+  }
   function invalidateEvidence(){
     if(evidence){evidence.invalidate();say("");after.forEach(x=>x.classList.add("bk-hidden"));}
   }
@@ -172,6 +176,15 @@ function initTTQ(box) {
   }
   const truth = (r, k) => evaluate(cols[k], rows[r]);
   function check() {
+    if(evidence){
+      if(!evidence.check()){say("בדקו את ההסבר ליד השורה שבחרתם ונסו שוב.","info");return;}
+      say("התשובה נכונה! אפשר להיעזר בטבלה, אבל אין חובה למלא אותה.","good");
+      after.forEach(x=>{x.classList.remove("bk-hidden");typeset(x);});
+      return;
+    }
+    checkTable();
+  }
+  function checkTable() {
     let empty = 0, bad = 0;
     rows.forEach((_, r) => cols.forEach((_, k) => {
       if (marks[r][k] === null) empty++;
@@ -180,12 +193,8 @@ function initTTQ(box) {
     focus = null; draw();
     if (bad) return say(`${bad === 1 ? "תא אחד שגוי" : `${bad} תאים שגויים`} (מסומנים באדום). לחצו ״רמז״ כדי לקבל הסבר לאחד מהם.`, "bad");
     if (empty) return say(`עד עכשיו הכול נכון. נשארו עוד ${empty} תאים ריקים.`, "info");
-    if(evidence){
-      evidence.enable();
-      if(!evidence.check())return say("הטבלה נכונה. כעת צריך להשלים את המסקנה ממנה: בחרו שורה מתאימה או קבעו שאין כזאת, ולחצו שוב על ״בדיקה״.","info");
-    }
-    say(evidence?"הטבלה והנימוק נכונים!":"כל התאים נכונים!", "good");
-    after.forEach(x => { x.classList.remove("bk-hidden"); typeset(x); });
+    say(evidence?"כל התאים נכונים. בחרו את התשובה ולחצו ״בדיקה״ כדי לבדוק אותה.":"כל התאים נכונים!", "good");
+    if(!evidence)after.forEach(x => { x.classList.remove("bk-hidden"); typeset(x); });
   }
   function firstOpen() {
     for (let k = 0; k < cols.length; k++) for (let r = 0; r < rows.length; r++) {
@@ -285,6 +294,9 @@ function initFQ(box) {
     }
     const extra = variables(f).filter(v => !allowed.includes(v));
     if (extra.length) return say(`הנוסחה משתמשת ב-${m(extra.join(", "))}, אבל במשפט יש רק ${m(allowed.join(", "))}.`, "bad");
+    const required = (box.dataset.requiredVars || "").split(",").filter(Boolean);
+    const missing = required.filter(v => !variables(f).includes(v));
+    if(missing.length)return say(`בתרגיל הזה צריך להשתמש בשתי האותיות. הוסיפו לנוסחה גם את ${m(missing.join(", "))}.`,"bad");
     const r = compare(f, answer);
     if (r.equal) {
       const exact = format(f) === format(answer);

@@ -866,29 +866,29 @@
   };
   Object.assign(ARGUMENTS, {
     "practice-ticket": {
-      "title": "הכרטיס של מאיה",
+      "title": "מספר המעקב",
       "atoms": [
         {
           "id": "A",
-          "text": "מאיה הציגה כרטיס"
+          "text": "הזמנתי משלוח"
         },
         {
           "id": "B",
-          "text": "מאיה רשאית להיכנס"
+          "text": "קיבלתי מספר מעקב"
         }
       ],
       "premises": [
         {
-          "text": "אם מאיה הציגה כרטיס, היא רשאית להיכנס.",
+          "text": "אם הזמנתי משלוח, קיבלתי מספר מעקב.",
           "formula": "A -> B"
         },
         {
-          "text": "מאיה הציגה כרטיס.",
+          "text": "הזמנתי משלוח.",
           "formula": "A"
         }
       ],
       "goal": {
-        "text": "מאיה רשאית להיכנס.",
+        "text": "קיבלתי מספר מעקב.",
         "formula": "B"
       },
       "solution": [
@@ -903,34 +903,34 @@
         }
       ],
       "hints": [
-        "איזה נתון הוא גרירה, ואיזה נתון אומר שההנחה שלה מתקיימת?",
-        "כלל הניתוק משתמש בשני הנתונים יחד."
+        "בחרו אות לכל אחד משני הפסוקים הפשוטים.",
+        "הנתון השני קובע שהתנאי של הגרירה מתקיים. איזה כלל מאפשר להסיק את המסקנה?"
       ]
     },
     "practice-charge": {
-      "title": "הטלפון לא נטען",
+      "title": "העציץ היבש",
       "atoms": [
         {
           "id": "A",
-          "text": "המטען פעל"
+          "text": "השקיתי את העציץ"
         },
         {
           "id": "B",
-          "text": "הטלפון נטען"
+          "text": "האדמה רטובה"
         }
       ],
       "premises": [
         {
-          "text": "אם המטען פעל, הטלפון נטען.",
+          "text": "אם השקיתי את העציץ, האדמה רטובה.",
           "formula": "A -> B"
         },
         {
-          "text": "הטלפון לא נטען.",
+          "text": "האדמה אינה רטובה.",
           "formula": "!B"
         }
       ],
       "goal": {
-        "text": "המטען לא פעל.",
+        "text": "לא השקיתי את העציץ.",
         "formula": "!A"
       },
       "solution": [
@@ -945,8 +945,8 @@
         }
       ],
       "hints": [
-        "נתנו שם למשפט החיובי ״הטלפון נטען״. בנתון השני יש שלילה שלו.",
-        "מגרירה ומשלילת המסקנה שלה משתמשים בכלל השלילה."
+        "סמנו באות את המשפט החיובי ״האדמה רטובה״. הנתון השני שולל אותו.",
+        "שלבו את הגרירה עם שלילת המסקנה שלה בעזרת כלל השלילה."
       ]
     },
     "practice-quiet": {
@@ -992,29 +992,29 @@
       ]
     },
     "practice-sign": {
-      "title": "השלט שחוסך שאלה",
+      "title": "הדגל בחוף",
       "atoms": [
         {
           "id": "A",
-          "text": "השלט ״סגור״ תלוי על הדלת"
+          "text": "הדגל האדום מונף"
         },
         {
           "id": "B",
-          "text": "מותר להיכנס לחדר"
+          "text": "הרחצה מותרת"
         }
       ],
       "premises": [
         {
-          "text": "אם השלט ״סגור״ תלוי על הדלת, אסור להיכנס לחדר.",
+          "text": "אם הדגל האדום מונף, הרחצה אינה מותרת.",
           "formula": "A -> !B"
         },
         {
-          "text": "השלט ״סגור״ תלוי על הדלת.",
+          "text": "הדגל האדום מונף.",
           "formula": "A"
         }
       ],
       "goal": {
-        "text": "אסור להיכנס לחדר.",
+        "text": "הרחצה אינה מותרת.",
         "formula": "!B"
       },
       "solution": [
@@ -1029,8 +1029,8 @@
         }
       ],
       "hints": [
-        "האות השנייה מייצגת ״מותר להיכנס״. איך כותבים ״אסור להיכנס״?",
-        "כלל הניתוק יכול לתת גם מסקנה שהיא שלילה."
+        "בחרו אות למשפט ״הרחצה מותרת״. איך כותבים שהרחצה אינה מותרת?",
+        "כלל הניתוק פועל גם כאשר מסקנת הגרירה כוללת שלילה."
       ]
     },
     "practice-bus": {
@@ -1152,33 +1152,33 @@
       ]
     },
     "practice-chain": {
-      "title": "כלל חדש למכונת המשקאות",
+      "title": "מכונת הכביסה",
       "atoms": [
         {
           "id": "A",
-          "text": "נלחץ הכפתור"
+          "text": "תוכנית הכביסה הופעלה"
         },
         {
           "id": "B",
-          "text": "המכונה התחילה לפעול"
+          "text": "המכונה התמלאה במים"
         },
         {
           "id": "C",
-          "text": "נמזג משקה"
+          "text": "הבגדים נרטבו"
         }
       ],
       "premises": [
         {
-          "text": "אם נלחץ הכפתור, המכונה התחילה לפעול.",
+          "text": "אם תוכנית הכביסה הופעלה, המכונה התמלאה במים.",
           "formula": "A -> B"
         },
         {
-          "text": "אם המכונה התחילה לפעול, נמזג משקה.",
+          "text": "אם המכונה התמלאה במים, הבגדים נרטבו.",
           "formula": "B -> C"
         }
       ],
       "goal": {
-        "text": "אם נלחץ הכפתור, נמזג משקה.",
+        "text": "אם תוכנית הכביסה הופעלה, הבגדים נרטבו.",
         "formula": "A -> C"
       },
       "solution": [
@@ -1193,8 +1193,8 @@
         }
       ],
       "hints": [
-        "לא נאמר שהכפתור נלחץ. המטרה היא להוכיח גרירה, ולא שהמשקה כבר נמזג.",
-        "המסקנה של הגרירה הראשונה היא ההנחה של השנייה. זהו כלל השרשרת."
+        "המטרה היא גרירה; לא נתון שתוכנית הכביסה אכן הופעלה.",
+        "חברו את שתי הגרירות באמצעות כלל השרשרת."
       ]
     },
     "practice-route": {
@@ -1316,37 +1316,37 @@
       ]
     },
     "practice-mute": {
-      "title": "הרובוט לומד לשתוק",
+      "title": "השעון במגרש",
       "atoms": [
         {
           "id": "A",
-          "text": "ההרצאה התחילה"
+          "text": "המשחק התחיל"
         },
         {
           "id": "B",
-          "text": "הרובוט במצב שקט"
+          "text": "השופט הפעיל את השעון"
         },
         {
           "id": "C",
-          "text": "הרובוט מספר בדיחה"
+          "text": "השעון עצור"
         }
       ],
       "premises": [
         {
-          "text": "אם ההרצאה התחילה, הרובוט במצב שקט.",
+          "text": "אם המשחק התחיל, השופט הפעיל את השעון.",
           "formula": "A -> B"
         },
         {
-          "text": "אם הרובוט במצב שקט, הוא אינו מספר בדיחה.",
+          "text": "אם השופט הפעיל את השעון, השעון אינו עצור.",
           "formula": "B -> !C"
         },
         {
-          "text": "ההרצאה התחילה.",
+          "text": "המשחק התחיל.",
           "formula": "A"
         }
       ],
       "goal": {
-        "text": "הרובוט אינו מספר בדיחה.",
+        "text": "השעון אינו עצור.",
         "formula": "!C"
       },
       "solution": [
@@ -1370,34 +1370,34 @@
         }
       ],
       "hints": [
-        "אפשר להתקדם מהנתון שההרצאה התחילה.",
-        "המסקנה האחרונה כוללת שלילה. אין צורך בכלל חדש כדי להסיק אותה."
+        "אפשר להסיק תחילה שהשופט הפעיל את השעון.",
+        "השתמשו במסקנת הביניים ובגרירה השנייה. שימו לב שהמסקנה המבוקשת שלילית."
       ]
     },
     "practice-or-rule": {
-      "title": "אותו כלל, בניסוח אחר",
+      "title": "התקציב לטיול",
       "atoms": [
         {
           "id": "A",
-          "text": "יש לרוני אישור"
+          "text": "למועדון יש תקציב"
         },
         {
           "id": "B",
-          "text": "רוני רשאי להיכנס למעבדה"
+          "text": "הטיול מתקיים"
         }
       ],
       "premises": [
         {
-          "text": "אין לרוני אישור, או שרוני רשאי להיכנס למעבדה.",
+          "text": "למועדון אין תקציב, או שהטיול מתקיים.",
           "formula": "!A | B"
         },
         {
-          "text": "יש לרוני אישור.",
+          "text": "למועדון יש תקציב.",
           "formula": "A"
         }
       ],
       "goal": {
-        "text": "רוני רשאי להיכנס למעבדה.",
+        "text": "הטיול מתקיים.",
         "formula": "B"
       },
       "solution": [
@@ -1420,34 +1420,34 @@
         }
       ],
       "hints": [
-        "נסו לכתוב את הנתון הראשון כגרירה בעזרת החוק שמחליף גרירה ב״או״.",
-        "בצעד השקילות בוחרים מקור אחד. לאחר מכן מפעילים ניתוק עם שני מקורות."
+        "הנתון הראשון כתוב כ״או״, אבל אפשר לשכתב אותו כגרירה.",
+        "השתמשו בשקילות ¬A ∨ B ≡ A → B, ואז בכלל הניתוק."
       ]
     },
     "practice-two-drinks": {
-      "title": "אין קפה, אבל יש משקה",
+      "title": "הכדורים בקופסה",
       "atoms": [
         {
           "id": "A",
-          "text": "יש קפה"
+          "text": "יש בקופסה כדור אדום"
         },
         {
           "id": "B",
-          "text": "יש תה"
+          "text": "יש בקופסה כדור כחול"
         }
       ],
       "premises": [
         {
-          "text": "יש קפה או תה; ייתכן שיש גם קפה וגם תה.",
+          "text": "יש בקופסה כדור אדום או כדור כחול.",
           "formula": "A | B"
         },
         {
-          "text": "אין קפה.",
+          "text": "אין בקופסה כדור אדום.",
           "formula": "!A"
         }
       ],
       "goal": {
-        "text": "יש תה.",
+        "text": "יש בקופסה כדור כחול.",
         "formula": "B"
       },
       "solution": [
@@ -1478,9 +1478,9 @@
         }
       ],
       "hints": [
-        "המסקנה ברורה במילים, אבל צריך להצדיק אותה בעזרת הכללים שבעורך. נסו להפוך את ״או״ לגרירה.",
-        "מותר להשתמש בשלילה כפולה גם בכיוון ההפוך: להחליף את ״יש קפה״ בשלילה כפולה של אותו משפט.",
-        "אחרי הכנסת השלילה הכפולה אפשר לכתוב: ״אם אין קפה, אז יש תה״. עכשיו אפשר להפעיל ניתוק."
+        "כתבו את ״יש כדור אדום או כדור כחול״ כגרירה שההנחה שלה היא ״אין כדור אדום״.",
+        "כדי להשתמש בגרירה כ״או״, אפשר להוסיף תחילה שלילה כפולה ל־A.",
+        "אחרי השכתוב מתקבל ¬A → B. שלבו זאת עם הנתון ¬A באמצעות כלל הניתוק."
       ]
     },
     "practice-not-both": {
@@ -1660,37 +1660,37 @@
       ]
     },
     "practice-network": {
-      "title": "ההודעה שלא נשלחה",
+      "title": "המופע בחוץ",
       "atoms": [
         {
           "id": "A",
-          "text": "המחשב מחובר לרשת"
+          "text": "המופע מתקיים בחוץ"
         },
         {
           "id": "B",
-          "text": "המערכת זמינה"
+          "text": "הבמה מוכנה"
         },
         {
           "id": "C",
-          "text": "ההודעה נשלחה"
+          "text": "התאורה הותקנה"
         }
       ],
       "premises": [
         {
-          "text": "המחשב אינו מחובר לרשת, או שהמערכת זמינה.",
+          "text": "המופע אינו מתקיים בחוץ, או שהבמה מוכנה.",
           "formula": "!A | B"
         },
         {
-          "text": "אם המערכת זמינה, ההודעה נשלחה.",
+          "text": "אם הבמה מוכנה, התאורה הותקנה.",
           "formula": "B -> C"
         },
         {
-          "text": "ההודעה לא נשלחה.",
+          "text": "התאורה לא הותקנה.",
           "formula": "!C"
         }
       ],
       "goal": {
-        "text": "המחשב אינו מחובר לרשת.",
+        "text": "המופע אינו מתקיים בחוץ.",
         "formula": "!A"
       },
       "solution": [
@@ -1722,9 +1722,9 @@
         }
       ],
       "hints": [
-        "כתבו תחילה את הנתון הראשון כגרירה.",
-        "אפשר לחבר את שתי הגרירות, ואז להשתמש בנתון שההודעה לא נשלחה.",
-        "דרך אחרת: כלל השלילה על הגרירה השנייה, ואז שוב על הראשונה."
+        "אפשר לשכתב את ההנחה הראשונה כגרירה.",
+        "אחרי השכתוב חברו את שתי הגרירות, והשתמשו בכך שהתאורה לא הותקנה.",
+        "אפשר גם להפעיל את כלל השלילה על כל גרירה בנפרד."
       ]
     }
   });
@@ -2216,13 +2216,24 @@
 
   // games/shared/table-evidence.js
   function evidenceAt(spec, env) {
-    const formulas = spec.mode === "argument" ? [...spec.premises, spec.conclusion] : [spec.left, spec.right];
+    const formulas = spec.mode === "truth" ? [spec.formula] : spec.mode === "argument" ? [...spec.premises, spec.conclusion] : [spec.left, spec.right];
     const facts = formulas.map((formula) => ({ formula: format(formula), value: evaluate(formula, env) }));
-    const counter = spec.mode === "argument" ? facts.slice(0, -1).every((f) => f.value) && !facts.at(-1).value : facts[0].value !== facts[1].value;
+    const counter = spec.mode === "truth" ? facts[0].value === spec.value : spec.mode === "argument" ? facts.slice(0, -1).every((f) => f.value) && !facts.at(-1).value : facts[0].value !== facts[1].value;
     return { facts, counter };
   }
   function checkEvidence(spec, rows, choice) {
     if (choice === "") return { ok: false, message: "בחרו שורה, או קבעו שאין שורה מתאימה." };
+    if (spec.mode === "truth") {
+      const wanted = spec.value ? "אמת" : "שקר";
+      if (choice === "none") {
+        const exists = rows.some((env) => evidenceAt(spec, env).counter);
+        return { ok: !exists, message: exists ? `יש שורה שבה הפסוק ${wanted}. חפשו אותה ובחרו בה.` : `נכון. אין שורה שבה הפסוק ${wanted}.` };
+      }
+      const i2 = Number(choice);
+      if (!Number.isInteger(i2) || i2 < 0 || i2 >= rows.length) return { ok: false, message: "בחרו אחת משורות הטבלה." };
+      const { facts: facts2, counter: counter2 } = evidenceAt(spec, rows[i2]);
+      return { ok: counter2, facts: facts2, message: counter2 ? `נכון. בשורה שבחרתם הפסוק ${wanted}, כפי שנדרש.` : `בשורה שבחרתם הפסוק ${spec.value ? "שקר" : "אמת"}. חפשו שורה שבה הוא ${wanted}.` };
+    }
     if (choice === "none") {
       const exists = rows.some((env) => evidenceAt(spec, env).counter);
       return exists ? { ok: false, message: spec.mode === "argument" ? "יש בטבלה שורה שבה כל ההנחות אמת והמסקנה שקר. חפשו אותה ובחרו בה." : "יש בטבלה שורה שבה התוצאות שונות. חפשו אותה ובחרו בה." } : { ok: true, message: spec.mode === "argument" ? "נכון. בדקנו את כל השורות: אין שורה שבה כל ההנחות אמת והמסקנה שקר. לכן הטיעון תקף." : "נכון. בשום שורה התוצאות אינן שונות. לכן הנוסחאות שקולות לוגית." };
@@ -2240,11 +2251,11 @@
   }
   function initTableEvidence(box, rows, onChange) {
     if (!box.dataset.evidence) return null;
-    const spec = box.dataset.evidence === "argument" ? { mode: "argument", premises: box.dataset.premises.split(";"), conclusion: box.dataset.conclusion } : { mode: "equivalence", left: box.dataset.left, right: box.dataset.right };
+    const spec = box.dataset.evidence === "truth" ? { mode: "truth", formula: box.dataset.formula, value: box.dataset.value === "true" } : box.dataset.evidence === "argument" ? { mode: "argument", premises: box.dataset.premises.split(";"), conclusion: box.dataset.conclusion } : { mode: "equivalence", left: box.dataset.left, right: box.dataset.right };
     const node = el3("fieldset", "table-evidence");
     node.append(el3("legend", "", "מה הטבלה מלמדת?"));
-    node.append(el3("p", "", spec.mode === "argument" ? "כדי להפריך את הטיעון, צריך שורה שבה כל ההנחות אמת והמסקנה שקר. בחרו שורה כזאת, או קבעו שאין כזאת לאחר בדיקת כל הטבלה." : "האם יש שורה שבה שתי הנוסחאות נותנות תוצאות שונות? בחרו שורה כזאת, או קבעו שאין כזאת לאחר בדיקת כל הטבלה."));
-    const statements = spec.mode === "argument" ? [...spec.premises.map((f, i) => [`הנחה ${i + 1}`, f]), ["מסקנה", spec.conclusion]] : [["נוסחה ראשונה", spec.left], ["נוסחה שנייה", spec.right]];
+    node.append(el3("p", "", spec.mode === "truth" ? `בחרו שורה שבה הפסוק ${spec.value ? "אמת" : "שקר"}. אפשר לבחור כבר עכשיו וללחוץ ״בדיקה״.` : spec.mode === "argument" ? "כדי להפריך את הטיעון, צריך שורה שבה כל ההנחות אמת והמסקנה שקר. בחרו שורה כזאת, או קבעו שאין כזאת לאחר בדיקת כל הטבלה." : "האם יש שורה שבה שתי הנוסחאות נותנות תוצאות שונות? בחרו שורה כזאת, או קבעו שאין כזאת לאחר בדיקת כל הטבלה."));
+    const statements = spec.mode === "truth" ? [["הפסוק", spec.formula]] : spec.mode === "argument" ? [...spec.premises.map((f, i) => [`הנחה ${i + 1}`, f]), ["מסקנה", spec.conclusion]] : [["נוסחה ראשונה", spec.left], ["נוסחה שנייה", spec.right]];
     for (const [label2, formula] of statements) {
       const p = el3("p");
       p.append(el3("strong", "", label2 + ": "));
@@ -2288,7 +2299,7 @@
         node.disabled = false;
       },
       invalidate() {
-        node.disabled = true;
+        node.disabled = false;
         feedback.replaceChildren();
         select.removeAttribute("aria-invalid");
       },
@@ -2307,6 +2318,40 @@
 
   // games/shared/practice-choices.js
   var PRACTICE_CHOICES = {
+    "or-message-both": [
+      {
+        "prompt": "קיבלתי הודעה גם בדוא״ל וגם במסרון. האם המשפט שבסעיף א עדיין נכון?",
+        "options": [
+          {
+            "text": "כן",
+            "correct": true,
+            "feedback": "נכון. ״או״ כולל גם את המקרה ששני החלקים אמת: קבלת הודעה בשתי הדרכים אינה סותרת את המשפט."
+          },
+          {
+            "text": "לא",
+            "correct": false,
+            "feedback": "״או״ אינו דורש לבחור רק דרך אחת. כששני החלקים אמת, גם הפסוק עם ״או״ אמת. הדרישה ״בדיוק אחד״ שייכת ל־XOR."
+          }
+        ]
+      }
+    ],
+    "or-maps-both": [
+      {
+        "prompt": "יש לי מפה מודפסת, מפה בטלפון ובקבוק מים. האם המשפט שבסעיף א עדיין נכון?",
+        "options": [
+          {
+            "text": "כן",
+            "correct": true,
+            "feedback": "נכון. שתי מפות מקיימות את הדרישה למפה מודפסת או למפה בטלפון, וגם הדרישה לבקבוק מים מתקיימת."
+          },
+          {
+            "text": "לא",
+            "correct": false,
+            "feedback": "שתי מפות אינן פוסלות את המשפט: ״או״ כולל גם ״וגם״. יש גם בקבוק מים, ולכן המשפט כולו אמת."
+          }
+        ]
+      }
+    ],
     "classify": [
       {
         "prompt": "⁦8 > 3⁩",
@@ -2473,7 +2518,12 @@
     ],
     "substitute": [
       {
-        "prompt": "P(2): האם 2 + 1 = 4?",
+        "prompt": "כתבו את הפסוק ⁦P(2)⁩ לאחר ההצבה, ואז קבעו את ערך האמת שלו.",
+        "substitution": {
+          "value": 2,
+          "expected": "2+1=4",
+          "simplified": "3=4"
+        },
         "options": [
           {
             "text": "אמת",
@@ -2488,7 +2538,12 @@
         ]
       },
       {
-        "prompt": "P(3): האם 3 + 1 = 4?",
+        "prompt": "כתבו את הפסוק ⁦P(3)⁩ לאחר ההצבה, ואז קבעו את ערך האמת שלו.",
+        "substitution": {
+          "value": 3,
+          "expected": "3+1=4",
+          "simplified": "4=4"
+        },
         "options": [
           {
             "text": "אמת",
@@ -2884,52 +2939,52 @@
     ],
     "quant-domain": [
       {
-        "prompt": "האם יש x שאינו שלילי ומקיים ⁦x+2=0⁩?",
-        "options": [
-          {
-            "text": "אמת",
-            "correct": false,
-            "feedback": "אם x אינו שלילי, ⁦x+2⁩ לפחות 2 ולכן אינו 0."
-          },
-          {
-            "text": "שקר",
-            "correct": true,
-            "feedback": "אם x אינו שלילי, ⁦x+2⁩ לפחות 2 ולכן אינו 0."
-          }
-        ]
-      },
-      {
-        "prompt": "האם יש מספר שלם, כולל שלילי, שמקיים ⁦x+2=0⁩?",
+        "prompt": "בתחום {1,2,3}: האם לכל x מתקיים ⁦x ≠ 0⁩?",
         "options": [
           {
             "text": "אמת",
             "correct": true,
-            "feedback": "כן: x=−2 הוא עד בתחום המספרים השלמים."
+            "feedback": "כל שלושת האיברים בתחום שונים מאפס, ולכן הטענה הכוללת נכונה."
           },
           {
             "text": "שקר",
             "correct": false,
-            "feedback": "כן: x=−2 הוא עד בתחום המספרים השלמים."
+            "feedback": "כל שלושת האיברים בתחום שונים מאפס, ולכן הטענה הכוללת נכונה."
           }
         ]
       },
       {
-        "prompt": "מה מסביר את ההבדל בין התשובות?",
+        "prompt": "בתחום {0,1,2,3}: האם לכל x מתקיים ⁦x ≠ 0⁩?",
         "options": [
           {
-            "text": "שינינו את פעולת החיבור",
+            "text": "אמת",
             "correct": false,
-            "feedback": "המשמעות של החיבור ושל ״קיים״ לא השתנתה. מה שהשתנה הוא אוסף הערכים שמותר לבחור."
+            "feedback": "המספר 0 שייך לתחום השני, והוא דוגמה נגדית: הוא אינו שונה מעצמו."
           },
           {
-            "text": "הערך −2 מותר רק בתחום השני",
+            "text": "שקר",
             "correct": true,
-            "feedback": "המשמעות של החיבור ושל ״קיים״ לא השתנתה. מה שהשתנה הוא אוסף הערכים שמותר לבחור."
+            "feedback": "המספר 0 שייך לתחום השני, והוא דוגמה נגדית: הוא אינו שונה מעצמו."
+          }
+        ]
+      },
+      {
+        "prompt": "מה השתנה כשעברנו לתחום השני?",
+        "options": [
+          {
+            "text": "התווסף איבר שמפריך את הטענה הכוללת",
+            "correct": true,
+            "feedback": "אותה נוסחה נבדקת על תחום רחב יותר. האיבר החדש, 0, אינו מקיים את הדרישה."
           },
           {
-            "text": "הכמת ״קיים״ החליף משמעות",
+            "text": "המשמעות של ״לכל״ השתנתה",
             "correct": false,
-            "feedback": "המשמעות של החיבור ושל ״קיים״ לא השתנתה. מה שהשתנה הוא אוסף הערכים שמותר לבחור."
+            "feedback": "הכמת לא החליף משמעות. בשני התחומים צריך לבדוק כל איבר; רק התחום עצמו השתנה."
+          },
+          {
+            "text": "שאר המספרים הפכו לאפס",
+            "correct": false,
+            "feedback": "המספרים 1, 2 ו־3 לא השתנו. פשוט נוספה לתחום אפשרות חדשה שצריך לבדוק."
           }
         ]
       }
@@ -3020,32 +3075,32 @@
     ],
     "quant-menu": [
       {
-        "prompt": "לכל סטודנט יש לפחות מנה אחת שהוא אוהב",
+        "prompt": "לכל מתנדב יש לפחות מועד אחד שבו הוא פנוי",
         "options": [
           {
             "text": "אמת",
             "correct": true,
-            "feedback": "לדנה יש פיתה, לנועם סלט ולרותם שתיהן. מותר לבחור מנה אחרת לכל סטודנט."
+            "feedback": "דנה פנויה ברביעי, נועם בשישי ורותם בשני המועדים. מותר לבחור מועד שונה לכל מתנדב."
           },
           {
             "text": "שקר",
             "correct": false,
-            "feedback": "לדנה יש פיתה, לנועם סלט ולרותם שתיהן. מותר לבחור מנה אחרת לכל סטודנט."
+            "feedback": "דנה פנויה ברביעי, נועם בשישי ורותם בשני המועדים. מותר לבחור מועד שונה לכל מתנדב."
           }
         ]
       },
       {
-        "prompt": "יש מנה אחת שכל הסטודנטים אוהבים",
+        "prompt": "יש מועד אחד שבו כל המתנדבים פנויים",
         "options": [
           {
             "text": "אמת",
             "correct": false,
-            "feedback": "נועם אינו אוהב פיתה ודנה אינה אוהבת סלט. אין אחת משתי המנות שמתאימה לכולם."
+            "feedback": "נועם אינו פנוי ברביעי ודנה אינה פנויה בשישי. אין מועד מבין השניים שמתאים לכולם."
           },
           {
             "text": "שקר",
             "correct": true,
-            "feedback": "נועם אינו אוהב פיתה ודנה אינה אוהבת סלט. אין אחת משתי המנות שמתאימה לכולם."
+            "feedback": "נועם אינו פנוי ברביעי ודנה אינה פנויה בשישי. אין מועד מבין השניים שמתאים לכולם."
           }
         ]
       }
@@ -3158,10 +3213,54 @@
           }
         ]
       }
+    ],
+    "table-three": [
+      {
+        "prompt": "כאשר A שקר, האם הפסוק ⁦A ∧ (B ∨ ¬C)⁩ יכול להיות אמת?",
+        "options": [
+          {
+            "text": "לא, בלי קשר לערכי B ו־C",
+            "correct": true,
+            "feedback": "A הוא אחד משני החלקים של ״וגם״. כשהוא שקר, הפסוק כולו שקר."
+          },
+          {
+            "text": "כן, אם B אמת",
+            "correct": false,
+            "feedback": "גם אם החלק שבסוגריים אמת, צריך שגם A יהיה אמת כדי שה״וגם״ יהיה אמת."
+          }
+        ]
+      },
+      {
+        "prompt": "כאשר ⁦A=T⁩ ו־⁦C=T⁩, מה צריך להיות ערכו של B כדי שהפסוק יהיה אמת?",
+        "options": [
+          {
+            "text": "B צריך להיות אמת",
+            "correct": true,
+            "feedback": "כאשר C אמת, ¬C שקר. לכן החלק B ∨ ¬C יהיה אמת רק אם B אמת."
+          },
+          {
+            "text": "B צריך להיות שקר",
+            "correct": false,
+            "feedback": "אם גם B שקר וגם ¬C שקר, החלק שבסוגריים שקר. דרוש B אמת."
+          },
+          {
+            "text": "שני הערכים של B מתאימים",
+            "correct": false,
+            "feedback": "כאן ¬C שקר, ולכן B הוא האפשרות היחידה שיכולה להפוך את החלק שבסוגריים לאמת."
+          }
+        ]
+      }
     ]
   };
 
   // games/shared/practice-choice.js
+  function checkSubstitution(input, spec) {
+    const text = input.replace(/[\s\u2066-\u2069]/g, "");
+    if (!text) return "empty";
+    if (text === spec.expected) return "correct";
+    if (text === spec.simplified) return "simplified";
+    return "wrong";
+  }
   var serial2 = 0;
   function el4(tag, attrs = {}, children2 = []) {
     const node = document.createElement(tag);
@@ -3196,7 +3295,37 @@
         select,
         feedback
       ]);
-      return { question, select, feedback, fieldset };
+      let input = null, substitutionFeedback = null, checkWritten = null;
+      if (question.substitution) {
+        input = el4("input", { type: "text", class: "bk-input substitution-input", dir: "ltr", maxlength: "80", autocomplete: "off", spellcheck: "false", placeholder: "כתבו את הפסוק לאחר ההצבה", "aria-describedby": `${feedbackId}-substitution` });
+        substitutionFeedback = el4("div", { id: `${feedbackId}-substitution`, class: "bk-msg", "aria-live": "polite" });
+        const label = el4("label", {}, [el4("span", { text: `P(${question.substitution.value}):`, dir: "ltr" }), input]);
+        const checkInput = el4("button", { type: "button", class: "bk-btn", text: "בדיקת ההצבה" });
+        select.disabled = true;
+        checkWritten = () => {
+          const result = checkSubstitution(input.value, question.substitution);
+          const correct = result === "correct";
+          select.disabled = !correct;
+          input.setAttribute("aria-invalid", String(!correct));
+          substitutionFeedback.className = `bk-msg ${correct ? "bk-good" : result === "empty" ? "bk-info" : "bk-bad"}`;
+          substitutionFeedback.textContent = correct ? "ההצבה נכונה. עכשיו בדקו אם הפסוק שקיבלתם אמת או שקר ובחרו תשובה." : result === "empty" ? "כתבו תחילה את הפסוק שמתקבל כשמחליפים את x במספר הנתון." : result === "simplified" ? "כבר חישבתם את הסכום. כאן כתבו תחילה את הפסוק לאחר ההצבה, לפני חישוב הסכום." : `בהצבה מחליפים את x ב־${question.substitution.value}. שאר הביטוי נשאר כפי שהוא; כתבו שוויון שלם, כולל שני אגפיו.`;
+          return result;
+        };
+        checkInput.addEventListener("click", checkWritten);
+        input.addEventListener("input", () => {
+          select.disabled = true;
+          select.value = "";
+          select.removeAttribute("aria-invalid");
+          input.removeAttribute("aria-invalid");
+          [feedback, substitutionFeedback, summary].forEach((n) => {
+            n.textContent = "";
+            n.className = "bk-msg";
+          });
+        });
+        fieldset.insertBefore(el4("div", { class: "substitution-entry" }, [label, checkInput, substitutionFeedback]), select);
+        select.setAttribute("aria-label", `ערך האמת של P(${question.substitution.value})`);
+      }
+      return { question, select, feedback, fieldset, input, substitutionFeedback, checkWritten };
     });
     const check = el4("button", { type: "submit", class: "bk-btn bk-main", text: "בדיקת התשובות" });
     const reset = el4("button", { type: "button", class: "bk-btn bk-quiet", text: "ניסיון חדש" });
@@ -3209,7 +3338,15 @@
     form.addEventListener("submit", (event) => {
       event.preventDefault();
       let empty = 0, wrong = 0;
-      rows.forEach(({ question, select, feedback }) => {
+      rows.forEach(({ question, select, feedback, checkWritten }) => {
+        if (checkWritten) {
+          const result = checkWritten();
+          if (result !== "correct") {
+            if (result === "empty") empty++;
+            else wrong++;
+            return;
+          }
+        }
         const choice = select.value === "" ? null : question.options[Number(select.value)];
         if (!choice) empty++;
         else if (!choice.correct) wrong++;
@@ -3222,15 +3359,22 @@
       summary.textContent = wrong || empty ? `תשובות נכונות: ${rows.length - wrong - empty} מתוך ${rows.length}. ${empty ? `נשארו ${empty} סעיפים ללא תשובה. ` : ""}${wrong ? "קראו את ההסברים ליד התשובות המסומנות ונסו שוב." : ""}` : "כל התשובות נכונות! קראו את ההסברים, ונסו לנסח גם במילים שלכם מדוע.";
     });
     reset.addEventListener("click", () => {
-      rows.forEach(({ select, feedback }) => {
+      rows.forEach(({ select, feedback, input, substitutionFeedback }) => {
         select.value = "";
         select.removeAttribute("aria-invalid");
         feedback.textContent = "";
         feedback.className = "bk-msg";
+        if (input) {
+          input.value = "";
+          input.removeAttribute("aria-invalid");
+          select.disabled = true;
+          substitutionFeedback.textContent = "";
+          substitutionFeedback.className = "bk-msg";
+        }
       });
       summary.textContent = "";
       summary.className = "bk-msg";
-      rows[0].select.focus();
+      (rows[0].input || rows[0].select).focus();
     });
     box.append(form);
     box.classList.add("choice-ready");
@@ -3463,7 +3607,11 @@
       say("");
       after.forEach((x) => x.classList.add("bk-hidden"));
     });
-    if (evidence) bar.before(evidence.node);
+    if (evidence) {
+      bar.before(evidence.node);
+      bar.append(btn2("בדיקת הטבלה", checkTable));
+      evidence.node.append(el5("p", { text: "מילוי הטבלה הוא רשות. אפשר לבחור שורה בלי למלא אותה. ״בדיקה״ בודק את התשובה שבחרתם; ״בדיקת הטבלה״ בודק בנפרד את תאי העזר שמילאתם." }));
+    }
     function invalidateEvidence() {
       if (evidence) {
         evidence.invalidate();
@@ -3502,6 +3650,21 @@
     }
     const truth = (r, k) => evaluate(cols[k], rows[r]);
     function check() {
+      if (evidence) {
+        if (!evidence.check()) {
+          say("בדקו את ההסבר ליד השורה שבחרתם ונסו שוב.", "info");
+          return;
+        }
+        say("התשובה נכונה! אפשר להיעזר בטבלה, אבל אין חובה למלא אותה.", "good");
+        after.forEach((x) => {
+          x.classList.remove("bk-hidden");
+          typeset(x);
+        });
+        return;
+      }
+      checkTable();
+    }
+    function checkTable() {
       let empty = 0, bad = 0;
       rows.forEach((_, r) => cols.forEach((_2, k) => {
         if (marks[r][k] === null) empty++;
@@ -3514,12 +3677,8 @@
       draw();
       if (bad) return say(`${bad === 1 ? "תא אחד שגוי" : `${bad} תאים שגויים`} (מסומנים באדום). לחצו ״רמז״ כדי לקבל הסבר לאחד מהם.`, "bad");
       if (empty) return say(`עד עכשיו הכול נכון. נשארו עוד ${empty} תאים ריקים.`, "info");
-      if (evidence) {
-        evidence.enable();
-        if (!evidence.check()) return say("הטבלה נכונה. כעת צריך להשלים את המסקנה ממנה: בחרו שורה מתאימה או קבעו שאין כזאת, ולחצו שוב על ״בדיקה״.", "info");
-      }
-      say(evidence ? "הטבלה והנימוק נכונים!" : "כל התאים נכונים!", "good");
-      after.forEach((x) => {
+      say(evidence ? "כל התאים נכונים. בחרו את התשובה ולחצו ״בדיקה״ כדי לבדוק אותה." : "כל התאים נכונים!", "good");
+      if (!evidence) after.forEach((x) => {
         x.classList.remove("bk-hidden");
         typeset(x);
       });
@@ -3670,6 +3829,9 @@
       }
       const extra = variables(f).filter((v) => !allowed.includes(v));
       if (extra.length) return say(`הנוסחה משתמשת ב-${m(extra.join(", "))}, אבל במשפט יש רק ${m(allowed.join(", "))}.`, "bad");
+      const required = (box.dataset.requiredVars || "").split(",").filter(Boolean);
+      const missing = required.filter((v) => !variables(f).includes(v));
+      if (missing.length) return say(`בתרגיל הזה צריך להשתמש בשתי האותיות. הוסיפו לנוסחה גם את ${m(missing.join(", "))}.`, "bad");
       const r = compare(f, answer);
       if (r.equal) {
         const exact = format(f) === format(answer);
