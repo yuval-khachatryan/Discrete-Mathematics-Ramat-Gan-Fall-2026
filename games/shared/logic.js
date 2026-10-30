@@ -166,9 +166,8 @@ export function compare(f, g) {
 }
 
 /** Negation normal form: ¬ only directly on variables (De Morgan, double
-    negation, A→B = ¬A∨B, A↔B = (A∧B)∨(¬A∧¬B)). The circuit drawing needs this,
-    since a contact can be "A" or "not A" but there is no inverter for a
-    whole sub-circuit. */
+    negation, A→B = ¬A∨B, A↔B = (A∧B)∨(¬A∧¬B)). Used for the explicitly expanded red path in
+    the complementary traffic-light view; other circuits retain NOT scope. */
 export function nnf(f) {
   f = parse(f);
   function pos(n) {

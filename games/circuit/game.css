@@ -132,3 +132,12 @@
 .c-table-scroll { max-width: 100%; overflow-x: auto; }
 .c-board.c-multi-table { grid-template-columns: minmax(0, 1fr); }
 .c-multi-table .c-side { max-width: none; }
+
+/* Whole-group negation: an isolated control circuit and a reversed contact. */
+.c-svg .not-frame { fill: #faf5ff; stroke: #a78bfa; stroke-width: 2; }
+.c-svg .not-label, .c-svg .not-value { font: 700 15px Arial, sans-serif; fill: #5b21b6; text-anchor: middle; direction: ltr; unicode-bidi: isolate; }
+.c-svg .not-link { fill: none; stroke: #7c3aed; stroke-width: 2; stroke-dasharray: 5 4; }
+.c-svg .not-sensor { fill: #ede9fe; stroke: #7c3aed; stroke-width: 2; }
+.c-svg .not-control .wire.live, .c-svg .not-control .blade.live { stroke: #2563eb; }
+.c-not-help { background: #faf5ff; border-inline-start: 4px solid #7c3aed; border-radius: 8px; padding: .65rem .9rem; margin: .7rem 0; }
+.c-not-help p { margin: .2rem 0; }
