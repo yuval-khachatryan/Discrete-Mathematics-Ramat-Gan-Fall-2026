@@ -526,8 +526,24 @@
   var BUS = 20;
   var VGAP = 8;
   var VAR_COLOURS = ["#2563eb", "#7c3aed", "#b45309", "#0e7490", "#be185d"];
-  function layoutTree(tree) {
+  function wiringTree(n) {
+    const not = (arg) => ({ type: "not", arg });
+    const join = (type, ...args) => ({ type, args });
+    if (n.type === "imp") return wiringTree(join("or", not(n.left), n.right));
+    if (n.type === "xor") return wiringTree(join("or", join("and", n.left, not(n.right)), join("and", not(n.left), n.right)));
+    if (n.type === "iff") return wiringTree(join("or", join("and", n.left, n.right), join("and", not(n.left), not(n.right))));
+    if (n.type === "and" || n.type === "or") return { ...n, args: n.args.map(wiringTree) };
+    if (n.type === "not") return { ...n, arg: wiringTree(n.arg) };
+    return n;
+  }
+  function layoutTree(tree, showNot = false) {
     function lay(n) {
+      if (n.type === "not" && (n.arg.type !== "var" || showNot && n === tree)) {
+        const child = lay(n.arg);
+        const w = Math.max(180, child.w + 48);
+        const rail = child.h + 48;
+        return { kind: "inverter", node: n, child, w, h: rail + 26, rail };
+      }
       if (n.type === "var" || n.type === "not" || n.type === "const") {
         return { kind: "contact", node: n, w: CW, h: CH, rail: RAIL };
       }
@@ -554,9 +570,12 @@
     }
     return lay(tree);
   }
-  function networks(formula) {
+  function networks(formula, { showNot = false } = {}) {
     const f = parse(formula);
-    return { green: layoutTree(nnf(f)), red: layoutTree(nnf({ type: "not", arg: f })) };
+    return { green: layoutTree(wiringTree(f), showNot), red: layoutTree(nnf({ type: "not", arg: f })) };
+  }
+  function layout(formula, options) {
+    return networks(formula, options).green;
   }
   function isLiteral(formula) {
     const f = parse(formula);
@@ -570,6 +589,7 @@
     return `${m((n.type === "not" ? "¬" : "") + v)} סגור, כי ${m(v + " = " + tv(env[v]))}`;
   }
   function closedWhy(b, env) {
+    if (b.kind === "inverter") return `מגע ה־NOT סגור, כי החלק ${m(format(b.node.arg))} שבתיבה שקר. הרכיב הופך שקר לאמת`;
     if (b.kind === "contact") return "המגע " + contactWhy(b.node, env);
     if (b.kind === "series") {
       return b.kids.map((k2) => k2.kind === "contact" ? contactWhy(k2.node, env) : closedWhy(k2, env)).join(", וגם ") + " (בטור, וכולם סגורים)";
@@ -583,6 +603,7 @@
     return `${m((n.type === "not" ? "¬" : "") + v)} פתוח, כי ${m(v + " = " + tv(env[v]))}`;
   }
   function openWhy(b, env) {
+    if (b.kind === "inverter") return `מגע ה־NOT פתוח, כי החלק ${m(format(b.node.arg))} שבתיבה אמת. הרכיב הופך אמת לשקר`;
     if (b.kind === "contact") return "המגע " + contactOpen(b.node, env);
     if (b.kind === "series") {
       const k = b.kids.find((c) => !evaluate(c.node, env));
@@ -616,10 +637,10 @@
     s("rect", { x: x - lw / 2, y: y - 16, width: lw, height: 22, rx: 6, fill: colour, class: "tag" }, g);
     s("text", { x, y, class: "tag-text" }, g).textContent = label;
   }
-  function render(svg, formula, env, { colours = {}, lamp: lamp2, view } = {}) {
+  function render(svg, formula, env, { colours = {}, lamp: lamp2, view, showNot = false } = {}) {
     const f = parse(formula);
     view = view || defaultView(f);
-    if (view === "lamp") return renderLamp(svg, f, env, colours, lamp2);
+    if (view === "lamp") return renderLamp(svg, f, env, colours, lamp2, showNot);
     const on = evaluate(f, env);
     const covered = lamp2 === "covered";
     const anyLive = !covered;
@@ -685,8 +706,8 @@
       wire(JX, yG, NX, yG, greenLive);
       wire(NX + R.w, yR, XE, yR, redLive);
       wire(NX + G.w, yG, XE, yG, greenLive);
-      drawNetwork(svg, R, NX, PAD, redLive, env, colours, wire);
-      drawNetwork(svg, G, NX, greenTop, greenLive, env, colours, wire);
+      drawNetwork(svg, R, NX, PAD, redLive, env, colours, wire, !covered);
+      drawNetwork(svg, G, NX, greenTop, greenLive, env, colours, wire, !covered);
     }
     const sig = s("g", { class: "signal " + (covered ? "covered" : on ? "green" : "red") }, svg);
     const LS = 1.55, HW = 19;
@@ -697,11 +718,11 @@
     sig.innerHTML = inner;
     return on;
   }
-  function renderLamp(svg, f, env, colours, lamp2) {
+  function renderLamp(svg, f, env, colours, lamp2, showNot) {
     const on = evaluate(f, env);
     const covered = lamp2 === "covered";
     const live = !covered && on;
-    const G = networks(f).green;
+    const G = networks(f, { showNot }).green;
     const PAD = 14, LB = 64, HW = 19;
     const Y = PAD + G.rail;
     const bottom = Math.max(PAD + G.h + 26, Y + HW + 22);
@@ -725,7 +746,7 @@
     wire(bx, bottom, W - 20, bottom, live);
     wire(LB + G.w, Y, W - 20, Y, live);
     wire(W - 20, Y, W - 20, bottom, live);
-    drawNetwork(svg, G, LB, PAD, live, env, colours, wire);
+    drawNetwork(svg, G, LB, PAD, live, env, colours, wire, !covered);
     const g = s("g", { class: "signal single " + (covered ? "covered" : on ? "green" : "dark") }, svg);
     let inner = bulbMarkup(lx, Y, 1, live);
     if (covered) {
@@ -734,9 +755,32 @@
     g.innerHTML = inner;
     return on;
   }
-  function drawNetwork(svg, top, ox0, oy0, liveTop, env, colours, wire) {
+  function drawNetwork(svg, top, ox0, oy0, liveTop, env, colours, wire, revealed = true) {
     function draw(b, ox, oy, live) {
       const r = oy + b.rail;
+      if (b.kind === "inverter") {
+        const input = evaluate(b.node.arg, env), output = !input;
+        const g = s("g", { class: "not-module", "data-input": input, "data-output": output }, svg);
+        const insetW = b.child.w + 36, ix = ox + (b.w - insetW) / 2;
+        const insetH = b.child.h + 8;
+        s("rect", { x: ix, y: oy, width: insetW, height: insetH, rx: 8, class: "not-frame" }, g);
+        const control = s("g", { class: "not-control" }, g);
+        const cw = (x1, y1, x2, y2, on, parent) => wire(x1, y1, x2, y2, on, parent || control);
+        drawNetwork(control, b.child, ix + 6, oy + 4, revealed && input, env, colours, cw, revealed);
+        s("text", { x: ix + insetW - 12, y: oy + 23, class: "not-value" }, g).textContent = revealed ? input ? "T" : "F" : "?";
+        const mid = ox + b.w / 2;
+        s("path", { d: `M${mid},${oy + insetH + 2} V${r - 7}`, class: "not-link" }, g);
+        s("path", { d: `M${mid - 4},${r - 12} L${mid},${r - 6} L${mid + 4},${r - 12}`, class: "not-arrow" }, g);
+        s("text", { x: mid + 45, y: r - 16, class: "not-label" }, g).textContent = "NOT";
+        const t1 = mid - 25, t2 = mid + 25, active = live && output;
+        wire(ox, r, t1, r, active, g);
+        wire(t2, r, ox + b.w, r, active, g);
+        s("circle", { cx: t1, cy: r, r: 4, class: "term" }, g);
+        s("circle", { cx: t2, cy: r, r: 4, class: "term" }, g);
+        s("line", { x1: t1, y1: r, x2: output ? t2 : t2 - 8, y2: output ? r : r - 22, class: "blade not-blade" + (active ? " live" : "") }, g);
+        s("text", { x: mid, y: r + 21, class: "not-label" }, g).textContent = revealed ? output ? "T" : "F" : "?";
+        return;
+      }
       if (b.kind === "contact") {
         const n = b.node;
         const closed = evaluate(n, env);
@@ -802,6 +846,7 @@
     },
     {
       id: "not",
+      showNot: true,
       title: "מתי השלילה אמת?",
       mode: "play",
       formula: "!A",
@@ -916,7 +961,7 @@
     },
     {
       id: "dm-robot",
-      view: "dual",
+      view: "lamp",
       title: "הקיצור של הרובוט",
       mode: "compare",
       formula: "!(A & B)",
@@ -925,7 +970,7 @@
       vars: { A: "יש תה", B: "יש קפה" },
       claim: "״׳לא נכון שיש תה וגם קפה׳ זה אותו דבר כמו ׳אין תה וגם אין קפה׳. פשוט מכניסים את ה׳לא׳ פנימה!״",
       start: { A: true, B: true },
-      goal: "<p><b>המצב:</b> הרובוט טוען ש״לא נכון שיש גם תה וגם קפה״ פירושו ״אין תה וגם אין קפה״. המעגלים מציגים את שתי הטענות, עם אותם ערכים של A ושל B.</p><p><b>איך קוראים את התצוגה:</b> בכל מעגל יש מסלול לפסוק ומסלול לשלילתו. המסלול הירוק מדליק אור כשהפסוק נכון; המסלול האדום מדליק אור כשהשלילה נכונה, כלומר כשהפסוק שגוי. כאן הרמזור מאפשר לראות את הפסוק ואת שלילתו באותו ציור. כשמשווים שני פסוקים, גם שני אורות אדומים פירושם ששניהם מקבלים אותו ערך אמת.</p><p><b>המשימה:</b> בדקו אם שני הפסוקים מקבלים אותו ערך אמת בכל מצב. אם מצאתם מצב שבו הערכים שונים, השאירו את המתגים במצב הזה ולחצו ״הרובוט טועה״. כדי להצדיק ״הרובוט צודק״, מלאו בעצמכם את ערכי האמת של שני הפסוקים בכל ארבע השורות. אפשר להיעזר במתגים ובכפתורי ״נסו״; הטבלה אינה מתמלאת מעצמה.</p>",
+      goal: "<p><b>המצב:</b> הרובוט טוען ש״לא נכון שיש גם תה וגם קפה״ פירושו ״אין תה וגם אין קפה״. המעגלים מציגים את שתי הטענות, עם אותם ערכים של A ושל B.</p><p><b>איך קוראים את התצוגה:</b> לכל פסוק מנורה משלו: דולקת פירושה אמת, וכבויה פירושה שקר. המסגרת מציגה את החלק שנשלל, ו־NOT הופך את מצב המגע שמתחתיה.</p><p><b>המשימה:</b> בדקו אם שני הפסוקים מקבלים אותו ערך אמת בכל מצב. אם מצאתם מצב שבו הערכים שונים, השאירו את המתגים במצב הזה ולחצו ״הרובוט טועה״. כדי להצדיק ״הרובוט צודק״, מלאו בעצמכם את ערכי האמת של שני הפסוקים בכל ארבע השורות. אפשר להיעזר במתגים ובכפתורי ״נסו״; הטבלה אינה מתמלאת מעצמה.</p>",
       hints: [
         "נסו שורה שבה יש רק אחד מהשניים, למשל תה בלי קפה.",
         `ב-${m2("A = T, B = F")}: ״לא נכון שיש גם תה וגם קפה״ אמת, אבל ״אין תה וגם אין קפה״ שקר.`,
@@ -935,7 +980,7 @@
     },
     {
       id: "dm-and",
-      view: "dual",
+      view: "lamp",
       title: "שלילת ״וגם״",
       mode: "compare",
       formula: "!(A & B)",
@@ -944,18 +989,18 @@
       vars: { A: "יש תה", B: "יש קפה" },
       claim: "״טוב, טוב. אז ׳לא נכון שיש תה וגם קפה׳ זה אותו דבר כמו ׳אין תה או אין קפה׳. הפעם אני בטוח.״",
       start: { A: true, B: true },
-      goal: "<p><b>המצב:</b> הרובוט טוען ש״לא נכון שיש גם תה וגם קפה״ שקול ל״אין תה או אין קפה״. כאן ״או״ כולל גם את האפשרות שאין אף אחד משני המשקאות.</p><p><b>איך קוראים את התצוגה:</b> בכל מעגל יש מסלול לפסוק ומסלול לשלילתו. המסלול הירוק מדליק אור כשהפסוק נכון; המסלול האדום מדליק אור כשהשלילה נכונה, כלומר כשהפסוק שגוי. כאן הרמזור מאפשר לראות את הפסוק ואת שלילתו באותו ציור. כשמשווים שני פסוקים, גם שני אורות אדומים פירושם ששניהם מקבלים אותו ערך אמת.</p><p><b>המשימה:</b> בדקו אם שני הפסוקים מקבלים אותו ערך אמת בכל מצב. אם מצאתם מצב שבו הערכים שונים, השאירו את המתגים במצב הזה ולחצו ״הרובוט טועה״. כדי להצדיק ״הרובוט צודק״, מלאו בעצמכם את ערכי האמת של שני הפסוקים בכל ארבע השורות. אפשר להיעזר במתגים ובכפתורי ״נסו״; הטבלה אינה מתמלאת מעצמה.</p>",
+      goal: "<p><b>המצב:</b> הרובוט טוען ש״לא נכון שיש גם תה וגם קפה״ שקול ל״אין תה או אין קפה״. כאן ״או״ כולל גם את האפשרות שאין אף אחד משני המשקאות.</p><p><b>איך קוראים את התצוגה:</b> לכל פסוק מנורה משלו: דולקת פירושה אמת, וכבויה פירושה שקר. המסגרת מציגה את החלק שנשלל, ו־NOT הופך את מצב המגע שמתחתיה.</p><p><b>המשימה:</b> בדקו אם שני הפסוקים מקבלים אותו ערך אמת בכל מצב. אם מצאתם מצב שבו הערכים שונים, השאירו את המתגים במצב הזה ולחצו ״הרובוט טועה״. כדי להצדיק ״הרובוט צודק״, מלאו בעצמכם את ערכי האמת של שני הפסוקים בכל ארבע השורות. אפשר להיעזר במתגים ובכפתורי ״נסו״; הטבלה אינה מתמלאת מעצמה.</p>",
       hints: [
         "כמה שורות יש לשני מתגים? כולן צריכות להופיע בטבלה.",
-        "לחצו ״נסו״ בכל שורה, הסתכלו על שני הרמזורים, ומלאו את ערך האמת של כל פסוק בטבלה.",
-        "בכל ארבע השורות שני הרמזורים באותו צבע. מלאו את שתי עמודות התוצאה ולחצו ״הרובוט צודק״."
+        "לחצו ״נסו״ בכל שורה, הסתכלו על שתי המנורות, ומלאו את ערך האמת של כל פסוק בטבלה.",
+        "בכל ארבע השורות שתי המנורות באותו מצב. מלאו את שתי עמודות התוצאה ולחצו ״הרובוט צודק״."
       ],
       debrief: '<p>כדי שהטענה ״יש גם תה וגם קפה״ תהיה שקרית, מספיק שלפחות אחד מהמשקאות יהיה חסר. לכן ״לא נכון שיש גם תה וגם קפה״ שקול ל״אין תה או אין קפה״. זהו <strong>חוק דה מורגן הראשון</strong>: <span class="m">¬(A ∧ B) ≡ ¬A ∨ ¬B</span>. הבדיקה בכל ארבע השורות מראה ששני הפסוקים תמיד מקבלים אותו ערך אמת.</p>',
       solution: "זה חוק דה מורגן."
     },
     {
       id: "dm-or",
-      view: "dual",
+      view: "lamp",
       title: "שלילת ״או״",
       mode: "compare",
       formula: "!(A | B)",
@@ -964,11 +1009,11 @@
       vars: { A: "יש תה", B: "יש קפה" },
       claim: "״ו׳לא נכון שיש תה או קפה׳ זה בדיוק ׳אין תה וגם אין קפה׳.״",
       start: { A: true, B: true },
-      goal: "<p><b>המצב:</b> הרובוט טוען ש״אין תה או קפה״, במשמעות ״אין אף אחד משני המשקאות״, שקול ל״אין תה וגם אין קפה״.</p><p><b>איך קוראים את התצוגה:</b> בכל מעגל יש מסלול לפסוק ומסלול לשלילתו. המסלול הירוק מדליק אור כשהפסוק נכון; המסלול האדום מדליק אור כשהשלילה נכונה, כלומר כשהפסוק שגוי. כאן הרמזור מאפשר לראות את הפסוק ואת שלילתו באותו ציור. כשמשווים שני פסוקים, גם שני אורות אדומים פירושם ששניהם מקבלים אותו ערך אמת.</p><p><b>המשימה:</b> בדקו אם שני הפסוקים מקבלים אותו ערך אמת בכל מצב. אם מצאתם מצב שבו הערכים שונים, השאירו את המתגים במצב הזה ולחצו ״הרובוט טועה״. כדי להצדיק ״הרובוט צודק״, מלאו בעצמכם את ערכי האמת של שני הפסוקים בכל ארבע השורות. אפשר להיעזר במתגים ובכפתורי ״נסו״; הטבלה אינה מתמלאת מעצמה.</p>",
+      goal: "<p><b>המצב:</b> הרובוט טוען ש״אין תה או קפה״, במשמעות ״אין אף אחד משני המשקאות״, שקול ל״אין תה וגם אין קפה״.</p><p><b>איך קוראים את התצוגה:</b> לכל פסוק מנורה משלו: דולקת פירושה אמת, וכבויה פירושה שקר. המסגרת מציגה את החלק שנשלל, ו־NOT הופך את מצב המגע שמתחתיה.</p><p><b>המשימה:</b> בדקו אם שני הפסוקים מקבלים אותו ערך אמת בכל מצב. אם מצאתם מצב שבו הערכים שונים, השאירו את המתגים במצב הזה ולחצו ״הרובוט טועה״. כדי להצדיק ״הרובוט צודק״, מלאו בעצמכם את ערכי האמת של שני הפסוקים בכל ארבע השורות. אפשר להיעזר במתגים ובכפתורי ״נסו״; הטבלה אינה מתמלאת מעצמה.</p>",
       hints: [
         `מתי ${m2("¬(A ∨ B)")} אמת? רק כשאין אף אחד מהשניים.`,
         `ומתי ${m2("¬A ∧ ¬B")} אמת? גם כן רק כששניהם שקר.`,
-        "בכל ארבע השורות שני הרמזורים באותו צבע. מלאו את שתי עמודות התוצאה ולחצו ״הרובוט צודק״."
+        "בכל ארבע השורות שתי המנורות באותו מצב. מלאו את שתי עמודות התוצאה ולחצו ״הרובוט צודק״."
       ],
       debrief: `<p><strong>חוק דה מורגן השני</strong>: ${m2("¬(A ∨ B) ≡ ¬A ∧ ¬B")}. ביחד עם הראשון: כשמכניסים שלילה לתוך סוגריים, שוללים כל חלק <strong>והופכים</strong> ״וגם״ ל״או״ ו״או״ ל״וגם״.</p>`,
       solution: "זה חוק דה מורגן השני."
@@ -1294,8 +1339,17 @@
   }
   function pathLabels(formula) {
     return el("div", { class: "c-paths" }, [
-      el("p", { html: `המסלול אל האור הירוק: ${m3(format(nnf(formula)))}` }),
+      el("p", { html: `המסלול אל האור הירוק: ${m3(format(formula))}` }),
       el("p", { html: `המסלול אל האור האדום (שלילת הפסוק): ${m3(format(nnf({ type: "not", arg: formula })))}` })
+    ]);
+  }
+  function notHelp(formulas, showNot = false) {
+    function hasModule(b) {
+      return b.kind === "inverter" || (b.kids || []).some(hasModule);
+    }
+    if (!formulas.some((f) => hasModule(layout(f, { showNot })))) return null;
+    return el("div", { class: "c-not-help", dir: "rtl" }, [
+      el("p", { html: "<b>NOT הופך את מצב המגע:</b> כשהמסלול במסגרת סגור (T), המגע שמתחתיו נפתח (F). כשהמסלול פתוח (F), המגע נסגר (T). החץ המקווקו מראה איזה מגע נשלט; הוא אינו חוט." })
     ]);
   }
   function mount(level, ui) {
@@ -1318,7 +1372,7 @@
     const levers = el("div", { class: "c-levers", role: "group", "aria-label": "המתגים" });
     const side = el("div", { class: "c-side" });
     const board = el("div", { class: "c-board" }, [el("div", { class: "c-main" }, [lampLine, view === "dual" ? pathLabels(formula) : null, el("div", { class: "c-svg-wrap" }, [svg]), formulaLine, levers]), side]);
-    ui.stage.append(board);
+    ui.stage.append(...[notHelp([formula], level.showNot), board].filter(Boolean));
     function lampState() {
       return evaluate(formula, env);
     }
@@ -1327,7 +1381,7 @@
     }
     function draw() {
       const on = lampState();
-      render(svg, formula, env, { colours, lamp: covered ? "covered" : on ? "on" : "off", view });
+      render(svg, formula, env, { colours, lamp: covered ? "covered" : on ? "on" : "off", view, showNot: level.showNot });
       if (ui.present) svg.style.maxWidth = Math.round(parseFloat(svg.getAttribute("width")) * 1.8) + "px";
       svg.setAttribute("aria-label", `מעגל של הפסוק ${format(formula)}. ${W.noun} ` + (covered ? "מכוסה." : on ? W.T + "." : W.F + "."));
       lampLine.replaceChildren(
@@ -1628,6 +1682,7 @@
     ]);
     ui.stage.append(el("div", { class: "c-compare" }, [
       claim,
+      notHelp([f1, f2]),
       el("div", { class: "c-pair" }, [p1.box, p2.box]),
       el("div", { class: "c-board c-has-side" }, [
         el("div", { class: "c-main" }, [levers]),

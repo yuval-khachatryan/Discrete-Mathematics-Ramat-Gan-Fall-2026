@@ -130,6 +130,37 @@ try {
     console.log(`Interaction checks: ${level.id}`);
   }
 
+  await open(LEVELS.find(l => l.id === "not"));
+  assert.equal(await page.locator('.not-module').count(), 1);
+  assert.equal(await page.locator('.not-control .battery,.not-control .plate-long').count(), 0);
+  for (const A of [true, false]) {
+    await setSwitches({ A });
+    const module = page.locator('.not-module');
+    assert.equal(await module.getAttribute('data-input'), String(A));
+    assert.equal(await module.getAttribute('data-output'), String(!A));
+    assert.equal(await module.locator('.contact.closed').count(), A ? 1 : 0);
+    assert.equal(await module.locator('.not-blade').evaluate(n => n.getAttribute('y1') === n.getAttribute('y2')), !A);
+  }
+  await page.screenshot({path:'/tmp/circuit-not-intro.png',fullPage:true});
+
+  for (const id of ["dm-robot", "dm-and", "dm-or"]) {
+    const level = LEVELS.find(l => l.id === id);
+    await open(level);
+    assert.equal(await page.locator('.c-not-help').count(), 1);
+    assert.equal(await page.locator('.c-pair-box').first().locator('.not-module').count(), 1);
+    assert.equal(await page.locator('.c-pair-box').last().locator('.not-module').count(), 0);
+    assert.equal(await page.locator('.c-pair .signal.single').count(), 2);
+    for (const row of assignments(['A','B'])) {
+      await setSwitches(row);
+      const module = page.locator('.not-module');
+      const expected = evaluate(level.formula, row);
+      assert.equal(await module.getAttribute('data-output'), String(expected));
+      assert.equal(await module.getAttribute('data-input'), String(!expected));
+      assert.equal(await page.locator('.c-pair-box').first().locator('.signal.green').count(), expected ? 1 : 0);
+      assert.equal(await page.locator('.c-pair-box').last().locator('.signal.green').count(), evaluate(level.formula2,row) ? 1 : 0);
+    }
+  }
+
   for (const width of [1100, 390, 320]) {
     await page.setViewportSize({ width, height: 1000 });
     for (const level of LEVELS) {

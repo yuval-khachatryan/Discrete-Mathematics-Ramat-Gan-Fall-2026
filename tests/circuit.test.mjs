@@ -97,7 +97,7 @@ test("the red network of A ∧ B is ¬A ∨ ¬B in parallel (De Morgan in the wi
   assert.ok(isLiteral("A") && isLiteral("!A") && !isLiteral("A & B"));
 });
 
-test("views: use bulbs before equivalence and red/green signals when comparing truth values", () => {
+test("views: compare with bulbs; reserve signals for a formula and its complement", () => {
   const boundary = LEVELS.findIndex(l => l.id === "dm-robot");
   assert.ok(boundary > 0);
   for (const l of LEVELS) assert.ok(l.view === undefined || ["switch", "lamp", "dual"].includes(l.view), l.id);
@@ -105,7 +105,7 @@ test("views: use bulbs before equivalence and red/green signals when comparing t
     assert.equal(l.view || defaultView(l.formula), "lamp", l.id);
   }
   for (const id of ["dm-robot", "dm-and", "dm-or"]) {
-    assert.equal(LEVELS.find(l => l.id === id).view, "dual", id);
+    assert.equal(LEVELS.find(l => l.id === id).view, "lamp", id);
   }
 });
 
@@ -129,4 +129,32 @@ test("introductory worksheets expose the intermediate expressions in calculation
     const results = assignments(Object.keys(level.vars)).map(row => columns.map(f => evaluate(f, row)));
     assert.deepEqual(results, expected, id);
   }
+});
+
+
+test("compound NOT preserves scope and its contact is the complement of its control circuit", () => {
+  function conducts(b, env) {
+    if (b.kind === "contact") return evaluate(b.node, env);
+    if (b.kind === "inverter") return !conducts(b.child, env);
+    return b.kind === "series" ? b.kids.every(k => conducts(k, env)) : b.kids.some(k => conducts(k, env));
+  }
+  const formulas = ["!(A & B)", "!A | !B", "!(A | B)", "!A & !B", "!!A", "!(A & !(B | C))", "!(A -> B)", "!(A ^ B)", "!T", "!F"];
+  for (const f of formulas) {
+    for (const row of assignments(variables(f))) assert.equal(conducts(layout(f), row), evaluate(f, row), `${f}: ${JSON.stringify(row)}`);
+  }
+  assert.equal(layout("!(A & B)").kind, "inverter");
+  assert.equal(layout("!(A & B)").child.kind, "series");
+  assert.equal(layout("!A | !B").kind, "parallel");
+  assert.equal(layout("!(A | B)").child.kind, "parallel");
+  assert.equal(layout("!A & !B").kind, "series");
+  assert.match(explain("!(A & B)", { A: true, B: true }, "lamp"), /NOT פתוח/);
+  assert.match(explain("!(A & B)", { A: false, B: true }, "lamp"), /NOT סגור/);
+});
+
+
+test("the first NOT game shows the same compact component used for whole-group negation", () => {
+  assert.equal(LEVELS.find(l => l.id === "not").showNot, true);
+  assert.equal(layout("!A", { showNot: true }).kind, "inverter");
+  assert.equal(layout("!A").kind, "contact");
+  assert.ok(layout("!(A & B)").h < 150);
 });

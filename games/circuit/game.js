@@ -5,7 +5,7 @@
 
 import { startGame, el } from "../shared/shell.js";
 import { parse, evaluate, assignments, format, compare, nnf } from "../shared/logic.js";
-import { render, explain, isLiteral, defaultView, VAR_COLOURS } from "./circuit.js";
+import { render, explain, isLiteral, defaultView, layout, VAR_COLOURS } from "./circuit.js";
 import { LEVELS } from "./levels.js";
 import { sprite } from "../shared/sprites.js";
 
@@ -74,8 +74,16 @@ function resultLine(W, on, covered = false) {
 
 function pathLabels(formula) {
   return el("div", { class: "c-paths" }, [
-    el("p", { html: `המסלול אל האור הירוק: ${m(format(nnf(formula)))}` }),
+    el("p", { html: `המסלול אל האור הירוק: ${m(format(formula))}` }),
     el("p", { html: `המסלול אל האור האדום (שלילת הפסוק): ${m(format(nnf({ type: "not", arg: formula })))}` }),
+  ]);
+}
+
+function notHelp(formulas, showNot = false) {
+  function hasModule(b) { return b.kind === "inverter" || (b.kids || []).some(hasModule); }
+  if (!formulas.some(f => hasModule(layout(f, { showNot })))) return null;
+  return el("div", { class: "c-not-help", dir: "rtl" }, [
+    el("p", { html: "<b>NOT הופך את מצב המגע:</b> כשהמסלול במסגרת סגור (T), המגע שמתחתיו נפתח (F). כשהמסלול פתוח (F), המגע נסגר (T). החץ המקווקו מראה איזה מגע נשלט; הוא אינו חוט." }),
   ]);
 }
 
@@ -97,7 +105,7 @@ function mount(level, ui) {
   const svg = document.createElementNS(SVGNS, "svg");
   svg.setAttribute("class", "c-svg");
   svg.setAttribute("role", "img");
-  // the green circuit is the formula, the red one its negation (pushed inward, so De Morgan shows)
+  // Keep the written formula; only the complementary red path is expanded.
   const formulaLine = el("p", { class: "c-formula", html: view === "lamp"
     ? `בשפת הלוגיקה: המנורה דולקת בדיוק כשהפסוק ${m(format(formula))} אמת.`
     : isLiteral(formula)
@@ -106,7 +114,7 @@ function mount(level, ui) {
   const levers = el("div", { class: "c-levers", role: "group", "aria-label": "המתגים" });
   const side = el("div", { class: "c-side" });
   const board = el("div", { class: "c-board" }, [el("div", { class: "c-main" }, [lampLine, view === "dual" ? pathLabels(formula) : null, el("div", { class: "c-svg-wrap" }, [svg]), formulaLine, levers]), side]);
-  ui.stage.append(board);
+  ui.stage.append(...[notHelp([formula], level.showNot), board].filter(Boolean));
 
   function lampState() {
     return evaluate(formula, env);
@@ -118,7 +126,7 @@ function mount(level, ui) {
 
   function draw() {
     const on = lampState();
-    render(svg, formula, env, { colours, lamp: covered ? "covered" : on ? "on" : "off", view });
+    render(svg, formula, env, { colours, lamp: covered ? "covered" : on ? "on" : "off", view, showNot: level.showNot });
     if (ui.present) svg.style.maxWidth = Math.round(parseFloat(svg.getAttribute("width")) * 1.8) + "px";   // projector: bigger drawing
     svg.setAttribute("aria-label", `מעגל של הפסוק ${format(formula)}. ` +
       `${W.noun} ` + (covered ? "מכוסה." : on ? W.T + "." : W.F + "."));
@@ -398,7 +406,7 @@ function mountCompare(level, ui) {
     el("button", { type: "button", class: "g-btn", text: "הרובוט טועה: בשורה הזו ערכי האמת שונים", onclick: () => judge(false) }),
   ]);
   ui.stage.append(el("div", { class: "c-compare" }, [
-    claim,
+    claim, notHelp([f1, f2]),
     el("div", { class: "c-pair" }, [p1.box, p2.box]),
     el("div", { class: "c-board c-has-side" }, [
       el("div", { class: "c-main" }, [levers]),
