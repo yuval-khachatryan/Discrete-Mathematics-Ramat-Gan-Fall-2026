@@ -74,7 +74,7 @@ function originText(o) {
 /** The rule's pattern as an inference line: premises over a bar, conclusion below. */
 function patternEl(r) {
   return el("span", { class: "m d-pat", "aria-hidden": "true" }, [
-    el("span", { class: "d-pat-top" }, r.top.flatMap((t, i) => (i ? [el("span", { class: "d-pat-gap" }), t] : [t]))),
+    el("span", { class: "d-pat-top" }, r.top.map(t => el("span", { class: "d-pat-premise", text: t }))),
     el("span", { class: "d-pat-bot", text: r.bottom }),
   ]);
 }

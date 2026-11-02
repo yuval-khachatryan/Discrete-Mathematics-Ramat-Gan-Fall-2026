@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="he" xml:lang="he" dir="rtl"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.19">
+<meta name="generator" content="quarto-1.10.20">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -43,7 +43,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -74,6 +74,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "חפש"
   }
 }</script>
+<link rel="stylesheet" href="games/shared/knight-workshop.css">
 <style>
 .todo {
   color: #8a8a8a;
@@ -604,6 +605,31 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .open-statement-game :focus-visible { outline: 3px solid #7c3aed; outline-offset: 3px; }
 @media (max-width: 480px) { .os-formula { grid-template-columns: 1fr; } }
 @media print { .term { color: #111; background: transparent; text-decoration: underline; } }
+
+#knight-rule-proof { background:#eef2ff; border-inline-start:4px solid #6366f1; padding:1rem; border-radius:8px; }
+
+.set-box-diagram { display:flex; flex-wrap:wrap; gap:1.2rem; margin:1rem 0; justify-content:center; }
+.set-box-panel { flex:1 1 220px; max-width:320px; text-align:center; }
+.set-container { display:flex; gap:.7rem; align-items:center; justify-content:center; min-height:115px; padding:1rem; margin:.5rem 0; border:3px solid #6366f1; border-radius:10px; background:#eef2ff; }
+.set-container.set-inner { flex-direction:column; gap:.2rem; min-height:0; padding:.4rem; margin:0; border:2px solid #b45309; background:#fffbeb; }
+.set-number { display:inline-flex; align-items:center; justify-content:center; width:2.4rem; height:2.4rem; border-radius:50%; background:white; color:#1e293b; font-weight:700; }
+
+figure.knight-scene { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.8rem; margin:1rem auto; max-width:680px; }
+.knight-scene:has(> .knight-speaker:nth-child(3)) { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.knight-speaker { min-width:0; display:flex; align-items:center; flex-direction:column; padding:.65rem; border:1px solid #cbd5e1; border-radius:12px; background:#f8fafc; }
+.knight-speaker img { width:64px; height:64px; }
+.knight-speaker > strong { margin:.25rem 0 .7rem; color:#334155; }
+.knight-speaker .knight-speech { position:relative; width:100%; box-sizing:border-box; margin:0; padding:.65rem; border:1px solid #94a3b8; border-radius:10px; background:white; color:#172033; font-size:1rem; font-weight:600; text-align:center; }
+.knight-speech::before { content:""; position:absolute; top:-6px; left:calc(50% - 6px); width:10px; height:10px; background:white; border-top:1px solid #94a3b8; border-left:1px solid #94a3b8; transform:rotate(45deg); }
+.knight-speaker .knight-silent { border-style:dashed; color:#64748b; font-weight:400; }
+.knight-scene figcaption { grid-column:1 / -1; text-align:center; color:#475569; font-size:.9rem; }
+
+@media(max-width:480px) {
+  .knight-scene { gap:.35rem; }
+  .knight-speaker { padding:.45rem .25rem; }
+  .knight-speaker img { width:46px; height:46px; }
+  .knight-speaker .knight-speech { padding:.45rem .25rem; font-size:.88rem; overflow-wrap:anywhere; }
+}
 </style>
 <script src="games/shared/book.bundle.js" defer=""></script>
 <script>
@@ -731,6 +757,117 @@ window.addEventListener("message", function (e) {
 });
 </script>
 
+<style>
+.sets-ready { border:1px solid #cbd5e1; border-radius:12px; padding:1rem; margin:1rem 0; background:#fff; }
+.sets-ready button,.sets-ready select { min-height:44px; margin:.2rem; font:inherit; max-width:100%; }
+.sets-ready select { padding:.35rem; border:1px solid #94a3b8; border-radius:6px; }
+.sets-item { border:0; border-bottom:1px solid #e2e8f0; margin:0 0 1rem; padding:.5rem 0; min-width:0; }
+.sets-item legend,.sets-prompt { font-size:1rem; font-weight:600; line-height:1.8; }
+.sets-item input { width:100%; max-width:32rem; display:block; margin-bottom:.6rem; }
+.sets-cards,.sets-saved { display:flex; flex-wrap:wrap; gap:.3rem; margin:.65rem 0; }
+.sets-cards button[aria-pressed=true] { background:#e0e7ff; border:2px solid #4f46e5; box-shadow:inset 0 0 0 1px #4f46e5; }
+.sets-cards button[aria-pressed=true]::before { content:'✓ '; }
+.sets-math { display:inline-block; direction:ltr; unicode-bidi:isolate; font-family:'Cambria Math',serif; font-size:1.12em; overflow-wrap:anywhere; }
+.sets-stage { color:#5b21b6; font-weight:700; }
+.sets-venn { max-width:460px; margin:auto; direction:ltr; }
+.sets-venn svg { width:100%; display:block; }
+.sets-venn [data-region] { fill:#f8fafc; stroke:#64748b; stroke-width:2; cursor:pointer; }
+.sets-venn [data-region].selected { fill:#a5b4fc; stroke:#4338ca; stroke-width:3; }
+.sets-venn-label { font:700 21px Arial,sans-serif; fill:#334155; pointer-events:none; }
+.sets-proof-preview { background:#f1f5f9; border-radius:8px; padding:1rem 2.5rem; }
+.sets-proof-preview li { margin:.65rem 0; }
+.sets-ready [aria-invalid=true] { outline:2px solid #b91c1c; }
+.sets-ready :focus-visible { outline:3px solid #4338ca; outline-offset:2px; }
+.sets-ready button:disabled { opacity:.5; }
+@media(max-width:480px){.sets-ready{padding:.6rem}.sets-ready select{width:100%;margin:.2rem 0}.sets-proof-preview{padding:.5rem 1.8rem}}
+</style>
+
+<style>
+.sets-item-number { color:#5b21b6; font-size:.9rem; font-weight:700; margin:.3rem 0; }
+.sets-given { background:#f1f5ff; color:#3730a3; padding:.4rem .6rem; border-radius:6px; font-weight:700; font-family:'Cambria Math',serif; overflow-wrap:anywhere; margin:.4rem 0; }
+.sets-proof-preview .sets-math { display:block; }
+.sets-selected-formula { font-weight:600; line-height:1.8; overflow-wrap:anywhere; }
+</style>
+
+<style>
+/* One RTL navigation tree: chapters, sections, then subsections. */
+#quarto-content { direction:rtl; }
+#quarto-sidebar .toc-tree { display:none; direction:rtl; text-align:right; }
+#quarto-sidebar .toc-chapter.toc-open > .toc-tree { display:block; }
+.toc-tree li.toc-parent > ul { display:none !important; }
+.toc-tree li.toc-parent.toc-open > ul { display:block !important; }
+.toc-tree ul { list-style:none; padding:0; padding-inline-start:.7rem; margin:0; border-inline-start:1px solid #e2e8f0; }
+.toc-tree li { position:relative; margin:.2rem 0; }
+.toc-tree li > a { margin-inline-start:1.9rem; }
+#quarto-sidebar .toc-tree a { display:block; padding:.35rem 0; line-height:1.5; font-size:.875rem; white-space:normal; }
+.toc-chapter-row { position:relative; padding-inline-start:1.9rem; }
+.toc-chapter-toggle,.toc-branch-toggle { position:absolute; inset-inline-start:0; top:0; width:1.8rem; min-height:1.8rem; padding:0; color:#334155; background:transparent; border:0; cursor:pointer; font:inherit; border-radius:5px; }
+.toc-disclosure-arrow { display:inline-block; transition:transform .12s; }
+[aria-expanded=true] > .toc-disclosure-arrow { transform:rotate(-90deg); }
+.toc-chapter-toggle:hover,.toc-branch-toggle:hover { background:#eef2ff; }
+.toc-chapter-toggle:focus-visible,.toc-branch-toggle:focus-visible { outline:2px solid #4f46e5; outline-offset:1px; }
+@media(max-width:991px){
+  #quarto-sidebar { max-width:100vw; box-sizing:border-box; right:0; left:auto; }
+  #quarto-sidebar .sidebar-menu-container { white-space:normal; min-width:0; }
+  #quarto-sidebar .sidebar-title { white-space:normal; }
+  .toc-chapter-toggle,.toc-branch-toggle { min-height:44px; width:44px; }
+  .toc-tree li > a { margin-inline-start:44px; min-height:44px; }
+  .toc-chapter-row { padding-inline-start:44px; min-height:44px; }
+}
+@media(prefers-reduced-motion:reduce){.toc-disclosure-arrow{transition:none}}
+</style>
+
+<style>
+.replacement-editor { padding:.75rem; border:1px solid #c7d2fe; border-radius:8px; background:#f8fafc; }
+.replacement-source { font-family:'Cambria Math',serif; font-size:1.2rem; padding:.7rem; overflow-wrap:anywhere; }
+.replacement-highlight { background:#ddd6fe; color:#4c1d95; outline:2px solid #8b5cf6; border-radius:3px; }
+.replacement-item { min-width:0; border:1px solid #cbd5e1; padding:.6rem; margin:.7rem 0; border-radius:6px; }
+.replacement-item legend { font-size:1rem; font-weight:700; }
+.replacement-item label { display:block; margin:.5rem 0; }
+.replacement-item select,.replacement-item input { display:block; width:100%; max-width:100%; min-height:44px; font:inherit; }
+.replacement-part { direction:ltr; }
+.replacement-item[aria-invalid=true] { border:2px solid #b91c1c; }
+</style>
+
+<style>
+.replacement-choice-bank { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.4rem; min-width:0; border:0; padding:0; margin:.8rem 0; }
+.replacement-choice-bank legend { font-size:1rem; font-weight:700; margin-bottom:.6rem; }
+.replacement-choice { display:flex; align-items:center; gap:.5rem; border:1px solid #cbd5e1; padding:.5rem; border-radius:6px; min-height:44px; cursor:pointer; }
+.replacement-choice input { width:20px; height:20px; flex:none; }
+.replacement-choice span { overflow-wrap:anywhere; }
+.replacement-choice:has(input:checked) { background:#ede9fe; border-color:#8b5cf6; }
+.replacement-choice:has(input:disabled) { opacity:.5; cursor:default; }
+@media(max-width:600px){.replacement-choice-bank{grid-template-columns:minmax(0,1fr)}}
+</style>
+
+<style>
+.argument-written-heading { display:block; color:#5b21b6; margin:.7rem 0 .35rem; }
+.argument-written-givens ol { padding-inline-start:1.7rem; }
+.argument-written-givens li { padding:.25rem 0; }
+.argument-written-goal { border-inline-start:3px solid #7c3aed; padding-inline-start:.7rem; margin:.7rem 0; }
+.argument-written .argument-line-words { color:inherit; font-size:1em; }
+</style>
+
+<style>
+.example-choice .tf-opt { min-height:44px; max-width:100%; margin-bottom:.35rem; }
+.example-choice .tf-opt:focus-visible { outline:3px solid #4338ca; outline-offset:2px; }
+.example-choice .tf-why > :last-child { margin-bottom:0; }
+</style>
+
+<style>
+.coin-sets { margin:1rem 0; }
+.coin-set { display:flex; align-items:center; justify-content:flex-start; gap:.2rem; direction:ltr; width:max-content; max-width:100%; margin:.7rem auto; }
+.coin-set-name { font-family:'Cambria Math',serif; white-space:nowrap; }
+.coin-brace { font:2.7rem/1 'Cambria Math',serif; }
+.coin-elements { display:flex; align-items:center; gap:.15rem; min-width:0; }
+.coin-elements img { display:block; width:clamp(30px,9vw,56px); height:auto; }
+</style>
+
+<style>
+.sets-count-item label { display:block; margin-top:.6rem; }
+.sets-count-item .sets-count-input { max-width:9rem; }
+</style>
+
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
@@ -761,6 +898,7 @@ window.Quarto = {
 };
 </script>
 
+<script id="book-toc-data" type="application/json">[{"file":"01-logic.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#sec-about\" id=\"toc-sec-about\" class=\"nav-link active\" data-scroll-target=\"#sec-about\">\u003cspan class=\"header-section-number\">1.1\u003c/span> על מה הקורס הזה?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-consistency\" id=\"toc-sec-consistency\" class=\"nav-link\" data-scroll-target=\"#sec-consistency\">\u003cspan class=\"header-section-number\">1.2\u003c/span> האם המסקנה נובעת מההנחות?\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-argument-basics\" id=\"toc-sec-argument-basics\" class=\"nav-link\" data-scroll-target=\"#sec-argument-basics\">\u003cspan class=\"header-section-number\">1.2.1\u003c/span> הנחות, מסקנה וטיעון\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-הדוגמאות-מלמדות\" id=\"toc-מה-הדוגמאות-מלמדות\" class=\"nav-link\" data-scroll-target=\"#מה-הדוגמאות-מלמדות\">\u003cspan class=\"header-section-number\">1.2.2\u003c/span> מה הדוגמאות מלמדות?\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-propositions\" id=\"toc-sec-propositions\" class=\"nav-link\" data-scroll-target=\"#sec-propositions\">\u003cspan class=\"header-section-number\">1.3\u003c/span> פסוקים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-proposition-basics\" id=\"toc-sec-proposition-basics\" class=\"nav-link\" data-scroll-target=\"#sec-proposition-basics\">\u003cspan class=\"header-section-number\">1.3.1\u003c/span> מהו פסוק ומהו ערך אמת?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-naming-statements\" id=\"toc-sec-naming-statements\" class=\"nav-link\" data-scroll-target=\"#sec-naming-statements\">\u003cspan class=\"header-section-number\">1.3.2\u003c/span> איך נותנים לפסוק שם?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-open-propositions\" id=\"toc-sec-open-propositions\" class=\"nav-link\" data-scroll-target=\"#sec-open-propositions\">\u003cspan class=\"header-section-number\">1.3.3\u003c/span> משפט שתלוי בערך שנבחר: פסוק פתוח\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#sec-naming-open-statements\" id=\"toc-sec-naming-open-statements\" class=\"nav-link\" data-scroll-target=\"#sec-naming-open-statements\">\u003cspan class=\"header-section-number\">1.3.3.1\u003c/span> איך נותנים שם לפסוק פתוח?\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-proposition-check\" id=\"toc-sec-proposition-check\" class=\"nav-link\" data-scroll-target=\"#sec-proposition-check\">\u003cspan class=\"header-section-number\">1.3.4\u003c/span> בודקים שההבדל ברור\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-connectives\" id=\"toc-sec-connectives\" class=\"nav-link\" data-scroll-target=\"#sec-connectives\">\u003cspan class=\"header-section-number\">1.4\u003c/span> קשרים לוגיים: מפסוקים פשוטים לפסוק מורכב\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-combining-statements\" id=\"toc-sec-combining-statements\" class=\"nav-link\" data-scroll-target=\"#sec-combining-statements\">\u003cspan class=\"header-section-number\">1.4.1\u003c/span> מחברים פסוקים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-negation\" id=\"toc-sec-negation\" class=\"nav-link\" data-scroll-target=\"#sec-negation\">\u003cspan class=\"header-section-number\">1.4.2\u003c/span> שלילה: ״לא״\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#משחק-של-אור-ואמת\" id=\"toc-משחק-של-אור-ואמת\" class=\"nav-link\" data-scroll-target=\"#משחק-של-אור-ואמת\">\u003cspan class=\"header-section-number\">1.4.2.1\u003c/span> משחק של אור ואמת\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-and\" id=\"toc-sec-and\" class=\"nav-link\" data-scroll-target=\"#sec-and\">\u003cspan class=\"header-section-number\">1.4.3\u003c/span> וגם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-or\" id=\"toc-sec-or\" class=\"nav-link\" data-scroll-target=\"#sec-or\">\u003cspan class=\"header-section-number\">1.4.4\u003c/span> או\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-xor\" id=\"toc-sec-xor\" class=\"nav-link\" data-scroll-target=\"#sec-xor\">\u003cspan class=\"header-section-number\">1.4.5\u003c/span> או מפריד\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-parentheses\" id=\"toc-sec-parentheses\" class=\"nav-link\" data-scroll-target=\"#sec-parentheses\">\u003cspan class=\"header-section-number\">1.4.6\u003c/span> סוגריים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-complex-truth-tables\" id=\"toc-sec-complex-truth-tables\" class=\"nav-link\" data-scroll-target=\"#sec-complex-truth-tables\">\u003cspan class=\"header-section-number\">1.5\u003c/span> בונים טבלת אמת של פסוק מורכב\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-table-building\" id=\"toc-sec-table-building\" class=\"nav-link\" data-scroll-target=\"#sec-table-building\">\u003cspan class=\"header-section-number\">1.5.1\u003c/span> מחשבים חלק אחר חלק\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#כמה-שורות-יש-בטבלה\" id=\"toc-כמה-שורות-יש-בטבלה\" class=\"nav-link\" data-scroll-target=\"#כמה-שורות-יש-בטבלה\">\u003cspan class=\"header-section-number\">1.5.2\u003c/span> כמה שורות יש בטבלה?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#טבלה-של-פסוק-מורכב\" id=\"toc-טבלה-של-פסוק-מורכב\" class=\"nav-link\" data-scroll-target=\"#טבלה-של-פסוק-מורכב\">\u003cspan class=\"header-section-number\">1.5.3\u003c/span> טבלה של פסוק מורכב\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-taut\" id=\"toc-sec-taut\" class=\"nav-link\" data-scroll-target=\"#sec-taut\">\u003cspan class=\"header-section-number\">1.5.4\u003c/span> טאוטולוגיה וסתירה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-evaluate\" id=\"toc-sec-evaluate\" class=\"nav-link\" data-scroll-target=\"#sec-evaluate\">\u003cspan class=\"header-section-number\">1.5.5\u003c/span> מתרגלים: אמת או שקר?\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-demorgan\" id=\"toc-sec-demorgan\" class=\"nav-link\" data-scroll-target=\"#sec-demorgan\">\u003cspan class=\"header-section-number\">1.6\u003c/span> שקילות לוגית וחוקי דה מורגן\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-logical-equivalence\" id=\"toc-sec-logical-equivalence\" class=\"nav-link\" data-scroll-target=\"#sec-logical-equivalence\">\u003cspan class=\"header-section-number\">1.6.1\u003c/span> מהי שקילות לוגית?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#איך-שוללים-משפט-שיש-בו-וגם-או-או\" id=\"toc-איך-שוללים-משפט-שיש-בו-וגם-או-או\" class=\"nav-link\" data-scroll-target=\"#איך-שוללים-משפט-שיש-בו-וגם-או-או\">\u003cspan class=\"header-section-number\">1.6.2\u003c/span> איך שוללים משפט שיש בו ״וגם״ או ״או״?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-full-signal\" id=\"toc-sec-full-signal\" class=\"nav-link\" data-scroll-target=\"#sec-full-signal\">\u003cspan class=\"header-section-number\">1.6.3\u003c/span> הפסוק ושלילתו באותו מעגל\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#משווים-שני-ניסוחים-בעזרת-מנורות\" id=\"toc-משווים-שני-ניסוחים-בעזרת-מנורות\" class=\"nav-link\" data-scroll-target=\"#משווים-שני-ניסוחים-בעזרת-מנורות\">\u003cspan class=\"header-section-number\">1.6.4\u003c/span> משווים שני ניסוחים בעזרת מנורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-implication\" id=\"toc-sec-implication\" class=\"nav-link\" data-scroll-target=\"#sec-implication\">\u003cspan class=\"header-section-number\">1.7\u003c/span> אם… אז…: גרירה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-implication-meaning\" id=\"toc-sec-implication-meaning\" class=\"nav-link\" data-scroll-target=\"#sec-implication-meaning\">\u003cspan class=\"header-section-number\">1.7.1\u003c/span> משמעות הגרירה וטבלת האמת שלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-converse\" id=\"toc-sec-converse\" class=\"nav-link\" data-scroll-target=\"#sec-converse\">\u003cspan class=\"header-section-number\">1.7.2\u003c/span> היפוך וגרירה נגדית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-iff\" id=\"toc-sec-iff\" class=\"nav-link\" data-scroll-target=\"#sec-iff\">\u003cspan class=\"header-section-number\">1.7.3\u003c/span> אם ורק אם\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-calculus\" id=\"toc-sec-calculus\" class=\"nav-link\" data-scroll-target=\"#sec-calculus\">\u003cspan class=\"header-section-number\">1.8\u003c/span> תחשיב הפסוקים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-formalization\" id=\"toc-sec-formalization\" class=\"nav-link\" data-scroll-target=\"#sec-formalization\">\u003cspan class=\"header-section-number\">1.8.1\u003c/span> הצרנה: מן הניסוח במילים אל הסימנים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-equivalence-calculus\" id=\"toc-sec-equivalence-calculus\" class=\"nav-link\" data-scroll-target=\"#sec-equivalence-calculus\">\u003cspan class=\"header-section-number\">1.8.2\u003c/span> חוקי שקילות ופישוט נוסחאות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-deduction\" id=\"toc-sec-deduction\" class=\"nav-link\" data-scroll-target=\"#sec-deduction\">\u003cspan class=\"header-section-number\">1.8.3\u003c/span> כללי היסק\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights\" id=\"toc-sec-knights\" class=\"nav-link\" data-scroll-target=\"#sec-knights\">\u003cspan class=\"header-section-number\">1.9\u003c/span> אבירים ונוכלים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-knights-first\" id=\"toc-sec-knights-first\" class=\"nav-link\" data-scroll-target=\"#sec-knights-first\">\u003cspan class=\"header-section-number\">1.9.1\u003c/span> מתחילים מחידה: בודקים את כל האפשרויות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-rule\" id=\"toc-sec-knights-rule\" class=\"nav-link\" data-scroll-target=\"#sec-knights-rule\">\u003cspan class=\"header-section-number\">1.9.2\u003c/span> מהטבלה לכלל\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-contradiction\" id=\"toc-sec-knights-contradiction\" class=\"nav-link\" data-scroll-target=\"#sec-knights-contradiction\">\u003cspan class=\"header-section-number\">1.9.3\u003c/span> אותה חידה, דרך אחרת: הוכחה בדרך השלילה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-direct\" id=\"toc-sec-knights-direct\" class=\"nav-link\" data-scroll-target=\"#sec-knights-direct\">\u003cspan class=\"header-section-number\">1.9.4\u003c/span> הוכחה ישירה: מתקדמים מן הנתונים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-cases\" id=\"toc-sec-knights-cases\" class=\"nav-link\" data-scroll-target=\"#sec-knights-cases\">\u003cspan class=\"header-section-number\">1.9.5\u003c/span> הוכחה לפי מקרים: לפעמים יש כמה פתרונות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-undetermined\" id=\"toc-sec-knights-undetermined\" class=\"nav-link\" data-scroll-target=\"#sec-knights-undetermined\">\u003cspan class=\"header-section-number\">1.9.6\u003c/span> איך מוכיחים שאי אפשר לקבוע?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-impossible\" id=\"toc-sec-knights-impossible\" class=\"nav-link\" data-scroll-target=\"#sec-knights-impossible\">\u003cspan class=\"header-section-number\">1.9.7\u003c/span> איך מוכיחים שאין פתרון?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-practice\" id=\"toc-sec-knights-practice\" class=\"nav-link\" data-scroll-target=\"#sec-knights-practice\">\u003cspan class=\"header-section-number\">1.9.8\u003c/span> בוחרים דרך ומתרגלים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-summary\" id=\"toc-sec-summary\" class=\"nav-link\" data-scroll-target=\"#sec-summary\">\u003cspan class=\"header-section-number\">1.10\u003c/span> סיכום\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#פסוקים-שמות-וטבלאות-אמת\" id=\"toc-פסוקים-שמות-וטבלאות-אמת\" class=\"nav-link\" data-scroll-target=\"#פסוקים-שמות-וטבלאות-אמת\">\u003cspan class=\"header-section-number\">1.10.1\u003c/span> פסוקים, שמות וטבלאות אמת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הקשרים-שלמדנו\" id=\"toc-הקשרים-שלמדנו\" class=\"nav-link\" data-scroll-target=\"#הקשרים-שלמדנו\">\u003cspan class=\"header-section-number\">1.10.2\u003c/span> הקשרים שלמדנו\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שקילות-וכתיבת-הוכחה\" id=\"toc-שקילות-וכתיבת-הוכחה\" class=\"nav-link\" data-scroll-target=\"#שקילות-וכתיבת-הוכחה\">\u003cspan class=\"header-section-number\">1.10.3\u003c/span> שקילות וכתיבת הוכחה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הצרנה-ודרכי-הוכחה\" id=\"toc-הצרנה-ודרכי-הוכחה\" class=\"nav-link\" data-scroll-target=\"#הצרנה-ודרכי-הוכחה\">\u003cspan class=\"header-section-number\">1.10.4\u003c/span> הצרנה ודרכי הוכחה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הסקת-מסקנות\" id=\"toc-הסקת-מסקנות\" class=\"nav-link\" data-scroll-target=\"#הסקת-מסקנות\">\u003cspan class=\"header-section-number\">1.10.5\u003c/span> הסקת מסקנות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-self-practice\" id=\"toc-sec-self-practice\" class=\"nav-link\" data-scroll-target=\"#sec-self-practice\">\u003cspan class=\"header-section-number\">1.11\u003c/span> תרגול עצמי לפי נושאים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#practice-statements\" id=\"toc-practice-statements\" class=\"nav-link\" data-scroll-target=\"#practice-statements\">\u003cspan class=\"header-section-number\">1.11.1\u003c/span> פסוקים ופסוקים פתוחים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-translation\" id=\"toc-practice-translation\" class=\"nav-link\" data-scroll-target=\"#practice-translation\">\u003cspan class=\"header-section-number\">1.11.2\u003c/span> ממילים לנוסחאות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-tables\" id=\"toc-practice-tables\" class=\"nav-link\" data-scroll-target=\"#practice-tables\">\u003cspan class=\"header-section-number\">1.11.3\u003c/span> טבלאות אמת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-implication\" id=\"toc-practice-implication\" class=\"nav-link\" data-scroll-target=\"#practice-implication\">\u003cspan class=\"header-section-number\">1.11.4\u003c/span> גרירה ואם ורק אם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-equivalence\" id=\"toc-practice-equivalence\" class=\"nav-link\" data-scroll-target=\"#practice-equivalence\">\u003cspan class=\"header-section-number\">1.11.5\u003c/span> שקילויות: מצדיקים כל שינוי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-proofs\" id=\"toc-practice-proofs\" class=\"nav-link\" data-scroll-target=\"#practice-proofs\">\u003cspan class=\"header-section-number\">1.11.6\u003c/span> הוכחות עם סיוע: בוחרים אותיות ומצדיקים כל צעד\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#מתחילים-הוכחה-בצעד-אחד\" id=\"toc-מתחילים-הוכחה-בצעד-אחד\" class=\"nav-link\" data-scroll-target=\"#מתחילים-הוכחה-בצעד-אחד\">\u003cspan class=\"header-section-number\">1.11.6.1\u003c/span> מתחילים: הוכחה בצעד אחד\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ממשיכים-מחברים-נתונים-ומסקנות-ביניים\" id=\"toc-ממשיכים-מחברים-נתונים-ומסקנות-ביניים\" class=\"nav-link\" data-scroll-target=\"#ממשיכים-מחברים-נתונים-ומסקנות-ביניים\">\u003cspan class=\"header-section-number\">1.11.6.2\u003c/span> ממשיכים: מחברים נתונים ומסקנות ביניים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#משלבים-שינוי-ניסוח-ואז-הסקה\" id=\"toc-משלבים-שינוי-ניסוח-ואז-הסקה\" class=\"nav-link\" data-scroll-target=\"#משלבים-שינוי-ניסוח-ואז-הסקה\">\u003cspan class=\"header-section-number\">1.11.6.3\u003c/span> משלבים: שינוי ניסוח ואז הסקה\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-knights\" id=\"toc-practice-knights\" class=\"nav-link\" data-scroll-target=\"#practice-knights\">\u003cspan class=\"header-section-number\">1.11.7\u003c/span> אבירים ונוכלים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"02-sets.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#sec-sets-membership\" id=\"toc-sec-sets-membership\" class=\"nav-link active\" data-scroll-target=\"#sec-sets-membership\">\u003cspan class=\"header-section-number\">2.1\u003c/span> קבוצות, איברים ושייכות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-set-basics\" id=\"toc-sec-set-basics\" class=\"nav-link\" data-scroll-target=\"#sec-set-basics\">\u003cspan class=\"header-section-number\">2.1.1\u003c/span> מהי קבוצה?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-order\" id=\"toc-sec-set-order\" class=\"nav-link\" data-scroll-target=\"#sec-set-order\">\u003cspan class=\"header-section-number\">2.1.2\u003c/span> סדר, חזרות ומספר האיברים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-builder\" id=\"toc-sec-set-builder\" class=\"nav-link\" data-scroll-target=\"#sec-set-builder\">\u003cspan class=\"header-section-number\">2.1.3\u003c/span> מתארים קבוצה באמצעות תנאי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-empty-set\" id=\"toc-sec-empty-set\" class=\"nav-link\" data-scroll-target=\"#sec-empty-set\">\u003cspan class=\"header-section-number\">2.1.4\u003c/span> הקבוצה הריקה וקבוצות בתוך קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-number-sets\" id=\"toc-sec-number-sets\" class=\"nav-link\" data-scroll-target=\"#sec-number-sets\">\u003cspan class=\"header-section-number\">2.1.5\u003c/span> כמה קבוצות מספרים שימושיות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-quantifiers\" id=\"toc-sec-quantifiers\" class=\"nav-link\" data-scroll-target=\"#sec-quantifiers\">\u003cspan class=\"header-section-number\">2.2\u003c/span> כמתים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-quantifier-basics\" id=\"toc-sec-quantifier-basics\" class=\"nav-link\" data-scroll-target=\"#sec-quantifier-basics\">\u003cspan class=\"header-section-number\">2.2.1\u003c/span> מן האיבר אל הקבוצה כולה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-bar-again\" id=\"toc-sec-bar-again\" class=\"nav-link\" data-scroll-target=\"#sec-bar-again\">\u003cspan class=\"header-section-number\">2.2.2\u003c/span> ״כולם״ ו״מישהו״ בשפת הכמתים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-evidence\" id=\"toc-sec-evidence\" class=\"nav-link\" data-scroll-target=\"#sec-evidence\">\u003cspan class=\"header-section-number\">2.2.3\u003c/span> איזו הוכחה צריך?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-domain\" id=\"toc-sec-domain\" class=\"nav-link\" data-scroll-target=\"#sec-domain\">\u003cspan class=\"header-section-number\">2.2.4\u003c/span> התחום חשוב\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-neg-quantifiers\" id=\"toc-sec-neg-quantifiers\" class=\"nav-link\" data-scroll-target=\"#sec-neg-quantifiers\">\u003cspan class=\"header-section-number\">2.2.5\u003c/span> שלילה של כמתים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-quantifier-order\" id=\"toc-sec-quantifier-order\" class=\"nav-link\" data-scroll-target=\"#sec-quantifier-order\">\u003cspan class=\"header-section-number\">2.2.6\u003c/span> סדר הכמתים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-equality-inclusion\" id=\"toc-sec-set-equality-inclusion\" class=\"nav-link\" data-scroll-target=\"#sec-set-equality-inclusion\">\u003cspan class=\"header-section-number\">2.3\u003c/span> הכלה ושוויון קבוצות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-set-subset\" id=\"toc-sec-set-subset\" class=\"nav-link\" data-scroll-target=\"#sec-set-subset\">\u003cspan class=\"header-section-number\">2.3.1\u003c/span> קבוצה בתוך קבוצה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-double-inclusion\" id=\"toc-sec-double-inclusion\" class=\"nav-link\" data-scroll-target=\"#sec-double-inclusion\">\u003cspan class=\"header-section-number\">2.3.2\u003c/span> מוכיחים שוויון בשתי הכלות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-membership-vs-inclusion\" id=\"toc-sec-membership-vs-inclusion\" class=\"nav-link\" data-scroll-target=\"#sec-membership-vs-inclusion\">\u003cspan class=\"header-section-number\">2.3.3\u003c/span> שייכות אינה הכלה\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-union-intersection\" id=\"toc-sec-union-intersection\" class=\"nav-link\" data-scroll-target=\"#sec-union-intersection\">\u003cspan class=\"header-section-number\">2.4\u003c/span> איחוד וחיתוך\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-intersection\" id=\"toc-sec-intersection\" class=\"nav-link\" data-scroll-target=\"#sec-intersection\">\u003cspan class=\"header-section-number\">2.4.1\u003c/span> חיתוך: מי עומד בשתי הדרישות?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-union\" id=\"toc-sec-union\" class=\"nav-link\" data-scroll-target=\"#sec-union\">\u003cspan class=\"header-section-number\">2.4.2\u003c/span> איחוד: מי עומד לפחות באחת הדרישות?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-venn\" id=\"toc-sec-venn\" class=\"nav-link\" data-scroll-target=\"#sec-venn\">\u003cspan class=\"header-section-number\">2.4.3\u003c/span> רואים את האזורים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-inclusion-exclusion\" id=\"toc-sec-inclusion-exclusion\" class=\"nav-link\" data-scroll-target=\"#sec-inclusion-exclusion\">\u003cspan class=\"header-section-number\">2.4.4\u003c/span> סופרים איחוד: עקרון ההכלה וההפרדה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-inclusion-exclusion-three\" id=\"toc-sec-inclusion-exclusion-three\" class=\"nav-link\" data-scroll-target=\"#sec-inclusion-exclusion-three\">\u003cspan class=\"header-section-number\">2.4.5\u003c/span> ומה קורה עם שלוש קבוצות?\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-difference-complement\" id=\"toc-sec-set-difference-complement\" class=\"nav-link\" data-scroll-target=\"#sec-set-difference-complement\">\u003cspan class=\"header-section-number\">2.5\u003c/span> הפרש, משלים והפרש סימטרי\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-difference\" id=\"toc-sec-difference\" class=\"nav-link\" data-scroll-target=\"#sec-difference\">\u003cspan class=\"header-section-number\">2.5.1\u003c/span> הפרש: מתחילים מקבוצה ומוציאים איברים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-complement\" id=\"toc-sec-complement\" class=\"nav-link\" data-scroll-target=\"#sec-complement\">\u003cspan class=\"header-section-number\">2.5.2\u003c/span> משלים: מי נשאר מחוץ לקבוצה, בתוך העולם?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-symmetric-difference\" id=\"toc-sec-symmetric-difference\" class=\"nav-link\" data-scroll-target=\"#sec-symmetric-difference\">\u003cspan class=\"header-section-number\">2.5.3\u003c/span> הפרש סימטרי: בדיוק באחת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-laws\" id=\"toc-sec-set-laws\" class=\"nav-link\" data-scroll-target=\"#sec-set-laws\">\u003cspan class=\"header-section-number\">2.5.4\u003c/span> כמה חוקים שימושיים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-power-set\" id=\"toc-sec-power-set\" class=\"nav-link\" data-scroll-target=\"#sec-power-set\">\u003cspan class=\"header-section-number\">2.6\u003c/span> קבוצת החזקה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-all-subsets\" id=\"toc-sec-all-subsets\" class=\"nav-link\" data-scroll-target=\"#sec-all-subsets\">\u003cspan class=\"header-section-number\">2.6.1\u003c/span> אוסף של כל הבחירות האפשריות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-subset-builder\" id=\"toc-sec-subset-builder\" class=\"nav-link\" data-scroll-target=\"#sec-subset-builder\">\u003cspan class=\"header-section-number\">2.6.2\u003c/span> איך מוצאים את כולן בלי כפילויות?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-power-cardinality\" id=\"toc-sec-power-cardinality\" class=\"nav-link\" data-scroll-target=\"#sec-power-cardinality\">\u003cspan class=\"header-section-number\">2.6.3\u003c/span> העצמה של קבוצת החזקה\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-cartesian-product\" id=\"toc-sec-cartesian-product\" class=\"nav-link\" data-scroll-target=\"#sec-cartesian-product\">\u003cspan class=\"header-section-number\">2.7\u003c/span> זוגות סדורים ומכפלה קרטזית\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-ordered-pair\" id=\"toc-sec-ordered-pair\" class=\"nav-link\" data-scroll-target=\"#sec-ordered-pair\">\u003cspan class=\"header-section-number\">2.7.1\u003c/span> כאן הסדר דווקא חשוב\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-product-definition\" id=\"toc-sec-product-definition\" class=\"nav-link\" data-scroll-target=\"#sec-product-definition\">\u003cspan class=\"header-section-number\">2.7.2\u003c/span> כל הצירופים של שתי בחירות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-product-properties\" id=\"toc-sec-product-properties\" class=\"nav-link\" data-scroll-target=\"#sec-product-properties\">\u003cspan class=\"header-section-number\">2.7.3\u003c/span> הסדר, המספר והקבוצה הריקה\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-proofs\" id=\"toc-sec-set-proofs\" class=\"nav-link\" data-scroll-target=\"#sec-set-proofs\">\u003cspan class=\"header-section-number\">2.8\u003c/span> משתמשים בכמתים כדי לנסח טענות על קבוצות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-set-proof-goals\" id=\"toc-sec-set-proof-goals\" class=\"nav-link\" data-scroll-target=\"#sec-set-proof-goals\">\u003cspan class=\"header-section-number\">2.8.1\u003c/span> מה צריך להראות?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-inclusion-proof\" id=\"toc-sec-set-inclusion-proof\" class=\"nav-link\" data-scroll-target=\"#sec-set-inclusion-proof\">\u003cspan class=\"header-section-number\">2.8.2\u003c/span> דוגמה מלאה: מהחיתוך אל אחת הקבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-equality-proof\" id=\"toc-sec-set-equality-proof\" class=\"nav-link\" data-scroll-target=\"#sec-set-equality-proof\">\u003cspan class=\"header-section-number\">2.8.3\u003c/span> שוויון: אותם איברים בשני הכיוונים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets\" id=\"toc-practice-sets\" class=\"nav-link\" data-scroll-target=\"#practice-sets\">\u003cspan class=\"header-section-number\">2.9\u003c/span> תרגול עצמי: קבוצות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#practice-sets-membership\" id=\"toc-practice-sets-membership\" class=\"nav-link\" data-scroll-target=\"#practice-sets-membership\">\u003cspan class=\"header-section-number\">2.9.1\u003c/span> שייכות והכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets-operations\" id=\"toc-practice-sets-operations\" class=\"nav-link\" data-scroll-target=\"#practice-sets-operations\">\u003cspan class=\"header-section-number\">2.9.2\u003c/span> פעולות על קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets-counting\" id=\"toc-practice-sets-counting\" class=\"nav-link\" data-scroll-target=\"#practice-sets-counting\">\u003cspan class=\"header-section-number\">2.9.3\u003c/span> עצמה וספירה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets-power-product\" id=\"toc-practice-sets-power-product\" class=\"nav-link\" data-scroll-target=\"#practice-sets-power-product\">\u003cspan class=\"header-section-number\">2.9.4\u003c/span> קבוצות של קבוצות וזוגות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-quantifiers\" id=\"toc-practice-quantifiers\" class=\"nav-link\" data-scroll-target=\"#practice-quantifiers\">\u003cspan class=\"header-section-number\">2.10\u003c/span> תרגול עצמי: כמתים\u003c/a>\u003c/li>\n  \u003c/ul>"},{"file":"index.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#פתח-דבר\" id=\"toc-פתח-דבר\" class=\"nav-link active\" data-scroll-target=\"#פתח-דבר\">פתח דבר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#מקורות\" id=\"toc-מקורות\" class=\"nav-link\" data-scroll-target=\"#מקורות\">מקורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"}]</script>
 </head>
 
 <body class="nav-sidebar floating quarto-light">
@@ -824,33 +962,80 @@ window.Quarto = {
 </li>
     </ul>
     </div>
+    <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="-1">
+    <h2 id="toc-title">סעיפי הפרק</h2>
+   
+  <ul>
+  <li><a href="#sec-sets-membership" id="toc-sec-sets-membership" class="nav-link active" data-scroll-target="#sec-sets-membership"><span class="header-section-number">2.1</span> קבוצות, איברים ושייכות</a>
+  <ul>
+  <li><a href="#sec-set-basics" id="toc-sec-set-basics" class="nav-link" data-scroll-target="#sec-set-basics"><span class="header-section-number">2.1.1</span> מהי קבוצה?</a></li>
+  <li><a href="#sec-set-order" id="toc-sec-set-order" class="nav-link" data-scroll-target="#sec-set-order"><span class="header-section-number">2.1.2</span> סדר, חזרות ומספר האיברים</a></li>
+  <li><a href="#sec-set-builder" id="toc-sec-set-builder" class="nav-link" data-scroll-target="#sec-set-builder"><span class="header-section-number">2.1.3</span> מתארים קבוצה באמצעות תנאי</a></li>
+  <li><a href="#sec-empty-set" id="toc-sec-empty-set" class="nav-link" data-scroll-target="#sec-empty-set"><span class="header-section-number">2.1.4</span> הקבוצה הריקה וקבוצות בתוך קבוצות</a></li>
+  <li><a href="#sec-number-sets" id="toc-sec-number-sets" class="nav-link" data-scroll-target="#sec-number-sets"><span class="header-section-number">2.1.5</span> כמה קבוצות מספרים שימושיות</a></li>
+  </ul></li>
+  <li><a href="#sec-quantifiers" id="toc-sec-quantifiers" class="nav-link" data-scroll-target="#sec-quantifiers"><span class="header-section-number">2.2</span> כמתים</a>
+  <ul>
+  <li><a href="#sec-quantifier-basics" id="toc-sec-quantifier-basics" class="nav-link" data-scroll-target="#sec-quantifier-basics"><span class="header-section-number">2.2.1</span> מן האיבר אל הקבוצה כולה</a></li>
+  <li><a href="#sec-bar-again" id="toc-sec-bar-again" class="nav-link" data-scroll-target="#sec-bar-again"><span class="header-section-number">2.2.2</span> ״כולם״ ו״מישהו״ בשפת הכמתים</a></li>
+  <li><a href="#sec-evidence" id="toc-sec-evidence" class="nav-link" data-scroll-target="#sec-evidence"><span class="header-section-number">2.2.3</span> איזו הוכחה צריך?</a></li>
+  <li><a href="#sec-domain" id="toc-sec-domain" class="nav-link" data-scroll-target="#sec-domain"><span class="header-section-number">2.2.4</span> התחום חשוב</a></li>
+  <li><a href="#sec-neg-quantifiers" id="toc-sec-neg-quantifiers" class="nav-link" data-scroll-target="#sec-neg-quantifiers"><span class="header-section-number">2.2.5</span> שלילה של כמתים</a></li>
+  <li><a href="#sec-quantifier-order" id="toc-sec-quantifier-order" class="nav-link" data-scroll-target="#sec-quantifier-order"><span class="header-section-number">2.2.6</span> סדר הכמתים</a></li>
+  </ul></li>
+  <li><a href="#sec-set-equality-inclusion" id="toc-sec-set-equality-inclusion" class="nav-link" data-scroll-target="#sec-set-equality-inclusion"><span class="header-section-number">2.3</span> הכלה ושוויון קבוצות</a>
+  <ul>
+  <li><a href="#sec-set-subset" id="toc-sec-set-subset" class="nav-link" data-scroll-target="#sec-set-subset"><span class="header-section-number">2.3.1</span> קבוצה בתוך קבוצה</a></li>
+  <li><a href="#sec-double-inclusion" id="toc-sec-double-inclusion" class="nav-link" data-scroll-target="#sec-double-inclusion"><span class="header-section-number">2.3.2</span> מוכיחים שוויון בשתי הכלות</a></li>
+  <li><a href="#sec-membership-vs-inclusion" id="toc-sec-membership-vs-inclusion" class="nav-link" data-scroll-target="#sec-membership-vs-inclusion"><span class="header-section-number">2.3.3</span> שייכות אינה הכלה</a></li>
+  </ul></li>
+  <li><a href="#sec-union-intersection" id="toc-sec-union-intersection" class="nav-link" data-scroll-target="#sec-union-intersection"><span class="header-section-number">2.4</span> איחוד וחיתוך</a>
+  <ul>
+  <li><a href="#sec-intersection" id="toc-sec-intersection" class="nav-link" data-scroll-target="#sec-intersection"><span class="header-section-number">2.4.1</span> חיתוך: מי עומד בשתי הדרישות?</a></li>
+  <li><a href="#sec-union" id="toc-sec-union" class="nav-link" data-scroll-target="#sec-union"><span class="header-section-number">2.4.2</span> איחוד: מי עומד לפחות באחת הדרישות?</a></li>
+  <li><a href="#sec-venn" id="toc-sec-venn" class="nav-link" data-scroll-target="#sec-venn"><span class="header-section-number">2.4.3</span> רואים את האזורים</a></li>
+  <li><a href="#sec-inclusion-exclusion" id="toc-sec-inclusion-exclusion" class="nav-link" data-scroll-target="#sec-inclusion-exclusion"><span class="header-section-number">2.4.4</span> סופרים איחוד: עקרון ההכלה וההפרדה</a></li>
+  <li><a href="#sec-inclusion-exclusion-three" id="toc-sec-inclusion-exclusion-three" class="nav-link" data-scroll-target="#sec-inclusion-exclusion-three"><span class="header-section-number">2.4.5</span> ומה קורה עם שלוש קבוצות?</a></li>
+  </ul></li>
+  <li><a href="#sec-set-difference-complement" id="toc-sec-set-difference-complement" class="nav-link" data-scroll-target="#sec-set-difference-complement"><span class="header-section-number">2.5</span> הפרש, משלים והפרש סימטרי</a>
+  <ul>
+  <li><a href="#sec-difference" id="toc-sec-difference" class="nav-link" data-scroll-target="#sec-difference"><span class="header-section-number">2.5.1</span> הפרש: מתחילים מקבוצה ומוציאים איברים</a></li>
+  <li><a href="#sec-complement" id="toc-sec-complement" class="nav-link" data-scroll-target="#sec-complement"><span class="header-section-number">2.5.2</span> משלים: מי נשאר מחוץ לקבוצה, בתוך העולם?</a></li>
+  <li><a href="#sec-symmetric-difference" id="toc-sec-symmetric-difference" class="nav-link" data-scroll-target="#sec-symmetric-difference"><span class="header-section-number">2.5.3</span> הפרש סימטרי: בדיוק באחת</a></li>
+  <li><a href="#sec-set-laws" id="toc-sec-set-laws" class="nav-link" data-scroll-target="#sec-set-laws"><span class="header-section-number">2.5.4</span> כמה חוקים שימושיים</a></li>
+  </ul></li>
+  <li><a href="#sec-power-set" id="toc-sec-power-set" class="nav-link" data-scroll-target="#sec-power-set"><span class="header-section-number">2.6</span> קבוצת החזקה</a>
+  <ul>
+  <li><a href="#sec-all-subsets" id="toc-sec-all-subsets" class="nav-link" data-scroll-target="#sec-all-subsets"><span class="header-section-number">2.6.1</span> אוסף של כל הבחירות האפשריות</a></li>
+  <li><a href="#sec-subset-builder" id="toc-sec-subset-builder" class="nav-link" data-scroll-target="#sec-subset-builder"><span class="header-section-number">2.6.2</span> איך מוצאים את כולן בלי כפילויות?</a></li>
+  <li><a href="#sec-power-cardinality" id="toc-sec-power-cardinality" class="nav-link" data-scroll-target="#sec-power-cardinality"><span class="header-section-number">2.6.3</span> העצמה של קבוצת החזקה</a></li>
+  </ul></li>
+  <li><a href="#sec-cartesian-product" id="toc-sec-cartesian-product" class="nav-link" data-scroll-target="#sec-cartesian-product"><span class="header-section-number">2.7</span> זוגות סדורים ומכפלה קרטזית</a>
+  <ul>
+  <li><a href="#sec-ordered-pair" id="toc-sec-ordered-pair" class="nav-link" data-scroll-target="#sec-ordered-pair"><span class="header-section-number">2.7.1</span> כאן הסדר דווקא חשוב</a></li>
+  <li><a href="#sec-product-definition" id="toc-sec-product-definition" class="nav-link" data-scroll-target="#sec-product-definition"><span class="header-section-number">2.7.2</span> כל הצירופים של שתי בחירות</a></li>
+  <li><a href="#sec-product-properties" id="toc-sec-product-properties" class="nav-link" data-scroll-target="#sec-product-properties"><span class="header-section-number">2.7.3</span> הסדר, המספר והקבוצה הריקה</a></li>
+  </ul></li>
+  <li><a href="#sec-set-proofs" id="toc-sec-set-proofs" class="nav-link" data-scroll-target="#sec-set-proofs"><span class="header-section-number">2.8</span> משתמשים בכמתים כדי לנסח טענות על קבוצות</a>
+  <ul>
+  <li><a href="#sec-set-proof-goals" id="toc-sec-set-proof-goals" class="nav-link" data-scroll-target="#sec-set-proof-goals"><span class="header-section-number">2.8.1</span> מה צריך להראות?</a></li>
+  <li><a href="#sec-set-inclusion-proof" id="toc-sec-set-inclusion-proof" class="nav-link" data-scroll-target="#sec-set-inclusion-proof"><span class="header-section-number">2.8.2</span> דוגמה מלאה: מהחיתוך אל אחת הקבוצות</a></li>
+  <li><a href="#sec-set-equality-proof" id="toc-sec-set-equality-proof" class="nav-link" data-scroll-target="#sec-set-equality-proof"><span class="header-section-number">2.8.3</span> שוויון: אותם איברים בשני הכיוונים</a></li>
+  </ul></li>
+  <li><a href="#practice-sets" id="toc-practice-sets" class="nav-link" data-scroll-target="#practice-sets"><span class="header-section-number">2.9</span> תרגול עצמי: קבוצות</a>
+  <ul>
+  <li><a href="#practice-sets-membership" id="toc-practice-sets-membership" class="nav-link" data-scroll-target="#practice-sets-membership"><span class="header-section-number">2.9.1</span> שייכות והכלה</a></li>
+  <li><a href="#practice-sets-operations" id="toc-practice-sets-operations" class="nav-link" data-scroll-target="#practice-sets-operations"><span class="header-section-number">2.9.2</span> פעולות על קבוצות</a></li>
+  <li><a href="#practice-sets-counting" id="toc-practice-sets-counting" class="nav-link" data-scroll-target="#practice-sets-counting"><span class="header-section-number">2.9.3</span> עצמה וספירה</a></li>
+  <li><a href="#practice-sets-power-product" id="toc-practice-sets-power-product" class="nav-link" data-scroll-target="#practice-sets-power-product"><span class="header-section-number">2.9.4</span> קבוצות של קבוצות וזוגות</a></li>
+  </ul></li>
+  <li><a href="#practice-quantifiers" id="toc-practice-quantifiers" class="nav-link" data-scroll-target="#practice-quantifiers"><span class="header-section-number">2.10</span> תרגול עצמי: כמתים</a></li>
+  </ul>
+</nav>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
-    <h2 id="toc-title">תוכן העניינים</h2>
-   
-  <ul>
-  <li><a href="#sec-sets-membership" id="toc-sec-sets-membership" class="nav-link active" data-scroll-target="#sec-sets-membership"><span class="header-section-number">2.1</span> קבוצות, איברים ושייכות</a></li>
-  <li><a href="#sec-set-equality-inclusion" id="toc-sec-set-equality-inclusion" class="nav-link" data-scroll-target="#sec-set-equality-inclusion"><span class="header-section-number">2.2</span> שוויון קבוצות והכלה</a></li>
-  <li><a href="#sec-set-union-intersection" id="toc-sec-set-union-intersection" class="nav-link" data-scroll-target="#sec-set-union-intersection"><span class="header-section-number">2.3</span> איחוד וחיתוך</a></li>
-  <li><a href="#sec-set-difference-complement" id="toc-sec-set-difference-complement" class="nav-link" data-scroll-target="#sec-set-difference-complement"><span class="header-section-number">2.4</span> הפרש, משלים והפרש סימטרי</a></li>
-  <li><a href="#sec-power-set" id="toc-sec-power-set" class="nav-link" data-scroll-target="#sec-power-set"><span class="header-section-number">2.5</span> קבוצת החזקה</a></li>
-  <li><a href="#sec-cartesian-product" id="toc-sec-cartesian-product" class="nav-link" data-scroll-target="#sec-cartesian-product"><span class="header-section-number">2.6</span> זוגות סדורים ומכפלה קרטזית</a></li>
-  <li><a href="#sec-quantifiers" id="toc-sec-quantifiers" class="nav-link" data-scroll-target="#sec-quantifiers"><span class="header-section-number">2.7</span> כמתים</a>
-  <ul>
-  <li><a href="#sec-bar" id="toc-sec-bar" class="nav-link" data-scroll-target="#sec-bar"><span class="header-section-number">2.7.1</span> שלושה מתמטיקאים ניגשים לדוכן פלאפל</a></li>
-  <li><a href="#sec-bar-again" id="toc-sec-bar-again" class="nav-link" data-scroll-target="#sec-bar-again"><span class="header-section-number">2.7.2</span> ״כולם״ ו״מישהו״ בשפת הכמתים</a></li>
-  <li><a href="#sec-evidence" id="toc-sec-evidence" class="nav-link" data-scroll-target="#sec-evidence"><span class="header-section-number">2.7.3</span> איזו הוכחה צריך?</a></li>
-  <li><a href="#sec-domain" id="toc-sec-domain" class="nav-link" data-scroll-target="#sec-domain"><span class="header-section-number">2.7.4</span> התחום חשוב</a></li>
-  <li><a href="#sec-neg-quantifiers" id="toc-sec-neg-quantifiers" class="nav-link" data-scroll-target="#sec-neg-quantifiers"><span class="header-section-number">2.7.5</span> שלילה של כמתים</a></li>
-  <li><a href="#sec-quantifier-order" id="toc-sec-quantifier-order" class="nav-link" data-scroll-target="#sec-quantifier-order"><span class="header-section-number">2.7.6</span> סדר הכמתים</a></li>
-  </ul></li>
-  <li><a href="#sec-set-proofs" id="toc-sec-set-proofs" class="nav-link" data-scroll-target="#sec-set-proofs"><span class="header-section-number">2.8</span> משתמשים בכמתים כדי לנסח טענות על קבוצות</a></li>
-  <li><a href="#practice-quantifiers" id="toc-practice-quantifiers" class="nav-link" data-scroll-target="#practice-quantifiers"><span class="header-section-number">2.9</span> תרגול עצמי: כמתים</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -874,43 +1059,419 @@ window.Quarto = {
 </header>
 
 
+<p>בפרק הקודם דימינו את שפת המתמטיקה לשפה שיש בה אוצר מילים וכללים לחיבור משפטים. הכרנו כמה מכללי הלוגיקה; כעת נוסיף לאוצר המילים מושג בסיסי: <strong>קבוצה</strong>.</p>
+<p>גם בשפה היומיומית יש מילים שמאפשרות לדבר על אוספים. כשאומרים ״כלי נגינה״, ״רהיטים״ או ״שחקני שחמט״, אפשר לדבר על כל העצמים מהסוג הזה, בלי למנות כל אחד בנפרד. כך גם במתמטיקה: לעיתים רוצים לדבר על אוסף של מספרים או של עצמים אחרים, ולבדוק מה משותף להם או במה שני אוספים נבדלים.</p>
+<p><span class="key-rule"><strong>קבוצה מאפשרת להתייחס לאוסף כאל עצם אחד.</strong></span> אפשר לתת לאוסף שם, לבדוק מה שייך אליו ולהשוות אותו לאוספים אחרים. למשל, במקום לחזור בכל פעם על רשימת הנרשמים לקורס, אפשר לדבר על ״קבוצת הנרשמים״ ולשאול אם סטודנט מסוים שייך אליה.</p>
 <section id="sec-sets-membership" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="sec-sets-membership"><span class="header-section-number">2.1</span> קבוצות, איברים ושייכות</h2>
-<p>TODO</p>
+<section id="sec-set-basics" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="sec-set-basics"><span class="header-section-number">2.1.1</span> מהי קבוצה?</h3>
+<p>כשמתארים אוסף במתמטיקה, צריך שיהיה ברור מה נכלל בו ומה לא. שם כמו ״המספרים הזוגיים״ נותן תנאי ברור; שם כמו ״המספרים היפים״ עדיין משאיר שאלה: מה נחשב יפה?</p>
+<div class="thmbox thmbox-definition" title="קבוצה ואיבר">
+<p><strong>הגדרה 2.1.1 — קבוצה ואיבר.</strong></p>
+<p><span class="term"><strong>קבוצה</strong></span> היא אוסף של עצמים שמוגדר בבירור אילו עצמים שייכים אליו. העצמים שבקבוצה נקראים <span class="term"><strong>איברים</strong></span>.</p>
+<p>אפשר לתאר קבוצה באמצעות רשימת איבריה בתוך <strong>סוגריים מסולסלים</strong>. למשל:</p>
+<p><span class="math display">\[A=\{2,5,8\}.\]</span></p>
+<p>האות <span class="math inline">\(A\)</span> היא שם הקבוצה. איבריה הם המספרים <span class="math inline">\(2\)</span>, <span class="math inline">\(5\)</span> ו־<span class="math inline">\(8\)</span>.</p>
+</div>
+<p>האיברים אינם חייבים להיות מספרים. למשל, אפשר לדבר גם על קבוצת הסטודנטים שנרשמו לקורס או על קבוצת ימי השבוע.</p>
+<div class="thmbox thmbox-definition" title="שייכות ואי־שייכות">
+<p><strong>הגדרה 2.1.2 — שייכות ואי־שייכות.</strong></p>
+<p>הסימון <span class="math inline">\(x\in A\)</span> אומר: ״<span class="math inline">\(x\)</span> <span class="term"><strong>שייך</strong></span> ל־<span class="math inline">\(A\)</span>״, כלומר <span class="math inline">\(x\)</span> הוא איבר של <span class="math inline">\(A\)</span>.</p>
+<p>הסימון <span class="math inline">\(x\notin A\)</span> אומר: ״<span class="math inline">\(x\)</span> <span class="term"><strong>אינו שייך</strong></span> ל־<span class="math inline">\(A\)</span>״.</p>
+<p>למשל, עבור <span class="math inline">\(A=\{2,5,8\}\)</span>, מתקיים <span class="math inline">\(5\in A\)</span> וגם <span class="math inline">\(3\notin A\)</span>.</p>
+</div>
+<p><span class="key-rule"><strong>כדי להגדיר קבוצה, צריך לקבוע מי איבר שלה ומי אינו איבר שלה.</strong></span> לכל עצם מסוים <span class="math inline">\(a\)</span> בתחום שבו דנים, הטענה <span class="math inline">\(a\in A\)</span> צריכה להיות פסוק בעל ערך אמת מוגדר: אמת או שקר. זהו הקשר לפסוקים מהפרק הקודם.</p>
+<p><strong>ערך אמת מוגדר אינו אומר שאנחנו בהכרח יודעים אותו.</strong> ייתכן שהקבוצה מוגדרת היטב, אבל עדיין לא בדקנו אם עצם מסוים שייך אליה.</p>
+<p><span class="key-rule"><strong>קבוצה נקבעת על פי איבריה.</strong></span> כלומר, מה שקובע איזו קבוצה זו הוא מה שייך אליה ומה אינו שייך אליה — ולא השם שנתנו לה או מה ידוע לנו עליה. מכאן נובע כיצד משווים בין קבוצות:</p>
+<div id="sec-set-equality" class="thmbox thmbox-definition" title="שוויון קבוצות">
+<p><strong>הגדרה 2.1.3 — שוויון קבוצות.</strong></p>
+<p>שתי קבוצות <span class="math inline">\(A\)</span> ו־<span class="math inline">\(B\)</span> <span class="term"><strong>שוות</strong></span>, ומסמנים <span class="math inline">\(A=B\)</span>, כאשר יש להן <strong>בדיוק אותם איברים</strong>. כלומר, כל עצם ששייך לאחת מהן שייך גם לאחרת.</p>
+<p>כדי להראות שאינן שוות, מספיק למצוא איבר ששייך לאחת מהן ואינו שייך לאחרת. מסמנים זאת <span class="math inline">\(A\ne B\)</span>.</p>
+</div>
+<div class="thmbox thmbox-example" title="האם התיאור מגדיר קבוצה?">
+<p><strong>דוגמה 2.1.4 — האם התיאור מגדיר קבוצה?</strong></p>
+<p><strong>א.</strong> <strong>המספרים הזוגיים.</strong> מספר שלם נקרא זוגי אם הוא מתחלק ב־<span class="math inline">\(2\)</span> ללא שארית. האם זהו תנאי ברור לשייכות?</p>
+<div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="בחירת תשובה לסעיף א">
+<button type="button" class="tf-opt" data-val="0">
+כן
+</button>
+<button type="button" class="tf-opt" data-val="1">
+לא
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>כן. למשל, <span class="math inline">\(6\)</span> שייך לקבוצת המספרים הזוגיים ו־<span class="math inline">\(7\)</span> אינו שייך אליה. לכל מספר שלם יש תשובה מוגדרת, גם אם לא חישבנו אותה עדיין.</p>
+</div>
+</div>
+<p><strong>ב.</strong> <strong>המספרים היפים.</strong> האם התיאור הזה מספיק כדי להגדיר קבוצה?</p>
+<div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="בחירת תשובה לסעיף ב">
+<button type="button" class="tf-opt" data-val="0">
+כן
+</button>
+<button type="button" class="tf-opt" data-val="1">
+לא בלי להגדיר מה נחשב יפה
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>לא בלי הסבר נוסף: לא קבענו מה פירוש ״מספר יפה״. אם נסכים, למשל, שבתרגיל הזה ״יפה״ פירושו מספר שלם שספרת האחדות שלו היא <span class="math inline">\(7\)</span>, נקבל תנאי ברור וקבוצה מוגדרת. הבעיה אינה בשם ״יפה״, אלא בהיעדר תנאי מוסכם.</p>
+</div>
+</div>
+<p><strong>ג.</strong> <strong>כלי הנגינה בחדר.</strong> לא ברור אם גם הקול של הזמר נכלל. מה צריך לעשות כדי להגדיר את הקבוצה?</p>
+<div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="בחירת תשובה לסעיף ג">
+<button type="button" class="tf-opt" data-val="0">
+לקבוע מה נחשב כלי נגינה או לתת רשימת איברים
+</button>
+<button type="button" class="tf-opt" data-val="1">
+לתת לכל אחד לבחור לפי טעמו
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>צריך לקבוע מה נחשב כאן כלי נגינה. אפשר להחליט שסופרים רק חפצים שנועדו לנגינה, או לתת רשימה מפורשת: הגיטרה, התוף והפסנתר שבחדר. אין צורך להכריע בוויכוח מוזיקלי; צריך שההגדרה שבה משתמשים תקבע מה שייך לאוסף.</p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-example" title="בודקים את הרשימה, לא מנחשים">
+<p><strong>דוגמה 2.1.5 — בודקים את הרשימה, לא מנחשים.</strong></p>
+<p>תהי <span class="math inline">\(A=\{1,4,9\}\)</span>. קבעו אמת או שקר לכל טענה:</p>
+<p><strong>א.</strong> <span class="math inline">\(9\in A\)</span>.</p>
+<div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="בחירת תשובה לסעיף א">
+<button type="button" class="tf-opt" data-val="0">
+אמת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+שקר
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p><span class="math inline">\(9\)</span> מופיע ברשימה, ולכן <span class="math inline">\(9\in A\)</span> הוא פסוק אמת.</p>
+</div>
+</div>
+<p><strong>ב.</strong> <span class="math inline">\(6\in A\)</span>.</p>
+<div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="בחירת תשובה לסעיף ב">
+<button type="button" class="tf-opt" data-val="0">
+אמת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+שקר
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p><span class="math inline">\(6\)</span> אינו מופיע ברשימה, ולכן <span class="math inline">\(6\in A\)</span> הוא פסוק שקר. בקבוצה נמצאים רק האיברים שצוינו; לא כל המספרים שבין <span class="math inline">\(1\)</span> ל־<span class="math inline">\(9\)</span>.</p>
+</div>
+</div>
+</div>
 </section>
-<section id="sec-set-equality-inclusion" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="sec-set-equality-inclusion"><span class="header-section-number">2.2</span> שוויון קבוצות והכלה</h2>
-<p>TODO</p>
+<section id="sec-set-order" class="level3" data-number="2.1.2">
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="sec-set-order"><span class="header-section-number">2.1.2</span> סדר, חזרות ומספר האיברים</h3>
+<p>לפי הגדרת השוויון, בודקים אילו איברים שייכים לכל קבוצה. נשתמש בכך כדי לבדוק אם חזרה על אותו איבר משנה את הקבוצה.</p>
+<div class="thmbox thmbox-example" title="אפשר להתעשר בעזרת סוגריים מסולסלים?">
+<p><strong>דוגמה 2.1.6 — אפשר להתעשר בעזרת סוגריים מסולסלים?</strong></p>
+<p>נשתמש בתמונת השקל כסמל לאיבר אחד. השוו את שתי הכתיבות:</p>
+<div class="coin-sets">
+  <div class="coin-set" role="img" aria-label="A: קבוצה שבה סמל השקל נכתב ארבע פעמים">
+    <span class="coin-set-name">A =</span><span class="coin-brace">{</span>
+    <span class="coin-elements"><img src="images/shekel.png" alt=""><span>,</span><img src="images/shekel.png" alt=""><span>,</span><img src="images/shekel.png" alt=""><span>,</span><img src="images/shekel.png" alt=""></span>
+    <span class="coin-brace">}</span>
+  </div>
+  <div class="coin-set" role="img" aria-label="B: קבוצה שבה סמל השקל נכתב פעם אחת">
+    <span class="coin-set-name">B =</span><span class="coin-brace">{</span>
+    <span class="coin-elements"><img src="images/shekel.png" alt=""></span>
+    <span class="coin-brace">}</span>
+  </div>
+</div>
+<p><strong>האם זו אותה קבוצה?</strong></p>
+<div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="האם שתי קבוצות השקלים שוות?">
+<button type="button" class="tf-opt" data-val="0">
+כן
+</button>
+<button type="button" class="tf-opt" data-val="1">
+לא
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p><strong>כן.</strong> סמל השקל שייך לשתי הקבוצות, וכל עצם אחר אינו שייך לאף אחת מהן. לכל עצם מתקבלת אותה תשובה לשאלת השייכות — ולכן זו אותה קבוצה.</p>
+<p>אם רק היה אפשר למלא ככה גם את הארנק…</p>
+</div>
+</div>
+</div>
+<p><span class="key-rule"><strong>חזרה על אותו איבר אינה משנה את הקבוצה.</strong></span> השייכות אומרת ״כן״ או ״לא״, ולא כמה פעמים כתבנו את האיבר. מאותה סיבה, גם <span class="term"><strong>הסדר אינו משנה</strong></span>: הזזת איבר ברשימה אינה משנה אם הוא שייך לקבוצה.</p>
+<p>כך גם במספרים: אפשר לשנות את הסדר או לחזור על איבר, ועדיין לקבל אותה קבוצה:</p>
+<p><span class="math display">\[\{3,6,10\}=\{10,3,6\}=\{3,6,6,10\}.\]</span></p>
+<div class="thmbox thmbox-terminology" title="מספר אי־שלילי">
+<p><strong>מונח חדש 2.1.7 — מספר אי־שלילי.</strong></p>
+<p>מספר <span class="term"><strong>אי־שלילי</strong></span> הוא מספר שאינו שלילי: הוא חיובי או אפס. למשל, <span class="math inline">\(0\)</span>, <span class="math inline">\(3\)</span> ו־<span class="math inline">\(\tfrac12\)</span> הם אי־שליליים; <span class="math inline">\(-2\)</span> אינו אי־שלילי. כותבים <span class="math inline">\(x\ge 0\)</span>. שימו לב: <strong>אפס הוא אי־שלילי, אבל אינו חיובי.</strong></p>
+</div>
+<div class="thmbox thmbox-terminology" data-terms="plural" title="קבוצה סופית, קבוצה אינסופית ויחידון">
+<p><strong>מונחים חדשים 2.1.8 — קבוצה סופית, קבוצה אינסופית ויחידון.</strong></p>
+<ul>
+<li>קבוצה היא <span class="term"><strong>סופית</strong></span> אם יש בה מספר סופי של איברים: אפשר למנות את כולם ולסיים. למשל, בקבוצת ימי השבוע יש שבעה איברים.</li>
+<li>קבוצה שאינה סופית נקראת <span class="term"><strong>אינסופית</strong></span>. למשל, קבוצת המספרים הזוגיים שאינם שליליים היא <span class="math inline">\(\{0,2,4,6,\ldots\}\)</span>. שלוש הנקודות אומרות שממשיכים באותו כלל: מוסיפים בכל פעם <span class="math inline">\(2\)</span>. אין בקבוצה הזאת מספר אחרון — לכל מספר בה יש מספר גדול ממנו שגם הוא שייך אליה.</li>
+<li>קבוצה שיש בה איבר אחד נקראת <span class="term"><strong>יחידון</strong></span>.</li>
+</ul>
+</div>
+<p>גם קבוצה אינסופית יכולה להיות מוגדרת היטב: בקבוצה שבדוגמה, <span class="math inline">\(12\)</span> שייך ו־<span class="math inline">\(13\)</span> אינו שייך. יש כלל ברור לשייכות, אף שאי אפשר לכתוב את כל האיברים ולסיים.</p>
+<div class="thmbox thmbox-definition" title="עצמה של קבוצה סופית">
+<p><strong>הגדרה 2.1.9 — עצמה של קבוצה סופית.</strong></p>
+<p>ה<span class="term"><strong>עצמה</strong></span> של קבוצה סופית <span class="math inline">\(A\)</span> היא מספר האיברים השונים שלה. מסמנים אותה <span class="math inline">\(|A|\)</span> וקוראים ״העצמה של <span class="math inline">\(A\)</span>״. למשל:</p>
+<p><span class="math display">\[A=\{2,5,8\}\quad\Longrightarrow\quad |A|=3.\]</span></p>
+<p><span class="math inline">\(A\)</span> היא <strong>קבוצה</strong>; <span class="math inline">\(|A|\)</span> הוא <strong>מספר</strong>. הקווים אינם מציינים כאן ערך מוחלט.</p>
+</div>
+<p>המושג עצמה משמש גם לקבוצות אינסופיות, אבל כאן נעסוק בספירת איברים בקבוצות סופיות.</p>
+<p><strong>אותו מספר איברים אינו מספיק לשוויון.</strong> הקבוצות <span class="math inline">\(\{1,4\}\)</span> ו־<span class="math inline">\(\{1,7\}\)</span> מכילות שתיהן שני איברים, אך אינן שוות: <span class="math inline">\(4\)</span> שייך לראשונה ואינו שייך לשנייה.</p>
+<div class="thmbox thmbox-warning" title="מספר וקבוצה שמכילה אותו הם עצמים שונים">
+<p><strong>שימו לב — מספר וקבוצה שמכילה אותו הם עצמים שונים.</strong></p>
+<p>אפשר לדמיין קבוצה כקופסה, ואת איבריה כעצמים שנמצאים בה. המספר <span class="math inline">\(3\)</span> הוא עצם אחד; <span class="math inline">\(\{3\}\)</span> היא <strong>קופסה שמכילה את המספר <span class="math inline">\(3\)</span></strong>. המספר והקופסה אינם אותו עצם.</p>
+<p>יש הבדל מקופסה רגילה או מרשימה: <span class="key-rule"><strong>בקבוצה כל איבר מופיע פעם אחת בלבד.</strong></span> אפשר לכתוב שוב את אותו איבר, אבל אין בכך תוספת לקבוצה. גם הסדר אינו משנה. הקופסאות בציור עוזרות רק להבחין בין איבר לבין קבוצה שמכילה אותו.</p>
+</div>
+<div id="box-exm-set-boxes" class="thmbox thmbox-example" title="מספר בקופסה, או קופסה בתוך קופסה?">
+<p><strong>דוגמה 2.1.10 — מספר בקופסה, או קופסה בתוך קופסה?</strong></p>
+<p>ב־<span class="math inline">\(A\)</span> נמצאים המספרים <span class="math inline">\(1,2,3\)</span>. ב־<span class="math inline">\(B\)</span> נמצאים המספרים <span class="math inline">\(1,2\)</span> והקבוצה <span class="math inline">\(\{3\}\)</span>:</p>
+<div class="set-box-diagram" dir="ltr" role="img" aria-label="בקבוצה A שלושה מספרים: 1, 2, 3. בקבוצה B נמצאים 1, 2, וקופסה פנימית שמכילה את 3.">
+  <div class="set-box-panel"><strong>A = {1, 2, 3}</strong><div class="set-container"><span class="set-number">1</span><span class="set-number">2</span><span class="set-number">3</span></div></div>
+  <div class="set-box-panel"><strong>B = {1, 2, {3}}</strong><div class="set-container"><span class="set-number">1</span><span class="set-number">2</span><div class="set-container set-inner"><small>{3}</small><span class="set-number">3</span></div></div></div>
+</div>
+<p>בשאלת שייכות מסתכלים על האיברים <strong>שבתוך הקופסה החיצונית, בלי לפתוח קופסאות פנימיות</strong>. קבעו אמת או שקר:</p>
+<p><strong>א.</strong> <span class="math inline">\(3\in A\)</span>.</p>
+<div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="המספר 3 בקבוצה A">
+<button type="button" class="tf-opt" data-val="0">
+אמת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+שקר
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>אמת. המספר <span class="math inline">\(3\)</span> עצמו הוא אחד משלושת האיברים של <span class="math inline">\(A\)</span>.</p>
+</div>
+</div>
+<p><strong>ב.</strong> <span class="math inline">\(\{3\}\in A\)</span>.</p>
+<div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="הקבוצה המכילה 3 בקבוצה A">
+<button type="button" class="tf-opt" data-val="0">
+אמת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+שקר
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>שקר. ב־<span class="math inline">\(A\)</span> יש מספרים בלבד. הקבוצה <span class="math inline">\(\{3\}\)</span> אינה אחד האיברים שלה.</p>
+</div>
+</div>
+<p><strong>ג.</strong> <span class="math inline">\(\{3\}\in B\)</span>.</p>
+<div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="הקבוצה המכילה 3 בקבוצה B">
+<button type="button" class="tf-opt" data-val="0">
+אמת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+שקר
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>אמת. הקבוצה <span class="math inline">\(\{3\}\)</span> היא אחד האיברים של <span class="math inline">\(B\)</span>: זו הקופסה הפנימית שבציור.</p>
+</div>
+</div>
+<p><strong>ד.</strong> <span class="math inline">\(3\in B\)</span>.</p>
+<div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="המספר 3 בקבוצה B">
+<button type="button" class="tf-opt" data-val="0">
+אמת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+שקר
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>שקר. האיברים של <span class="math inline">\(B\)</span> הם <span class="math inline">\(1\)</span>, <span class="math inline">\(2\)</span> ו־<span class="math inline">\(\{3\}\)</span>. המספר <span class="math inline">\(3\)</span> נמצא בתוך האיבר <span class="math inline">\(\{3\}\)</span>, אך אינו בעצמו איבר של <span class="math inline">\(B\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-question" title="מי באמת ברשימה?">
+<p><strong>שאלה 2.1.11 — מי באמת ברשימה?</strong></p>
+<div class="sets-exercise" data-sets="membership">
+<p>בחרו אמת או שקר: עבור <span class="math inline">\(A=\{1,4,7\}\)</span>, בדקו <span class="math inline">\(4\in A\)</span>, <span class="math inline">\(2\in A\)</span> ו־<span class="math inline">\(\{4\}\in A\)</span>. הבדיקה האינטראקטיבית זמינה כאשר JavaScript פעיל.</p>
+</div>
+</div>
+<div class="thmbox thmbox-question" title="סופרים איברים שונים">
+<p><strong>שאלה 2.1.12 — סופרים איברים שונים.</strong></p>
+<div class="sets-exercise" data-sets="cardinality">
+<p>הקלידו את מספר האיברים בכל קבוצה וכתבו את איבריה בתוך סוגריים מסולסלים. לאחר מכן בדקו אם קבוצות בעלות אותה עצמה חייבות להיות שוות.</p>
+</div>
+</div>
 </section>
-<section id="sec-set-union-intersection" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="sec-set-union-intersection"><span class="header-section-number">2.3</span> איחוד וחיתוך</h2>
-<p>TODO</p>
+<section id="sec-set-builder" class="level3" data-number="2.1.3">
+<h3 data-number="2.1.3" class="anchored" data-anchor-id="sec-set-builder"><span class="header-section-number">2.1.3</span> מתארים קבוצה באמצעות תנאי</h3>
+<p>לא תמיד נוח להעתיק רשימה ארוכה. אפשר לתת <strong>תנאי קבלה</strong>: בוחרים עולם של מועמדים, ולוקחים ממנו את כל מי שעומד בתנאי.</p>
+<p>נבחר <span class="math inline">\(D=\{0,1,2,3,4,5,6\}\)</span> ונחפש את המספרים שגדולים מ־<span class="math inline">\(2\)</span>. זהו אותו רעיון של הצבה בפסוק פתוח מהפרק הקודם: מציבים מספר ב־<span class="math inline">\(x&gt;2\)</span>, ובודקים אם מתקבל אמת.</p>
+<div class="thmbox thmbox-definition" title="קבוצה המוגדרת באמצעות תנאי">
+<p><strong>הגדרה 2.1.13 — קבוצה המוגדרת באמצעות תנאי.</strong></p>
+<p><span class="math display">\[A=\{x\in D\mid x&gt;2\}.\]</span></p>
+<p>קוראים: ״<span class="math inline">\(A\)</span> היא קבוצת כל ה־<span class="math inline">\(x\)</span> מתוך <span class="math inline">\(D\)</span> שעבורם <span class="math inline">\(x&gt;2\)</span>״.</p>
+<ul>
+<li><span class="math inline">\(x\in D\)</span> אומר <strong>מאיפה בוחרים</strong> את המועמדים.</li>
+<li>הקו <span class="math inline">\(\mid\)</span> נקרא כאן ״<span class="term"><strong>כך ש־</strong></span>״. הוא מפריד בין המועמדים לתנאי.</li>
+<li><span class="math inline">\(x&gt;2\)</span> אומר <strong>איזה מבחן צריך לעבור</strong>.</li>
+</ul>
+<p>לכן במקרה הזה <span class="math inline">\(A=\{3,4,5,6\}\)</span>. לעיתים כותבים נקודתיים במקום הקו: <span class="math inline">\(\{x\in D:x&gt;2\}\)</span>.</p>
+</div>
+<div class="thmbox thmbox-example" title="מי עובר את מבחן הקבלה?">
+<p><strong>דוגמה 2.1.14 — מי עובר את מבחן הקבלה?</strong></p>
+<p>עבור <span class="math inline">\(D=\{0,1,2,3,4,5,6\}\)</span>, נגדיר <span class="math inline">\(B=\{x\in D\mid x+1=4\}\)</span>.</p>
+<p><strong>א.</strong> הטענה <span class="math inline">\(3\in B\)</span> — אמת או שקר?</p>
+<div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="בחירת תשובה לסעיף א">
+<button type="button" class="tf-opt" data-val="0">
+אמת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+שקר
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>כן. <span class="math inline">\(3\)</span> שייך ל־<span class="math inline">\(D\)</span>, ולאחר ההצבה מתקבל <span class="math inline">\(3+1=4\)</span>, שהוא פסוק אמת.</p>
+</div>
+</div>
+<p><strong>ב.</strong> מהי הקבוצה <span class="math inline">\(B\)</span> כולה?</p>
+<div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="בחירת תשובה לסעיף ב">
+<button type="button" class="tf-opt" data-val="0">
+({4})
+</button>
+<button type="button" class="tf-opt" data-val="1">
+({3})
+</button>
+<button type="button" class="tf-opt" data-val="2">
+({0,1,2,3})
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>רק <span class="math inline">\(3\)</span> עובר את הבדיקה, ולכן <span class="math inline">\(B=\{3\}\)</span>. התשובה היא קבוצה, ולכן הסוגריים חשובים.</p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-game" title="מסננת המספרים">
+<p><strong>משחק 2.1.15 — מסננת המספרים.</strong></p>
+<div class="sets-exercise" data-sets="filter">
+<p>מתוך <span class="math inline">\(D=\{0,1,2,3,4,5,6\}\)</span>, בחרו את כל המספרים שמקיימים <span class="math inline">\(x&gt;2\)</span> וגם <span class="math inline">\(x&lt;6\)</span>.</p>
+</div>
+</div>
 </section>
-<section id="sec-set-difference-complement" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="sec-set-difference-complement"><span class="header-section-number">2.4</span> הפרש, משלים והפרש סימטרי</h2>
-<p>TODO</p>
+<section id="sec-empty-set" class="level3" data-number="2.1.4">
+<h3 data-number="2.1.4" class="anchored" data-anchor-id="sec-empty-set"><span class="header-section-number">2.1.4</span> הקבוצה הריקה וקבוצות בתוך קבוצות</h3>
+<p>מה קורה אם אף מועמד אינו עובר את המבחן? למשל, מתוך <span class="math inline">\(D=\{0,1,2,3\}\)</span> אין מספר שגדול מ־<span class="math inline">\(10\)</span>. לא צריך להמציא איבר שימלא את המקום.</p>
+<div class="thmbox thmbox-definition" title="הקבוצה הריקה">
+<p><strong>הגדרה 2.1.16 — הקבוצה הריקה.</strong></p>
+<p>הקבוצה שאין בה אף איבר נקראת <span class="term"><strong>הקבוצה הריקה</strong></span>. מסמנים אותה <span class="math inline">\(\varnothing\)</span>, או כותבים <span class="math inline">\(\{\}\)</span>. מספר איבריה הוא <span class="math inline">\(0\)</span>.</p>
+</div>
+<div class="thmbox thmbox-example" title="קופסה ריקה בתוך קופסה">
+<p><strong>דוגמה 2.1.17 — קופסה ריקה בתוך קופסה.</strong></p>
+<p><strong>א.</strong> כמה איברים יש ב־<span class="math inline">\(\varnothing\)</span>?</p>
+<div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="בחירת תשובה לסעיף א">
+<button type="button" class="tf-opt" data-val="0">
+0
+</button>
+<button type="button" class="tf-opt" data-val="1">
+1
+</button>
+<button type="button" class="tf-opt" data-val="2">
+2
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>אין איברים: <span class="math inline">\(|\varnothing|=0\)</span>.</p>
+</div>
+</div>
+<p><strong>ב.</strong> כמה איברים יש ב־<span class="math inline">\(\{\varnothing\}\)</span>?</p>
+<div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="בחירת תשובה לסעיף ב">
+<button type="button" class="tf-opt" data-val="0">
+0
+</button>
+<button type="button" class="tf-opt" data-val="1">
+1
+</button>
+<button type="button" class="tf-opt" data-val="2">
+2
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>יש איבר אחד — הקבוצה הריקה: <span class="math inline">\(|\{\varnothing\}|=1\)</span>. אפשר לדמיין קופסה שבתוכה קופסה ריקה. הקופסה החיצונית אינה ריקה!</p>
+</div>
+</div>
+</div>
+<p><span class="key-rule"><strong>גם קבוצה יכולה להיות איבר של קבוצה אחרת.</strong></span> למשל, ב־<span class="math inline">\(\{1,\{2\},\varnothing\}\)</span> יש שלושה איברים: המספר <span class="math inline">\(1\)</span>, הקבוצה <span class="math inline">\(\{2\}\)</span> והקבוצה הריקה. המספר <span class="math inline">\(2\)</span> אינו מופיע כאיבר בפני עצמו ברשימה החיצונית.</p>
+<div class="thmbox thmbox-question" title="סופרים רק ברמה הנכונה">
+<p><strong>שאלה 2.1.18 — סופרים רק ברמה הנכונה.</strong></p>
+<div class="sets-exercise" data-sets="empty">
+<p>בדקו כמה איברים יש ב־<span class="math inline">\(\varnothing\)</span> וב־<span class="math inline">\(\{\varnothing\}\)</span>, ואילו איברים יש ב־<span class="math inline">\(\{1,\{2\},\varnothing\}\)</span>.</p>
+</div>
+</div>
 </section>
-<section id="sec-power-set" class="level2" data-number="2.5">
-<h2 data-number="2.5" class="anchored" data-anchor-id="sec-power-set"><span class="header-section-number">2.5</span> קבוצת החזקה</h2>
-<p>TODO</p>
+<section id="sec-number-sets" class="level3" data-number="2.1.5">
+<h3 data-number="2.1.5" class="anchored" data-anchor-id="sec-number-sets"><span class="header-section-number">2.1.5</span> כמה קבוצות מספרים שימושיות</h3>
+<div class="thmbox thmbox-terminology" data-terms="plural" title="שמות קבועים לקבוצות מספרים">
+<p><strong>מונחים חדשים 2.1.19 — שמות קבועים לקבוצות מספרים.</strong></p>
+<ul>
+<li><span class="math inline">\(\mathbb{N}=\{0,1,2,3,\ldots\}\)</span> — המספרים <span class="term"><strong>הטבעיים</strong></span>. <strong>במערכים האלה כוללים את <span class="math inline">\(0\)</span>.</strong> יש ספרים שמשתמשים במוסכמה אחרת.</li>
+<li><span class="math inline">\(\mathbb{Z}=\{\ldots,-2,-1,0,1,2,\ldots\}\)</span> — המספרים <span class="term"><strong>השלמים</strong></span>, כולל השליליים.</li>
+<li><span class="math inline">\(\mathbb{Q}\)</span> — המספרים <span class="term"><strong>הרציונליים</strong></span>: מספרים שאפשר לכתוב כשבר של שני שלמים, עם מכנה שאינו אפס. למשל, <span class="math inline">\(\tfrac12\)</span> וגם <span class="math inline">\(3=\tfrac31\)</span>.</li>
+<li><span class="math inline">\(\mathbb{R}\)</span> — המספרים <span class="term"><strong>הממשיים</strong></span>: המספרים שעל ישר המספרים. הם כוללים גם מספרים שאינם רציונליים, למשל <span class="math inline">\(\sqrt2\)</span> — המספר החיובי שריבועו <span class="math inline">\(2\)</span>.</li>
+</ul>
+<p>שלוש הנקודות מציינות שהרשימה ממשיכה לפי התיאור שניתן. בקבוצות האלה אין מספר סופי של איברים; הן <span class="term"><strong>אינסופיות</strong></span>.</p>
+</div>
+<p>אין צורך ללמוד עכשיו תכונות חדשות של כל המספרים האלה. השמות יעזרו לציין תחום ברור. למשל, <span class="math inline">\(\{x\in\mathbb{Z}\mid 0\le x&lt;4\}=\{0,1,2,3\}\)</span>. הסימן <span class="math inline">\(\le\)</span> כולל שוויון, ואילו <span class="math inline">\(&lt;\)</span> אינו כולל אותו.</p>
+<div class="thmbox thmbox-summary" title="קבוצות ושייכות">
+<p><strong>סיכום — קבוצות ושייכות.</strong></p>
+<ul>
+<li><span class="math inline">\(x\in A\)</span> אומר ש־<span class="math inline">\(x\)</span> הוא איבר של <span class="math inline">\(A\)</span>; <span class="math inline">\(x\notin A\)</span> אומר שאינו איבר שלה.</li>
+<li>קבוצות שוות כאשר יש להן בדיוק אותם איברים. לכן סדר וחזרות אינם משנים קבוצה.</li>
+<li><span class="math inline">\(x\)</span> ו־<span class="math inline">\(\{x\}\)</span> אינם אותו דבר.</li>
+<li>קבוצה יכולה להיות סופית או אינסופית. העצמה <span class="math inline">\(|A|\)</span> של קבוצה סופית היא מספר איבריה השונים.</li>
+<li>בתיאור באמצעות תנאי בודקים גם <strong>שייכות לתחום</strong> וגם <strong>עמידה בתנאי</strong>.</li>
+<li><span class="math inline">\(\varnothing\)</span> ריקה; ב־<span class="math inline">\(\{\varnothing\}\)</span> יש איבר אחד.</li>
+</ul>
+</div>
 </section>
-<section id="sec-cartesian-product" class="level2" data-number="2.6">
-<h2 data-number="2.6" class="anchored" data-anchor-id="sec-cartesian-product"><span class="header-section-number">2.6</span> זוגות סדורים ומכפלה קרטזית</h2>
-<p>TODO</p>
 </section>
-<section id="sec-quantifiers" class="level2" data-number="2.7">
-<h2 data-number="2.7" class="anchored" data-anchor-id="sec-quantifiers"><span class="header-section-number">2.7</span> כמתים</h2>
+<section id="sec-quantifiers" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="sec-quantifiers"><span class="header-section-number">2.2</span> כמתים</h2>
+<section id="sec-quantifier-basics" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="sec-quantifier-basics"><span class="header-section-number">2.2.1</span> מן האיבר אל הקבוצה כולה</h3>
 <p>כשאומרים ״כולם״, צריך לדעת: <strong>כולם מתוך איזו קבוצה?</strong> כל הסטודנטים בכיתה, כל הכיסאות בחדר, או כל המספרים שבחרנו? לפני שנכתוב ״לכל״ או ״קיים״, נבהיר על מי ועל מה מדברים.</p>
 <div class="thmbox thmbox-key-point" title="עולם הדיון: אילו ערכים מותר לבחור?">
 <p><strong>חשוב לזכור — עולם הדיון: אילו ערכים מותר לבחור?</strong></p>
 <p><span class="term"><strong>עולם הדיון</strong></span>, שנקרא גם <span class="term"><strong>התחום</strong></span>, הוא אוסף הערכים שמותר למשתנה לקבל. בדוגמאות הראשונות כאן נבחר:</p>
 <p><span class="math display">\[D=\{1,2,3,4\}.\]</span></p>
-<p>האות <span class="math inline">\(D\)</span> היא שם לאוסף הזה. הסוגריים המסולסלים מציגים את איבריו — המספרים שנמצאים בו. הסימן <span class="term"><strong><span class="math inline">\(\in\)</span></strong></span> פירושו ״שייך ל־״. לכן <span class="math inline">\(x\in D\)</span> אומר ש־<span class="math inline">\(x\)</span> הוא אחד מ־<span class="math inline">\(1,2,3,4\)</span>. למשל, <span class="math inline">\(3\in D\)</span>, אבל <span class="math inline">\(7\)</span> אינו בעולם הדיון שבחרנו.</p>
+<p>כמו קודם, <span class="math inline">\(x\in D\)</span> אומר שבוחרים איבר מתוך הקבוצה הנתונה. למשל, <span class="math inline">\(3\in D\)</span>, אבל <span class="math inline">\(7\)</span> אינו בעולם הדיון שבחרנו.</p>
 <p><span class="key-rule"><strong>״לכל״ ו״קיים״ מתייחסים רק לאיברים בעולם הדיון שנקבע.</strong></span> כאן משתמשים בשייכות לקבוצה כדי לציין במדויק אילו ערכים מותר להציב.</p>
 </div>
 <p>נגדיר <span class="math inline">\(P(x)\)</span>: ״<span class="math inline">\(x&gt;2\)</span>״. זהו פסוק פתוח. אפשר להציב בו מספר מהתחום: <span class="math inline">\(P(1)\)</span> שקר ו־<span class="math inline">\(P(3)\)</span> אמת. עכשיו נרצה לומר משהו על התחום כולו: האם <strong>כל</strong> המספרים בו גדולים מ־<span class="math inline">\(2\)</span>? האם יש בו <strong>לפחות מספר אחד</strong> שגדול מ־<span class="math inline">\(2\)</span>? המילים האלה נקראות <span class="term"><strong>כמתים</strong></span>.</p>
 <div id="box-def-quantifiers" class="thmbox thmbox-definition">
-<p><strong>הגדרה 2.7.1.</strong></p>
+<p><strong>הגדרה 2.2.1.</strong></p>
 <p>נניח ש־<span class="math inline">\(D\)</span> הוא עולם הדיון וש־<span class="math inline">\(P(x)\)</span> הוא פסוק פתוח על איבריו.</p>
 <ul>
 <li><span class="math inline">\(\forall x\in D\,P(x)\)</span> — קוראים: ״<span class="term"><strong>לכל</strong></span> <span class="math inline">\(x\)</span> ששייך ל־<span class="math inline">\(D\)</span>, מתקיים <span class="math inline">\(P(x)\)</span>״. הפסוק אמת כאשר <strong>כל</strong> איבר בתחום מקיים את התיאור.</li>
@@ -919,13 +1480,13 @@ window.Quarto = {
 <p><span class="math inline">\(\forall\)</span> נקרא <span class="term"><strong>הכמת הכולל</strong></span>, ו־<span class="math inline">\(\exists\)</span> נקרא <span class="term"><strong>הכמת הישי</strong></span>. השמות אינם העיקר: חשוב לזכור אם צריך לבדוק את כולם או למצוא לפחות אחד, ותמיד — מתוך התחום שנבחר.</p>
 </div>
 <p>אצלנו, <span class="math inline">\(D=\{1,2,3,4\}\)</span> ו־<span class="math inline">\(P(x)\)</span> אומר ״<span class="math inline">\(x&gt;2\)</span>״. לכן <span class="math inline">\(\forall x\in D\,P(x)\)</span> שקר, למשל בגלל <span class="math inline">\(1\)</span>. לעומת זאת, <span class="math inline">\(\exists x\in D\,P(x)\)</span> אמת, למשל בגלל <span class="math inline">\(3\)</span>.</p>
-<div class="thmbox thmbox-remark" title="לפעמים מקצרים את הכתיבה">
-<p><strong>הערה 2.7.2 — לפעמים מקצרים את הכתיבה.</strong></p>
+<div class="thmbox thmbox-method" title="לפעמים מקצרים את הכתיבה">
+<p><strong>שיטה 2.2.2 — לפעמים מקצרים את הכתיבה.</strong></p>
 <p>כאשר עולם הדיון כבר נאמר וברור מההקשר, אפשר לקצר ולכתוב <span class="math inline">\(\forall x\,P(x)\)</span> או <span class="math inline">\(\exists x\,P(x)\)</span> בלי לחזור על <span class="math inline">\(\in D\)</span>. זו רק השמטה של מידע שכבר ידוע: המשתנה עדיין נבחר מאותו תחום. בדוגמאות הראשונות כאן התחום הוא <span class="math inline">\(\{1,2,3,4\}\)</span>; בכל מעבר לתחום אחר נציין אותו. כדי שיהיה קל לעקוב, בדרך כלל נכתוב כאן את התחום גם בתוך הנוסחה.</p>
 </div>
 <p><span id="sec-free-variable"></span></p>
 <div id="box-def-free-variable" class="thmbox thmbox-definition" title="משתנה חופשי ומשתנה קשור — בתוך העולם שבחרנו">
-<p><strong>הגדרה 2.7.3 — משתנה חופשי ומשתנה קשור — בתוך העולם שבחרנו.</strong></p>
+<p><strong>הגדרה 2.2.3 — משתנה חופשי ומשתנה קשור — בתוך העולם שבחרנו.</strong></p>
 <p>גם אחרי שבחרנו תחום, עדיין יש הבדל בין ״בחרו ערך ל־<span class="math inline">\(x\)</span>״ לבין ״בדקו את כל ערכי <span class="math inline">\(x\)</span> בתחום״. הכמת אומר מה לעשות עם המשתנה. כשכמת חל עליו, המשתנה <span class="term"><strong>קשור</strong></span>; כשאין כמת שחל עליו, הוא <span class="term"><strong>חופשי</strong></span>.</p>
 <div class="table-responsive">
 <table class="caption-top table">
@@ -972,13 +1533,7 @@ window.Quarto = {
 <p><strong>חשוב לזכור.</strong></p>
 <p>בתחום שמספר האיברים בו סופי, ״לכל״ הוא כמו ״וגם״ של כל הבדיקות, ו״קיים״ הוא כמו ״או״ של כל הבדיקות. חשוב לא להשמיט איברים מן התחום.</p>
 </div>
-<div class="thmbox thmbox-terminology" data-terms="plural" title="תחום סופי ותחום אינסופי">
-<p><strong>מונחים חדשים 2.7.4 — תחום סופי ותחום אינסופי.</strong></p>
-<p>תחום הוא <span class="term"><strong>סופי</strong></span> אם יש בו מספר סופי של איברים, כמו התחום <span class="math inline">\(\{1,2,3,4\}\)</span> שבדקנו.</p>
-<p>יש גם תחומים <span class="term"><strong>אינסופיים</strong></span>. למשל, <span class="math inline">\(\{0,1,2,3,\dots\}\)</span> מכיל את כל המספרים השלמים שאינם שליליים. שלוש הנקודות אומרות שהרשימה ממשיכה בלי סוף. בתחום כזה אי אפשר לסיים בדיקה של כל האיברים אחד־אחד; כדי להוכיח טענה על כולם צריך נימוק כללי. בכל דוגמה נאמר במפורש אם עברנו לתחום הזה.</p>
-</div>
-<section id="sec-bar" class="level3" data-number="2.7.1">
-<h3 data-number="2.7.1" class="anchored" data-anchor-id="sec-bar"><span class="header-section-number">2.7.1</span> שלושה מתמטיקאים ניגשים לדוכן פלאפל</h3>
+<p>בתחום סופי אפשר לבדוק את כל האיברים אחד־אחד. בתחום אינסופי, כמו קבוצת המספרים הטבעיים, בדיקה כזאת אינה מסתיימת. כדי להוכיח טענה על כולם צריך נימוק כללי. ### שלושה מתמטיקאים ניגשים לדוכן פלאפל {#sec-bar}</p>
 <p>שלושה מתמטיקאים ניגשים לדוכן פלאפל. כל אחד יודע אם הוא עצמו רוצה פלאפל, אך אינו יודע מה רוצים האחרים. הם עונים לפי הסדר, שומעים את התשובות שלפניהם ומסיקים מהן מסקנות. כולם עונים בכנות: ״כן״ או ״לא״ רק כשהמידע מספיק, ו״אני לא יודע״ כשאינו מספיק. המוכר שואל את שלושתם אותה שאלה:</p>
 <div class="says barman">
 <p>״כולם רוצים פלאפל?״</p>
@@ -994,7 +1549,7 @@ window.Quarto = {
 </div>
 <p><strong>מה אפשר להסיק על הרצון של כל אחד, וכמה מנות פלאפל צריך להכין?</strong></p>
 <div id="box-game-bar" class="thmbox thmbox-game" title="דוכן הפלאפל">
-<p><strong>משחק 2.7.5 — דוכן הפלאפל.</strong></p>
+<p><strong>משחק 2.2.4 — דוכן הפלאפל.</strong></p>
 <iframe class="widget-frame" src="games/barman/index.html?level=classic&amp;embed=1" loading="lazy" title="משחק: דוכן הפלאפל"></iframe>
 </div>
 <details class="thmcollapse thmfoldable"><summary>אז מה המוכר עושה?</summary>
@@ -1009,8 +1564,8 @@ window.Quarto = {
 </details>
 <p>הבדיחה מצחיקה (לפחות את המתמטיקאים) כי שלושתם עונים <strong>בדיוק</strong> על השאלה שנשאלה, ורק לפי מה שהם יודעים. המוכר שאל על <em>כולם</em>, לא על כל אחד בנפרד. ושימו לב: ״אני לא יודע״ אינה תשובה ריקה. היא מספרת למוכר משהו. כאן רואים יחד שני רעיונות: מה פירוש ״כולם״, ומה כל דמות יכולה להסיק מן המידע שבידיה. ״אני לא יודע״ אינו ערך אמת שלישי; הוא מתאר את מה שהדמות יודעת. עכשיו נכתוב את שאלות המוכר בעזרת הכמתים שלמדנו.</p>
 </section>
-<section id="sec-bar-again" class="level3" data-number="2.7.2">
-<h3 data-number="2.7.2" class="anchored" data-anchor-id="sec-bar-again"><span class="header-section-number">2.7.2</span> ״כולם״ ו״מישהו״ בשפת הכמתים</h3>
+<section id="sec-bar-again" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="sec-bar-again"><span class="header-section-number">2.2.2</span> ״כולם״ ו״מישהו״ בשפת הכמתים</h3>
 <p>התחום בדוגמה הזאת הוא שלושת המתמטיקאים שבדוכן. נמספר אותם לפי סדר התשובות: <span class="math inline">\(1\)</span>, <span class="math inline">\(2\)</span> ו־<span class="math inline">\(3\)</span>. כאן עולם הדיון הוא <span class="math inline">\(D=\{1,2,3\}\)</span>, מספרי הדמויות שבדוכן. נסמן ב־<span class="math inline">\(W(x)\)</span> את הפסוק הפתוח ״הדמות שמספרה <span class="math inline">\(x\)</span> רוצה פלאפל״. כדי לקצר, נכתוב <span class="math inline">\(W_1\)</span> במקום <span class="math inline">\(W(1)\)</span>, ובאותו אופן <span class="math inline">\(W_2\)</span> ו־<span class="math inline">\(W_3\)</span>.</p>
 <p>שאלת המוכר ״<strong>כולם</strong> רוצים פלאפל?״ מבקשת לדעת אם הפסוק <span class="math inline">\(\forall x\in D\,W(x)\)</span> נכון. בתחום של שלוש הדמויות זה בדיוק:</p>
 <p><span class="math display">\[W_1 \land W_2 \land W_3\]</span></p>
@@ -1020,27 +1575,52 @@ window.Quarto = {
 <p>כאן מספיק שרק אחת הדמויות רוצה. גם שתי דמויות או שלוש דמויות שרוצות מתאימות: ״קיים״ אומר <strong>לפחות אחד</strong>, ולא ״בדיוק אחד״.</p>
 <p><span class="key-rule"><strong>״לא כולם״ שונה מ״אף אחד״.</strong></span> במשחק הבא נראה איך השאלה ״כולם?״ או ״מישהו?״ משנה את משמעות התשובות.</p>
 <div id="box-game-bar-more" class="thmbox thmbox-game" title="דוכן הפלאפל: כולם ומישהו">
-<p><strong>משחק 2.7.6 — דוכן הפלאפל: כולם ומישהו.</strong></p>
+<p><strong>משחק 2.2.5 — דוכן הפלאפל: כולם ומישהו.</strong></p>
 <iframe class="widget-frame" src="games/barman/index.html?levels=no-early,after-no,anyone,anyone-serve,design&amp;embed=1" loading="lazy" title="משחק: דוכן הפלאפל, כולם ומישהו"></iframe>
 </div>
 </section>
-<section id="sec-evidence" class="level3" data-number="2.7.3">
-<h3 data-number="2.7.3" class="anchored" data-anchor-id="sec-evidence"><span class="header-section-number">2.7.3</span> איזו הוכחה צריך?</h3>
+<section id="sec-evidence" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="sec-evidence"><span class="header-section-number">2.2.3</span> איזו הוכחה צריך?</h3>
 <p>נחזור לעולם המספרים <span class="math inline">\(D=\{1,2,3,4\}\)</span> ולתיאור <span class="math inline">\(P(x)\)</span>: ״<span class="math inline">\(x&gt;2\)</span>״. נכיר שתי מילים שמתארות את התפקיד של דוגמה:</p>
 <div class="thmbox thmbox-example" title="עד ודוגמה נגדית: מה הדוגמה מראה?">
-<p><strong>דוגמה 2.7.7 — עד ודוגמה נגדית: מה הדוגמה מראה?</strong></p>
-<p><strong>א.</strong> בטענה ״יש מספר בתחום שגדול מ־2״, <strong>איזה מספר מתוך <span class="math inline">\(D=\{1,2,3,4\}\)</span> מצדיק את הטענה?</strong></p>
-<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
-<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p><strong>דוגמה 2.2.6 — עד ודוגמה נגדית: מה הדוגמה מראה?</strong></p>
+<p>עולם הדיון הוא <span class="math inline">\(D=\{1,2,3,4\}\)</span>.</p>
+<p><strong>א.</strong> איזה מהמספרים הבאים מצדיק את הטענה ״יש מספר בתחום שגדול מ־2״?</p>
+<div class="tf-quiz example-choice" data-correct="2" role="group" aria-label="בחירת תשובה לסעיף א">
+<button type="button" class="tf-opt" data-val="0">
+1
+</button>
+<button type="button" class="tf-opt" data-val="1">
+2
+</button>
+<button type="button" class="tf-opt" data-val="2">
+3
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
 <p>בטענה ״יש מספר בתחום שגדול מ־2״, המספר <span class="math inline">\(3\)</span> הוא <span class="term"><strong>עד</strong></span>: הוא דוגמה שמראה שהדבר שאמרנו שקיים אכן קיים. ״עד״ כאן יכול להיות מספר, ולא רק אדם.</p>
 </div>
-</details>
-<p><strong>ב.</strong> בטענה ״כל המספרים בתחום גדולים מ־2״, <strong>איזה מספר מתוך אותו תחום מראה שהטענה שגויה?</strong></p>
-<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
-<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+</div>
+<p><strong>ב.</strong> איזה מהמספרים הבאים מפריך את הטענה ״כל המספרים בתחום גדולים מ־2״?</p>
+<div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="בחירת תשובה לסעיף ב">
+<button type="button" class="tf-opt" data-val="0">
+1
+</button>
+<button type="button" class="tf-opt" data-val="1">
+3
+</button>
+<button type="button" class="tf-opt" data-val="2">
+4
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
 <p>בטענה ״כל המספרים בתחום גדולים מ־2״, המספר <span class="math inline">\(1\)</span> הוא <span class="term"><strong>דוגמה נגדית</strong></span>: הוא שייך לתחום, אבל אינו מקיים את מה שהטענה מבטיחה. לכן הוא מספיק כדי להראות שהטענה על <strong>כל</strong> המספרים שגויה.</p>
 </div>
-</details>
+</div>
 <p><span class="term"><strong>להפריך</strong></span> טענה פירושו להראות שהיא אינה נכונה. כדי להפריך טענה על כולם, דוגמה נגדית אחת מספיקה. כדי לאשר טענה על כולם, דוגמה מוצלחת אחת אינה מספיקה.</p>
 </div>
 <p>עכשיו ננסח את הכללים:</p>
@@ -1056,40 +1636,58 @@ window.Quarto = {
 </div>
 <p>נבחר ראיות שמספיקות להוכיח או להפריך טענה על קבוצה.</p>
 <div id="box-game-witness" class="thmbox thmbox-game" title="מצאו עד">
-<p><strong>משחק 2.7.8 — מצאו עד.</strong></p>
+<p><strong>משחק 2.2.7 — מצאו עד.</strong></p>
 <p><strong>עולם הדיון בתחילת המשחק:</strong> ששת הסטודנטים שבכרטיסים. כאן <span class="math inline">\(D\)</span> מציין את הסטודנטים האלה, ולא את המספרים מהדוגמה הקודמת.</p>
 <iframe class="widget-frame" src="games/witness/index.html?levels=witness,counter,check-all,nobody,negation,order&amp;embed=1" loading="lazy" title="משחק: מצאו עד"></iframe>
 </div>
 </section>
-<section id="sec-domain" class="level3" data-number="2.7.4">
-<h3 data-number="2.7.4" class="anchored" data-anchor-id="sec-domain"><span class="header-section-number">2.7.4</span> התחום חשוב</h3>
+<section id="sec-domain" class="level3" data-number="2.2.4">
+<h3 data-number="2.2.4" class="anchored" data-anchor-id="sec-domain"><span class="header-section-number">2.2.4</span> התחום חשוב</h3>
 <div id="box-exm-domain" class="thmbox thmbox-example">
-<p><strong>דוגמה 2.7.9.</strong></p>
-<p>נבדוק את <span class="math inline">\(\exists x\in D\, (x+3=1)\)</span>.</p>
-<p><strong>א.</strong> <strong>האם הטענה נכונה כאשר <span class="math inline">\(D=\{0,1,2,3,\dots\}\)</span>?</strong></p>
-<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
-<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p><strong>דוגמה 2.2.8.</strong></p>
+<p>נבדוק את <span class="math inline">\(\exists x\in D\,(x+3=1)\)</span>.</p>
+<p><strong>א.</strong> האם הטענה אמת או שקר כאשר <span class="math inline">\(D=\{0,1,2,3,\dots\}\)</span>?</p>
+<div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="בחירת תשובה לסעיף א">
+<button type="button" class="tf-opt" data-val="0">
+אמת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+שקר
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
 <p>הפסוק <span class="math inline">\(\exists x\in D\, (x + 3 = 1)\)</span> הוא <strong>שקר</strong> כאשר <span class="math inline">\(D\)</span> הוא התחום <span class="math inline">\(\{0, 1, 2, 3, \dots\}\)</span>: כל מספר כזה ועוד <span class="math inline">\(3\)</span> גדול מ־<span class="math inline">\(.1\)</span></p>
 </div>
-</details>
-<p><strong>ב.</strong> <strong>האם הטענה נכונה כאשר <span class="math inline">\(D\)</span> הוא אוסף כל המספרים השלמים?</strong></p>
-<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
-<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+</div>
+<p><strong>ב.</strong> האם הטענה אמת או שקר כאשר <span class="math inline">\(D\)</span> הוא אוסף כל המספרים השלמים?</p>
+<div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="בחירת תשובה לסעיף ב">
+<button type="button" class="tf-opt" data-val="0">
+אמת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+שקר
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
 <p>אבל כאשר <span class="math inline">\(D\)</span> הוא אוסף כל המספרים השלמים, אותו פסוק הוא <strong>אמת</strong>, עם העד <span class="math inline">\(.x = -2\)</span></p>
 </div>
-</details>
+</div>
 <p>לכן כשכותבים פסוק עם כמת, תמיד צריך לומר מה התחום.</p>
 </div>
 </section>
-<section id="sec-neg-quantifiers" class="level3" data-number="2.7.5">
-<h3 data-number="2.7.5" class="anchored" data-anchor-id="sec-neg-quantifiers"><span class="header-section-number">2.7.5</span> שלילה של כמתים</h3>
+<section id="sec-neg-quantifiers" class="level3" data-number="2.2.5">
+<h3 data-number="2.2.5" class="anchored" data-anchor-id="sec-neg-quantifiers"><span class="header-section-number">2.2.5</span> שלילה של כמתים</h3>
 <p>בכללי השלילה <span class="math inline">\(D\)</span> הוא עולם דיון קבוע: כששוללים טענה, לא משנים את התחום שלה. בדוגמה הבאה <span class="math inline">\(D\)</span> הוא הסטודנטים בכיתה.</p>
 <div class="says robot">
 <p>״לא כל הסטודנטים הגישו את העבודה. כלומר, אף אחד לא הגיש!״</p>
 </div>
 <p>הרובוט שוב קיצר. ״לא <strong>כל</strong> הסטודנטים הגישו״ אומר רק ש<strong>יש</strong> סטודנט שלא הגיש. אולי כל השאר הגישו.</p>
 <div id="box-thm-neg-quantifiers" class="thmbox thmbox-theorem" title="שלילה של כמתים">
-<p><strong>משפט 2.7.10 — שלילה של כמתים.</strong></p>
+<p><strong>משפט 2.2.9 — שלילה של כמתים.</strong></p>
 <p><span class="math display">\[\neg \forall x\in D\, P(x) \;\equiv\; \exists x\in D\, \neg P(x)\]</span> <span class="math display">\[.\neg \exists x\in D\, P(x) \;\equiv\; \forall x\in D\, \neg P(x)\]</span></p>
 </div>
 <p>אלה בדיוק חוקי דה מורגן, בגרסה ארוכה: בתחום סופי, <span class="math inline">\(\neg\forall x\in D\, P(x)\)</span> הוא <span class="math inline">\(,\neg(P(a_1) \land \dots \land P(a_n))\)</span> ולפי דה מורגן זה <span class="math inline">\(.\neg P(a_1) \lor \dots \lor \neg P(a_n)\)</span> כשמכניסים שלילה פנימה, <span class="math inline">\(\forall\)</span> הופך ל־<span class="math inline">\(\exists\)</span> ו־<span class="math inline">\(\exists\)</span> הופך ל־<span class="math inline">\(,\forall\)</span> כמו ש״וגם״ הופך ל״או״.</p>
@@ -1104,8 +1702,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="sec-quantifier-order" class="level3" data-number="2.7.6">
-<h3 data-number="2.7.6" class="anchored" data-anchor-id="sec-quantifier-order"><span class="header-section-number">2.7.6</span> סדר הכמתים</h3>
+<section id="sec-quantifier-order" class="level3" data-number="2.2.6">
+<h3 data-number="2.2.6" class="anchored" data-anchor-id="sec-quantifier-order"><span class="header-section-number">2.2.6</span> סדר הכמתים</h3>
 <p>כשיש שני משתנים, חשוב <strong>באיזה סדר</strong> כותבים את הכמתים. נסמן ב־<span class="math inline">\(L(x, y)\)</span> את הטענה ״הסטודנט <span class="math inline">\(x\)</span> אוהב את הפריט <span class="math inline">\(y\)</span>״. נסמן ב־<span class="math inline">\(S\)</span> את קבוצת הסטודנטים בכיתה וב־<span class="math inline">\(M\)</span> את קבוצת הפריטים בתפריט שמופיע במשחק. לכן כותבים <span class="math inline">\(x\in S\)</span> ו־<span class="math inline">\(y\in M\)</span>:</p>
 <ul>
 <li><span class="math display">\[\forall x\in S\, \exists y\in M\, L(x, y)\]</span>: לכל סטודנט <strong>יש לפחות פריט אחד בתפריט שהוא אוהב</strong>. הבחירה בפריט יכולה להיות תלויה בסטודנט; מותר גם לבחור אותו פריט לכמה סטודנטים. התפריט עצמו נשאר קבוע.</li>
@@ -1113,24 +1711,38 @@ window.Quarto = {
 </ul>
 <p>הפסוק השני חזק יותר: אם יש פריט בתפריט שכולם אוהבים, אז בפרט לכל סטודנט יש פריט בתפריט שהוא אוהב. ההפך לא נכון. בשלב האחרון של המשחק אפשר לראות כיתה שבה הראשון אמת והשני שקר.</p>
 <div id="box-exm-order" class="thmbox thmbox-example">
-<p><strong>דוגמה 2.7.11.</strong></p>
-<p>בדוגמה הזאת <span class="math inline">\(D=\{0,1,2,3,\dots\}\)</span>.</p>
-<p><strong>א.</strong></p>
-<p><span class="math display">\[\forall x\in D\,\exists y\in D\,(y&gt;x)\]</span></p>
-<p><strong>אמת או שקר? נמקו.</strong></p>
-<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
-<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+<p><strong>דוגמה 2.2.10.</strong></p>
+<p>בדוגמה הזאת <span class="math inline">\(D=\{0,1,2,3,\dots\}\)</span>. קבעו אמת או שקר:</p>
+<p><strong>א.</strong> <span class="math inline">\(\forall x\in D\,\exists y\in D\,(y&gt;x)\)</span>.</p>
+<div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="בחירת תשובה לסעיף א">
+<button type="button" class="tf-opt" data-val="0">
+אמת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+שקר
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
 <p>הפסוק <span class="math display">\[\forall x\in D\, \exists y\in D\, (y &gt; x)\]</span> הוא <strong>אמת</strong>: לכל מספר יש מספר גדול ממנו (למשל <span class="math inline">\(y = x + 1\)</span>).</p>
 </div>
-</details>
-<p><strong>ב.</strong></p>
-<p><span class="math display">\[\exists y\in D\,\forall x\in D\,(y&gt;x)\]</span></p>
-<p><strong>אמת או שקר? נמקו.</strong></p>
-<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת תשובה והסבר</summary>
-<div class="lecture-answer foldable" title="הצגת תשובה והסבר">
+</div>
+<p><strong>ב.</strong> <span class="math inline">\(\exists y\in D\,\forall x\in D\,(y&gt;x)\)</span>.</p>
+<div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="בחירת תשובה לסעיף ב">
+<button type="button" class="tf-opt" data-val="0">
+אמת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+שקר
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
 <p>אבל <span class="math display">\[\exists y\in D\, \forall x\in D\, (y &gt; x)\]</span> הוא <strong>שקר</strong>: אין מספר שגדול מכל המספרים, כי הוא לא גדול מעצמו.</p>
 </div>
-</details>
+</div>
 </div>
 <div class="thmbox thmbox-self-check">
 <p><strong>בדיקה עצמית.</strong></p>
@@ -1182,7 +1794,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-ex-negate" class="thmbox thmbox-question">
-<p><strong>שאלה 2.7.12.</strong></p>
+<p><strong>שאלה 2.2.11.</strong></p>
 <p>כתבו בשפת הכמתים, ואז שללו והעבירו את השלילה פנימה: ״כל סטודנט אוהב <strong>לפחות פריט אחד בתפריט</strong>״. (נסמן ב־<span class="math inline">\(S\)</span> את קבוצת הסטודנטים בכיתה וב־<span class="math inline">\(M\)</span> את קבוצת הפריטים בתפריט בקפטריה, ו־<span class="math inline">\(L(x, y)\)</span> = ״<span class="math inline">\(x\)</span> אוהב את <span class="math inline">\(y\)</span>״.)</p>
 </div>
 <div class="solve">
@@ -1205,18 +1817,952 @@ window.Quarto = {
 <p><strong>במילים:</strong> ״<strong>יש</strong> סטודנט שלא אוהב <strong>אף</strong> פריט בתפריט.״ שימו לב להבדל: השלילה אומרת שיש סטודנט מסוים שאינו אוהב אף פריט בתפריט. היא אינה טוענת שלכל סטודנט יש פריט שאינו אוהב.</p>
 </div>
 </div>
+<div class="thmbox thmbox-summary" title="כמתים: התחום וסוג הבדיקה">
+<p><strong>סיכום — כמתים: התחום וסוג הבדיקה.</strong></p>
+<ul>
+<li><span class="math inline">\(\forall x\in D\)</span> אומר ״לכל איבר בתחום״; <span class="math inline">\(\exists x\in D\)</span> אומר ״לפחות איבר אחד בתחום״.</li>
+<li>עד אחד מספיק להוכחת קיום; דוגמה נגדית אחת מספיקה להפרכת טענה על כולם.</li>
+<li>בשלילה מחליפים ״לכל״ ו״קיים״, ושוללים את התנאי.</li>
+<li>סדר הכמתים חשוב: בחירה שתלויה בכל סטודנט אינה בהכרח בחירה אחת שמתאימה לכולם.</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="sec-set-equality-inclusion" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="sec-set-equality-inclusion"><span class="header-section-number">2.3</span> הכלה ושוויון קבוצות</h2>
+<section id="sec-set-subset" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="sec-set-subset"><span class="header-section-number">2.3.1</span> קבוצה בתוך קבוצה</h3>
+<p>נניח ש־<span class="math inline">\(A\)</span> היא קבוצת הנגנים בהרכב, ו־<span class="math inline">\(B\)</span> היא קבוצת המשתתפים במופע. אם כל נגן משתתף במופע, אז <span class="math inline">\(A\)</span> מוכלת ב־<span class="math inline">\(B\)</span>. ייתכנו משתתפים נוספים, למשל זמרים.</p>
+<div class="thmbox thmbox-definition" title="הכלה ותת־קבוצה">
+<p><strong>הגדרה 2.3.1 — הכלה ותת־קבוצה.</strong></p>
+<p>אומרים ש־<span class="math inline">\(A\)</span> <span class="term"><strong>מוכלת</strong></span> ב־<span class="math inline">\(B\)</span>, או ש־<span class="math inline">\(A\)</span> היא <span class="term"><strong>תת־קבוצה</strong></span> של <span class="math inline">\(B\)</span>, אם <strong>כל איבר של <span class="math inline">\(A\)</span> הוא גם איבר של <span class="math inline">\(B\)</span></strong>. מסמנים <span class="math inline">\(A\subseteq B\)</span>.</p>
+<p>בעזרת הכמת ״לכל״ כותבים:</p>
+<p><span class="math display">\[A\subseteq B\quad\Longleftrightarrow\quad \forall x\in A\;(x\in B).\]</span></p>
+<p>קוראים: ״לכל איבר <span class="math inline">\(x\)</span> של <span class="math inline">\(A\)</span>, מתקיים ש־<span class="math inline">\(x\)</span> שייך גם ל־<span class="math inline">\(B\)</span>״.</p>
+<p>הסימון מאפשר שוויון. אם <span class="math inline">\(A\subseteq B\)</span> וגם <span class="math inline">\(A\ne B\)</span>, זו <span class="term"><strong>הכלה ממש</strong></span>, ומסמנים <span class="math inline">\(A\subsetneq B\)</span>.</p>
+</div>
+<p>זהו קשר לגרירה מהלוגיקה: <strong>אם עצם שייך ל־<span class="math inline">\(A\)</span>, אז הוא שייך ל־<span class="math inline">\(B\)</span></strong>. ההכלה דורשת שהגרירה הזאת תהיה נכונה לכל עצם, ולא רק לדוגמה אחת.</p>
+<div class="thmbox thmbox-example" title="בודקים את כיוון ההכלה">
+<p><strong>דוגמה 2.3.2 — בודקים את כיוון ההכלה.</strong></p>
+<p>תהיינה <span class="math inline">\(A=\{1,4\}\)</span> ו־<span class="math inline">\(B=\{1,4,7\}\)</span>. קבעו אמת או שקר:</p>
+<p><strong>א.</strong> <span class="math inline">\(A\subseteq B\)</span>.</p>
+<div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="בחירת תשובה לסעיף א">
+<button type="button" class="tf-opt" data-val="0">
+אמת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+שקר
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>כן. גם <span class="math inline">\(1\)</span> וגם <span class="math inline">\(4\)</span> נמצאים ב־<span class="math inline">\(B\)</span>.</p>
+</div>
+</div>
+<p><strong>ב.</strong> <span class="math inline">\(B\subseteq A\)</span>.</p>
+<div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="בחירת תשובה לסעיף ב">
+<button type="button" class="tf-opt" data-val="0">
+אמת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+שקר
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>לא. <span class="math inline">\(7\)</span> שייך ל־<span class="math inline">\(B\)</span> ואינו שייך ל־<span class="math inline">\(A\)</span>. איבר כזה הוא <span class="term"><strong>דוגמה נגדית</strong></span> להכלה: הוא מראה שהדרישה אינה מתקיימת.</p>
+</div>
+</div>
+<p><strong>ג.</strong> <span class="math inline">\(A\subsetneq B\)</span>.</p>
+<div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="בחירת תשובה לסעיף ג">
+<button type="button" class="tf-opt" data-val="0">
+אמת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+שקר
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>כן. כבר בדקנו שכל איברי <span class="math inline">\(A\)</span> נמצאים ב־<span class="math inline">\(B\)</span>, וב־<span class="math inline">\(B\)</span> יש גם איבר נוסף, <span class="math inline">\(7\)</span>. לכן הקבוצות אינן שוות.</p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-key-point">
+<p><strong>חשוב לזכור.</strong></p>
+<p><span class="key-rule"><strong>כדי להפריך <span class="math inline">\(A\subseteq B\)</span>, מחפשים איבר שנמצא ב־<span class="math inline">\(A\)</span> ואינו נמצא ב־<span class="math inline">\(B\)</span>. הכיוון חשוב.</strong></span></p>
+</div>
+<p>כל קבוצה מוכלת בעצמה: <span class="math inline">\(A\subseteq A\)</span>. גם <span class="math inline">\(\varnothing\subseteq A\)</span> לכל קבוצה <span class="math inline">\(A\)</span>: לקבוצה הריקה אין איבר שיכול להיכשל בבדיקת השייכות ל־<span class="math inline">\(A\)</span>. אין פירוש הדבר ש־<span class="math inline">\(\varnothing\in A\)</span> — זו שאלה אחרת.</p>
+</section>
+<section id="sec-double-inclusion" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="sec-double-inclusion"><span class="header-section-number">2.3.2</span> מוכיחים שוויון בשתי הכלות</h3>
+<div class="thmbox thmbox-method" title="שתי הכלות — שוויון אחד">
+<p><strong>שיטה 2.3.3 — שתי הכלות — שוויון אחד.</strong></p>
+<p>כדי להוכיח ש־<span class="math inline">\(A=B\)</span>, מוכיחים <strong>שני דברים</strong>:</p>
+<ol type="1">
+<li><span class="math inline">\(A\subseteq B\)</span>: כל איבר של <span class="math inline">\(A\)</span> נמצא ב־<span class="math inline">\(B\)</span>.</li>
+<li><span class="math inline">\(B\subseteq A\)</span>: כל איבר של <span class="math inline">\(B\)</span> נמצא ב־<span class="math inline">\(A\)</span>.</li>
+</ol>
+<p>שתי ההכלות יחד אומרות שיש לקבוצות בדיוק אותם איברים — זו הגדרת השוויון. לכן:</p>
+<p><span class="math display">\[A=B\quad\Longleftrightarrow\quad (A\subseteq B)\land(B\subseteq A).\]</span></p>
+<p><span class="key-rule"><strong>הכלה בכיוון אחד בלבד אינה מספיקה להוכחת שוויון.</strong></span></p>
+</div>
+<div id="box-exm-double-inclusion" class="thmbox thmbox-example" title="אותה קבוצה בשני תיאורים">
+<p><strong>דוגמה 2.3.4 — אותה קבוצה בשני תיאורים.</strong></p>
+<p>נגדיר <span class="math inline">\(A=\{x\in\mathbb{Z}\mid 0\le x\le 2\}\)</span> ו־<span class="math inline">\(B=\{0,1,2\}\)</span>. נוכיח ש־<span class="math inline">\(A=B\)</span> באמצעות שתי הכלות.</p>
+<p><strong>א.</strong> כדי להוכיח <span class="math inline">\(A\subseteq B\)</span>, מספיק לבדוק שכל מספר שלם בין <span class="math inline">\(0\)</span> ל־<span class="math inline">\(2\)</span> נמצא ב־<span class="math inline">\(B\)</span>.</p>
+<div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="ההכלה הראשונה בהוכחת שוויון">
+<button type="button" class="tf-opt" data-val="0">
+אמת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+שקר
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>נכון. יהי <span class="math inline">\(x\in A\)</span>. אז <span class="math inline">\(x\)</span> שלם ובין <span class="math inline">\(0\)</span> ל־<span class="math inline">\(2\)</span>, ולכן הוא <span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span> או <span class="math inline">\(2\)</span>. כל אחד מהמספרים האלה נמצא ב־<span class="math inline">\(B\)</span>. הוכחנו <span class="math inline">\(A\subseteq B\)</span>.</p>
+</div>
+</div>
+<p><strong>ב.</strong> אחרי ההכלה הראשונה כבר אפשר להסיק <span class="math inline">\(A=B\)</span>.</p>
+<div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="האם הכלה אחת מספיקה">
+<button type="button" class="tf-opt" data-val="0">
+אמת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+שקר
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>עדיין לא: צריך גם <span class="math inline">\(B\subseteq A\)</span>. יהי <span class="math inline">\(x\in B\)</span>. אז <span class="math inline">\(x\)</span> הוא <span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span> או <span class="math inline">\(2\)</span>. כל אחד מהם שלם ובין <span class="math inline">\(0\)</span> ל־<span class="math inline">\(2\)</span>, ולכן <span class="math inline">\(x\in A\)</span>. כעת הוכחנו את שתי ההכלות, ולכן <span class="math inline">\(A=B\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-question" title="שוויון, הכלה ודוגמה נגדית">
+<p><strong>שאלה 2.3.5 — שוויון, הכלה ודוגמה נגדית.</strong></p>
+<div class="sets-exercise" data-sets="inclusion">
+<p>בדקו את טענות השוויון וההכלה וקבעו איזו דוגמה נגדית מתאימה.</p>
+</div>
+</div>
+</section>
+<section id="sec-membership-vs-inclusion" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="sec-membership-vs-inclusion"><span class="header-section-number">2.3.3</span> שייכות אינה הכלה</h3>
+<p>עבור <span class="math inline">\(A=\{3,6\}\)</span>, שתי הטענות הבאות נכונות:</p>
+<p><span class="math display">\[3\in A,\qquad \{3\}\subseteq A.\]</span></p>
+<p>בראשונה שואלים על <strong>איבר מסוים</strong>. בשנייה שואלים אם <strong>כל איברי הקבוצה <span class="math inline">\(\{3\}\)</span></strong> נמצאים ב־<span class="math inline">\(A\)</span>.</p>
+<div class="thmbox thmbox-warning" title="לא מחליפים את הסימנים">
+<p><strong>שימו לב — לא מחליפים את הסימנים.</strong></p>
+<p>מהטענה <span class="math inline">\(3\in A\)</span> לא נובע ש־<span class="math inline">\(\{3\}\in A\)</span>. כדי ש־<span class="math inline">\(\{3\}\)</span> תהיה איבר, הקבוצה הזאת צריכה להופיע כאיבר של <span class="math inline">\(A\)</span>.</p>
+<p>לעומת זאת, אם <span class="math inline">\(B=\{\{3\},6\}\)</span>, אז <span class="math inline">\(\{3\}\in B\)</span>. במקרה הזה אחד האיברים הוא בעצמו קבוצה.</p>
+</div>
+<div class="thmbox thmbox-question" title="איבר או תת־קבוצה?">
+<p><strong>שאלה 2.3.6 — איבר או תת־קבוצה?</strong></p>
+<div class="sets-exercise" data-sets="member-or-subset">
+<p>בחרו את סימן היחס המתאים ובדקו גם מקרה שבו קבוצה היא איבר.</p>
+</div>
+</div>
+<div class="thmbox thmbox-summary" title="שוויון והכלה">
+<p><strong>סיכום — שוויון והכלה.</strong></p>
+<ul>
+<li><span class="math inline">\(A=B\)</span>: בדיוק אותם איברים, ולא רק אותו מספר איברים.</li>
+<li><span class="math inline">\(A\subseteq B\)</span>: כל איבר של <span class="math inline">\(A\)</span> נמצא ב־<span class="math inline">\(B\)</span>. ייתכן <span class="math inline">\(A=B\)</span>.</li>
+<li>כדי להוכיח שוויון אפשר לבדוק הכלה <strong>בשני הכיוונים</strong>.</li>
+<li><span class="math inline">\(\in\)</span> בודק שייכות של עצם; <span class="math inline">\(\subseteq\)</span> בודק הכלה של קבוצה.</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="sec-union-intersection" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="sec-union-intersection"><span class="header-section-number">2.4</span> איחוד וחיתוך</h2>
+<section id="sec-intersection" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="sec-intersection"><span class="header-section-number">2.4.1</span> חיתוך: מי עומד בשתי הדרישות?</h3>
+<p>לקראת יום ספורט, <span class="math inline">\(A\)</span> היא קבוצת הסטודנטים שנרשמו לכדורסל, ו־<span class="math inline">\(B\)</span> היא קבוצת הסטודנטים שנרשמו לשחייה. מי נרשם <strong>לשניהם</strong>?</p>
+<p>נבחר סטודנט ונבדוק שתי טענות: ״הוא שייך ל־<span class="math inline">\(A\)</span>״ ו״הוא שייך ל־<span class="math inline">\(B\)</span>״. נרצה ששתיהן יהיו אמת — זה בדיוק ה״וגם״ שהכרנו בלוגיקה. כאן האותיות <span class="math inline">\(A\)</span> ו־<span class="math inline">\(B\)</span> מציינות <strong>קבוצות</strong>; הטענות הן טענות השייכות אליהן.</p>
+<div class="thmbox thmbox-definition" title="חיתוך">
+<p><strong>הגדרה 2.4.1 — חיתוך.</strong></p>
+<p>ה<span class="term"><strong>חיתוך</strong></span> <span class="math inline">\(A\cap B\)</span> הוא קבוצת האיברים ששייכים <strong>גם ל־<span class="math inline">\(A\)</span> וגם ל־<span class="math inline">\(B\)</span></strong>.</p>
+<p><span class="math display">\[x\in A\cap B\quad\Longleftrightarrow\quad (x\in A)\land(x\in B).\]</span></p>
+<p>זהו מבחן שייכות: כדי להכניס איבר לחיתוך, שתי הבדיקות צריכות לתת אמת.</p>
+</div>
+</section>
+<section id="sec-union" class="level3" data-number="2.4.2">
+<h3 data-number="2.4.2" class="anchored" data-anchor-id="sec-union"><span class="header-section-number">2.4.2</span> איחוד: מי עומד לפחות באחת הדרישות?</h3>
+<p>כעת רוצים לשלוח הודעה לכל מי שנרשם לכדורסל <strong>או</strong> לשחייה.</p>
+<div class="thmbox thmbox-definition" title="איחוד">
+<p><strong>הגדרה 2.4.2 — איחוד.</strong></p>
+<p>ה<span class="term"><strong>איחוד</strong></span> <span class="math inline">\(A\cup B\)</span> הוא קבוצת האיברים ששייכים <strong>לפחות לאחת</strong> הקבוצות.</p>
+<p><span class="math display">\[x\in A\cup B\quad\Longleftrightarrow\quad (x\in A)\lor(x\in B).\]</span></p>
+<p><span class="key-rule"><strong>מי שנמצא בשתי הקבוצות נמצא גם באיחוד.</strong></span> זהו אותו ״או״ כולל מהפרק הקודם.</p>
+</div>
+<div class="thmbox thmbox-example" title="שתי רשימות נרשמים">
+<p><strong>דוגמה 2.4.3 — שתי רשימות נרשמים.</strong></p>
+<p>נניח ש־<span class="math inline">\(A=\{1,3,5,7\}\)</span> ו־<span class="math inline">\(B=\{3,4,7\}\)</span> הן רשימות מספרי המשתתפים בשתי הפעילויות.</p>
+<p><strong>א.</strong> מי נרשם לשתיהן?</p>
+<div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="בחירת תשובה לסעיף א">
+<button type="button" class="tf-opt" data-val="0">
+({3,7})
+</button>
+<button type="button" class="tf-opt" data-val="1">
+({1,5})
+</button>
+<button type="button" class="tf-opt" data-val="2">
+({1,3,4,5,7})
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p><span class="math inline">\(A\cap B=\{3,7\}\)</span>. רק <span class="math inline">\(3\)</span> ו־<span class="math inline">\(7\)</span> נמצאים בשתי הרשימות.</p>
+</div>
+</div>
+<p><strong>ב.</strong> מי נרשם לפחות לאחת?</p>
+<div class="tf-quiz example-choice" data-correct="2" role="group" aria-label="בחירת תשובה לסעיף ב">
+<button type="button" class="tf-opt" data-val="0">
+({3,7})
+</button>
+<button type="button" class="tf-opt" data-val="1">
+({1,4,5})
+</button>
+<button type="button" class="tf-opt" data-val="2">
+({1,3,4,5,7})
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p><span class="math inline">\(A\cup B=\{1,3,4,5,7\}\)</span>. המשתתפים <span class="math inline">\(3\)</span> ו־<span class="math inline">\(7\)</span> נכללים, אבל אין צורך לרשום אותם פעמיים.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-venn" class="level3" data-number="2.4.3">
+<h3 data-number="2.4.3" class="anchored" data-anchor-id="sec-venn"><span class="header-section-number">2.4.3</span> רואים את האזורים</h3>
+<div class="thmbox thmbox-terminology" title="דיאגרמת ון">
+<p><strong>מונח חדש 2.4.4 — דיאגרמת ון.</strong></p>
+<p><span class="term"><strong>דיאגרמת ון</strong></span> היא ציור שמציג קבוצות כאזורים. שני עיגולים חופפים מחלקים את הציור לארבע אפשרויות: רק <span class="math inline">\(A\)</span>, שתי הקבוצות, רק <span class="math inline">\(B\)</span>, ומחוץ לשתיהן.</p>
+<p>המלבן החיצוני מסומן <span class="math inline">\(U\)</span> ומציג את <span class="term"><strong>העולם</strong></span> שבו עובדים. הציור מציג אפשרויות שייכות; גודל האזור אינו מספר האיברים שלו, וייתכן שאזור מסוים ריק.</p>
+</div>
+<div class="thmbox thmbox-game" title="צובעים את הקבוצה">
+<p><strong>משחק 2.4.5 — צובעים את הקבוצה.</strong></p>
+<div class="sets-exercise" data-sets="venn-basic">
+<p>בחרו את האזורים של <span class="math inline">\(A\cap B\)</span> ושל <span class="math inline">\(A\cup B\)</span> בדיאגרמה.</p>
+</div>
+</div>
+<div class="thmbox thmbox-question" title="מהציור בחזרה לרשימה">
+<p><strong>שאלה 2.4.6 — מהציור בחזרה לרשימה.</strong></p>
+<div class="sets-exercise" data-sets="operations">
+<p>עבור <span class="math inline">\(A=\{0,2,5,8\}\)</span> ו־<span class="math inline">\(B=\{2,6,8\}\)</span>, כתבו את החיתוך ואת האיחוד.</p>
+</div>
+</div>
+<div class="thmbox thmbox-terminology" title="קבוצות זרות">
+<p><strong>מונח חדש 2.4.7 — קבוצות זרות.</strong></p>
+<p>שתי קבוצות נקראות <span class="term"><strong>זרות</strong></span> אם אין להן איברים משותפים, כלומר <span class="math inline">\(A\cap B=\varnothing\)</span>. למשל, <span class="math inline">\(\{1,3\}\)</span> ו־<span class="math inline">\(\{2,4\}\)</span> זרות.</p>
+</div>
+</section>
+<section id="sec-inclusion-exclusion" class="level3" data-number="2.4.4">
+<h3 data-number="2.4.4" class="anchored" data-anchor-id="sec-inclusion-exclusion"><span class="header-section-number">2.4.4</span> סופרים איחוד: עקרון ההכלה וההפרדה</h3>
+<p>נניח ש־<span class="math inline">\(12\)</span> סטודנטים נרשמו לכדורסל ו־<span class="math inline">\(9\)</span> נרשמו לשחייה. האם נרשמו בסך הכול <span class="math inline">\(21\)</span> סטודנטים? לא בהכרח: ייתכן שאותו סטודנט מופיע בשתי הרשימות.</p>
+<div class="thmbox thmbox-example" title="שתי הרשמות, סטודנט אחד">
+<p><strong>דוגמה 2.4.8 — שתי הרשמות, סטודנט אחד.</strong></p>
+<p>נסמן ב־<span class="math inline">\(A\)</span> את קבוצת הנרשמים לכדורסל וב־<span class="math inline">\(B\)</span> את קבוצת הנרשמים לשחייה. ידוע ש־<span class="math inline">\(|A|=12\)</span>, <span class="math inline">\(|B|=9\)</span>, ו־<span class="math inline">\(4\)</span> סטודנטים נרשמו לשתי הפעילויות.</p>
+<p><strong>א.</strong> כמה פעמים נספר כל אחד מארבעת הסטודנטים האלה בסכום <span class="math inline">\(12+9\)</span>?</p>
+<div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="בחירת תשובה לסעיף א">
+<button type="button" class="tf-opt" data-val="0">
+פעם אחת
+</button>
+<button type="button" class="tf-opt" data-val="1">
+פעמיים
+</button>
+<button type="button" class="tf-opt" data-val="2">
+ארבע פעמים
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>כל אחד מארבעת הסטודנטים נספר פעמיים: פעם ברשימת הכדורסל ופעם ברשימת השחייה. באיחוד צריך לספור אותו פעם אחת בלבד, ולכן מחסירים ספירה אחת לכל אחד מהם.</p>
+</div>
+</div>
+<p><strong>ב.</strong> כמה סטודנטים נרשמו לפחות לפעילות אחת?</p>
+<div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="בחירת תשובה לסעיף ב">
+<button type="button" class="tf-opt" data-val="0">
+21
+</button>
+<button type="button" class="tf-opt" data-val="1">
+17
+</button>
+<button type="button" class="tf-opt" data-val="2">
+13
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p><span class="math display">\[|A\cup B|=12+9-4=17.\]</span></p>
+<p>לא מוציאים את ארבעת הסטודנטים מהאיחוד — מתקנים את הספירה הכפולה שלהם. אפשר לבדוק גם לפי אזורים: <span class="math inline">\(8\)</span> נרשמו רק לכדורסל, <span class="math inline">\(4\)</span> לשניהם ו־<span class="math inline">\(5\)</span> רק לשחייה. יחד: <span class="math inline">\(8+4+5=17\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-theorem" title="עקרון ההכלה וההפרדה לשתי קבוצות">
+<p><strong>משפט 2.4.9 — עקרון ההכלה וההפרדה לשתי קבוצות.</strong></p>
+<p>לכל שתי קבוצות סופיות <span class="math inline">\(A,B\)</span>:</p>
+<p><span class="math display">\[|A\cup B|=|A|+|B|-|A\cap B|.\]</span></p>
+<p><span class="key-rule"><strong>מחברים את מספרי האיברים, ומחסירים את עצמת החיתוך כי איבריו נספרו פעמיים.</strong></span></p>
+<p>אם הקבוצות זרות, החיתוך ריק ועצמתו <span class="math inline">\(0\)</span>, ולכן פשוט מחברים: <span class="math inline">\(|A\cup B|=|A|+|B|\)</span>.</p>
+</div>
+<div class="thmbox thmbox-question" title="מתקנים את הספירה">
+<p><strong>שאלה 2.4.10 — מתקנים את הספירה.</strong></p>
+<div class="sets-exercise" data-sets="count-union">
+<p>בחרו את עצמת האיחוד ובדקו מדוע מחסירים את עצמת החיתוך.</p>
+</div>
+</div>
+</section>
+<section id="sec-inclusion-exclusion-three" class="level3" data-number="2.4.5">
+<h3 data-number="2.4.5" class="anchored" data-anchor-id="sec-inclusion-exclusion-three"><span class="header-section-number">2.4.5</span> ומה קורה עם שלוש קבוצות?</h3>
+<p>גם כאן מתחילים בחיבור, אבל צריך לעקוב אחרי איברים שנמצאים ביותר מקבוצה אחת.</p>
+<div class="thmbox thmbox-theorem" title="עקרון ההכלה וההפרדה לשלוש קבוצות">
+<p><strong>משפט 2.4.11 — עקרון ההכלה וההפרדה לשלוש קבוצות.</strong></p>
+<p>לכל שלוש קבוצות סופיות <span class="math inline">\(A,B,C\)</span>:</p>
+<p><span class="math display">\[\begin{aligned}
+|A\cup B\cup C|={}&amp;|A|+|B|+|C|\\
+&amp;-|A\cap B|-|A\cap C|-|B\cap C|\\
+&amp;+|A\cap B\cap C|.
+\end{aligned}\]</span></p>
+<p>מחברים את שלוש העצמות, מחסירים את עצמות שלושת החיתוכים הזוגיים, ומוסיפים בחזרה את עצמת החיתוך המשולש.</p>
+</div>
+<div class="thmbox thmbox-example" title="למה מוסיפים בחזרה?">
+<p><strong>דוגמה 2.4.12 — למה מוסיפים בחזרה?</strong></p>
+<p>עקבו אחרי איבר אחד בנוסחת ההכלה וההפרדה לשלוש קבוצות. כמה פעמים הוא נספר בסך הכול?</p>
+<p><strong>א.</strong> האיבר שייך לקבוצה אחת בלבד.</p>
+<div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="בחירת תשובה לסעיף א">
+<button type="button" class="tf-opt" data-val="0">
+0
+</button>
+<button type="button" class="tf-opt" data-val="1">
+1
+</button>
+<button type="button" class="tf-opt" data-val="2">
+3
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>הוא נספר פעם אחת בסכום הראשון ואינו נמצא בשום חיתוך. בסך הכול: <span class="math inline">\(1\)</span>.</p>
+</div>
+</div>
+<p><strong>ב.</strong> האיבר שייך בדיוק לשתי קבוצות.</p>
+<div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="בחירת תשובה לסעיף ב">
+<button type="button" class="tf-opt" data-val="0">
+0
+</button>
+<button type="button" class="tf-opt" data-val="1">
+1
+</button>
+<button type="button" class="tf-opt" data-val="2">
+2
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>הוא נספר פעמיים בסכום הראשון, ומחסירים אותו פעם אחת בחיתוך הזוגי המתאים. בסך הכול: <span class="math inline">\(2-1=1\)</span>.</p>
+</div>
+</div>
+<p><strong>ג.</strong> האיבר שייך לשלוש הקבוצות.</p>
+<div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="בחירת תשובה לסעיף ג">
+<button type="button" class="tf-opt" data-val="0">
+0
+</button>
+<button type="button" class="tf-opt" data-val="1">
+1
+</button>
+<button type="button" class="tf-opt" data-val="2">
+3
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p>הוא נספר שלוש פעמים בסכום הראשון. הוא נמצא גם בכל אחד משלושת החיתוכים הזוגיים, ולכן מחסירים אותו שלוש פעמים. כרגע נשאר <span class="math inline">\(3-3=0\)</span>! הוספת החיתוך המשולש מחזירה ספירה אחת: <span class="math inline">\(3-3+1=1\)</span>.</p>
+</div>
+</div>
+</div>
+<p><span class="key-rule"><strong>בחיתוך של זוג קבוצות נכללים גם האיברים ששייכים לקבוצה השלישית.</strong></span> למשל, <span class="math inline">\(A\cap B\)</span> אינו אומר ״ב־<span class="math inline">\(A\)</span> וב־<span class="math inline">\(B\)</span> בלבד״.</p>
+<div class="thmbox thmbox-question" title="שלוש רשימות, בלי לספור פעמיים">
+<p><strong>שאלה 2.4.13 — שלוש רשימות, בלי לספור פעמיים.</strong></p>
+<div class="sets-exercise" data-sets="count-three">
+<p>חשבו את עצמת האיחוד של שלוש קבוצות ובדקו מה כוללים החיתוכים הזוגיים.</p>
+</div>
+</div>
+<div class="thmbox thmbox-summary" title="איחוד, חיתוך וספירה">
+<p><strong>סיכום — איחוד, חיתוך וספירה.</strong></p>
+<ul>
+<li>חיתוך <span class="math inline">\(\cap\)</span> מתאים ל״וגם״: צריך להיות בשתי הקבוצות.</li>
+<li>איחוד <span class="math inline">\(\cup\)</span> מתאים ל״או״: מספיק להיות באחת, ומותר להיות בשתיהן.</li>
+<li>תמיד <span class="math inline">\(A\cap B\subseteq A\subseteq A\cup B\)</span>.</li>
+<li>בשתי קבוצות סופיות: <span class="math inline">\(|A\cup B|=|A|+|B|-|A\cap B|\)</span>.</li>
+<li>בשלוש קבוצות סופיות מחסירים את עצמות החיתוכים הזוגיים ומוסיפים בחזרה את עצמת החיתוך המשולש.</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="sec-set-difference-complement" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="sec-set-difference-complement"><span class="header-section-number">2.5</span> הפרש, משלים והפרש סימטרי</h2>
+<section id="sec-difference" class="level3" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="sec-difference"><span class="header-section-number">2.5.1</span> הפרש: מתחילים מקבוצה ומוציאים איברים</h3>
+<p>נרצה לשלוח תזכורת רק למי שנרשם לכדורסל <strong>ולא</strong> נרשם לשחייה. נתחיל ברשימת הכדורסל, ונוציא ממנה את מי שמופיע גם ברשימת השחייה.</p>
+<div class="thmbox thmbox-definition" title="הפרש קבוצות">
+<p><strong>הגדרה 2.5.1 — הפרש קבוצות.</strong></p>
+<p>ה<span class="term"><strong>הפרש</strong></span> <span class="math inline">\(A\setminus B\)</span> הוא קבוצת האיברים ששייכים ל־<span class="math inline">\(A\)</span> ואינם שייכים ל־<span class="math inline">\(B\)</span>.</p>
+<p><span class="math display">\[x\in A\setminus B\quad\Longleftrightarrow\quad (x\in A)\land(x\notin B).\]</span></p>
+<p>קוראים ״<span class="math inline">\(A\)</span> פחות <span class="math inline">\(B\)</span>״ או ״<span class="math inline">\(A\)</span> ללא <span class="math inline">\(B\)</span>״. זו פעולה על קבוצות, לא חיסור של מספרים.</p>
+</div>
+<div class="thmbox thmbox-example" title="מי נשאר בכל כיוון?">
+<p><strong>דוגמה 2.5.2 — מי נשאר בכל כיוון?</strong></p>
+<p>תהיינה <span class="math inline">\(A=\{0,2,4,6\}\)</span> ו־<span class="math inline">\(B=\{2,3,6\}\)</span>.</p>
+<p><strong>א.</strong> חשבו <span class="math inline">\(A\setminus B\)</span>.</p>
+<div class="tf-quiz example-choice" data-correct="2" role="group" aria-label="בחירת תשובה לסעיף א">
+<button type="button" class="tf-opt" data-val="0">
+({2,6})
+</button>
+<button type="button" class="tf-opt" data-val="1">
+({3})
+</button>
+<button type="button" class="tf-opt" data-val="2">
+({0,4})
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p><span class="math inline">\(A\setminus B=\{0,4\}\)</span>. מתחילים ב־<span class="math inline">\(A\)</span> ומוציאים את <span class="math inline">\(2\)</span> ואת <span class="math inline">\(6\)</span>.</p>
+</div>
+</div>
+<p><strong>ב.</strong> חשבו <span class="math inline">\(B\setminus A\)</span>.</p>
+<div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="בחירת תשובה לסעיף ב">
+<button type="button" class="tf-opt" data-val="0">
+({3})
+</button>
+<button type="button" class="tf-opt" data-val="1">
+({0,4})
+</button>
+<button type="button" class="tf-opt" data-val="2">
+({2,6})
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p><span class="math inline">\(B\setminus A=\{3\}\)</span>. כאן מתחילים ב־<span class="math inline">\(B\)</span>. קיבלנו תשובה אחרת: <strong>סדר הקבוצות בהפרש חשוב</strong>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-complement" class="level3" data-number="2.5.2">
+<h3 data-number="2.5.2" class="anchored" data-anchor-id="sec-complement"><span class="header-section-number">2.5.2</span> משלים: מי נשאר מחוץ לקבוצה, בתוך העולם?</h3>
+<p>אם נאמר רק ״כל מי שלא נרשם לכדורסל״, לא ברור אם אנחנו מתכוונים למשתתפי יום הספורט, לכל הסטודנטים או לכל תושבי המדינה. כדי לקחת משלים חייבים לקבוע עולם.</p>
+<div class="thmbox thmbox-definition" title="קבוצה משלימה">
+<p><strong>הגדרה 2.5.3 — קבוצה משלימה.</strong></p>
+<p>נקבע עולם <span class="math inline">\(U\)</span>, ונניח <span class="math inline">\(A\subseteq U\)</span>. ה<span class="term"><strong>משלים</strong></span> של <span class="math inline">\(A\)</span> ביחס ל־<span class="math inline">\(U\)</span> הוא:</p>
+<p><span class="math display">\[A^c=U\setminus A.\]</span></p>
+<p>אלו כל איברי <span class="math inline">\(U\)</span> שאינם ב־<span class="math inline">\(A\)</span>. האות הקטנה <span class="math inline">\(c\)</span> מציינת כאן משלים, ולא חזקה מספרית. לפעמים מסמנים משלים גם <span class="math inline">\(\overline A\)</span>.</p>
+</div>
+<p>זהו הקשר ל״לא״ מהלוגיקה: עבור עצם <span class="math inline">\(x\)</span> מתוך העולם <span class="math inline">\(U\)</span>, השייכות למשלים היא שלילת השייכות ל־<span class="math inline">\(A\)</span>:</p>
+<p><span class="math display">\[x\in A^c\quad\Longleftrightarrow\quad\neg(x\in A)\qquad\text{כאשר }x\in U.\]</span></p>
+<p>בתוך העולם שקבענו, כל איבר שייך בדיוק לאחת משתי הקבוצות: <span class="math inline">\(A\)</span> או המשלים שלה.</p>
+<div class="thmbox thmbox-example" title="אותה קבוצה, עולם אחר">
+<p><strong>דוגמה 2.5.4 — אותה קבוצה, עולם אחר.</strong></p>
+<p>תהי <span class="math inline">\(A=\{2,4\}\)</span>.</p>
+<p><strong>א.</strong> מהו <span class="math inline">\(A^c\)</span> כאשר <span class="math inline">\(U=\{1,2,3,4\}\)</span>?</p>
+<div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="בחירת תשובה לסעיף א">
+<button type="button" class="tf-opt" data-val="0">
+({2,4})
+</button>
+<button type="button" class="tf-opt" data-val="1">
+({1,3})
+</button>
+<button type="button" class="tf-opt" data-val="2">
+({1,3,5})
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p><span class="math inline">\(A^c=\{1,3\}\)</span>.</p>
+</div>
+</div>
+<p><strong>ב.</strong> מהו <span class="math inline">\(A^c\)</span> כאשר <span class="math inline">\(U=\{1,2,3,4,5\}\)</span>?</p>
+<div class="tf-quiz example-choice" data-correct="2" role="group" aria-label="בחירת תשובה לסעיף ב">
+<button type="button" class="tf-opt" data-val="0">
+({1,3})
+</button>
+<button type="button" class="tf-opt" data-val="1">
+({5})
+</button>
+<button type="button" class="tf-opt" data-val="2">
+({1,3,5})
+</button>
+<div class="tf-feedback" aria-live="polite">
+
+</div>
+<div class="tf-why">
+<p><span class="math inline">\(A^c=\{1,3,5\}\)</span>. <span class="math inline">\(A\)</span> לא השתנתה, אבל העולם השתנה — ולכן גם המשלים השתנה.</p>
+</div>
+</div>
+</div>
+<p><span class="key-rule"><strong>אין ״כל מה שלא ב־<span class="math inline">\(A\)</span>״ בלי לדעת מתוך איזה עולם בוחרים.</strong></span></p>
+</section>
+<section id="sec-symmetric-difference" class="level3" data-number="2.5.3">
+<h3 data-number="2.5.3" class="anchored" data-anchor-id="sec-symmetric-difference"><span class="header-section-number">2.5.3</span> הפרש סימטרי: בדיוק באחת</h3>
+<p>נחזור להרשמה לשתי הפעילויות. עכשיו נרצה את מי שנרשם <strong>בדיוק לפעילות אחת</strong>. מי שנרשם לשתיהן אינו מתאים לדרישה הזאת.</p>
+<div class="thmbox thmbox-definition" title="הפרש סימטרי">
+<p><strong>הגדרה 2.5.5 — הפרש סימטרי.</strong></p>
+<p>ה<span class="term"><strong>הפרש הסימטרי</strong></span> של <span class="math inline">\(A\)</span> ו־<span class="math inline">\(B\)</span>, שמסומן <span class="math inline">\(A\mathbin{\triangle}B\)</span>, הוא קבוצת האיברים ששייכים <strong>בדיוק לאחת</strong> משתי הקבוצות:</p>
+<p><span class="math display">\[A\mathbin{\triangle}B=(A\setminus B)\cup(B\setminus A).\]</span></p>
+<p>זהו המקביל של XOR: שייכות ל־<span class="math inline">\(A\)</span> או שייכות ל־<span class="math inline">\(B\)</span>, אבל לא שתיהן יחד.</p>
+</div>
+<p>אפשר גם להתחיל באיחוד ולהוציא את החיתוך:</p>
+<p><span class="math display">\[A\mathbin{\triangle}B=(A\cup B)\setminus(A\cap B).\]</span></p>
+<div class="thmbox thmbox-game" title="מי נשאר בחוץ?">
+<p><strong>משחק 2.5.6 — מי נשאר בחוץ?</strong></p>
+<div class="sets-exercise" data-sets="venn-difference">
+<p>בחרו בדיאגרמה את אזורי ההפרש, המשלים וההפרש הסימטרי.</p>
+</div>
+</div>
+<div class="thmbox thmbox-question" title="מחשבים וכותבים קבוצה">
+<p><strong>שאלה 2.5.7 — מחשבים וכותבים קבוצה.</strong></p>
+<div class="sets-exercise" data-sets="differences">
+<p>עבור <span class="math inline">\(U=\{1,2,3,4,5,6,7\}\)</span>, <span class="math inline">\(A=\{1,3,5\}\)</span> ו־<span class="math inline">\(B=\{3,4,5,7\}\)</span>, חשבו הפרש, משלים והפרש סימטרי.</p>
+</div>
+</div>
+</section>
+<section id="sec-set-laws" class="level3" data-number="2.5.4">
+<h3 data-number="2.5.4" class="anchored" data-anchor-id="sec-set-laws"><span class="header-section-number">2.5.4</span> כמה חוקים שימושיים</h3>
+<p>הקשרים לפרק הלוגיקה מאפשרים לצפות את החוקים. למשל, שלילת הטענה ״האיבר ב־<span class="math inline">\(A\)</span> או ב־<span class="math inline">\(B\)</span>״ פירושה ״האיבר אינו ב־<span class="math inline">\(A\)</span> וגם אינו ב־<span class="math inline">\(B\)</span>״.</p>
+<div class="thmbox thmbox-theorem" title="חוקי קבוצות">
+<p><strong>משפט 2.5.8 — חוקי קבוצות.</strong></p>
+<p>כל המשלים בטבלה נלקחים ביחס <strong>לאותו עולם <span class="math inline">\(U\)</span></strong>, וכל הקבוצות מוכלות בו.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">הרעיון</th>
+<th style="text-align: left;">החוק</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">חילוף</td>
+<td style="text-align: left;"><span class="math inline">\(A\cup B=B\cup A\)</span>, וגם <span class="math inline">\(A\cap B=B\cap A\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">קיבוץ</td>
+<td style="text-align: left;"><span class="math inline">\((A\cup B)\cup C=A\cup(B\cup C)\)</span>, ובאותו אופן לחיתוך</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">פילוג</td>
+<td style="text-align: left;"><span class="math inline">\(A\cap(B\cup C)=(A\cap B)\cup(A\cap C)\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">פילוג</td>
+<td style="text-align: left;"><span class="math inline">\(A\cup(B\cap C)=(A\cup B)\cap(A\cup C)\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">דה מורגן</td>
+<td style="text-align: left;"><span class="math inline">\((A\cup B)^c=A^c\cap B^c\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">דה מורגן</td>
+<td style="text-align: left;"><span class="math inline">\((A\cap B)^c=A^c\cup B^c\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">משלים פעמיים</td>
+<td style="text-align: left;"><span class="math inline">\((A^c)^c=A\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ריקה ועולם</td>
+<td style="text-align: left;"><span class="math inline">\(A\cup\varnothing=A\)</span>, <span class="math inline">\(A\cap U=A\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">אין איברים מתאימים</td>
+<td style="text-align: left;"><span class="math inline">\(A\cap\varnothing=\varnothing\)</span>, <span class="math inline">\(A\setminus A=\varnothing\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>אלה חוקים כלליים, לא רק תוצאות של רשימה מסוימת. בהמשך הפרק נוכיח חוק דה מורגן בעזרת בדיקת השייכות של איבר כלשהו.</p>
+<div class="thmbox thmbox-summary" title="הפעולה קובעת את מבחן השייכות">
+<p><strong>סיכום — הפעולה קובעת את מבחן השייכות.</strong></p>
+<ul>
+<li><span class="math inline">\(A\setminus B\)</span>: ב־<span class="math inline">\(A\)</span> ולא ב־<span class="math inline">\(B\)</span>. בדרך כלל אי אפשר להחליף את הסדר.</li>
+<li><span class="math inline">\(A^c\)</span>: בתוך העולם <span class="math inline">\(U\)</span>, מחוץ ל־<span class="math inline">\(A\)</span>.</li>
+<li><span class="math inline">\(A\triangle B\)</span>: בדיוק באחת משתי הקבוצות.</li>
+<li>הסוגריים קובעים איזו פעולה מחשבים קודם.</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="sec-power-set" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="sec-power-set"><span class="header-section-number">2.6</span> קבוצת החזקה</h2>
+<section id="sec-all-subsets" class="level3" data-number="2.6.1">
+<h3 data-number="2.6.1" class="anchored" data-anchor-id="sec-all-subsets"><span class="header-section-number">2.6.1</span> אוסף של כל הבחירות האפשריות</h3>
+<p>אפשר לבחור להוסיף לכריך מלפפון, זית, את שניהם, או אף אחד מהם. אם נתעלם מהכמויות, כל בחירה היא <strong>תת־קבוצה</strong> של קבוצת התוספות. גם ״בלי תוספות״ היא בחירה — הקבוצה הריקה.</p>
+<div class="thmbox thmbox-definition" title="קבוצת החזקה">
+<p><strong>הגדרה 2.6.1 — קבוצת החזקה.</strong></p>
+<p><span class="term"><strong>קבוצת החזקה</strong></span> של <span class="math inline">\(A\)</span>, שמסומנת <span class="math inline">\(\mathcal P(A)\)</span>, היא הקבוצה של <strong>כל תת־הקבוצות של <span class="math inline">\(A\)</span></strong>.</p>
+<p><span class="math display">\[B\in\mathcal P(A)\quad\Longleftrightarrow\quad B\subseteq A.\]</span></p>
+<p>איברי <span class="math inline">\(\mathcal P(A)\)</span> הם קבוצות. השם אינו אומר שמעלים את איברי <span class="math inline">\(A\)</span> בחזקה.</p>
+</div>
+<div class="thmbox thmbox-example" title="לא שוכחים את הבחירה הריקה">
+<p><strong>דוגמה 2.6.2 — לא שוכחים את הבחירה הריקה.</strong></p>
+<p>תהי <span class="math inline">\(A=\{2,9\}\)</span>. מהי <span class="math inline">\(\mathcal P(A)\)</span>?</p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>בחירות בלי איברים או עם איבר אחד</summary>
+<div class="lecture-answer foldable" title="בחירות בלי איברים או עם איבר אחד">
+<p>בלי איברים: <span class="math inline">\(\varnothing\)</span>. עם איבר אחד: <span class="math inline">\(\{2\}\)</span> או <span class="math inline">\(\{9\}\)</span>.</p>
+</div>
+</details>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הבחירה שנותרה והקבוצה כולה</summary>
+<div class="lecture-answer foldable" title="הבחירה שנותרה והקבוצה כולה">
+<p>עם שני האיברים: <span class="math inline">\(\{2,9\}\)</span>. לכן:</p>
+<p><span class="math display">\[\mathcal P(A)=\{\varnothing,\{2\},\{9\},\{2,9\}\}.\]</span></p>
+<p>בקבוצת החזקה יש ארבעה איברים, וכל אחד מהם הוא קבוצה.</p>
+</div>
+</details>
+</div>
+</section>
+<section id="sec-subset-builder" class="level3" data-number="2.6.2">
+<h3 data-number="2.6.2" class="anchored" data-anchor-id="sec-subset-builder"><span class="header-section-number">2.6.2</span> איך מוצאים את כולן בלי כפילויות?</h3>
+<p>לכל איבר מחליטים בנפרד: <strong>להכניס</strong> לתת־הקבוצה או <strong>לא להכניס</strong>. אפשר לסדר את הבחירות לפי מספר האיברים שנבחרו, כדי לא לדלג על אפשרות.</p>
+<div class="thmbox thmbox-game" title="הקטלוג שלא משאיר אף בחירה בחוץ">
+<p><strong>משחק 2.6.3 — הקטלוג שלא משאיר אף בחירה בחוץ.</strong></p>
+<div class="sets-exercise" data-sets="powers">
+<p>בנו את כל תת־הקבוצות של <span class="math inline">\(A=\{a,b,c\}\)</span>. אפשר לבחור גם אפס איברים.</p>
+</div>
+</div>
+</section>
+<section id="sec-power-cardinality" class="level3" data-number="2.6.3">
+<h3 data-number="2.6.3" class="anchored" data-anchor-id="sec-power-cardinality"><span class="header-section-number">2.6.3</span> העצמה של קבוצת החזקה</h3>
+<p>במשחק בנינו תת־קבוצות של <span class="math inline">\(A=\{a,b,c\}\)</span>. לכל איבר יש שתי אפשרויות: להכניס אותו לתת־הקבוצה או להשאיר אותו בחוץ. אחרי ההחלטה לגבי <span class="math inline">\(a\)</span> יש שתי אפשרויות. כל אחת מהן מתפצלת לשתיים כשמחליטים לגבי <span class="math inline">\(b\)</span>, ושוב לשתיים כשמחליטים לגבי <span class="math inline">\(c\)</span>. לכן יש <span class="math inline">\(2\cdot2\cdot2=8\)</span> תת־קבוצות.</p>
+<p>זהו אותו רעיון שפגשנו בספירת שורות בטבלת אמת: שם בחרנו אמת או שקר לכל אות; כאן בוחרים ״בפנים״ או ״בחוץ״ לכל איבר. כל רצף בחירות קובע תת־קבוצה אחת, וכל תת־קבוצה מתקבלת מרצף אחד כזה.</p>
+<div class="thmbox thmbox-theorem" title="עצמת קבוצת החזקה">
+<p><strong>משפט 2.6.4 — עצמת קבוצת החזקה.</strong></p>
+<p>אם <span class="math inline">\(A\)</span> קבוצה סופית ועצמתה <span class="math inline">\(|A|=n\)</span>, אז:</p>
+<p><span class="math display">\[|\mathcal P(A)|=2^{|A|}=2^n.\]</span></p>
+<p>כלומר, לקבוצה בת <span class="math inline">\(n\)</span> איברים יש <span class="math inline">\(2^n\)</span> תת־קבוצות. לכל איבר שתי אפשרויות בחירה, ולכן עבור <span class="math inline">\(n\ge1\)</span> מכפילים <span class="math inline">\(2\)</span> בעצמו <span class="math inline">\(n\)</span> פעמים.</p>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">מספר האיברים ב־<span class="math inline">\(A\)</span></th>
+<th style="text-align: left;">מספר תת־הקבוצות של <span class="math inline">\(A\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2^0=1\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2^1=2\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(2\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2^2=4\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(3\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2^3=8\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(4\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2^4=16\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(5\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2^5=32\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>כשאין איברים, נשארת בחירה אחת בלבד: לא לבחור שום דבר. לכן גם לקבוצה הריקה יש תת־קבוצה אחת.</p>
+<p><span class="key-rule"><strong><span class="math inline">\(|A|\)</span> סופר את איברי <span class="math inline">\(A\)</span>; <span class="math inline">\(|\mathcal P(A)|\)</span> סופר את תת־הקבוצות של <span class="math inline">\(A\)</span>.</strong></span> אלה שתי קבוצות שונות, ובהתאם סופרים בהן עצמים שונים.</p>
+<div class="thmbox thmbox-question" title="סופרים בחירות, לא את גודל המספרים">
+<p><strong>שאלה 2.6.5 — סופרים בחירות, לא את גודל המספרים.</strong></p>
+<div class="sets-exercise" data-sets="count-power">
+<p>בחרו כמה איברים יש בקבוצת החזקה ובדקו איך מספרם משתנה כשמוסיפים איבר לקבוצה המקורית.</p>
+</div>
+</div>
+<div class="thmbox thmbox-warning" title="הריקה והקבוצה כולה תמיד ברשימה">
+<p><strong>שימו לב — הריקה והקבוצה כולה תמיד ברשימה.</strong></p>
+<p>תמיד <span class="math inline">\(\varnothing\in\mathcal P(A)\)</span> וגם <span class="math inline">\(A\in\mathcal P(A)\)</span>. אם <span class="math inline">\(A=\varnothing\)</span>, שתי האמירות מתייחסות <strong>לאותו איבר</strong>, ולכן לא סופרים אותו פעמיים:</p>
+<p><span class="math display">\[\mathcal P(\varnothing)=\{\varnothing\}.\]</span></p>
+</div>
+<div class="thmbox thmbox-question" title="איזה סוג של איבר מחפשים?">
+<p><strong>שאלה 2.6.6 — איזה סוג של איבר מחפשים?</strong></p>
+<div class="sets-exercise" data-sets="power-check">
+<p>בדקו שייכות לקבוצת החזקה ואת קבוצת החזקה של הריקה.</p>
+</div>
+</div>
+<div class="thmbox thmbox-summary" title="קבוצה של קבוצות">
+<p><strong>סיכום — קבוצה של קבוצות.</strong></p>
+<ul>
+<li>איבר של <span class="math inline">\(\mathcal P(A)\)</span> הוא תת־קבוצה של <span class="math inline">\(A\)</span>.</li>
+<li>לא שוכחים את <span class="math inline">\(\varnothing\)</span> ואת <span class="math inline">\(A\)</span> עצמה.</li>
+<li>אם <span class="math inline">\(|A|=n\)</span> סופי, יש <span class="math inline">\(2^n\)</span> תת־קבוצות.</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="sec-cartesian-product" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="sec-cartesian-product"><span class="header-section-number">2.7</span> זוגות סדורים ומכפלה קרטזית</h2>
+<section id="sec-ordered-pair" class="level3" data-number="2.7.1">
+<h3 data-number="2.7.1" class="anchored" data-anchor-id="sec-ordered-pair"><span class="header-section-number">2.7.1</span> כאן הסדר דווקא חשוב</h3>
+<p>בפתק ״שורה 2, כיסא 5״, שני המספרים ממלאים תפקידים שונים. החלפתם נותנת ״שורה 5, כיסא 2״ — מקום אחר. קבוצה רגילה אינה שומרת על הסדר; לשם כך משתמשים בזוג סדור.</p>
+<div class="thmbox thmbox-definition" title="זוג סדור">
+<p><strong>הגדרה 2.7.1 — זוג סדור.</strong></p>
+<p><span class="term"><strong>זוג סדור</strong></span> נכתב <span class="math inline">\((a,b)\)</span>. <span class="math inline">\(a\)</span> הוא הרכיב הראשון ו־<span class="math inline">\(b\)</span> הרכיב השני. שני זוגות סדורים שווים בדיוק כאשר הרכיבים המתאימים שווים:</p>
+<p><span class="math display">\[(a,b)=(c,d)\quad\Longleftrightarrow\quad a=c\ \land\ b=d.\]</span></p>
+<p>הסוגריים <strong>עגולים</strong>. להבדיל מקבוצה, כאן המקום חשוב.</p>
+</div>
+<p>למשל, <span class="math inline">\((2,5)\ne(5,2)\)</span>, אבל <span class="math inline">\(\{2,5\}=\{5,2\}\)</span>. מותר ששני רכיבי הזוג יהיו שווים: <span class="math inline">\((2,2)\)</span> הוא זוג סדור תקין.</p>
+</section>
+<section id="sec-product-definition" class="level3" data-number="2.7.2">
+<h3 data-number="2.7.2" class="anchored" data-anchor-id="sec-product-definition"><span class="header-section-number">2.7.2</span> כל הצירופים של שתי בחירות</h3>
+<p>אם יש שתי אפשרויות לשורה ושלוש אפשרויות לכיסא בכל שורה, אפשר ליצור שישה זוגות של ״שורה, כיסא״. כל מקום מתקבל מבחירה ראשונה ואחריה בחירה שנייה.</p>
+<div class="thmbox thmbox-definition" title="מכפלה קרטזית">
+<p><strong>הגדרה 2.7.2 — מכפלה קרטזית.</strong></p>
+<p>ה<span class="term"><strong>מכפלה הקרטזית</strong></span> <span class="math inline">\(A\times B\)</span> היא קבוצת כל הזוגות הסדורים <span class="math inline">\((a,b)\)</span> שבהם <span class="math inline">\(a\in A\)</span> ו־<span class="math inline">\(b\in B\)</span>.</p>
+<p><span class="math display">\[A\times B=\{(a,b)\mid a\in A\text{ וגם }b\in B\}.\]</span></p>
+<p>הסימן <span class="math inline">\(\times\)</span> מציין כאן פעולה על קבוצות: בחירת רכיב ראשון מ־<span class="math inline">\(A\)</span> ורכיב שני מ־<span class="math inline">\(B\)</span>. לא כופלים את ערכי הרכיבים.</p>
+</div>
+<div class="thmbox thmbox-example" title="ממלאים שורה אחר שורה">
+<p><strong>דוגמה 2.7.3 — ממלאים שורה אחר שורה.</strong></p>
+<p>תהיינה <span class="math inline">\(A=\{1,2\}\)</span> ו־<span class="math inline">\(B=\{2,4\}\)</span>. כתבו את <span class="math inline">\(A\times B\)</span>.</p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הזוגות שמתחילים ב־1</summary>
+<div class="lecture-answer foldable" title="הזוגות שמתחילים ב־1">
+<p><span class="math inline">\((1,2)\)</span> ו־<span class="math inline">\((1,4)\)</span>.</p>
+</div>
+</details>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הזוגות שמתחילים ב־2 והקבוצה כולה</summary>
+<div class="lecture-answer foldable" title="הזוגות שמתחילים ב־2 והקבוצה כולה">
+<p><span class="math inline">\((2,2)\)</span> ו־<span class="math inline">\((2,4)\)</span>. לכן:</p>
+<p><span class="math display">\[A\times B=\{(1,2),(1,4),(2,2),(2,4)\}.\]</span></p>
+<p><span class="math inline">\((4,2)\)</span> אינו שייך למכפלה הזאת: הרכיב הראשון שלו אינו ב־<span class="math inline">\(A\)</span>.</p>
+</div>
+</details>
+</div>
+<div class="thmbox thmbox-game" title="מסדרים מקומות, לא מכפילים מספרים">
+<p><strong>משחק 2.7.4 — מסדרים מקומות, לא מכפילים מספרים.</strong></p>
+<div class="sets-exercise" data-sets="pairs">
+<p>בחרו בדיוק את הזוגות ששייכים ל־<span class="math inline">\(A\times B\)</span>, עבור <span class="math inline">\(A=\{2,3\}\)</span> ו־<span class="math inline">\(B=\{1,3\}\)</span>.</p>
+</div>
+</div>
+</section>
+<section id="sec-product-properties" class="level3" data-number="2.7.3">
+<h3 data-number="2.7.3" class="anchored" data-anchor-id="sec-product-properties"><span class="header-section-number">2.7.3</span> הסדר, המספר והקבוצה הריקה</h3>
+<p>בדרך כלל <span class="math inline">\(A\times B\)</span> ו־<span class="math inline">\(B\times A\)</span> שונות: התפקידים של המקום הראשון והשני מתחלפים. לעומת זאת, כשסופרים את הזוגות בקבוצות סופיות, מקבלים:</p>
+<p><span class="math display">\[|A\times B|=|A|\cdot|B|.\]</span></p>
+<p>לכל איבר ראשון אפשר לצרף כל איבר שני. אם אחת הקבוצות ריקה, אי אפשר להשלים זוג, ולכן <span class="math inline">\(A\times\varnothing=\varnothing\times A=\varnothing\)</span>.</p>
+<div class="thmbox thmbox-question" title="מבחן הסוגריים והמקומות">
+<p><strong>שאלה 2.7.5 — מבחן הסוגריים והמקומות.</strong></p>
+<div class="sets-exercise" data-sets="pair-check">
+<p>השוו זוגות וקבוצות, ספרו זוגות ובדקו מכפלה עם הקבוצה הריקה.</p>
+</div>
+</div>
+<div class="thmbox thmbox-summary" title="שתי בחירות עם תפקידים">
+<p><strong>סיכום — שתי בחירות עם תפקידים.</strong></p>
+<ul>
+<li>בזוג סדור המקום חשוב; בקבוצה סדר האיברים אינו חשוב.</li>
+<li><span class="math inline">\((a,b)\in A\times B\)</span> כאשר <span class="math inline">\(a\in A\)</span> וגם <span class="math inline">\(b\in B\)</span>.</li>
+<li>בקבוצות סופיות מכפילים את מספר האפשרויות בשני המקומות.</li>
+</ul>
+</div>
 </section>
 </section>
 <section id="sec-set-proofs" class="level2" data-number="2.8">
 <h2 data-number="2.8" class="anchored" data-anchor-id="sec-set-proofs"><span class="header-section-number">2.8</span> משתמשים בכמתים כדי לנסח טענות על קבוצות</h2>
-<p>TODO</p>
+<section id="sec-set-proof-goals" class="level3" data-number="2.8.1">
+<h3 data-number="2.8.1" class="anchored" data-anchor-id="sec-set-proof-goals"><span class="header-section-number">2.8.1</span> מה צריך להראות?</h3>
+<p>כעת אפשר לכתוב בקיצור את הדרישה ״כל איבר של <span class="math inline">\(A\)</span> נמצא גם ב־<span class="math inline">\(B\)</span>״:</p>
+<p><span class="math display">\[A\subseteq B\quad\Longleftrightarrow\quad \forall x\in A\,(x\in B).\]</span></p>
+<p>כדי להפריך אותה, צריך למצוא איבר מהסוג ההפוך:</p>
+<p><span class="math display">\[A\nsubseteq B\quad\Longleftrightarrow\quad \exists x\in A\,(x\notin B).\]</span></p>
+<p>הסימן <span class="math inline">\(\nsubseteq\)</span> אומר ״אינה מוכלת ב־״. שימו לב: האיבר שמפריך את ההכלה חייב להתחיל ב־<span class="math inline">\(A\)</span>.</p>
+<div class="thmbox thmbox-method" title="הוכחת הכלה — עוקבים אחרי איבר כלשהו">
+<p><strong>שיטה 2.8.1 — הוכחת הכלה — עוקבים אחרי איבר כלשהו.</strong></p>
+<p>כדי להוכיח <span class="math inline">\(A\subseteq B\)</span>:</p>
+<ol type="1">
+<li>כותבים: ״יהי <span class="math inline">\(x\in A\)</span> <strong>כלשהו</strong>״.</li>
+<li>משתמשים בנתונים ובהגדרות כדי להראות ש־<span class="math inline">\(x\in B\)</span>.</li>
+<li>מסכמים: כל איבר של <span class="math inline">\(A\)</span> נמצא ב־<span class="math inline">\(B\)</span>, ולכן <span class="math inline">\(A\subseteq B\)</span>.</li>
+</ol>
+<p>״כלשהו״ אומר שלא בחרנו איבר עם תכונה מיוחדת. הנימוק חייב לעבוד לכל איבר אפשרי של <span class="math inline">\(A\)</span>. בדיקה רק עבור המספר <span class="math inline">\(2\)</span>, למשל, אינה מספיקה להוכחה כללית.</p>
+</div>
 </section>
-<section id="practice-quantifiers" class="level2" data-number="2.9">
-<h2 data-number="2.9" class="anchored" data-anchor-id="practice-quantifiers"><span class="header-section-number">2.9</span> תרגול עצמי: כמתים</h2>
+<section id="sec-set-inclusion-proof" class="level3" data-number="2.8.2">
+<h3 data-number="2.8.2" class="anchored" data-anchor-id="sec-set-inclusion-proof"><span class="header-section-number">2.8.2</span> דוגמה מלאה: מהחיתוך אל אחת הקבוצות</h3>
+<div class="thmbox thmbox-example" title="הוכחה שמתחילה מההגדרה">
+<p><strong>דוגמה 2.8.2 — הוכחה שמתחילה מההגדרה.</strong></p>
+<p>נוכיח שלכל שתי קבוצות <span class="math inline">\(A,B\)</span> מתקיים <span class="math inline">\(A\cap B\subseteq A\)</span>.</p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>מאיפה מתחילים?</summary>
+<div class="lecture-answer foldable" title="מאיפה מתחילים?">
+<p>יהי <span class="math inline">\(x\in A\cap B\)</span> כלשהו. המטרה היא להראות ש־<span class="math inline">\(x\in A\)</span>.</p>
+</div>
+</details>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>מה אומרת השייכות לחיתוך?</summary>
+<div class="lecture-answer foldable" title="מה אומרת השייכות לחיתוך?">
+<p>לפי הגדרת החיתוך, <span class="math inline">\(x\in A\)</span> וגם <span class="math inline">\(x\in B\)</span>. בפרט, <span class="math inline">\(x\in A\)</span>, כפי שרצינו.</p>
+</div>
+</details>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>ההוכחה ברצף</summary>
+<div class="lecture-answer foldable" title="ההוכחה ברצף">
+<p><strong>נראה ש־<span class="math inline">\(A\cap B\subseteq A\)</span>.</strong> יהי <span class="math inline">\(x\in A\cap B\)</span> כלשהו. לפי הגדרת החיתוך, <span class="math inline">\(x\in A\)</span> וגם <span class="math inline">\(x\in B\)</span>, ולכן <span class="math inline">\(x\in A\)</span>. הראינו שכל איבר של <span class="math inline">\(A\cap B\)</span> נמצא ב־<span class="math inline">\(A\)</span>, ומכאן <span class="math inline">\(A\cap B\subseteq A\)</span>.</p>
+</div>
+</details>
+</div>
+<p>ההוכחה לא נעזרה ברשימה מסוימת של איברים. לכן היא תקפה לכל שתי קבוצות. אם החיתוך ריק, ההכלה נכונה גם אז: אין איבר בחיתוך שיכול להפריך אותה.</p>
+<div class="thmbox thmbox-question" title="משלימים הוכחה: מהאיחוד אל איחוד גדול יותר">
+<p><strong>שאלה 2.8.3 — משלימים הוכחה: מהאיחוד אל איחוד גדול יותר.</strong></p>
+<p>נניח <span class="math inline">\(A\subseteq B\)</span>. הוכיחו <span class="math inline">\(A\cup C\subseteq B\cup C\)</span>.</p>
+<p>ההנחה <span class="math inline">\(A\subseteq B\)</span> אומרת שאם <span class="math inline">\(x\in A\)</span>, אז <span class="math inline">\(x\in B\)</span>. השייכות <span class="math inline">\(x\in A\cup C\)</span> מאפשרת שתי אפשרויות: <span class="math inline">\(x\in A\)</span>, או <span class="math inline">\(x\in C\)</span>. נבדוק מה קורה בכל אחת מהן.</p>
+<div class="sets-exercise" data-sets="proof-union">
+<p>בחרו את הצעדים ואת הנימוקים כדי להשלים את ההוכחה. כל צעד מאושר יופיע כחלק מההוכחה.</p>
+</div>
+</div>
+</section>
+<section id="sec-set-equality-proof" class="level3" data-number="2.8.3">
+<h3 data-number="2.8.3" class="anchored" data-anchor-id="sec-set-equality-proof"><span class="header-section-number">2.8.3</span> שוויון: אותם איברים בשני הכיוונים</h3>
+<p>כדי להראות <span class="math inline">\(A=B\)</span> אפשר להוכיח שתי הכלות: <span class="math inline">\(A\subseteq B\)</span> וגם <span class="math inline">\(B\subseteq A\)</span>. אפשר גם להראות ישירות שכל איבר שייך ל־<span class="math inline">\(A\)</span> <strong>אם ורק אם</strong> הוא שייך ל־<span class="math inline">\(B\)</span>.</p>
+<p>כש־<span class="math inline">\(A,B\subseteq U\)</span>, הניסוח השני הוא:</p>
+<p><span class="math display">\[A=B\quad\Longleftrightarrow\quad\forall x\in U\,\bigl((x\in A)\leftrightarrow(x\in B)\bigr).\]</span></p>
+<div class="thmbox thmbox-example" title="החלפת סדר בחיתוך">
+<p><strong>דוגמה 2.8.4 — החלפת סדר בחיתוך.</strong></p>
+<p>נוכיח <span class="math inline">\(A\cap B=B\cap A\)</span>.</p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת ההוכחה</summary>
+<div class="lecture-answer foldable" title="הצגת ההוכחה">
+<p>יהי <span class="math inline">\(x\)</span> איבר כלשהו בעולם שמכיל את <span class="math inline">\(A\)</span> ואת <span class="math inline">\(B\)</span>. לפי הגדרת החיתוך:</p>
+<p><span class="math display">\[
+\begin{aligned}
+x\in A\cap B
+&amp;\Longleftrightarrow (x\in A)\land(x\in B)
+&amp;&amp;\text{הגדרת חיתוך}\\
+&amp;\Longleftrightarrow (x\in B)\land(x\in A)
+&amp;&amp;\text{חילוף של ״וגם״}\\
+&amp;\Longleftrightarrow x\in B\cap A
+&amp;&amp;\text{הגדרת חיתוך}.
+\end{aligned}
+\]</span></p>
+<p>כל מעבר פועל בשני הכיוונים. לכן לשתי הקבוצות אותם איברים, והן שוות.</p>
+</div>
+</details>
+</div>
+<div class="thmbox thmbox-question" title="דה מורגן: מהגדרת הקבוצה אל הלוגיקה">
+<p><strong>שאלה 2.8.5 — דה מורגן: מהגדרת הקבוצה אל הלוגיקה.</strong></p>
+<p>נניח <span class="math inline">\(A,B\subseteq U\)</span>. הוכיחו <span class="math inline">\((A\cup B)^c=A^c\cap B^c\)</span>, כאשר כל המשלים ביחס לאותו <span class="math inline">\(U\)</span>.</p>
+<div class="sets-exercise" data-sets="proof-demorgan">
+<p>התחילו מאיבר של המשלים של האיחוד. בכל צעד בחרו שורה ונימוק. ההוכחה שנבנית תישאר גלויה.</p>
+</div>
+</div>
+<div class="thmbox thmbox-key-point" title="הציור עוזר לחשוב; ההוכחה מסבירה למה">
+<p><strong>חשוב לזכור — הציור עוזר לחשוב; ההוכחה מסבירה למה.</strong></p>
+<p>דיאגרמה ורשימת מספרים עוזרות למצוא רעיון או דוגמה נגדית. כדי להוכיח חוק לכל הקבוצות, כותבים נימוק כללי באמצעות ההגדרות. כדאי לכתוב את ההוכחה על דף לפני הבדיקה או אחריה — זו הכתיבה שנרצה לדעת לבצע גם בלי הממשק.</p>
+</div>
+<div class="thmbox thmbox-summary" title="איך עוברים מהקבוצה להוכחה?">
+<p><strong>סיכום — איך עוברים מהקבוצה להוכחה?</strong></p>
+<ul>
+<li>בהכלה מתחילים מאיבר כלשהו בקבוצה הראשונה ומראים שהוא בשנייה.</li>
+<li>בשוויון מוכיחים שתי הכלות, או שרשרת שקילויות בין תנאי השייכות.</li>
+<li>בהפרכה מוצאים איבר או בחירת קבוצות שמכשילים את הטענה.</li>
+<li>כל מעבר צריך נימוק: הגדרה, נתון או חוק שכבר למדנו.</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="practice-sets" class="level2" data-number="2.9">
+<h2 data-number="2.9" class="anchored" data-anchor-id="practice-sets"><span class="header-section-number">2.9</span> תרגול עצמי: קבוצות</h2>
+<section id="practice-sets-membership" class="level3" data-number="2.9.1">
+<h3 data-number="2.9.1" class="anchored" data-anchor-id="practice-sets-membership"><span class="header-section-number">2.9.1</span> שייכות והכלה</h3>
+<div id="practice-set-q-roster" class="thmbox thmbox-question" title="כותבים את האיברים">
+<p><strong>שאלה 2.9.1 — כותבים את האיברים.</strong></p>
+<div class="sets-exercise" data-sets="practice-roster">
+<p>כתבו קבוצה בלי חזרות, ותרגמו תיאור באמצעות תנאי לרשימת איברים.</p>
+</div>
+</div>
+<div id="practice-set-q-nesting" class="thmbox thmbox-question" title="קוראים את הסוגריים">
+<p><strong>שאלה 2.9.2 — קוראים את הסוגריים.</strong></p>
+<div class="sets-exercise" data-sets="practice-relations">
+<p>בדקו שייכות והכלה בקבוצה שמכילה גם קבוצה כאיבר.</p>
+</div>
+</div>
+<div id="practice-set-q-counter" class="thmbox thmbox-question" title="תפסו את האיבר שמפריך">
+<p><strong>שאלה 2.9.3 — תפסו את האיבר שמפריך.</strong></p>
+<div class="sets-exercise" data-sets="practice-counter">
+<p>מצאו איבר שמפריך את ההכלה הנתונה.</p>
+</div>
+</div>
+</section>
+<section id="practice-sets-operations" class="level3" data-number="2.9.2">
+<h3 data-number="2.9.2" class="anchored" data-anchor-id="practice-sets-operations"><span class="header-section-number">2.9.2</span> פעולות על קבוצות</h3>
+<div id="practice-set-q-operations" class="thmbox thmbox-question" title="קודם סוגריים">
+<p><strong>שאלה 2.9.4 — קודם סוגריים.</strong></p>
+<div class="sets-exercise" data-sets="practice-operations">
+<p>חשבו שילובים של איחוד, חיתוך והפרש.</p>
+</div>
+</div>
+<div id="practice-set-q-complement" class="thmbox thmbox-question" title="מה השתנה בעולם?">
+<p><strong>שאלה 2.9.5 — מה השתנה בעולם?</strong></p>
+<div class="sets-exercise" data-sets="practice-complement">
+<p>חשבו משלים בשני עולמות שונים.</p>
+</div>
+</div>
+<div id="practice-set-q-false-law" class="thmbox thmbox-question" title="הרובוט שוב ממהר להכריז על חוק">
+<p><strong>שאלה 2.9.6 — הרובוט שוב ממהר להכריז על חוק.</strong></p>
+<div class="sets-exercise" data-sets="practice-false-law">
+<p>מצאו דוגמה נגדית לחוק שגוי, ובדקו מה אפשר להסיק מדוגמה אחת.</p>
+</div>
+</div>
+</section>
+<section id="practice-sets-counting" class="level3" data-number="2.9.3">
+<h3 data-number="2.9.3" class="anchored" data-anchor-id="practice-sets-counting"><span class="header-section-number">2.9.3</span> עצמה וספירה</h3>
+<div class="thmbox thmbox-question" title="כמה עצמים שונים נספרו?">
+<p><strong>שאלה 2.9.7 — כמה עצמים שונים נספרו?</strong></p>
+<div class="sets-exercise" data-sets="practice-counting">
+<p>תרגלו ספירת איברים, הכלה והפרדה ועצמה של קבוצת חזקה.</p>
+</div>
+</div>
+</section>
+<section id="practice-sets-power-product" class="level3" data-number="2.9.4">
+<h3 data-number="2.9.4" class="anchored" data-anchor-id="practice-sets-power-product"><span class="header-section-number">2.9.4</span> קבוצות של קבוצות וזוגות</h3>
+<div id="practice-set-q-power" class="thmbox thmbox-question" title="גם הקבוצה הריקה יכולה להיות איבר">
+<p><strong>שאלה 2.9.8 — גם הקבוצה הריקה יכולה להיות איבר.</strong></p>
+<div class="sets-exercise" data-sets="practice-power">
+<p>כתבו קבוצות חזקה, כולל מקרה שבו האיבר היחיד הוא הקבוצה הריקה.</p>
+</div>
+</div>
+<div id="practice-set-q-product" class="thmbox thmbox-question" title="מחליפים את תפקידי המקומות">
+<p><strong>שאלה 2.9.9 — מחליפים את תפקידי המקומות.</strong></p>
+<div class="sets-exercise" data-sets="practice-product">
+<p>כתבו את שתי המכפלות הקרטזיות לפי הסדר המבוקש.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="practice-quantifiers" class="level2" data-number="2.10">
+<h2 data-number="2.10" class="anchored" data-anchor-id="practice-quantifiers"><span class="header-section-number">2.10</span> תרגול עצמי: כמתים</h2>
 <p>תרגילים על <a href="#sec-quantifiers">הכמתים שלמדנו בפרק</a>, עם קלט, משוב ופתרונות בצעדים. נסו לענות לפני פתיחת הרמזים והפתרון.</p>
 <p>לפני הפתרון סמנו את התחום. <span class="term"><strong>עד</strong></span> הוא איבר שמראה שטענת ״קיים״ נכונה. <span class="term"><strong>דוגמה נגדית</strong></span> היא איבר שמראה שטענת ״לכל״ שגויה. דוגמה אחת שמתאימה אינה מספיקה להוכיח ״לכל״.</p>
 <div id="practice-q-free" class="thmbox thmbox-question" title="איזה משתנה עדיין חופשי?">
-<p><strong>שאלה 2.9.1 — איזה משתנה עדיין חופשי?</strong></p>
+<p><strong>שאלה 2.10.1 — איזה משתנה עדיין חופשי?</strong></p>
 <p>התחום של <span class="math inline">\(x\)</span> ושל <span class="math inline">\(y\)</span> הוא <span class="math inline">\(D=\{1,2,3\}\)</span>. הסתכלו על <span class="math inline">\(\forall x\in D\,(x\le y)\)</span>.</p>
 <ol type="1">
 <li>על איזה משתנה חל הכמת ״לכל״?</li>
@@ -1242,7 +2788,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="practice-q-quant-finite" class="thmbox thmbox-question" title="ארבע טענות על תחום קטן">
-<p><strong>שאלה 2.9.2 — ארבע טענות על תחום קטן.</strong></p>
+<p><strong>שאלה 2.10.2 — ארבע טענות על תחום קטן.</strong></p>
 <p>התחום הוא <span class="math inline">\(D=\{0,1,2,3\}\)</span>. קבעו אמת או שקר ותנו הסבר: עד, דוגמה נגדית או בדיקה של כל התחום, לפי הצורך.</p>
 <ol type="1">
 <li><span class="math inline">\(\forall x\in D\,(x\ge0)\)</span>.</li>
@@ -1275,7 +2821,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="practice-q-quant-domain" class="thmbox thmbox-question" title="איבר חדש משנה את התשובה">
-<p><strong>שאלה 2.9.3 — איבר חדש משנה את התשובה.</strong></p>
+<p><strong>שאלה 2.10.3 — איבר חדש משנה את התשובה.</strong></p>
 <p>בדקו את <span class="math inline">\(\forall x\in D\,(x\ne0)\)</span> בשני עולמות דיון:</p>
 <ol type="1">
 <li><span class="math inline">\(D=\{1,2,3\}\)</span>.</li>
@@ -1300,7 +2846,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="practice-q-quant-not-all" class="thmbox thmbox-question" title="לא כולם — אבל אולי חלק כן">
-<p><strong>שאלה 2.9.4 — לא כולם — אבל אולי חלק כן.</strong></p>
+<p><strong>שאלה 2.10.4 — לא כולם — אבל אולי חלק כן.</strong></p>
 <p>עולם הדיון <span class="math inline">\(D\)</span> הוא הסטודנטים בכיתה. נסמן ב־<span class="math inline">\(P(x)\)</span> את ״הסטודנט <span class="math inline">\(x\)</span> החזיר את הספר״. כתבו בכמתים את ״כל הסטודנטים החזירו את הספר״, ואז כתבו את שלילתו בכמתים ובמילים. האם השלילה אומרת שאף אחד לא החזיר?</p>
 <div class="choice-exercise" data-choice="quant-not-all">
 <div class="choice-offline">
@@ -1320,7 +2866,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="practice-q-quant-nobody" class="thmbox thmbox-question" title="אין כיסאות פנויים">
-<p><strong>שאלה 2.9.5 — אין כיסאות פנויים.</strong></p>
+<p><strong>שאלה 2.10.5 — אין כיסאות פנויים.</strong></p>
 <p>עולם הדיון <span class="math inline">\(D\)</span> הוא הכיסאות בכיתה. נסמן ב־<span class="math inline">\(P(x)\)</span> את ״הכיסא <span class="math inline">\(x\)</span> פנוי״. כתבו את שלילת ״יש כיסא פנוי״. האם מספיק להראות כיסא אחד תפוס כדי להצדיק אותה?</p>
 <div class="choice-exercise" data-choice="quant-nobody">
 <div class="choice-offline">
@@ -1340,7 +2886,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="practice-q-quant-menu" class="thmbox thmbox-question" title="מועד לכל מתנדב — או מועד משותף?">
-<p><strong>שאלה 2.9.6 — מועד לכל מתנדב — או מועד משותף?</strong></p>
+<p><strong>שאלה 2.10.6 — מועד לכל מתנדב — או מועד משותף?</strong></p>
 <p>נסמן ב־<span class="math inline">\(S\)</span> את קבוצת המתנדבים דנה, נועם ורותם, וב־<span class="math inline">\(M\)</span> את קבוצת המועדים רביעי ושישי בשבוע הבא. אלה המועדים שבהם כל אחד פנוי:</p>
 <table class="caption-top table">
 <thead>
@@ -1392,7 +2938,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="practice-q-quant-order" class="thmbox thmbox-question" title="מספר אחר לכל אחד?">
-<p><strong>שאלה 2.9.7 — מספר אחר לכל אחד?</strong></p>
+<p><strong>שאלה 2.10.7 — מספר אחר לכל אחד?</strong></p>
 <p>התחום של שני המשתנים הוא <span class="math inline">\(D=\{1,2,3\}\)</span>. קבעו אמת או שקר:</p>
 <ol type="1">
 <li><span class="math display">\[\forall x\in D\,\exists y\in D\,(x+y=4)\]</span>.</li>
@@ -1417,7 +2963,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="practice-q-quant-negate-order" class="thmbox thmbox-question" title="שוללים בלי לשנות את הסדר בטעות">
-<p><strong>שאלה 2.9.8 — שוללים בלי לשנות את הסדר בטעות.</strong></p>
+<p><strong>שאלה 2.10.8 — שוללים בלי לשנות את הסדר בטעות.</strong></p>
 <p>נסמן ב־<span class="math inline">\(S\)</span> את קבוצת הסטודנטים בכיתה וב־<span class="math inline">\(B\)</span> את קבוצת הספרים בספרייה. לכן <span class="math inline">\(x\in S\)</span> ו־<span class="math inline">\(y\in B\)</span>. נסמן ב־<span class="math inline">\(R(x,y)\)</span> את ״הסטודנט <span class="math inline">\(x\)</span> קרא את הספר <span class="math inline">\(y\)</span>״.</p>
 <p>כתבו בכמתים: ״יש ספר שכל הסטודנטים קראו״. כתבו את שלילת המשפט והעבירו את השלילה פנימה. הסבירו במילים. האם מתקבל ״יש סטודנט שלא קרא אף ספר״?</p>
 <div class="choice-exercise" data-choice="quant-negate-order">

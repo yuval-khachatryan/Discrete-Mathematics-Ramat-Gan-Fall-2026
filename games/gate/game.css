@@ -40,13 +40,15 @@
 /* ---- layout: cards, then the table (beside them on wide screens) ------- */
 .k-main { display: grid; gap: 1em; align-items: start; }
 @media (min-width: 820px) {
-  .k-main { grid-template-columns: minmax(0, 1fr) auto; }
+  .k-main { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* ---- inhabitants -------------------------------------------------------- */
-.k-people { display: flex; flex-wrap: wrap; gap: 0.7em; align-items: stretch; }
+.k-people { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.7em; align-items:stretch; }
+.k-people:has(> :nth-child(3)) { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.k-people:has(> :only-child) { grid-template-columns:minmax(0,1fr); max-width:220px; margin-inline:auto; }
 .k-card {
-  flex: 1 1 10.5em; max-width: 17em; min-width: 0;
+  min-width: 0;
   container-type: inline-size;
   display: flex; flex-direction: column; align-items: center; gap: 0.35em;
   text-align: center;
@@ -157,3 +159,14 @@
   .k-card { flex-basis: 9em; padding: 0.6em 0.4em; }
 }
 .g-present .k-panel { max-width: none; }
+
+.k-panel.knight-workshop { min-width:0; width:100%; box-sizing:border-box; }
+
+.k-panel.knight-workshop { max-width:none; }
+
+@media(max-width:480px) {
+  .k-people { gap:.35em; }
+  .k-card { padding:.45em .25em; }
+  .k-face { width:3em; height:3em; }
+  .k-bubble { padding:.4em .2em; font-size:.88em; overflow-wrap:anywhere; }
+}

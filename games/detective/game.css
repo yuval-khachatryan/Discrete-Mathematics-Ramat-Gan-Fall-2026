@@ -154,8 +154,8 @@ button.d-card:hover { border-color: #c9b98d; transform: translateY(-1px); }
 .d-rule-name { font-weight: 700; }
 .d-rule-latin { font-size: 0.75em; color: var(--muted); direction: ltr; unicode-bidi: isolate; }
 .m.d-pat { display: inline-flex; flex-direction: column; align-items: center; flex: none; font-size: 0.95em; line-height: 1.3; }
-.d-pat-top { padding: 0 0.25em 0.1em; white-space: nowrap; }
-.d-pat-gap { display: inline-block; width: 1em; }
+.d-pat-top { padding: 0 0.25em 0.1em; white-space: nowrap; text-align: center; }
+.d-pat-premise { display: block; padding: 0.1em 0; }
 .d-pat-bot { align-self: stretch; text-align: center; border-top: 1.5px solid currentColor; padding-top: 0.05em; }
 @container (min-width: 30em) {
   .d-rule-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }

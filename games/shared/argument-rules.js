@@ -1,5 +1,5 @@
 import { parse, format, compare, variables, assignments, evaluate } from "./logic.js";
-import { RULES, checkStep } from "./proof-rules.js";
+import { RULES, checkStep, checkReplacements, trimBlankSteps } from "./proof-rules.js";
 
 export const LETTERS = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"].filter(x => x !== "T" && x !== "F");
 export const INFERENCE_RULES = [
@@ -7,7 +7,7 @@ export const INFERENCE_RULES = [
   { id: "mt", name: "כלל השלילה", help: "מגרירה ומשלילת המסקנה שלה מסיקים את שלילת ההנחה.", premises: ["P → Q", "¬Q"], conclusion: "¬P" },
   { id: "hs", name: "כלל השרשרת", help: "מחברים שתי גרירות: המסקנה של הראשונה היא ההנחה של השנייה.", premises: ["P → Q", "Q → R"], conclusion: "P → R" },
 ];
-export const ruleName = id => INFERENCE_RULES.find(r => r.id === id)?.name || RULES.find(r => `eq:${r.id}` === id)?.name || "";
+export const ruleName = id => id === "eq:replacements" ? "החלפות מפורטות" : INFERENCE_RULES.find(r => r.id === id)?.name || RULES.find(r => `eq:${r.id}` === id)?.name || "";
 export const rename = (formula, mapping) => format(formula, mapping);
 
 export function checkMapping(exercise, mapping) {
@@ -73,10 +73,12 @@ export function formulaBank(exercise, mapping) {
   return [...new Set([...candidates].map(f => rename(f, mapping)))].sort((a,b) => a.localeCompare(b, "en"));
 }
 
-export function checkArgument(exercise, mapping, premises, goal, steps) {
+export function checkArgument(exercise, mapping, premises, goal, inputSteps) {
   // Recheck translations on every submission: the editor state is not evidence.
   const translation = checkTranslations(exercise,mapping,premises,goal);
   if (!translation.ok) return { ok: false, complete: false, phase: "translation", translation, results: [] };
+  const steps=trimBlankSteps(inputSteps);
+  let goalStep=null;
   const allowed = Object.values(mapping);
   const known = new Map(translation.items.slice(0,-1).map((p,i) => [`p${i+1}`,p.formula]));
   const results = [];
@@ -90,8 +92,10 @@ export function checkArgument(exercise, mapping, premises, goal, steps) {
     else if (result.ok && (step.refs.length !== count || new Set(step.refs).size !== count || step.refs.some(ref => !known.has(ref)))) {
       result = { ok: false, message: isRewrite ? "בחרו שורת מקור קודמת אחת. אי אפשר להשתמש בשורה עצמה או בשורה שעדיין לא הוכחה." : "בחרו שתי שורות מקור קודמות ושונות. אי אפשר להשתמש בשורה עצמה או בשורה שעדיין לא הוכחה." };
     } else if (result.ok && isRewrite) {
-      const rewrite = checkStep(known.get(step.refs[0]),step.formula,step.rule.slice(3),allowed);
-      result = { ...result, ok: rewrite.kind === "valid", message: rewrite.message, row: rewrite.row, kind: rewrite.kind, intermediate: rewrite.intermediate };
+      const rewrite = step.rule === 'eq:replacements'
+        ? checkReplacements(known.get(step.refs[0]),step.formula,step.replacements||[],allowed)
+        : checkStep(known.get(step.refs[0]),step.formula,step.rule.slice(3),allowed);
+      result = { ...result, ok: rewrite.kind === "valid", message: rewrite.message, row: rewrite.row, kind: rewrite.kind, intermediate: rewrite.intermediate, replacementIndex:rewrite.replacementIndex };
     } else if (result.ok) {
       const sources = step.refs.map(id => parse(known.get(id)));
       const candidates = consequences(step.rule,...sources);
@@ -106,8 +110,10 @@ export function checkArgument(exercise, mapping, premises, goal, steps) {
       }
     }
     results.push(result);
-    if (!result.ok) return { ok: false, complete: false, results };
+    if (!result.ok) {let targetReached=false;try{targetReached=compare(step.formula,translation.items.at(-1).formula).equal;}catch{}
+      return {ok:false,complete:goalStep!==null,goalStep,targetReached,results};}
     known.set(step.id,result.formula);
+    if(goalStep===null&&compare(result.formula,translation.items.at(-1).formula).equal)goalStep=results.length;
   }
-  return { ok: true, complete: compare(known.get(steps.at(-1).id),translation.items.at(-1).formula).equal, results };
+  return {ok:true,complete:goalStep!==null,goalStep,results};
 }

@@ -1,6 +1,7 @@
+import {replacementEditor} from "./replacement-editor.js";
 import { ARGUMENTS } from "./argument-exercises.js";
 import { LETTERS, INFERENCE_RULES, ruleName, rename, formulaBank, checkMapping, checkTranslations, checkArgument } from "./argument-rules.js";
-import { RULES, ruleExamples } from "./proof-rules.js";
+import { RULES, ruleExamples, trimBlankSteps } from "./proof-rules.js";
 import { argumentLines } from "./argument-display.js";
 
 function el(tag, attrs = {}, children = []) {
@@ -144,36 +145,52 @@ export function initArgumentEditor(box) {
   function premiseValues(){return translationFields.slice(0,-1).map(r=>r.input.value);}
   function goalValue(){return translationFields.at(-1).input.value;}
   function writtenProof(steps,premises=premiseValues()) {
-    const panel=el("div",{class:"argument-written"},[
-      el("p",{},[el("strong",{text:`נראה שמתוך ההנחות נובעת המסקנה: ${exercise.goal.text}`}),formulaText(rename(exercise.goal.formula,mapping))]),
+    const lines=argumentLines(exercise,mapping,premises,steps);
+    const givens=el("section",{class:"argument-written-givens"},[
+      el("strong",{class:"argument-written-heading",text:"נתונים:"}),
+      el("ol",{},lines.slice(0,premises.length).map(line=>el("li",{},[
+        el("div",{class:"argument-line-words",text:line.words}),formulaText(line.formula),
+      ]))),
     ]);
-    const body=el("tbody");
-    argumentLines(exercise,mapping,premises,steps).forEach(line=>body.append(el("tr",{},[
-      el("th",{scope:"row",text:String(line.number)}),
-      el("td",{},[formulaText(line.formula),el("div",{class:"argument-line-words",text:line.words})]),
-      el("td",{class:"argument-line-reason"},line.reason.split(', ').map((part,i)=>el("span",{class:i?'argument-line-refs':'',text:part}))),
-    ])));
-    panel.append(el("div",{class:"argument-proof-scroll"},[el("table",{class:"argument-proof-table"},[
-      el("thead",{},[el("tr",{},['שורה','הנוסחה ומשמעותה במילים','נימוק'].map(t=>el("th",{scope:"col",text:t})))]),body,
-    ])]));
+    const goal=el("section",{class:"argument-written-goal"},[
+      el("strong",{class:"argument-written-heading",text:"נוכיח:"}),
+      el("div",{text:exercise.goal.text}),formulaText(rename(exercise.goal.formula,mapping)),
+    ]);
+    const proof=el("section",{class:"argument-written-steps"},[
+      el("strong",{class:"argument-written-heading",text:"הוכחה:"}),
+    ]);
+    const panel=el("div",{class:"argument-written"},[givens,goal,proof]);
+    if(!steps.length){
+      proof.append(el("p",{text:"כאן יופיעו הצעדים לאחר בדיקתם, עם נימוק לכל צעד."}));
+    }else{
+      const body=el("tbody");
+      lines.slice(premises.length).forEach(line=>body.append(el("tr",{},[
+        el("th",{scope:"row",text:String(line.number)}),
+        el("td",{},[el("div",{class:"argument-line-words",text:line.words}),formulaText(line.formula)]),
+        el("td",{class:"argument-line-reason"},line.reason.split(', ').map((part,i)=>el("span",{class:i?'argument-line-refs':'',text:part}))),
+      ])));
+      proof.append(el("div",{class:"argument-proof-scroll"},[el("table",{class:"argument-proof-table"},[
+        el("thead",{},[el("tr",{},['שורה','טענה במילים ובסימנים','נימוק'].map(t=>el("th",{scope:"col",text:t})))]),body,
+      ])]));
+    }
     return panel;
   }
   function renderProof(){
     proofPreview.replaceChildren();
-    rows.forEach(row=>{row.localPreview.replaceChildren();row.localPreview.hidden=true;});
     if(!translationApproved)return;
     proofPreview.append(el("strong",{text:"ההוכחה שלכם עד כאן"}),writtenProof(accepted),
-      el("p",{class:"proof-paper",text:"כך נראית הוכחה מסודרת: מציינים מה מוכיחים, כותבים את ההנחות ומנמקים כל מסקנה. מספרי השורות כוללים גם את ההנחות. נסו לכתוב אותה גם בעט על דף — לפני העבודה באתר, במקביל אליה או אחרי הבדיקה."}));
-    accepted.forEach((_,i)=>{
-      rows[i].localPreview.hidden=false;
-      rows[i].localPreview.append(el("strong",{text:`ההוכחה עד צעד ${i+1}`}),writtenProof(accepted.slice(0,i+1)));
-    });
+      el("p",{class:"proof-paper",text:"כותבים את הנתונים ואת המטרה, ואז את צעדי ההוכחה עם נימוק לכל צעד. מספור הצעדים ממשיך את מספור הנתונים, כדי שאפשר יהיה להפנות אליהם. נסו לכתוב אותה גם בעט על דף — לפני העבודה באתר, במקביל אליה או אחרי הבדיקה."}));
+
   }
   function clearResults(from=0){
     accepted=accepted.slice(0,from);
     summary.textContent="";summary.className="bk-msg";
     rows.slice(from).forEach(row=>{row.feedback.textContent="";row.feedback.className="bk-msg";row.input.removeAttribute("aria-invalid");});
+    refreshReplacements();
     renderProof();
+  }
+  function refreshReplacements(){
+    rows.forEach(row=>{const ref=row.sources[0].value;const premise=/^p(\d+)$/.exec(ref);const source=premise?premiseValues()[Number(premise[1])-1]:rows.find(r=>r.id===ref)?.input.value;row.replacements.setSource(source||'');});
   }
   function refreshReferences(){
     const prior=exercise.premises.map((entry,i)=>({id:`p${i+1}`,label:`נתון ${i+1}: ${translationFields[i].input.value}`}));
@@ -212,7 +229,7 @@ export function initArgumentEditor(box) {
     row.rule=el("select",{class:"proof-rule"},[
       el("option",{value:"",text:"בחרו כלל…"}),
       el("optgroup",{label:"כללי היסק — שתי שורות מקור"},INFERENCE_RULES.map(r=>el("option",{value:r.id,text:r.name}))),
-      el("optgroup",{label:"שינוי לנוסחה שקולה — שורת מקור אחת"},RULES.map(r=>el("option",{value:`eq:${r.id}`,text:r.name}))),
+      el("optgroup",{label:"שינוי לנוסחה שקולה — שורת מקור אחת"},[el("option",{value:"eq:replacements",text:"החלפות מפורטות — חלקים נפרדים באותו צעד"}),...RULES.map(r=>el("option",{value:`eq:${r.id}`,text:r.name}))]),
     ]);
     row.sources=[el("select",{class:"argument-source"}),el("select",{class:"argument-source"})];
     const labels=row.sources.map((select,i)=>el("label",{class:"proof-field"},[el("span",{text:`שורת מקור ${i+1}`}),select]));
@@ -221,8 +238,9 @@ export function initArgumentEditor(box) {
       clearResults(rows.indexOf(row));
       const rewrite=row.rule.value.startsWith("eq:");
       labels[1].hidden=rewrite;
+      row.replacements.activate(row.rule.value === "eq:replacements");
       reminder.replaceChildren();
-      if(rewrite){reminder.append(el("p",{text:"מחליפים חלק אחד בנוסחה לפי החוק. שאר הנוסחה נשארת ללא שינוי."}),...ruleExamples(row.rule.value.slice(3)).map(formulaText));}
+      if(rewrite){reminder.append(el("p",{text:row.rule.value === "eq:replacements" ? "בחרו שורת מקור אחת ופרטו את ההחלפות בחלקים נפרדים שלה." : "החוק פועל על חלק אחד. לכמה שינויים בחלקים נפרדים בחרו ״החלפות מפורטות״."}),...ruleExamples(row.rule.value.slice(3)).map(formulaText));}
       else {
         const rule=INFERENCE_RULES.find(r=>r.id===row.rule.value);
         if(rule) reminder.append(el("p",{text:rule.help}),
@@ -238,14 +256,14 @@ export function initArgumentEditor(box) {
       const i=rows.indexOf(row);rows.splice(i,1);row.fieldset.remove();clearResults(i);
       if(!rows.length)addRow();refreshReferences();rows[Math.min(i,rows.length-1)].input.focus();
     });
-    row.localPreview=el("section",{class:"proof-local argument-local","aria-live":"polite"});row.localPreview.hidden=true;
+    row.replacements=replacementEditor(()=>clearResults(rows.indexOf(row)));
     row.fieldset=el("fieldset",{class:"proof-step"},[
       row.legend,el("label",{class:"proof-field"},[el("span",{text:"אפשר לבחור נוסחה מהמאגר"}),row.bank]),
       el("label",{class:"proof-field"},[el("span",{text:"הנוסחה שבחרתם — אפשר גם לכתוב או לערוך כאן"}),row.input]),row.keys,
-      el("label",{class:"proof-field"},[el("span",{text:"לפי איזה כלל?"}),row.rule]),reminder,...labels,row.feedback,
-      el("div",{class:"bk-bar"},[btn("בדיקת הצעד והוספה להוכחה",()=>check(rows.indexOf(row))),row.remove]),row.localPreview,
+      el("label",{class:"proof-field"},[el("span",{text:"לפי איזה כלל?"}),row.rule]),reminder,...labels,row.replacements.box,row.feedback,
+      el("div",{class:"bk-bar"},[btn("בדיקת הצעד והוספה להוכחה",()=>check(rows.indexOf(row))),row.remove]),
     ]);
-    rows.push(row);list.append(row.fieldset);refreshReferences();if(focus)row.input.focus();
+    rows.push(row);list.append(row.fieldset);refreshReferences();refreshReplacements();if(focus)row.input.focus();
   }
   function show(row,item){
     row.feedback.className=`bk-msg ${item.ok?"bk-good":item.kind==="missing-step"?"bk-info":"bk-bad"}`;
@@ -256,17 +274,20 @@ export function initArgumentEditor(box) {
   }
   function check(last=rows.length-1){
     clearResults();
-    const steps=rows.slice(0,last+1).map(row=>({id:row.id,formula:row.input.value,rule:row.rule.value,refs:row.sources.slice(0,row.rule.value.startsWith("eq:")?1:2).map(s=>s.value)}));
+    const steps=trimBlankSteps(rows.slice(0,last+1).map(row=>({id:row.id,formula:row.input.value,rule:row.rule.value,refs:row.sources.slice(0,row.rule.value.startsWith("eq:")?1:2).map(s=>s.value),replacements:row.rule.value === "eq:replacements" ? row.replacements.get():undefined})));
     const result=checkArgument(exercise,mapping,premiseValues(),goalValue(),steps);
     if(result.phase==="translation"){invalidateProof();return;}
-    result.results.forEach((item,i)=>show(rows[i],item));
+    result.results.forEach((item,i)=>{show(rows[i],item);rows[i].replacements.showResult(item);});
     accepted=steps.slice(0,result.results.filter(item=>item.ok).length);renderProof();
     summary.className=`bk-msg ${result.ok?(result.complete?"bk-good":"bk-info"):"bk-bad"}`;
     summary.textContent=result.ok?(result.complete?`ההוכחה הושלמה! כל צעד מוצדק מתוך שורות קודמות. הוכחתם: ${exercise.goal.text}`:"כל הצעדים שכתבתם מוצדקים. הוסיפו צעד כדי להגיע למטרה."):`צריך לתקן את צעד ${result.results.length}. הצעדים שאחריו עדיין לא נבדקו.`;
     if(result.results.at(-1)?.kind==="missing-step"){
       summary.className="bk-msg bk-info";
-      summary.textContent=`התוצאה בצעד ${result.results.length} נכונה, אך חסרה שורת ביניים. הוסיפו אותה עם הנימוק המתאים ובדקו שוב.`;
+      summary.textContent=`התוצאה בצעד ${result.results.length} שקולה למקור. פרטו את ההחלפות בחלקים נפרדים, או הוסיפו שורת ביניים כאשר שינוי פועל על תוצאה חדשה.`;
     }
+    if(!result.results.length){summary.className="bk-msg bk-info";summary.textContent="הוסיפו צעד מנומק כדי להתחיל.";}
+    else if(!result.ok && result.complete)summary.textContent=`המטרה כבר הוכחה בצעד ${result.goalStep}. תקנו או מחקו את הצעד הנוסף המסומן.`;
+    else if(!result.ok && result.targetReached)summary.textContent="הגעתם לנוסחה שמבטאת את המטרה, אבל יש לתקן את ההצדקה בצעד המסומן לפני שההוכחה תושלם.";
     rows.slice(result.results.length).forEach(row=>{row.feedback.textContent=result.ok?"הצעד הזה עדיין לא נבדק.":"ממתין לתיקון הצעד הקודם.";});
   }
 }

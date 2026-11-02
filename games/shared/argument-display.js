@@ -1,3 +1,4 @@
+import {stepReason} from "./proof-rules.js";
 import { parse, format } from './logic.js';
 import { rename, ruleName } from './argument-rules.js';
 
@@ -32,7 +33,7 @@ export function argumentLines(exercise,mapping,premises,steps) {
     const number=lines.length+1;
     const refs=step.refs.map(id=>numbers.get(id));
     lines.push({number,formula:format(parse(step.formula,{flatten:false})),
-      reason:`${ruleName(step.rule)}, ${refs.length===1?'משורה':'משורות'} ${refs.join(' ו־')}`,
+      reason:`${step.rule === "eq:replacements" ? stepReason(step):ruleName(step.rule)}, ${refs.length===1?'משורה':'משורות'} ${refs.join(' ו־')}`,
       words:formulaWords(step.formula,exercise,mapping)});
     numbers.set(step.id,number);
   });

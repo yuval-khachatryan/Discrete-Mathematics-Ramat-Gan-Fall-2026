@@ -1,0 +1,76 @@
+.knight-workshop { border:1px solid #cbd5e1; border-radius:10px; padding:1rem; margin:1rem 0; background:#fff; color:#172033; text-align:right; direction:rtl; }
+.knight-workshop select { display:block; max-width:100%; min-height:44px; font:inherit; border:1px solid #94a3b8; border-radius:5px; margin:.35rem 0; }
+.knight-workshop button { min-height:44px; margin:.25rem; white-space:normal; }
+.knight-workshop .bk-btn { background:#eef2ff; color:#312e81; border:1px solid #a5b4fc; border-radius:6px; padding:.4rem .7rem; font:inherit; cursor:pointer; }
+.knight-workshop fieldset { min-width:0; border:0; padding:0; }
+.knight-workshop legend { font-size:1rem; font-weight:700; margin:.8rem 0; }
+.knight-workshop label { display:flex; gap:.5rem; align-items:baseline; padding:.3rem; }
+.knight-workshop input[type=checkbox] { min-width:20px; width:20px; height:20px; flex:none; }
+.knight-workshop .kw-models { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:.4rem; }
+.knight-workshop .kw-model { border:1px solid #cbd5e1; border-radius:6px; padding:.3rem; }
+.knight-workshop .kw-model:has(input:checked) { background:#eef2ff; border-color:#6366f1; }
+.knight-workshop .kw-table-scroll { overflow-x:auto; max-width:100%; }
+.knight-workshop table { width:100%; border-collapse:collapse; font-size:.9rem; }
+.knight-workshop th,.knight-workshop td { padding:.5rem; border:1px solid #cbd5e1; vertical-align:top; min-width:5rem; }
+.knight-workshop th { background:#eef2ff; }
+.knight-workshop .kw-reason { width:14rem; }
+.knight-workshop .kw-value { min-width:6rem; }
+.knight-workshop td .bk-msg { min-width:12rem; }
+.knight-workshop summary { cursor:pointer; color:#4338ca; font-weight:700; padding:.5rem; }
+.knight-workshop .kw-goal { font-weight:700; color:#5b21b6; }
+.knight-workshop .kw-proof { background:#f8fafc; padding:.8rem; border-inline-start:4px solid #6366f1; }
+.knight-workshop .kw-justification { color:#475569; font-size:.9rem; }
+.knight-workshop .kw-selected { color:#3730a3; margin:.4rem 0; }
+.knight-workshop .bk-good { color:#166534; background:#f0fdf4; }
+.knight-workshop .bk-bad { color:#991b1b; background:#fef2f2; }
+.knight-workshop .bk-msg { padding:.4rem; overflow-wrap:anywhere; }
+.knight-workshop [aria-invalid=true] { outline:2px solid #b91c1c; }
+.knight-workshop :focus-visible { outline:3px solid #4f46e5; outline-offset:2px; }
+@media(max-width:600px){.knight-workshop{padding:.6rem}.knight-workshop label{flex-wrap:wrap}.knight-workshop .kw-model label{flex-wrap:nowrap}.knight-workshop select{width:100%}}
+
+.knight-workshop .kw-scroll-hint { display:none; }
+@media(max-width:700px){.knight-workshop .kw-scroll-hint{display:block;font-size:.9rem;color:#475569}}
+
+/* The first puzzle connects the student's formula to a compact truth table. */
+.kw-compact .kw-formalization label { display:block; }
+.kw-compact .kw-formula-input { display:block; width:100%; box-sizing:border-box; margin:.5rem 0; }
+.kw-compact .kw-compact-work > p { margin:.5rem 0; }
+.kw-compact table { table-layout:fixed; }
+.kw-compact th,.kw-compact td { min-width:0; padding:.35rem .2rem; text-align:center; vertical-align:middle; }
+.kw-compact th:nth-child(1),.kw-compact th:nth-child(2) { width:11%; }
+.kw-compact th:last-child { width:21%; }
+.kw-compact .kw-truth-heading { width:22%; }
+.kw-compact .kw-statement { direction:ltr; overflow-wrap:anywhere; font-family:'Cambria Math',serif; }
+.kw-compact .kw-value,.kw-compact .kw-fits { width:100%; max-width:5rem; min-width:0; margin:auto; }
+.kw-compact .bk-msg:empty { display:none; }
+.kw-compact .kw-compact-feedback { direction:rtl; }
+
+.knights-island { max-width:480px; margin:1rem auto; }
+.knights-island img { display:block; width:100%; height:auto; }
+.kw-meanings { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.4rem .8rem; margin:.7rem 0; }
+.kw-meanings > div { display:flex; align-items:center; gap:.65rem; padding:.4rem .6rem; background:#eef2ff; border-radius:6px; }
+.kw-meanings bdi { direction:ltr; color:#5b21b6; font:700 1.1rem 'Cambria Math',serif; min-width:1.8rem; }
+.kw-column-meaning { display:block; direction:rtl; font-size:.8em; font-weight:400; }
+
+.kw-conclusion { margin-top:1rem; padding:.8rem; background:#f8fafc; border-inline-start:3px solid #6366f1; }
+.kw-conclusion label { display:flex; align-items:center; gap:.6rem; }
+.kw-conclusion label select { width:auto; min-width:7rem; }
+
+/* One current question and one accumulating proof. */
+.knight-workshop .kw-options { margin:.7rem 0; }
+.knight-workshop .kw-options label { align-items:flex-start; border:1px solid #dbe2ee; border-radius:7px; margin:.35rem 0; padding:.6rem; line-height:1.55; }
+.knight-workshop .kw-options label:has(input:checked) { background:#eef2ff; border-color:#6366f1; }
+.knight-workshop .kw-options input { flex:none; margin-top:.4em; }
+.knight-workshop .kw-options legend { font-weight:600; }
+.knight-workshop .kw-proof { margin-top:1rem; }
+.knight-workshop .kw-proof p { margin:.3rem 0; }
+.knight-workshop .kw-proof li { padding:.35rem .5rem; margin:.35rem 0; }
+.knight-workshop .kw-step-assumption { background:#fff7df; border-inline-start:3px solid #b7791f; }
+.knight-workshop .kw-step-contradiction { background:#fff1f2; border-inline-start:3px solid #be123c; }
+.knight-workshop .kw-step-conclusion { background:#ecfdf5; border-inline-start:3px solid #15803d; }
+.knight-workshop .kw-row-feedback td { padding:.2rem .5rem; }
+.knight-workshop .kw-row-feedback .bk-msg { min-width:0; margin:0; }
+.knight-workshop .kw-evidence { border:1px solid #dbe2ee; border-radius:8px; padding:.6rem; margin:.6rem 0; }
+.knight-workshop .kw-evidence label { display:inline-flex; margin-inline-end:.6rem; flex-wrap:wrap; }
+.knight-workshop:not(.kw-compact) .kw-fits { min-width:4rem; }
+.knight-workshop .bk-msg:empty,.knight-workshop .kw-finish:empty { display:none; }
