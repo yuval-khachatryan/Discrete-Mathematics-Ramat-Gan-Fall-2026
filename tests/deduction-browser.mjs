@@ -56,7 +56,7 @@ try{
   await row.locator('input').fill(rename(step.formula,map));await row.locator('.proof-rule').selectOption(step.rule);
   for(const [j,ref] of step.refs.entries())await row.locator('.argument-source').nth(j).selectOption(ref.replace(/^s/,'d'));
   await row.getByRole('button',{name:'בדיקת הצעד והוספה להוכחה',exact:true}).click();
-  assert.equal(await row.locator('.argument-local tbody tr').count(),4+i);
+  assert.equal(await b.locator('.argument-local').count(),0);
   assert.equal(await bottom.locator('tbody tr').count(),4+i);
  }
  assert.match(await bottom.innerText(),/משורות 2 ו־4/);

@@ -85,7 +85,7 @@ test("quantifier answers respect domains, order and negation", () => {
 });
 
 test("quantifiers name their worlds; the only omitted domain is an explicitly explained abbreviation",()=>{
-  const body=qmd.replace(/::: \{\.thmrem title="לפעמים מקצרים את הכתיבה"\}[\s\S]*?\n:::/,'');
+  const body=qmd.replace(/::: \{\.thmmethod title="לפעמים מקצרים את הכתיבה"\}[\s\S]*?\n:::/,'');
   assert.doesNotMatch(body,/\\(?:forall|exists) [xy](?!\\in)/);
   assert.ok(qmd.includes('D=\\{1,2,3,4\\}'));
   assert.ok(qmd.indexOf('## קבוצות, איברים ושייכות') < qmd.indexOf('## כמתים'));

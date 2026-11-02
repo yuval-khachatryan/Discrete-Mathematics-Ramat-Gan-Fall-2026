@@ -131,16 +131,16 @@
     return seen;
   }
   function assignments(names) {
-    const rows = [];
+    const rows2 = [];
     const n = names.length;
     for (let k = 0; k < 2 ** n; k++) {
       const env = {};
       names.forEach((name, j) => {
         env[name] = (k >> n - 1 - j & 1) === 0;
       });
-      rows.push(env);
+      rows2.push(env);
     }
-    return rows;
+    return rows2;
   }
   function compare(f, g) {
     f = parse(f);
@@ -242,7 +242,7 @@
     const prompt = make("p", "os-prompt");
     const stage = make("p", "os-stage");
     stage.setAttribute("aria-live", "polite");
-    const choices = make("div", "os-choices");
+    const choices2 = make("div", "os-choices");
     const formula = make("div", "os-formula");
     const original = make("span", "os-expression");
     original.dir = "ltr";
@@ -267,21 +267,21 @@
     const reset = make("button", "bk-btn bk-quiet", "התחילו את הסיבוב מחדש");
     for (const b of [next, skip, reset]) b.type = "button";
     controls.append(next, skip, reset);
-    box.replaceChildren(title, prompt, formula, first, stage, choices, status, answers, feedback, controls);
+    box.replaceChildren(title, prompt, formula, first, stage, choices2, status, answers, feedback, controls);
     for (const [text, answer] of [["פסוק פתוח — עדיין חסרה הצבה", null], ["פסוק אמת", true], ["פסוק שקר", false]]) {
-      const button = make("button", "bk-btn", text);
-      button.type = "button";
-      button.dataset.answer = String(answer);
-      button.addEventListener("click", () => check(answer));
-      answers.append(button);
+      const button4 = make("button", "bk-btn", text);
+      button4.type = "button";
+      button4.dataset.answer = String(answer);
+      button4.addEventListener("click", () => check(answer));
+      answers.append(button4);
     }
-    function say(text, kind) {
+    function say4(text, kind) {
       feedback.textContent = text;
       feedback.className = "bk-msg bk-" + kind;
     }
     function read() {
       let valid = true;
-      for (const input of choices.querySelectorAll("input")) {
+      for (const input of choices2.querySelectorAll("input")) {
         values[input.dataset.variable] = input.value;
         let invalid = false;
         if (input.value.trim()) {
@@ -307,7 +307,7 @@
       prompt.hidden = phase === "classify" || phase === "done";
       stage.textContent = phase === "classify" ? "מה אפשר לומר על הביטוי לפני שבוחרים מספרים?" : phase === "choose" ? "כעת בחרו מספרים. מה אפשר לומר על התוצאה?" : phase === "opposite" ? `כעת מצאו הצבה שנותנת פסוק ${firstTruth ? "שקר" : "אמת"}, ובחרו את התשובה המתאימה.` : index === SUBSTITUTION_ROUNDS.length - 1 ? "סיימתם את שלושת הסיבובים." : "הסיבוב הושלם.";
       status.textContent = phase === "done" ? "אפשר להמשיך או להתחיל את הסיבוב מחדש." : phase === "classify" ? "תחילה בחרו תשובה. אחר כך ייפתחו שדות ההצבה." : !state ? "יש להזין מספר שלם בכל שדה שממלאים, למשל 0 או ‎−3. שברים אינם בתחום של הפעילות." : state.missing.length ? `אפשר לבחור כל מספר שלם. עדיין חסר ערך ל־${state.missing.join(" ול־")}.` : "כל האותיות הוחלפו במספרים. בדקו אם המשפט שהתקבל אמת או שקר.";
-      for (const input of choices.querySelectorAll("input")) input.disabled = phase === "classify" || phase === "done";
+      for (const input of choices2.querySelectorAll("input")) input.disabled = phase === "classify" || phase === "done";
       for (const b of answers.children) b.disabled = phase === "done";
       skip.hidden = phase !== "opposite";
       next.hidden = phase !== "done";
@@ -316,19 +316,19 @@
     function check(answer) {
       if (phase === "done") return;
       if (phase === "classify") {
-        if (answer !== null) return say("עדיין לא בחרנו ערכים לאותיות. הביטוי הוא פסוק פתוח; אי אפשר לקבוע לו כאן אמת או שקר לפני ההצבה. נסו שוב.", "bad");
+        if (answer !== null) return say4("עדיין לא בחרנו ערכים לאותיות. הביטוי הוא פסוק פתוח; אי אפשר לקבוע לו כאן אמת או שקר לפני ההצבה. נסו שוב.", "bad");
         phase = "choose";
         draw();
-        say("נכון. זהו פסוק פתוח. כעת בחרו ערך לכל אות ובדקו את התוצאה.", "good");
-        choices.querySelector("input").focus();
+        say4("נכון. זהו פסוק פתוח. כעת בחרו ערך לכל אות ובדקו את התוצאה.", "good");
+        choices2.querySelector("input").focus();
         return;
       }
       const round = SUBSTITUTION_ROUNDS[index], state = read();
-      if (!state) return say("בדקו את השדות המסומנים. בפעילות הזאת בוחרים מספרים שלמים בלבד.", "bad");
-      if (state.missing.length) return say(answer === null ? `נכון, עדיין חסר ערך ל־${state.missing.join(" ול־")}. השלימו את ההצבה כדי להמשיך.` : `עדיין חסר ערך ל־${state.missing.join(" ול־")}. השלימו את ההצבה לפני שקובעים אמת או שקר.`, answer === null ? "info" : "bad");
-      if (answer === null) return say("כל האותיות כבר הוחלפו במספרים. התקבל פסוק; כעת בדקו אם הוא אמת או שקר.", "bad");
+      if (!state) return say4("בדקו את השדות המסומנים. בפעילות הזאת בוחרים מספרים שלמים בלבד.", "bad");
+      if (state.missing.length) return say4(answer === null ? `נכון, עדיין חסר ערך ל־${state.missing.join(" ול־")}. השלימו את ההצבה כדי להמשיך.` : `עדיין חסר ערך ל־${state.missing.join(" ול־")}. השלימו את ההצבה לפני שקובעים אמת או שקר.`, answer === null ? "info" : "bad");
+      if (answer === null) return say4("כל האותיות כבר הוחלפו במספרים. התקבל פסוק; כעת בדקו אם הוא אמת או שקר.", "bad");
       const parsed = Object.fromEntries(round.vars.map((v) => [v, integerValue(values[v])]));
-      if (answer !== state.truth) return say(`בדקו שוב: ${round.explain(parsed)} לכן הפסוק ${state.truth ? "אמת" : "שקר"}.`, "bad");
+      if (answer !== state.truth) return say4(`בדקו שוב: ${round.explain(parsed)} לכן הפסוק ${state.truth ? "אמת" : "שקר"}.`, "bad");
       if (phase === "choose") {
         firstTruth = state.truth;
         first.replaceChildren(document.createTextNode("ההצבה הראשונה: "));
@@ -336,22 +336,22 @@
         expression.dir = "ltr";
         first.append(expression, document.createTextNode(` — פסוק ${firstTruth ? "אמת" : "שקר"}.`));
         phase = "opposite";
-        for (const input of choices.querySelectorAll("input")) input.value = "";
+        for (const input of choices2.querySelectorAll("input")) input.value = "";
         draw();
-        say("נכון! עכשיו נסו לקבל את ערך האמת ההפוך באמצעות הצבה אחרת.", "good");
-        choices.querySelector("input").focus();
+        say4("נכון! עכשיו נסו לקבל את ערך האמת ההפוך באמצעות הצבה אחרת.", "good");
+        choices2.querySelector("input").focus();
         return;
       }
-      if (state.truth === firstTruth) return say(`סיווגתם נכון, אבל שוב התקבל פסוק ${firstTruth ? "אמת" : "שקר"}. האתגר הוא לקבל הפעם פסוק ${firstTruth ? "שקר" : "אמת"}. שנו את ההצבה.`, "info");
+      if (state.truth === firstTruth) return say4(`סיווגתם נכון, אבל שוב התקבל פסוק ${firstTruth ? "אמת" : "שקר"}. האתגר הוא לקבל הפעם פסוק ${firstTruth ? "שקר" : "אמת"}. שנו את ההצבה.`, "info");
       phase = "done";
       draw();
-      say(`נכון! ${round.explain(parsed)} מצאתם שתי הצבות שנותנות ערכי אמת שונים.`, "good");
+      say4(`נכון! ${round.explain(parsed)} מצאתם שתי הצבות שנותנות ערכי אמת שונים.`, "good");
     }
     function start() {
       phase = "classify";
       firstTruth = null;
       values = {};
-      choices.replaceChildren();
+      choices2.replaceChildren();
       feedback.textContent = "";
       first.replaceChildren();
       const round = SUBSTITUTION_ROUNDS[index];
@@ -371,7 +371,7 @@
           draw();
         });
         label.append(input);
-        choices.append(label);
+        choices2.append(label);
       }
       draw();
     }
@@ -386,7 +386,7 @@
       if (phase === "opposite") {
         phase = "done";
         draw();
-        say("ההצבה הראשונה נבדקה. דילגתם על מציאת ההצבה הנוספת.", "info");
+        say4("ההצבה הראשונה נבדקה. דילגתם על מציאת ההצבה הנוספת.", "info");
       }
     });
     reset.addEventListener("click", () => {
@@ -396,17 +396,53 @@
     start();
   }
 
+  // games/shared/formula-keyboard.js
+  function el(tag, attrs = {}, children2 = []) {
+    const node = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "text") node.textContent = v;
+      else if (k === "class") node.className = v;
+      else if (k.startsWith("on")) node.addEventListener(k.slice(2), v);
+      else node.setAttribute(k, v);
+    }
+    for (const child of children2) node.append(child);
+    return node;
+  }
+  var symbols = [["¬", "שלילה"], ["∧", "וגם"], ["∨", "או"], ["→", "גרירה"], ["↔", "אם ורק אם"], ["(", "סוגר פותח"], [")", "סוגר סוגר"], ["T", "אמת"], ["F", "שקר"]];
+  function keyboard(input, changed) {
+    return el(
+      "div",
+      { class: "bk-keys", role: "group", "aria-label": "סמלים לנוסחה" },
+      symbols.map(([symbol, name]) => el("button", {
+        type: "button",
+        class: "bk-key",
+        text: symbol,
+        "aria-label": name,
+        onclick() {
+          var _a, _b;
+          const a = (_a = input.selectionStart) != null ? _a : input.value.length, b = (_b = input.selectionEnd) != null ? _b : a;
+          if (input.value.length - (b - a) + symbol.length > 240) return;
+          input.value = input.value.slice(0, a) + symbol + input.value.slice(b);
+          input.focus();
+          input.setSelectionRange(a + symbol.length, a + symbol.length);
+          changed();
+        }
+      }))
+    );
+  }
+
   // games/shared/proof-rules.js
   var RULES = [
     { id: "double", name: "שלילה כפולה", pairs: [["!!A", "A"]] },
     { id: "commute", name: "חילוף", pairs: [["A & B", "B & A"], ["A | B", "B | A"]] },
     { id: "associate", name: "קיבוץ", pairs: [["(A & B) & C", "A & (B & C)"], ["(A | B) | C", "A | (B | C)"]] },
     { id: "distribute", name: "פילוג", pairs: [["A & (B | C)", "(A & B) | (A & C)"], ["A | (B & C)", "(A | B) & (A | C)"]] },
-    { id: "demorgan", name: "דה מורגן", pairs: [["!(A & B)", "!A | !B"], ["!(A | B)", "!A & !B"]] },
+    { id: "demorgan", name: "דה מורגן", pairs: [["!(A & B)", "!A | !B"], ["!(A | B)", "!A & !B"], ["A | B", "!(!A & !B)"], ["A & B", "!(!A | !B)"]] },
     { id: "implication", name: "גרירה כ״או״", pairs: [["A -> B", "!A | B"]] },
     { id: "contrapositive", name: "גרירה נגדית", pairs: [["A -> B", "!B -> !A"]] },
     { id: "iff", name: "אם ורק אם", pairs: [["A <-> B", "(A -> B) & (B -> A)"]] },
-    { id: "complement", name: "טאוטולוגיה וסתירה", pairs: [["A | !A", "T"], ["A & !A", "F"]] },
+    { id: "tautology", name: "טאוטולוגיה", pairs: [["A | !A", "T"]] },
+    { id: "contradiction", name: "סתירה", pairs: [["A & !A", "F"]] },
     { id: "identity", name: "איבר ניטרלי", pairs: [["F | A", "A"], ["A | F", "A"], ["T & A", "A"], ["A & T", "A"]] }
   ];
   function binary(n) {
@@ -431,13 +467,17 @@
     const p = children(pattern), v = children(value);
     return p.length === v.length && p.every((node, i) => match(node, v[i], bindings));
   }
-  function applies(before, after, pairs) {
-    for (const [a2, b2] of pairs) {
-      for (const [from, to] of [[a2, b2], [b2, a2]]) {
+  function rootApplies(before, after, pairs) {
+    for (const [a, b] of pairs) {
+      for (const [from, to] of [[a, b], [b, a]]) {
         const bindings = /* @__PURE__ */ new Map();
         if (match(from, before, bindings) && match(to, after, bindings)) return true;
       }
     }
+    return false;
+  }
+  function applies(before, after, pairs) {
+    if (rootApplies(before, after, pairs)) return true;
     if (before.type !== after.type) return false;
     const a = children(before), b = children(after);
     if (!a.length || a.length !== b.length) return false;
@@ -519,9 +559,9 @@
       if (intermediate) return {
         kind: "missing-step",
         intermediate: format(intermediate),
-        message: "התוצאה נכונה ושקולה לנוסחה הקודמת. עם זאת, המעבר כולל גם שימוש בשלילה כפולה שלא נכתב בנפרד. בשלב הזה נתרגל כתיבה מפורטת: הוסיפו את שורת הביניים שלהלן, וציינו בכל מעבר את החוק המתאים. השלילה הכפולה היא צעד נכון — רק חשוב להראות אותו."
+        message: "התוצאה נכונה ושקולה לנוסחה הקודמת. עם זאת, יש לפרט את ההחלפות שמצדיקות את המעבר. אם שיניתם חלקים נפרדים של נוסחת המקור, בחרו ״החלפות מפורטות״. אם השלילה הכפולה נוצרה רק במהלך הצעד, הסירו אותה בצעד הבא. אפשר להיעזר בשורת הביניים שלהלן."
       };
-      return { kind: "wrong-rule", message: other ? `הנוסחאות שקולות, אבל החוק שבחרתם אינו מסביר את השינוי. המעבר הזה מתאים לחוק ״${other.name}״.` : "הנוסחאות שקולות, אבל לא מצאתי כאן הפעלה אחת של החוק שבחרתם. שנו חלק אחד בכל צעד. אם השתמשתם בכמה חוקים, או שיניתם גם את סדר החלקים, הוסיפו שורות ביניים." };
+      return { kind: "wrong-rule", message: other ? `הנוסחאות שקולות, אבל החוק שבחרתם אינו מסביר את השינוי. המעבר הזה מתאים לחוק ״${other.name}״.` : "הנוסחאות שקולות, אבל לא מצאתי כאן הפעלה אחת של החוק שבחרתם. אפשר לבחור ״החלפות מפורטות״ כדי להצדיק שינויים בחלקים נפרדים. אם אחד השינויים פועל על תוצאה חדשה, הוסיפו שורת ביניים." };
     }
     return { kind: "valid", message: `הצעד נכון, והחוק ״${RULES.find((r) => r.id === ruleId).name}״ מתאים לשינוי.`, formula: format(after) };
   }
@@ -535,20 +575,100 @@
     }
     if (same(parsed, tree(start))) return { valid: true, start: input.trim().toUpperCase(), target };
     if (reversible && same(parsed, tree(target))) return { valid: true, start: input.trim().toUpperCase(), target: start };
-    return { valid: false, message: reversible ? "התחילו באחד משני אגפי השקילות שבשאלה. כל שינוי ממנו צריך להופיע בצעד מנומק." : "התחילו בנוסחה הנתונה בשאלה. אם כבר שיניתם אותה, כתבו את השינוי בצעד הבא והצדיקו אותו." };
+    return { valid: false, message: "נקודת המוצא שהזנתם אינה נכונה." };
   }
-  function checkProof(start, target, steps) {
-    const allowed = variables(start);
-    const results = [];
-    let previous = start;
-    if (!steps.length) return { valid: false, complete: false, results };
-    for (const step of steps) {
-      const result = checkStep(previous, step.formula, step.rule, allowed);
-      results.push(result);
-      if (result.kind !== "valid") return { valid: false, complete: false, results };
-      previous = step.formula.trim().toUpperCase();
+  function reachesGoal(formula, target) {
+    try {
+      return goalKey(tree(formula.trim().toUpperCase())) === goalKey(tree(target));
+    } catch {
+      return false;
     }
-    return { valid: true, complete: goalKey(tree(previous)) === goalKey(tree(target)), results };
+  }
+  function trimBlankSteps(steps) {
+    const result = steps.slice();
+    const blank = (step2) => !step2.formula.trim() && (!step2.rule || step2.rule === "replacements") && !(step2.replacements || []).some((r) => r.path || r.before || r.after || r.rule);
+    while (result.length && blank(result.at(-1))) result.pop();
+    return result;
+  }
+  function checkProof(start, target, inputSteps) {
+    const steps = trimBlankSteps(inputSteps), allowed = variables(start), results = [];
+    let previous = start, goalStep = null;
+    if (!steps.length) return { valid: false, complete: false, targetReached: false, results };
+    for (const [i, step2] of steps.entries()) {
+      const result = step2.rule === "replacements" ? checkReplacements(previous, step2.formula, step2.replacements || [], allowed) : checkStep(previous, step2.formula, step2.rule, allowed);
+      results.push(result);
+      if (result.kind !== "valid") return { valid: false, complete: goalStep !== null, goalStep, targetReached: reachesGoal(step2.formula, target), results };
+      previous = step2.formula.trim().toUpperCase();
+      if (goalStep === null && reachesGoal(previous, target)) goalStep = i + 1;
+    }
+    return { valid: true, complete: goalStep !== null, goalStep, targetReached: reachesGoal(previous, target), results };
+  }
+  function expressionParts(source) {
+    const result = [];
+    function visit(n, path) {
+      result.push({ path, formula: format(n), node: n });
+      children(n).forEach((c, i) => visit(c, path + "." + i));
+    }
+    visit(tree(source.trim().toUpperCase()), "r");
+    return result;
+  }
+  var overlappingPaths = (a, b) => a === b || a.startsWith(b + ".") || b.startsWith(a + ".");
+  function checkReplacements(beforeText, afterText, replacements, allowed) {
+    var _a;
+    if (!afterText.trim()) return { kind: "empty", message: "כתבו את הנוסחה שמתקבלת לאחר כל ההחלפות." };
+    if (afterText.length > 240 || beforeText.length > 240) return { kind: "syntax", message: "כתבו נוסחה קצרה יותר." };
+    let before, after, parts;
+    try {
+      before = tree(beforeText);
+      after = tree(afterText.trim().toUpperCase());
+      parts = expressionParts(beforeText);
+    } catch {
+      return { kind: "syntax", message: "בדקו את הנוסחאות ואת הסוגריים." };
+    }
+    if (!replacements.length) return { kind: "rule", message: "הוסיפו לפחות החלפה אחת ובחרו את החלק, התוצאה והחוק." };
+    if (replacements.length > 24) return { kind: "rule", message: "פצלו את העבודה לכמה שורות." };
+    const chosen = /* @__PURE__ */ new Map();
+    for (const [index, change] of replacements.entries()) {
+      const fail = (message2, kind = "replacement") => ({ kind, message: message2, replacementIndex: index });
+      const part = parts.find((p) => p.path === change.path);
+      if (!part) return fail("בחרו חלק שמופיע בנוסחה שלפני הצעד הזה.");
+      if ([...chosen.keys()].some((p) => overlappingPaths(p, change.path))) return fail("החלקים שנבחרו חופפים. אין להחליף באותו צעד גם חלק וגם ביטוי שמכיל אותו.");
+      if (change.before && change.before !== part.formula) return fail("שורת המקור השתנתה. בחרו מחדש את החלק להחלפה.");
+      if (!((_a = change.after) == null ? void 0 : _a.trim())) return fail("כתבו במה מחליפים את החלק שנבחר.");
+      if (change.after.length > 240) return fail("הביטוי ארוך מדי. פצלו לצעדים קצרים.");
+      let replacement;
+      try {
+        replacement = tree(change.after.trim().toUpperCase());
+      } catch {
+        return fail("לא ניתן לקרוא את הביטוי החלופי. בדקו סוגריים וסמלים.");
+      }
+      if (variables(replacement).some((v) => !allowed.includes(v))) return fail("השתמשו רק באותיות של התרגיל.");
+      if (!patterns.has(change.rule)) return fail("בחרו חוק עבור ההחלפה הזו.");
+      if (same(part.node, replacement)) return fail("החלק שנבחר לא השתנה. מחקו את ההחלפה המיותרת.");
+      if (!rootApplies(part.node, replacement, patterns.get(change.rule))) {
+        const other = RULES.find((r) => rootApplies(part.node, replacement, patterns.get(r.id)));
+        return fail(other ? `ההחלפה נכונה, אבל הנימוק אינו מתאים. כאן משתמשים ב״${other.name}״.` : "החוק אינו מצדיק את ההחלפה של החלק שנבחר. בחרו את החלק המדויק שעליו פועל החוק. שינוי בתוצאה של החלפה קודמת שייך לצעד הבא.");
+      }
+      chosen.set(change.path, replacement);
+    }
+    function replace(n, path) {
+      return chosen.get(path) || rebuild(n, children(n).map((c, i) => replace(c, path + "." + i)));
+    }
+    if (!same(replace(before, "r"), after)) return { kind: "replacement", message: "ההחלפות שסימנתם אינן נותנות את הנוסחה שכתבתם. בדקו שלא שיניתם חלק נוסף או הפעלתם חוק על תוצאה שנוצרה רק בצעד הזה." };
+    return { kind: "valid", formula: format(after), message: "הצעד נכון. כל ההחלפות מוצדקות ופועלות על חלקים נפרדים של נוסחת המקור." };
+  }
+  function stepReason(step2) {
+    var _a;
+    if (step2.rule === "replacements" || step2.rule === "eq:replacements") return (step2.replacements || []).map((c) => {
+      var _a2;
+      let after = c.after;
+      try {
+        after = format(tree(c.after.trim().toUpperCase()));
+      } catch {
+      }
+      return `${((_a2 = RULES.find((r) => r.id === c.rule)) == null ? void 0 : _a2.name) || ""}: ⁦${c.before} ↦ ${after}⁩`;
+    }).join("; ");
+    return ((_a = RULES.find((r) => r.id === step2.rule)) == null ? void 0 : _a.name) || "";
   }
   function ruleFormula(n) {
     if (n.type === "var") return n.name;
@@ -559,8 +679,179 @@
   }
   var ruleExamples = (id) => (patterns.get(id) || []).map(([a, b]) => `${ruleFormula(a)} ≡ ${ruleFormula(b)}`);
 
+  // games/shared/replacement-editor.js
+  var el2 = (tag, attrs = {}, kids3 = []) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "text") n.textContent = v;
+      else if (k === "class") n.className = v;
+      else n.setAttribute(k, v);
+    }
+    kids3.forEach((c) => n.append(c));
+    return n;
+  };
+  var button = (text, fn) => {
+    const b = el2("button", { type: "button", class: "bk-btn bk-quiet", text });
+    b.addEventListener("click", fn);
+    return b;
+  };
+  function replacementEditor(onChange) {
+    let source = "", parts = [], entries = [], active = false;
+    const snapshot = el2("div", { class: "replacement-source", dir: "ltr", "aria-label": "נוסחת המקור והחלקים שנבחרו" }), list = el2("div", { class: "replacement-list" }), notice = el2("p");
+    const choiceBank = el2("fieldset", { class: "replacement-choice-bank" });
+    let choices2 = [];
+    function removeEntry(entry) {
+      entries = entries.filter((e) => e !== entry);
+      entry.row.remove();
+      [...list.children].forEach((n, i) => n.querySelector("legend").textContent = `החלפה ${i + 1}`);
+    }
+    function buildChoices() {
+      choiceBank.replaceChildren(el2("legend", { text: "סמנו את החלקים שרוצים להחליף — אפשר לבחור כמה" }));
+      choices2 = parts.map((p, i) => {
+        const input = el2("input", { type: "checkbox", value: p.path, "aria-label": `חלק ${i + 1}: ${p.formula}` });
+        input.addEventListener("change", () => {
+          if (input.checked) {
+            const entry = entries.find((e) => !e.part.value) || addEntry();
+            entry.part.value = p.path;
+          } else {
+            const entry = entries.find((e) => e.part.value === p.path);
+            if (entry) removeEntry(entry);
+          }
+          paint();
+          onChange();
+        });
+        choiceBank.append(el2("label", { class: "replacement-choice" }, [input, el2("span", { dir: "ltr", text: `${i + 1}. ${p.formula}` })]));
+        return { input, path: p.path };
+      });
+    }
+    const add = button("הוספת החלפה", () => {
+      addEntry();
+      onChange();
+    });
+    const box = el2("section", { class: "replacement-editor" }, [
+      el2("p", { text: "סמנו ברשימה אחד או כמה חלקים מן הנוסחה שלפני הצעד. לכל חלק כתבו במה מחליפים אותו ובאיזה חוק משתמשים. אין לבחור חלקים שחופפים זה לזה; תוצאות ההחלפות זמינות רק בצעד הבא." }),
+      snapshot,
+      notice,
+      choiceBank,
+      list,
+      add
+    ]);
+    box.hidden = true;
+    add.disabled = true;
+    function paint() {
+      snapshot.replaceChildren();
+      if (!parts.length) {
+        notice.textContent = "בחרו או כתבו שורת מקור תקינה כדי לבחור מתוכה חלקים.";
+        return;
+      }
+      notice.textContent = "החלקים שנבחרו מודגשים בצבע. לבחירת כמה חלקים, אל תסמנו גם את הנוסחה כולה או ביטוי שמכיל אותם.";
+      const selected = entries.map((e) => e.part.value).filter(Boolean);
+      function draw(n, path) {
+        const span = el2("span", { class: selected.includes(path) ? "replacement-highlight" : "" });
+        if (n.type === "var") span.textContent = n.name;
+        else if (n.type === "const") span.textContent = n.value ? "T" : "F";
+        else if (n.arg) span.append("¬", draw(n.arg, path + ".0"));
+        else {
+          const kids3 = n.args || [n.left, n.right], symbol = { and: "∧", or: "∨", xor: "⊕", imp: "→", iff: "↔" }[n.type];
+          span.append("(", draw(kids3[0], path + ".0"), " " + symbol + " ", draw(kids3[1], path + ".1"), ")");
+        }
+        return span;
+      }
+      snapshot.append(draw(parts[0].node, "r"));
+      choices2.forEach(({ input, path }) => {
+        input.checked = selected.includes(path);
+        input.disabled = !input.checked && selected.some((p) => overlappingPaths(p, path));
+      });
+      entries.forEach((e) => {
+        for (const option of e.part.options) option.disabled = !!option.value && entries.some((other) => other !== e && other.part.value && overlappingPaths(other.part.value, option.value));
+      });
+    }
+    function addEntry() {
+      const part = el2("select", { class: "replacement-part", "aria-label": "החלק שמחליפים" }, [el2("option", { value: "", text: "בחרו חלק מהנוסחה…" }), ...parts.map((p, i) => el2("option", { value: p.path, text: `${i + 1}. ${p.formula}${p.path === "r" ? " — כל הנוסחה" : ""}` }))]);
+      const after = el2("input", { class: "bk-input replacement-after", type: "text", dir: "ltr", maxlength: "240", placeholder: "הביטוי החלופי", "aria-label": "הביטוי החלופי" });
+      const rule = el2("select", { class: "replacement-rule", "aria-label": "החוק להחלפה" }, [el2("option", { value: "", text: "בחרו חוק…" }), ...RULES.map((r) => el2("option", { value: r.id, text: r.name }))]);
+      const feedback = el2("p", { class: "bk-msg", "aria-live": "polite" }), entry = { part, after, rule, feedback };
+      const row = el2("fieldset", { class: "replacement-item" }, [
+        el2("legend", { text: `החלפה ${entries.length + 1}` }),
+        el2("label", {}, [el2("span", { text: "החלק בנוסחת המקור" }), part]),
+        el2("label", {}, [el2("span", { text: "מחליפים ב־" }), after]),
+        keyboard(after, () => changed()),
+        el2("label", {}, [el2("span", { text: "לפי החוק" }), rule]),
+        feedback,
+        button("מחיקת ההחלפה", () => {
+          removeEntry(entry);
+          paint();
+          onChange();
+        })
+      ]);
+      const changed = () => {
+        feedback.textContent = "";
+        row.removeAttribute("aria-invalid");
+        paint();
+        onChange();
+      };
+      part.addEventListener("change", changed);
+      rule.addEventListener("change", changed);
+      after.addEventListener("input", () => {
+        const pos = after.selectionStart;
+        after.value = after.value.toUpperCase();
+        after.setSelectionRange(pos, pos);
+        changed();
+      });
+      entry.row = row;
+      entries.push(entry);
+      list.append(row);
+      paint();
+      return entry;
+    }
+    return {
+      box,
+      activate(value) {
+        active = value;
+        box.hidden = !value;
+        if (value && !entries.length && parts.length) addEntry();
+      },
+      setSource(text) {
+        let next = [];
+        try {
+          if (text.length <= 240) next = expressionParts(text);
+        } catch {
+        }
+        const fingerprint = next.length ? JSON.stringify(next[0].node) : "";
+        if (source === fingerprint) return;
+        source = fingerprint;
+        parts = next;
+        entries = [];
+        list.replaceChildren();
+        add.disabled = !parts.length;
+        buildChoices();
+        if (active && parts.length) addEntry();
+        paint();
+      },
+      get() {
+        return entries.map((e) => {
+          var _a;
+          return { path: e.part.value, before: ((_a = parts.find((p) => p.path === e.part.value)) == null ? void 0 : _a.formula) || "", after: e.after.value, rule: e.rule.value };
+        });
+      },
+      showResult(result) {
+        entries.forEach((e) => {
+          e.row.removeAttribute("aria-invalid");
+          e.feedback.textContent = "";
+        });
+        if ((result == null ? void 0 : result.replacementIndex) !== void 0) {
+          const e = entries[result.replacementIndex];
+          if (e) {
+            e.row.setAttribute("aria-invalid", "true");
+            e.feedback.textContent = result.message;
+          }
+        }
+      }
+    };
+  }
+
   // games/shared/proof-editor.js
-  function el(tag, attrs = {}, children2 = []) {
+  function el3(tag, attrs = {}, children2 = []) {
     const node = document.createElement(tag);
     for (const [k, v] of Object.entries(attrs)) {
       if (k === "text") node.textContent = v;
@@ -572,39 +863,17 @@
     return node;
   }
   var nextId = 0;
-  var symbols = [["¬", "שלילה"], ["∧", "וגם"], ["∨", "או"], ["→", "גרירה"], ["↔", "אם ורק אם"], ["(", "סוגר פותח"], [")", "סוגר סוגר"], ["T", "אמת"], ["F", "שקר"]];
   var display = (formula) => format(parse(formula, { flatten: false }));
-  function keyboard(input, changed) {
-    return el(
-      "div",
-      { class: "bk-keys", role: "group", "aria-label": "סמלים לנוסחה" },
-      symbols.map(([symbol, name]) => el("button", {
-        type: "button",
-        class: "bk-key",
-        text: symbol,
-        "aria-label": name,
-        onclick() {
-          var _a, _b;
-          const a = (_a = input.selectionStart) != null ? _a : input.value.length, b = (_b = input.selectionEnd) != null ? _b : a;
-          if (input.value.length - (b - a) + symbol.length > 240) return;
-          input.value = input.value.slice(0, a) + symbol + input.value.slice(b);
-          input.focus();
-          input.setSelectionRange(a + symbol.length, a + symbol.length);
-          changed();
-        }
-      }))
-    );
-  }
   function initProofEditor(box) {
     const start = box.dataset.start, target = box.dataset.target;
     const reversible = box.dataset.reversible === "true";
     const showTarget = box.dataset.showTarget !== "false";
-    const rows = [];
-    let accepted = [], acceptedStart = null;
-    const list = el("div", { class: "proof-steps" });
-    const summary = el("div", { class: "bk-msg", "aria-live": "polite" });
-    const startFeedback = el("div", { id: `proof-start-feedback-${++nextId}`, class: "bk-msg", "aria-live": "polite" });
-    const startInput = el("input", {
+    const rows2 = [];
+    let accepted = [], acceptedStart = null, acceptedTarget = target;
+    const list = el3("div", { class: "proof-steps" });
+    const summary = el3("div", { class: "bk-msg", "aria-live": "polite" });
+    const startFeedback = el3("div", { id: `proof-start-feedback-${++nextId}`, class: "bk-msg", "aria-live": "polite" });
+    const startInput = el3("input", {
       type: "text",
       class: "bk-input proof-start-input",
       dir: "ltr",
@@ -618,33 +887,33 @@
         clearFeedback(0, true);
       }
     });
-    const chain2 = el("div", { class: "proof-chain", "aria-live": "polite", "aria-label": "ההוכחה שנבנתה עד כה" });
-    const goal = el("div", { class: "proof-goal" });
-    const preview = el("section", { class: "proof-preview" }, [
-      el("strong", { text: "ההוכחה שלכם עד כאן" }),
-      el("p", {}, [
-        el("strong", { text: "כך כותבים הוכחה פורמלית — גם ביד בבחינה:" }),
+    const chain2 = el3("div", { class: "proof-chain", "aria-live": "polite", "aria-label": "ההוכחה שנבנתה עד כה" });
+    const goal = el3("div", { class: "proof-goal" });
+    const preview = el3("section", { class: "proof-preview" }, [
+      el3("strong", { text: "ההוכחה שלכם עד כאן" }),
+      el3("p", {}, [
+        el3("strong", { text: "כך כותבים הוכחה פורמלית — גם ביד בבחינה:" }),
         " נוסחת התחלה, מעברים שקולים, ולצד כל מעבר החוק שמצדיק אותו. כאן מוצגים רק צעדים שעברו בדיקה."
       ]),
       goal,
       chain2,
-      el("p", { class: "proof-paper", text: "קחו דף ועט ונסו לכתוב את ההוכחה בעצמכם. אפשר להתחיל על הנייר ולבדוק כאן, לכתוב במקביל לעבודה באתר, או לשחזר את ההוכחה אחרי שסיימתם." })
+      el3("p", { class: "proof-paper", text: "קחו דף ועט ונסו לכתוב את ההוכחה בעצמכם. אפשר להתחיל על הנייר ולבדוק כאן, לכתוב במקביל לעבודה באתר, או לשחזר את ההוכחה אחרי שסיימתם." })
     ]);
-    const add = el("button", { type: "button", class: "bk-btn", text: "הוספת צעד", onclick: () => addRow(true) });
-    const submit = el("button", { type: "submit", class: "bk-btn bk-main", text: "בדיקת הפתרון" });
-    const form = el("form", { class: "proof-form", onsubmit(e) {
+    const add = el3("button", { type: "button", class: "bk-btn", text: "הוספת צעד", onclick: () => addRow(true) });
+    const submit = el3("button", { type: "submit", class: "bk-btn bk-main", text: "בדיקת הפתרון" });
+    const form = el3("form", { class: "proof-form", onsubmit(e) {
       e.preventDefault();
       check();
     } }, [
-      el("div", { class: "proof-start" }, [
-        el("label", { class: "proof-field" }, [el("span", { text: "מאיזו נוסחה מתחילים?" }), startInput]),
-        el("p", { text: reversible ? "אפשר להתחיל בכל אחד משני אגפי השקילות ולהגיע לאגף האחר." : "כתבו את נוסחת ההתחלה הנתונה בשאלה, לפני הפעלת חוק כלשהו." }),
+      el3("div", { class: "proof-start" }, [
+        el3("label", { class: "proof-field" }, [el3("span", { text: "מאיזו נוסחה מתחילים?" }), startInput]),
+        el3("p", { text: reversible ? "אפשר להתחיל בכל אחד משני אגפי השקילות ולהגיע לאגף האחר." : "כתבו את נוסחת ההתחלה הנתונה בשאלה, לפני הפעלת חוק כלשהו." }),
         keyboard(startInput, () => clearFeedback(0, true)),
-        el("button", { type: "button", class: "bk-btn", text: "בדיקת נקודת המוצא", onclick: () => check(-1) }),
+        el3("button", { type: "button", class: "bk-btn", text: "בדיקת נקודת המוצא", onclick: () => check(-1) }),
         startFeedback
       ]),
       list,
-      el("div", { class: "bk-bar" }, [add, submit]),
+      el3("div", { class: "bk-bar" }, [add, submit]),
       summary,
       preview
     ]);
@@ -658,35 +927,26 @@
     function renderChain() {
       chain2.replaceChildren();
       const goalStatement = (steps = []) => {
-        const known = showTarget || acceptedStart && checkProof(acceptedStart, target, steps).complete;
-        return el("p", {}, [
-          el("strong", { text: known ? "נראה ש־" : "נפשט את הנוסחה:" }),
-          el("span", { class: "proof-formula", dir: "ltr", text: known ? `${display(start)} ≡ ${display(target)}` : display(start) })
+        const known = showTarget || acceptedStart && checkProof(acceptedStart, acceptedTarget, steps).complete;
+        const from = acceptedStart || start;
+        const to = acceptedStart ? acceptedTarget : target;
+        return el3("p", {}, [
+          el3("strong", { text: known ? "נראה ש־" : "נפשט את הנוסחה:" }),
+          el3("span", { class: "proof-formula", dir: "ltr", text: known ? `${display(from)} ≡ ${display(to)}` : display(from) })
         ]);
       };
       goal.replaceChildren(goalStatement(accepted));
-      for (const row of rows) {
-        row.localProof.replaceChildren();
-        row.localPreview.hidden = true;
-      }
       if (!acceptedStart) {
-        chain2.append(el("p", { text: "לאחר בדיקת נקודת המוצא, ההוכחה תתחיל להופיע כאן." }));
+        chain2.append(el3("p", { text: "לאחר בדיקת נקודת המוצא, ההוכחה תתחיל להופיע כאן." }));
         return;
       }
-      const line = (formula, reason, first = false) => el("div", { class: "proof-chain-line" }, [
-        el("span", { class: "proof-chain-sign", text: first ? "" : "≡" }),
-        el("span", { class: "proof-formula", dir: "ltr", text: display(formula) }),
-        el("span", { class: "proof-chain-reason", dir: "rtl", text: reason })
+      const line = (formula, reason, first = false) => el3("div", { class: "proof-chain-line" }, [
+        el3("span", { class: "proof-chain-sign", text: first ? "" : "≡" }),
+        el3("span", { class: "proof-formula", dir: "ltr", text: display(formula) }),
+        el3("span", { class: "proof-chain-reason", dir: "rtl", text: reason })
       ]);
       chain2.append(line(acceptedStart, "נקודת המוצא", true));
-      accepted.forEach((step, i) => {
-        chain2.append(line(step.formula, `לפי ${RULES.find((r) => r.id === step.rule).name}`));
-        rows[i].localPreview.hidden = false;
-        rows[i].localTitle.textContent = `ההוכחה עד צעד ${i + 1}`;
-        rows[i].localGoal.replaceChildren(goalStatement(accepted.slice(0, i + 1)));
-        rows[i].localProof.append(line(acceptedStart, "נקודת המוצא", true));
-        accepted.slice(0, i + 1).forEach((s) => rows[i].localProof.append(line(s.formula, `לפי ${RULES.find((r) => r.id === s.rule).name}`)));
-      });
+      accepted.forEach((step2) => chain2.append(line(step2.formula, stepReason(step2))));
     }
     function clearFeedback(from = 0, resetStart = false) {
       accepted = accepted.slice(0, from);
@@ -695,32 +955,36 @@
         startFeedback.textContent = "";
         startInput.removeAttribute("aria-invalid");
       }
+      refreshReplacements();
       renderChain();
       summary.textContent = "";
       summary.className = "bk-msg";
-      for (const row of rows.slice(from)) {
+      for (const row of rows2.slice(from)) {
         row.feedback.textContent = "";
         row.feedback.className = "bk-msg";
         row.input.removeAttribute("aria-invalid");
         row.select.removeAttribute("aria-invalid");
       }
     }
+    function refreshReplacements() {
+      rows2.forEach((row, i) => row.replacements.setSource(i ? rows2[i - 1].input.value : startInput.value));
+    }
     function refreshNumbers() {
-      rows.forEach((row, i) => {
+      rows2.forEach((row, i) => {
         row.legend.textContent = `צעד ${i + 1}`;
         row.input.setAttribute("aria-label", `הנוסחה אחרי צעד ${i + 1}`);
         row.select.setAttribute("aria-label", `החוק בצעד ${i + 1}`);
         row.remove.setAttribute("aria-label", `מחיקת צעד ${i + 1}`);
       });
-      add.disabled = rows.length >= 20;
+      add.disabled = rows2.length >= 20;
       add.textContent = add.disabled ? "אפשר לכתוב עד 20 צעדים" : "הוספת צעד";
     }
     function addRow(focus = false) {
-      if (rows.length >= 20) return;
-      clearFeedback(rows.length);
+      if (rows2.length >= 20) return;
+      clearFeedback(rows2.length);
       const id = `proof-feedback-${++nextId}`;
-      const feedback = el("div", { id, class: "bk-msg" });
-      const input = el("input", {
+      const feedback = el3("div", { id, class: "bk-msg" });
+      const input = el3("input", {
         type: "text",
         class: "bk-input proof-input",
         dir: "ltr",
@@ -731,64 +995,65 @@
         "aria-describedby": id,
         oninput() {
           uppercase(input);
-          clearFeedback(rows.indexOf(row));
+          clearFeedback(rows2.indexOf(row));
         }
       });
-      const select = el("select", { class: "proof-rule", "aria-describedby": id }, [
-        el("option", { value: "", text: "בחרו חוק…" }),
-        ...RULES.map((rule) => el("option", { value: rule.id, text: rule.name }))
+      const select2 = el3("select", { class: "proof-rule", "aria-describedby": id }, [
+        el3("option", { value: "", text: "בחרו חוק…" }),
+        el3("option", { value: "replacements", text: "החלפות מפורטות — חלקים נפרדים באותו צעד" }),
+        ...RULES.map((rule) => el3("option", { value: rule.id, text: rule.name }))
       ]);
-      const reference = el("details", { class: "proof-reference" }, [el("summary", { text: "תזכורת לחוק שבחרתם" })]);
+      select2.value = "replacements";
+      const reference = el3("details", { class: "proof-reference" }, [el3("summary", { text: "תזכורת לחוק שבחרתם" })]);
       reference.hidden = true;
-      select.addEventListener("change", () => {
-        clearFeedback(rows.indexOf(row));
-        reference.hidden = !select.value;
+      select2.addEventListener("change", () => {
+        clearFeedback(rows2.indexOf(row));
+        reference.hidden = !select2.value || select2.value === "replacements";
+        row.replacements.activate(select2.value === "replacements");
         reference.replaceChildren(
-          el("summary", { text: "תזכורת לחוק שבחרתם" }),
-          ...ruleExamples(select.value).map((text) => el("div", { class: "proof-formula", dir: "ltr", text }))
+          el3("summary", { text: "תזכורת לחוק שבחרתם" }),
+          ...ruleExamples(select2.value).map((text) => el3("div", { class: "proof-formula", dir: "ltr", text }))
         );
       });
-      const keys = keyboard(input, () => clearFeedback(rows.indexOf(row)));
-      const legend = el("legend");
-      const localTitle = el("strong");
-      const localGoal = el("div", { class: "proof-goal" });
-      const localProof = el("div", { class: "proof-chain", "aria-live": "polite" });
-      const localPreview = el("section", { class: "proof-local" }, [localTitle, localGoal, localProof]);
-      localPreview.hidden = true;
-      const remove = el("button", { type: "button", class: "bk-btn bk-quiet", text: "מחיקת הצעד", onclick() {
-        const index = rows.indexOf(row);
-        rows.splice(index, 1);
+      const keys = keyboard(input, () => clearFeedback(rows2.indexOf(row)));
+      const legend = el3("legend");
+      const replacements = replacementEditor(() => clearFeedback(rows2.indexOf(row)));
+      replacements.activate(true);
+      const remove = el3("button", { type: "button", class: "bk-btn bk-quiet", text: "מחיקת הצעד", onclick() {
+        const index = rows2.indexOf(row);
+        rows2.splice(index, 1);
         fieldset.remove();
         clearFeedback(index);
         refreshNumbers();
-        if (!rows.length) addRow(true);
-        else rows[Math.min(index, rows.length - 1)].input.focus();
+        if (!rows2.length) addRow(true);
+        else rows2[Math.min(index, rows2.length - 1)].input.focus();
       } });
-      const fieldset = el("fieldset", { class: "proof-step" }, [
+      const fieldset = el3("fieldset", { class: "proof-step" }, [
         legend,
-        el("label", { class: "proof-field" }, [el("span", { text: "הנוסחה שמתקבלת" }), input]),
+        el3("label", { class: "proof-field" }, [el3("span", { text: "הנוסחה שמתקבלת" }), input]),
         keys,
-        el("label", { class: "proof-field" }, [el("span", { text: "החוק שמסביר את השינוי" }), select]),
+        el3("label", { class: "proof-field" }, [el3("span", { text: "אופן הנימוק — בחירת חלקים, או חוק לשינוי יחיד" }), select2]),
         reference,
+        replacements.box,
         feedback,
-        el("div", { class: "bk-bar" }, [
-          el("button", { type: "button", class: "bk-btn", text: "בדיקת הצעד והוספה להוכחה", onclick: () => check(rows.indexOf(row)) }),
+        el3("div", { class: "bk-bar" }, [
+          el3("button", { type: "button", class: "bk-btn", text: "בדיקת הצעד והוספה להוכחה", onclick: () => check(rows2.indexOf(row)) }),
           remove
-        ]),
-        localPreview
+        ])
       ]);
-      const row = { input, select, legend, remove, feedback, fieldset, localProof, localPreview, localTitle, localGoal };
-      rows.push(row);
+      const row = { input, select: select2, legend, remove, feedback, fieldset, replacements };
+      rows2.push(row);
       list.append(fieldset);
       refreshNumbers();
+      refreshReplacements();
       if (focus) input.focus();
     }
-    function check(last = rows.length - 1) {
+    function check(last = rows2.length - 1) {
       clearFeedback();
       const origin = checkStart(startInput.value, start, target, reversible);
       startFeedback.className = `bk-msg ${origin.valid ? "bk-good" : "bk-bad"}`;
       startFeedback.textContent = origin.valid ? showTarget ? "נקודת המוצא מתאימה. המטרה:" : "נקודת המוצא מתאימה. המשיכו לפשט בעזרת החוקים." : origin.message;
-      if (origin.valid && showTarget) startFeedback.append(el("div", { class: "proof-formula", dir: "ltr", text: display(origin.target) }));
+      if (origin.valid && showTarget) startFeedback.append(el3("div", { class: "proof-formula", dir: "ltr", text: display(origin.target) }));
       if (!origin.valid) {
         acceptedStart = null;
         renderChain();
@@ -799,30 +1064,39 @@
       }
       startInput.removeAttribute("aria-invalid");
       acceptedStart = origin.start;
+      acceptedTarget = origin.target;
       if (last < 0) {
         renderChain();
         return;
       }
-      const steps = rows.slice(0, last + 1).map((r) => ({ formula: r.input.value, rule: r.select.value }));
+      const steps = trimBlankSteps(rows2.slice(0, last + 1).map((r) => ({ formula: r.input.value, rule: r.select.value, replacements: r.select.value === "replacements" ? r.replacements.get() : void 0 })));
       const result = checkProof(origin.start, origin.target, steps);
       accepted = steps.slice(0, result.results.filter((r) => r.kind === "valid").length);
       renderChain();
-      result.results.forEach((step, i) => {
-        const row = rows[i], good = step.kind === "valid";
-        row.feedback.className = `bk-msg ${good ? "bk-good" : step.kind === "missing-step" ? "bk-info" : "bk-bad"}`;
-        row.feedback.textContent = step.message;
-        if (step.intermediate) row.feedback.append(el("div", { class: "proof-formula", dir: "ltr", text: step.intermediate }));
-        if (step.row) {
-          row.feedback.append(el("div", { class: "proof-formula", dir: "ltr", text: Object.entries(step.row).map(([n, v]) => `${n} = ${v ? "T" : "F"}`).join(", ") }));
+      result.results.forEach((step2, i) => {
+        const row = rows2[i], good = step2.kind === "valid";
+        row.feedback.className = `bk-msg ${good ? "bk-good" : step2.kind === "missing-step" ? "bk-info" : "bk-bad"}`;
+        row.feedback.textContent = step2.message;
+        row.replacements.showResult(step2);
+        if (step2.intermediate) row.feedback.append(el3("div", { class: "proof-formula", dir: "ltr", text: step2.intermediate }));
+        if (step2.row) {
+          row.feedback.append(el3("div", { class: "proof-formula", dir: "ltr", text: Object.entries(step2.row).map(([n, v]) => `${n} = ${v ? "T" : "F"}`).join(", ") }));
         }
-        if (!good && step.kind !== "missing-step") (step.kind === "rule" || step.kind === "wrong-rule" ? row.select : row.input).setAttribute("aria-invalid", "true");
+        if (!good && step2.kind !== "missing-step") (step2.kind === "rule" || step2.kind === "wrong-rule" ? row.select : row.input).setAttribute("aria-invalid", "true");
       });
+      if (!result.results.length) {
+        summary.className = "bk-msg bk-info";
+        summary.textContent = "הוסיפו צעד מנומק כדי להתחיל.";
+        return;
+      }
       if (!result.valid) {
         const index = result.results.length - 1;
         const missing = result.results[index].kind === "missing-step";
         summary.className = `bk-msg ${missing ? "bk-info" : "bk-bad"}`;
-        summary.textContent = missing ? `התוצאה בצעד ${index + 1} נכונה, אך חסרה שורת ביניים. פצלו אותו לצעדים מנומקים ובדקו שוב. ההוכחה המוצגת נעצרת לפני הצעד הזה עד להשלמת הפירוט.` : `צריך לתקן את צעד ${index + 1}. ${index ? "הצעדים שלפניו נכונים. " : ""}הצעדים שאחריו עדיין לא נבדקו. לאחר התיקון לחצו שוב על ״בדיקת הפתרון״.`;
-        rows.slice(index + 1).forEach((row) => {
+        summary.textContent = missing ? `התוצאה בצעד ${index + 1} שקולה לקודמת, אך צריך לפרט את ההחלפות או להוסיף שורת ביניים. ההוכחה המוצגת כוללת רק צעדים שהוצדקו.` : `צריך לתקן את צעד ${index + 1}. ${index ? "הצעדים שלפניו נכונים. " : ""}הצעדים שאחריו עדיין לא נבדקו. לאחר התיקון לחצו שוב על ״בדיקת הפתרון״.`;
+        if (result.complete) summary.textContent = `המטרה כבר הוכחה בצעד ${result.goalStep}. יש לתקן או למחוק את הצעד הנוסף המסומן.`;
+        else if (result.targetReached) summary.textContent = "הגעתם לנוסחת היעד, אבל ההוכחה עדיין אינה מלאה: תקנו את ההחלפות או את הנימוק בצעד המסומן.";
+        rows2.slice(index + 1).forEach((row) => {
           row.feedback.textContent = "ממתין לתיקון הצעד הקודם.";
         });
       } else {
@@ -1738,7 +2012,7 @@
   ];
   var ruleName = (id) => {
     var _a, _b;
-    return ((_a = INFERENCE_RULES.find((r) => r.id === id)) == null ? void 0 : _a.name) || ((_b = RULES.find((r) => `eq:${r.id}` === id)) == null ? void 0 : _b.name) || "";
+    return id === "eq:replacements" ? "החלפות מפורטות" : ((_a = INFERENCE_RULES.find((r) => r.id === id)) == null ? void 0 : _a.name) || ((_b = RULES.find((r) => `eq:${r.id}` === id)) == null ? void 0 : _b.name) || "";
   };
   var rename = (formula, mapping) => format(formula, mapping);
   function checkMapping(exercise, mapping) {
@@ -1799,27 +2073,29 @@
     }
     return [...new Set([...candidates].map((f) => rename(f, mapping)))].sort((a, b) => a.localeCompare(b, "en"));
   }
-  function checkArgument(exercise, mapping, premises, goal, steps) {
+  function checkArgument(exercise, mapping, premises, goal, inputSteps) {
     const translation = checkTranslations(exercise, mapping, premises, goal);
     if (!translation.ok) return { ok: false, complete: false, phase: "translation", translation, results: [] };
+    const steps = trimBlankSteps(inputSteps);
+    let goalStep = null;
     const allowed = Object.values(mapping);
     const known = new Map(translation.items.slice(0, -1).map((p, i) => [`p${i + 1}`, p.formula]));
     const results = [];
     if (!steps.length) return { ok: false, complete: false, results, message: "הוסיפו צעד כדי להתחיל את ההוכחה." };
-    for (const step of steps) {
-      let result = readFormula(step.formula, allowed);
-      const isRewrite = step.rule.startsWith("eq:");
+    for (const step2 of steps) {
+      let result = readFormula(step2.formula, allowed);
+      const isRewrite = step2.rule.startsWith("eq:");
       const count = isRewrite ? 1 : 2;
-      if (!step.id || known.has(step.id)) result = { ok: false, message: "לכל שורת הוכחה צריך להיות מזהה נפרד." };
-      else if (result.ok && !ruleName(step.rule)) result = { ok: false, message: "בחרו את הכלל שמצדיק את הצעד." };
-      else if (result.ok && (step.refs.length !== count || new Set(step.refs).size !== count || step.refs.some((ref) => !known.has(ref)))) {
+      if (!step2.id || known.has(step2.id)) result = { ok: false, message: "לכל שורת הוכחה צריך להיות מזהה נפרד." };
+      else if (result.ok && !ruleName(step2.rule)) result = { ok: false, message: "בחרו את הכלל שמצדיק את הצעד." };
+      else if (result.ok && (step2.refs.length !== count || new Set(step2.refs).size !== count || step2.refs.some((ref) => !known.has(ref)))) {
         result = { ok: false, message: isRewrite ? "בחרו שורת מקור קודמת אחת. אי אפשר להשתמש בשורה עצמה או בשורה שעדיין לא הוכחה." : "בחרו שתי שורות מקור קודמות ושונות. אי אפשר להשתמש בשורה עצמה או בשורה שעדיין לא הוכחה." };
       } else if (result.ok && isRewrite) {
-        const rewrite = checkStep(known.get(step.refs[0]), step.formula, step.rule.slice(3), allowed);
-        result = { ...result, ok: rewrite.kind === "valid", message: rewrite.message, row: rewrite.row, kind: rewrite.kind, intermediate: rewrite.intermediate };
+        const rewrite = step2.rule === "eq:replacements" ? checkReplacements(known.get(step2.refs[0]), step2.formula, step2.replacements || [], allowed) : checkStep(known.get(step2.refs[0]), step2.formula, step2.rule.slice(3), allowed);
+        result = { ...result, ok: rewrite.kind === "valid", message: rewrite.message, row: rewrite.row, kind: rewrite.kind, intermediate: rewrite.intermediate, replacementIndex: rewrite.replacementIndex };
       } else if (result.ok) {
-        const sources = step.refs.map((id) => parse(known.get(id)));
-        const candidates = consequences(step.rule, ...sources);
+        const sources = step2.refs.map((id) => parse(known.get(id)));
+        const candidates = consequences(step2.rule, ...sources);
         if (candidates.some((candidate) => same2(candidate, result.tree))) result.message = "הנוסחה נובעת משורות המקור לפי הכלל שבחרתם.";
         else {
           const row = assignments(allowed).find((env) => sources.every((s) => evaluate(s, env)) && !evaluate(result.tree, env));
@@ -1827,10 +2103,18 @@
         }
       }
       results.push(result);
-      if (!result.ok) return { ok: false, complete: false, results };
-      known.set(step.id, result.formula);
+      if (!result.ok) {
+        let targetReached = false;
+        try {
+          targetReached = compare(step2.formula, translation.items.at(-1).formula).equal;
+        } catch {
+        }
+        return { ok: false, complete: goalStep !== null, goalStep, targetReached, results };
+      }
+      known.set(step2.id, result.formula);
+      if (goalStep === null && compare(result.formula, translation.items.at(-1).formula).equal) goalStep = results.length;
     }
-    return { ok: true, complete: compare(known.get(steps.at(-1).id), translation.items.at(-1).formula).equal, results };
+    return { ok: true, complete: goalStep !== null, goalStep, results };
   }
 
   // games/shared/argument-display.js
@@ -1845,37 +2129,37 @@
     const match2 = exact.find((item) => rename(item.formula, mapping) === normalized);
     if (match2) return text(match2.text);
     const names = Object.fromEntries(exercise.atoms.map((a) => [mapping[a.id], text(a.text)]));
-    function say(n) {
+    function say4(n) {
       if (n.type === "var") return names[n.name] || n.name;
       if (n.type === "const") return n.value ? "אמת" : "שקר";
-      if (n.type === "not") return `לא נכון ש־(${say(n.arg)})`;
-      if (n.type === "and") return n.args.map((a) => `(${say(a)})`).join(" וגם ");
-      if (n.type === "or") return n.args.map((a) => `(${say(a)})`).join(" או ") + " (לפחות אחד)";
-      if (n.type === "imp") return `אם (${say(n.left)}), אז (${say(n.right)})`;
-      if (n.type === "iff") return `(${say(n.left)}) אם ורק אם (${say(n.right)})`;
-      if (n.type === "xor") return `בדיוק אחד משני המשפטים: (${say(n.left)}) או (${say(n.right)})`;
+      if (n.type === "not") return `לא נכון ש־(${say4(n.arg)})`;
+      if (n.type === "and") return n.args.map((a) => `(${say4(a)})`).join(" וגם ");
+      if (n.type === "or") return n.args.map((a) => `(${say4(a)})`).join(" או ") + " (לפחות אחד)";
+      if (n.type === "imp") return `אם (${say4(n.left)}), אז (${say4(n.right)})`;
+      if (n.type === "iff") return `(${say4(n.left)}) אם ורק אם (${say4(n.right)})`;
+      if (n.type === "xor") return `בדיוק אחד משני המשפטים: (${say4(n.left)}) או (${say4(n.right)})`;
     }
-    return say(parse(formula, { flatten: false }));
+    return say4(parse(formula, { flatten: false }));
   }
   function argumentLines(exercise, mapping, premises, steps) {
     const numbers = new Map(premises.map((_, i) => [`p${i + 1}`, i + 1]));
     const lines = premises.map((formula, i) => ({ number: i + 1, formula: format(formula), reason: "נתון", words: formulaWords(formula, exercise, mapping) }));
-    steps.forEach((step) => {
+    steps.forEach((step2) => {
       const number = lines.length + 1;
-      const refs = step.refs.map((id) => numbers.get(id));
+      const refs = step2.refs.map((id) => numbers.get(id));
       lines.push({
         number,
-        formula: format(parse(step.formula, { flatten: false })),
-        reason: `${ruleName(step.rule)}, ${refs.length === 1 ? "משורה" : "משורות"} ${refs.join(" ו־")}`,
-        words: formulaWords(step.formula, exercise, mapping)
+        formula: format(parse(step2.formula, { flatten: false })),
+        reason: `${step2.rule === "eq:replacements" ? stepReason(step2) : ruleName(step2.rule)}, ${refs.length === 1 ? "משורה" : "משורות"} ${refs.join(" ו־")}`,
+        words: formulaWords(step2.formula, exercise, mapping)
       });
-      numbers.set(step.id, number);
+      numbers.set(step2.id, number);
     });
     return lines;
   }
 
   // games/shared/argument-editor.js
-  function el2(tag, attrs = {}, children2 = []) {
+  function el4(tag, attrs = {}, children2 = []) {
     const node = document.createElement(tag);
     for (const [k, v] of Object.entries(attrs)) {
       if (k === "text") node.textContent = v;
@@ -1886,35 +2170,35 @@
     children2.forEach((c) => node.append(c));
     return node;
   }
-  var btn = (text, fn, primary = false) => el2("button", { type: "button", class: `bk-btn${primary ? " bk-main" : ""}`, text, onclick: fn });
-  var formulaText = (text) => el2("div", { class: "proof-formula", dir: "ltr", text });
+  var btn = (text, fn, primary = false) => el4("button", { type: "button", class: `bk-btn${primary ? " bk-main" : ""}`, text, onclick: fn });
+  var formulaText = (text) => el4("div", { class: "proof-formula", dir: "ltr", text });
   var serial = 0;
   function initArgumentEditor(box) {
     const exercise = ARGUMENTS[box.dataset.argument];
     if (!exercise) return;
-    let mapping = null, rows = [], nextRow = 0, hintIndex = 0;
+    let mapping = null, rows2 = [], nextRow = 0, hintIndex = 0;
     let accepted = [], translationApproved = false;
     const translationFields = [];
-    const list = el2("div", { class: "argument-steps" });
-    const summary = el2("div", { class: "bk-msg", "aria-live": "polite" });
-    const mappingMsg = el2("div", { class: "bk-msg", "aria-live": "polite" });
-    const translationMsg = el2("div", { class: "bk-msg", "aria-live": "polite" });
-    const reference = el2("ol", { class: "argument-premises" });
-    const goalView = el2("div", { class: "proof-start" });
-    const solution = el2("div", { class: "argument-solution" });
-    const proofPreview = el2("section", { class: "proof-preview argument-preview", "aria-live": "polite" });
+    const list = el4("div", { class: "argument-steps" });
+    const summary = el4("div", { class: "bk-msg", "aria-live": "polite" });
+    const mappingMsg = el4("div", { class: "bk-msg", "aria-live": "polite" });
+    const translationMsg = el4("div", { class: "bk-msg", "aria-live": "polite" });
+    const reference = el4("ol", { class: "argument-premises" });
+    const goalView = el4("div", { class: "proof-start" });
+    const solution = el4("div", { class: "argument-solution" });
+    const proofPreview = el4("section", { class: "proof-preview argument-preview", "aria-live": "polite" });
     solution.hidden = true;
     const letterSelects = exercise.atoms.map((atom, i) => {
-      const select = el2("select", { class: "argument-letter", "aria-label": `האות עבור: ${atom.text}` }, LETTERS.map((letter) => el2("option", { value: letter, text: letter })));
-      select.value = ["A", "B", "C"][i];
-      select.addEventListener("change", () => {
+      const select2 = el4("select", { class: "argument-letter", "aria-label": `האות עבור: ${atom.text}` }, LETTERS.map((letter) => el4("option", { value: letter, text: letter })));
+      select2.value = ["A", "B", "C"][i];
+      select2.addEventListener("change", () => {
         stage2.hidden = true;
         stage3.hidden = true;
         mappingMsg.className = "bk-msg bk-info";
         mappingMsg.textContent = mapping ? "הסימונים השתנו. אישור סימונים שונים יתחיל את התרגום ואת ההוכחה מחדש. אפשר להחזיר את האותיות הקודמות כדי לשמור על העבודה." : "אשרו את הסימונים כדי להתחיל לתרגם.";
         applyMapping.textContent = mapping ? "אישור הסימונים והמשך" : "אישור הסימונים";
       });
-      return select;
+      return select2;
     });
     const applyMapping = btn("אישור הסימונים", () => {
       const proposed = Object.fromEntries(exercise.atoms.map((atom, i) => [atom.id, letterSelects[i].value]));
@@ -1932,7 +2216,7 @@
           row.input.removeAttribute("aria-invalid");
         });
         translationMsg.textContent = "";
-        rows = [];
+        rows2 = [];
         list.replaceChildren();
         nextRow = 0;
         addRow();
@@ -1943,10 +2227,10 @@
       stage3.hidden = true;
       applyMapping.textContent = "אישור הסימונים";
     }, true);
-    const stage1 = el2("section", { class: "argument-stage" }, [
-      el2("h4", { text: "1. בוחרים שמות למשפטים" }),
-      el2("p", { text: "בחרו אות שונה לכל משפט. אפשר להשאיר את האותיות המוצעות או לבחור אחרות. האות היא שם למשפט, לא קביעה שהוא נכון. T ו־F שמורות לאמת ולשקר." }),
-      ...exercise.atoms.map((atom, i) => el2("label", { class: "argument-mapping" }, [letterSelects[i], el2("span", { text: atom.text })])),
+    const stage1 = el4("section", { class: "argument-stage" }, [
+      el4("h4", { text: "1. בוחרים שמות למשפטים" }),
+      el4("p", { text: "בחרו אות שונה לכל משפט. אפשר להשאיר את האותיות המוצעות או לבחור אחרות. האות היא שם למשפט, לא קביעה שהוא נכון. T ו־F שמורות לאמת ולשקר." }),
+      ...exercise.atoms.map((atom, i) => el4("label", { class: "argument-mapping" }, [letterSelects[i], el4("span", { text: atom.text })])),
       applyMapping,
       mappingMsg
     ]);
@@ -1963,14 +2247,14 @@
     }
     function inputField(label, oninput) {
       const feedbackId = `argument-feedback-${++serial}`;
-      const feedback = el2("div", { id: feedbackId, class: "bk-msg" });
-      const input = el2("input", { type: "text", class: "bk-input proof-input", dir: "ltr", maxlength: "240", autocomplete: "off", spellcheck: "false", "aria-label": label, "aria-describedby": feedbackId, placeholder: "כתבו נוסחה", oninput() {
+      const feedback = el4("div", { id: feedbackId, class: "bk-msg" });
+      const input = el4("input", { type: "text", class: "bk-input proof-input", dir: "ltr", maxlength: "240", autocomplete: "off", spellcheck: "false", "aria-label": label, "aria-describedby": feedbackId, placeholder: "כתבו נוסחה", oninput() {
         const a = input.selectionStart, b = input.selectionEnd;
         input.value = input.value.toUpperCase();
         input.setSelectionRange(a, b);
         oninput();
       } });
-      const keys = el2("div", { class: "bk-keys", role: "group", "aria-label": "סמלים לנוסחה הזאת" }, [["¬", "שלילה"], ["∧", "וגם"], ["∨", "או"], ["→", "גרירה"], ["(", "סוגר פותח"], [")", "סוגר סוגר"]].map(([symbol, name]) => btn(symbol, () => {
+      const keys = el4("div", { class: "bk-keys", role: "group", "aria-label": "סמלים לנוסחה הזאת" }, [["¬", "שלילה"], ["∧", "וגם"], ["∨", "או"], ["→", "גרירה"], ["(", "סוגר פותח"], [")", "סוגר סוגר"]].map(([symbol, name]) => btn(symbol, () => {
         var _a, _b;
         const a = (_a = input.selectionStart) != null ? _a : input.value.length, b = (_b = input.selectionEnd) != null ? _b : a;
         if (input.value.length - (b - a) + symbol.length > 240) return;
@@ -1979,21 +2263,21 @@
         input.setSelectionRange(a + symbol.length, a + symbol.length);
         oninput();
       })));
-      [...keys.children].forEach((key2, i) => {
-        key2.className = "bk-key";
-        key2.setAttribute("aria-label", ["שלילה", "וגם", "או", "גרירה", "סוגר פותח", "סוגר סוגר"][i]);
+      [...keys.children].forEach((key3, i) => {
+        key3.className = "bk-key";
+        key3.setAttribute("aria-label", ["שלילה", "וגם", "או", "גרירה", "סוגר פותח", "סוגר סוגר"][i]);
       });
       return { input, keys, feedback };
     }
-    const stage2 = el2("section", { class: "argument-stage" }, [
-      el2("h4", { text: "2. מתרגמים את הנתונים ואת המטרה" }),
-      el2("p", { text: "כל הנתונים כאן הם הנחות של התרגיל: מותר להשתמש בהם בהוכחה. כתבו כל משפט בעזרת האותיות שבחרתם. המטרה היא מה שצריך להוכיח; אסור להשתמש בה כאילו הייתה נתון." })
+    const stage2 = el4("section", { class: "argument-stage" }, [
+      el4("h4", { text: "2. מתרגמים את הנתונים ואת המטרה" }),
+      el4("p", { text: "כל הנתונים כאן הם הנחות של התרגיל: מותר להשתמש בהם בהוכחה. כתבו כל משפט בעזרת האותיות שבחרתם. המטרה היא מה שצריך להוכיח; אסור להשתמש בה כאילו הייתה נתון." })
     ]);
     [...exercise.premises, exercise.goal].forEach((entry, i) => {
       const label = i < exercise.premises.length ? `נתון ${i + 1}` : "המטרה להוכחה";
       const row = inputField(`תרגום: ${label}`, invalidateProof);
       translationFields.push(row);
-      stage2.append(el2("div", { class: "argument-translation" }, [el2("label", { class: "proof-field" }, [el2("strong", { text: `${label}: ${entry.text}` }), row.input]), row.keys, row.feedback]));
+      stage2.append(el4("div", { class: "argument-translation" }, [el4("label", { class: "proof-field" }, [el4("strong", { text: `${label}: ${entry.text}` }), row.input]), row.keys, row.feedback]));
     });
     stage2.append(btn("בדיקת התרגום ופתיחת ההוכחה", () => {
       const result = checkTranslations(exercise, mapping, premiseValues(), goalValue());
@@ -2004,37 +2288,37 @@
       stage3.hidden = !result.ok;
       clearResults();
       if (result.ok) {
-        reference.replaceChildren(...result.items.slice(0, -1).map((entry, i) => el2("li", {}, [el2("strong", { text: `נתון ${i + 1}: ${exercise.premises[i].text}` }), formulaText(entry.formula)])));
-        goalView.replaceChildren(el2("strong", { text: `המטרה: ${exercise.goal.text}` }), formulaText(result.items.at(-1).formula));
+        reference.replaceChildren(...result.items.slice(0, -1).map((entry, i) => el4("li", {}, [el4("strong", { text: `נתון ${i + 1}: ${exercise.premises[i].text}` }), formulaText(entry.formula)])));
+        goalView.replaceChildren(el4("strong", { text: `המטרה: ${exercise.goal.text}` }), formulaText(result.items.at(-1).formula));
         refreshReferences();
       }
     }, true), translationMsg);
     stage2.hidden = true;
     const hint = btn("רמז", () => {
-      if (hintIndex < exercise.hints.length) hints.append(el2("p", { text: exercise.hints[hintIndex++] }));
+      if (hintIndex < exercise.hints.length) hints.append(el4("p", { text: exercise.hints[hintIndex++] }));
       hint.disabled = hintIndex === exercise.hints.length;
     });
-    const hints = el2("div", { class: "argument-hints", "aria-live": "polite" });
+    const hints = el4("div", { class: "argument-hints", "aria-live": "polite" });
     const add = btn("הוספת צעד", () => addRow(true));
-    const proofForm = el2("form", { onsubmit(e) {
+    const proofForm = el4("form", { onsubmit(e) {
       e.preventDefault();
       check();
-    } }, [list, el2("div", { class: "bk-bar" }, [add, el2("button", { type: "submit", class: "bk-btn bk-main", text: "בדיקת ההוכחה" })]), summary, proofPreview]);
-    const stage3 = el2("section", { class: "argument-stage" }, [
-      el2("h4", { text: "3. בונים הוכחה" }),
+    } }, [list, el4("div", { class: "bk-bar" }, [add, el4("button", { type: "submit", class: "bk-btn bk-main", text: "בדיקת ההוכחה" })]), summary, proofPreview]);
+    const stage3 = el4("section", { class: "argument-stage" }, [
+      el4("h4", { text: "3. בונים הוכחה" }),
       goalView,
       reference,
-      el2("p", { text: "בכל צעד בחרו נוסחה מהמאגר או כתבו נוסחה בעצמכם, בחרו כלל וציינו מאילו שורות היא נובעת. במאגר יש גם אפשרויות שאינן נובעות מהנתונים: עצם הופעת הנוסחה במאגר אינה מצדיקה אותה. לכל אחד משלושת כללי ההיסק שבתרגול בוחרים שתי שורות קודמות; לשינוי לפי חוק שקילות בוחרים שורה אחת. גם צעד שכבר הוכחתם יכול לשמש מקור, ואפשר להגיע למטרה בדרכים שונות." }),
+      el4("p", { text: "בכל צעד בחרו נוסחה מהמאגר או כתבו נוסחה בעצמכם, בחרו כלל וציינו מאילו שורות היא נובעת. במאגר יש גם אפשרויות שאינן נובעות מהנתונים: עצם הופעת הנוסחה במאגר אינה מצדיקה אותה. לכל אחד משלושת כללי ההיסק שבתרגול בוחרים שתי שורות קודמות; לשינוי לפי חוק שקילות בוחרים שורה אחת. גם צעד שכבר הוכחתם יכול לשמש מקור, ואפשר להגיע למטרה בדרכים שונות." }),
       proofForm,
       btn("הצגת דרך פתרון לפי האותיות שלי", () => {
-        solution.replaceChildren(el2("strong", { text: "דרך אפשרית אחת — אפשר להוכיח גם בדרך אחרת:" }));
+        solution.replaceChildren(el4("strong", { text: "דרך אפשרית אחת — אפשר להוכיח גם בדרך אחרת:" }));
         solution.append(writtenProof(exercise.solution.map((s) => ({ ...s, formula: rename(s.formula, mapping) })), exercise.premises.map((p) => rename(p.formula, mapping))));
         solution.hidden = false;
       }),
       solution
     ]);
     stage3.hidden = true;
-    box.append(stage1, stage2, stage3, el2("div", { class: "bk-bar" }, [hint]), hints);
+    box.append(stage1, stage2, stage3, el4("div", { class: "bk-bar" }, [hint]), hints);
     box.classList.add("argument-ready");
     function premiseValues() {
       return translationFields.slice(0, -1).map((r) => r.input.value);
@@ -2043,143 +2327,164 @@
       return translationFields.at(-1).input.value;
     }
     function writtenProof(steps, premises = premiseValues()) {
-      const panel = el2("div", { class: "argument-written" }, [
-        el2("p", {}, [el2("strong", { text: `נראה שמתוך ההנחות נובעת המסקנה: ${exercise.goal.text}` }), formulaText(rename(exercise.goal.formula, mapping))])
+      const lines = argumentLines(exercise, mapping, premises, steps);
+      const givens = el4("section", { class: "argument-written-givens" }, [
+        el4("strong", { class: "argument-written-heading", text: "נתונים:" }),
+        el4("ol", {}, lines.slice(0, premises.length).map((line) => el4("li", {}, [
+          el4("div", { class: "argument-line-words", text: line.words }),
+          formulaText(line.formula)
+        ])))
       ]);
-      const body = el2("tbody");
-      argumentLines(exercise, mapping, premises, steps).forEach((line) => body.append(el2("tr", {}, [
-        el2("th", { scope: "row", text: String(line.number) }),
-        el2("td", {}, [formulaText(line.formula), el2("div", { class: "argument-line-words", text: line.words })]),
-        el2("td", { class: "argument-line-reason" }, line.reason.split(", ").map((part, i) => el2("span", { class: i ? "argument-line-refs" : "", text: part })))
-      ])));
-      panel.append(el2("div", { class: "argument-proof-scroll" }, [el2("table", { class: "argument-proof-table" }, [
-        el2("thead", {}, [el2("tr", {}, ["שורה", "הנוסחה ומשמעותה במילים", "נימוק"].map((t) => el2("th", { scope: "col", text: t })))]),
-        body
-      ])]));
+      const goal = el4("section", { class: "argument-written-goal" }, [
+        el4("strong", { class: "argument-written-heading", text: "נוכיח:" }),
+        el4("div", { text: exercise.goal.text }),
+        formulaText(rename(exercise.goal.formula, mapping))
+      ]);
+      const proof2 = el4("section", { class: "argument-written-steps" }, [
+        el4("strong", { class: "argument-written-heading", text: "הוכחה:" })
+      ]);
+      const panel = el4("div", { class: "argument-written" }, [givens, goal, proof2]);
+      if (!steps.length) {
+        proof2.append(el4("p", { text: "כאן יופיעו הצעדים לאחר בדיקתם, עם נימוק לכל צעד." }));
+      } else {
+        const body = el4("tbody");
+        lines.slice(premises.length).forEach((line) => body.append(el4("tr", {}, [
+          el4("th", { scope: "row", text: String(line.number) }),
+          el4("td", {}, [el4("div", { class: "argument-line-words", text: line.words }), formulaText(line.formula)]),
+          el4("td", { class: "argument-line-reason" }, line.reason.split(", ").map((part, i) => el4("span", { class: i ? "argument-line-refs" : "", text: part })))
+        ])));
+        proof2.append(el4("div", { class: "argument-proof-scroll" }, [el4("table", { class: "argument-proof-table" }, [
+          el4("thead", {}, [el4("tr", {}, ["שורה", "טענה במילים ובסימנים", "נימוק"].map((t) => el4("th", { scope: "col", text: t })))]),
+          body
+        ])]));
+      }
       return panel;
     }
     function renderProof() {
       proofPreview.replaceChildren();
-      rows.forEach((row) => {
-        row.localPreview.replaceChildren();
-        row.localPreview.hidden = true;
-      });
       if (!translationApproved) return;
       proofPreview.append(
-        el2("strong", { text: "ההוכחה שלכם עד כאן" }),
+        el4("strong", { text: "ההוכחה שלכם עד כאן" }),
         writtenProof(accepted),
-        el2("p", { class: "proof-paper", text: "כך נראית הוכחה מסודרת: מציינים מה מוכיחים, כותבים את ההנחות ומנמקים כל מסקנה. מספרי השורות כוללים גם את ההנחות. נסו לכתוב אותה גם בעט על דף — לפני העבודה באתר, במקביל אליה או אחרי הבדיקה." })
+        el4("p", { class: "proof-paper", text: "כותבים את הנתונים ואת המטרה, ואז את צעדי ההוכחה עם נימוק לכל צעד. מספור הצעדים ממשיך את מספור הנתונים, כדי שאפשר יהיה להפנות אליהם. נסו לכתוב אותה גם בעט על דף — לפני העבודה באתר, במקביל אליה או אחרי הבדיקה." })
       );
-      accepted.forEach((_, i) => {
-        rows[i].localPreview.hidden = false;
-        rows[i].localPreview.append(el2("strong", { text: `ההוכחה עד צעד ${i + 1}` }), writtenProof(accepted.slice(0, i + 1)));
-      });
     }
     function clearResults(from = 0) {
       accepted = accepted.slice(0, from);
       summary.textContent = "";
       summary.className = "bk-msg";
-      rows.slice(from).forEach((row) => {
+      rows2.slice(from).forEach((row) => {
         row.feedback.textContent = "";
         row.feedback.className = "bk-msg";
         row.input.removeAttribute("aria-invalid");
       });
+      refreshReplacements();
       renderProof();
+    }
+    function refreshReplacements() {
+      rows2.forEach((row) => {
+        var _a;
+        const ref = row.sources[0].value;
+        const premise = /^p(\d+)$/.exec(ref);
+        const source = premise ? premiseValues()[Number(premise[1]) - 1] : (_a = rows2.find((r) => r.id === ref)) == null ? void 0 : _a.input.value;
+        row.replacements.setSource(source || "");
+      });
     }
     function refreshReferences() {
       const prior = exercise.premises.map((entry, i) => ({ id: `p${i + 1}`, label: `נתון ${i + 1}: ${translationFields[i].input.value}` }));
-      rows.forEach((row, i) => {
+      rows2.forEach((row, i) => {
         row.legend.textContent = `צעד ${i + 1}`;
         row.input.setAttribute("aria-label", `נוסחה בצעד ${i + 1}`);
         row.bank.setAttribute("aria-label", `מאגר נוסחאות לצעד ${i + 1}`);
         row.rule.setAttribute("aria-label", `כלל בצעד ${i + 1}`);
         row.remove.setAttribute("aria-label", `מחיקת צעד ${i + 1}`);
-        row.sources.forEach((select, j) => {
-          const value = select.value;
-          select.setAttribute("aria-label", `מקור ${j + 1} בצעד ${i + 1}`);
-          select.replaceChildren(el2("option", { value: "", text: "בחרו שורת מקור…" }), ...prior.map((p) => el2("option", { value: p.id, text: p.label })));
-          if (value && !prior.some((p) => p.id === value)) select.append(el2("option", { value, text: "השורה שנבחרה נמחקה — בחרו מקור אחר" }));
-          select.value = value;
+        row.sources.forEach((select2, j) => {
+          const value = select2.value;
+          select2.setAttribute("aria-label", `מקור ${j + 1} בצעד ${i + 1}`);
+          select2.replaceChildren(el4("option", { value: "", text: "בחרו שורת מקור…" }), ...prior.map((p) => el4("option", { value: p.id, text: p.label })));
+          if (value && !prior.some((p) => p.id === value)) select2.append(el4("option", { value, text: "השורה שנבחרה נמחקה — בחרו מקור אחר" }));
+          select2.value = value;
         });
         prior.push({ id: row.id, label: `צעד ${i + 1}: ${row.input.value || "טרם נכתבה נוסחה"}` });
       });
-      add.disabled = rows.length >= 20;
+      add.disabled = rows2.length >= 20;
       add.textContent = add.disabled ? "אפשר לכתוב עד 20 צעדים" : "הוספת צעד";
     }
     function addRow(focus = false) {
-      if (rows.length >= 20) return;
-      clearResults(rows.length);
+      if (rows2.length >= 20) return;
+      clearResults(rows2.length);
       const row = inputField("נוסחה בצעד חדש", () => {
         row.bank.value = "";
-        clearResults(rows.indexOf(row));
+        clearResults(rows2.indexOf(row));
         refreshReferences();
       });
-      row.bank = el2("select", { class: "argument-formula-bank" }, [
-        el2("option", { value: "", text: "בחרו נוסחה מהמאגר…" }),
-        ...formulaBank(exercise, mapping).map((f) => el2("option", { value: f, text: f }))
+      row.bank = el4("select", { class: "argument-formula-bank" }, [
+        el4("option", { value: "", text: "בחרו נוסחה מהמאגר…" }),
+        ...formulaBank(exercise, mapping).map((f) => el4("option", { value: f, text: f }))
       ]);
       row.bank.addEventListener("change", () => {
         if (!row.bank.value) return;
         row.input.value = row.bank.value;
-        clearResults(rows.indexOf(row));
+        clearResults(rows2.indexOf(row));
         refreshReferences();
       });
       row.id = `d${++nextRow}`;
-      row.legend = el2("legend");
-      row.rule = el2("select", { class: "proof-rule" }, [
-        el2("option", { value: "", text: "בחרו כלל…" }),
-        el2("optgroup", { label: "כללי היסק — שתי שורות מקור" }, INFERENCE_RULES.map((r) => el2("option", { value: r.id, text: r.name }))),
-        el2("optgroup", { label: "שינוי לנוסחה שקולה — שורת מקור אחת" }, RULES.map((r) => el2("option", { value: `eq:${r.id}`, text: r.name })))
+      row.legend = el4("legend");
+      row.rule = el4("select", { class: "proof-rule" }, [
+        el4("option", { value: "", text: "בחרו כלל…" }),
+        el4("optgroup", { label: "כללי היסק — שתי שורות מקור" }, INFERENCE_RULES.map((r) => el4("option", { value: r.id, text: r.name }))),
+        el4("optgroup", { label: "שינוי לנוסחה שקולה — שורת מקור אחת" }, [el4("option", { value: "eq:replacements", text: "החלפות מפורטות — חלקים נפרדים באותו צעד" }), ...RULES.map((r) => el4("option", { value: `eq:${r.id}`, text: r.name }))])
       ]);
-      row.sources = [el2("select", { class: "argument-source" }), el2("select", { class: "argument-source" })];
-      const labels = row.sources.map((select, i) => el2("label", { class: "proof-field" }, [el2("span", { text: `שורת מקור ${i + 1}` }), select]));
-      const reminder = el2("div", { class: "argument-rule-help" });
+      row.sources = [el4("select", { class: "argument-source" }), el4("select", { class: "argument-source" })];
+      const labels = row.sources.map((select2, i) => el4("label", { class: "proof-field" }, [el4("span", { text: `שורת מקור ${i + 1}` }), select2]));
+      const reminder = el4("div", { class: "argument-rule-help" });
       row.rule.addEventListener("change", () => {
-        clearResults(rows.indexOf(row));
+        clearResults(rows2.indexOf(row));
         const rewrite = row.rule.value.startsWith("eq:");
         labels[1].hidden = rewrite;
+        row.replacements.activate(row.rule.value === "eq:replacements");
         reminder.replaceChildren();
         if (rewrite) {
-          reminder.append(el2("p", { text: "מחליפים חלק אחד בנוסחה לפי החוק. שאר הנוסחה נשארת ללא שינוי." }), ...ruleExamples(row.rule.value.slice(3)).map(formulaText));
+          reminder.append(el4("p", { text: row.rule.value === "eq:replacements" ? "בחרו שורת מקור אחת ופרטו את ההחלפות בחלקים נפרדים שלה." : "החוק פועל על חלק אחד. לכמה שינויים בחלקים נפרדים בחרו ״החלפות מפורטות״." }), ...ruleExamples(row.rule.value.slice(3)).map(formulaText));
         } else {
           const rule = INFERENCE_RULES.find((r) => r.id === row.rule.value);
           if (rule) reminder.append(
-            el2("p", { text: rule.help }),
-            el2("div", { class: "inference-rule", dir: "ltr", "aria-label": rule.name }, [
-              ...rule.premises.map((p) => el2("div", { class: "proof-formula", text: p })),
-              el2("div", { class: "proof-formula inference-conclusion", text: rule.conclusion })
+            el4("p", { text: rule.help }),
+            el4("div", { class: "inference-rule", dir: "ltr", "aria-label": rule.name }, [
+              ...rule.premises.map((p) => el4("div", { class: "proof-formula", text: p })),
+              el4("div", { class: "proof-formula inference-conclusion", text: rule.conclusion })
             ]),
-            el2("p", { text: "כל הנחה כתובה בשורה נפרדת מעל הקו; המסקנה מתחתיו. האותיות P, Q, R הן שמות כלליים בתבנית; בתשובה השתמשו באותיות שבחרתם." })
+            el4("p", { text: "כל הנחה כתובה בשורה נפרדת מעל הקו; המסקנה מתחתיו. האותיות P, Q, R הן שמות כלליים בתבנית; בתשובה השתמשו באותיות שבחרתם." })
           );
         }
       });
-      row.sources.forEach((select) => select.addEventListener("change", () => clearResults(rows.indexOf(row))));
+      row.sources.forEach((select2) => select2.addEventListener("change", () => clearResults(rows2.indexOf(row))));
       row.remove = btn("מחיקת הצעד", () => {
-        const i = rows.indexOf(row);
-        rows.splice(i, 1);
+        const i = rows2.indexOf(row);
+        rows2.splice(i, 1);
         row.fieldset.remove();
         clearResults(i);
-        if (!rows.length) addRow();
+        if (!rows2.length) addRow();
         refreshReferences();
-        rows[Math.min(i, rows.length - 1)].input.focus();
+        rows2[Math.min(i, rows2.length - 1)].input.focus();
       });
-      row.localPreview = el2("section", { class: "proof-local argument-local", "aria-live": "polite" });
-      row.localPreview.hidden = true;
-      row.fieldset = el2("fieldset", { class: "proof-step" }, [
+      row.replacements = replacementEditor(() => clearResults(rows2.indexOf(row)));
+      row.fieldset = el4("fieldset", { class: "proof-step" }, [
         row.legend,
-        el2("label", { class: "proof-field" }, [el2("span", { text: "אפשר לבחור נוסחה מהמאגר" }), row.bank]),
-        el2("label", { class: "proof-field" }, [el2("span", { text: "הנוסחה שבחרתם — אפשר גם לכתוב או לערוך כאן" }), row.input]),
+        el4("label", { class: "proof-field" }, [el4("span", { text: "אפשר לבחור נוסחה מהמאגר" }), row.bank]),
+        el4("label", { class: "proof-field" }, [el4("span", { text: "הנוסחה שבחרתם — אפשר גם לכתוב או לערוך כאן" }), row.input]),
         row.keys,
-        el2("label", { class: "proof-field" }, [el2("span", { text: "לפי איזה כלל?" }), row.rule]),
+        el4("label", { class: "proof-field" }, [el4("span", { text: "לפי איזה כלל?" }), row.rule]),
         reminder,
         ...labels,
+        row.replacements.box,
         row.feedback,
-        el2("div", { class: "bk-bar" }, [btn("בדיקת הצעד והוספה להוכחה", () => check(rows.indexOf(row))), row.remove]),
-        row.localPreview
+        el4("div", { class: "bk-bar" }, [btn("בדיקת הצעד והוספה להוכחה", () => check(rows2.indexOf(row))), row.remove])
       ]);
-      rows.push(row);
+      rows2.push(row);
       list.append(row.fieldset);
       refreshReferences();
+      refreshReplacements();
       if (focus) row.input.focus();
     }
     function show2(row, item) {
@@ -2190,25 +2495,33 @@
       if (!item.ok && item.kind !== "missing-step") row.input.setAttribute("aria-invalid", "true");
       else row.input.removeAttribute("aria-invalid");
     }
-    function check(last = rows.length - 1) {
+    function check(last = rows2.length - 1) {
       var _a;
       clearResults();
-      const steps = rows.slice(0, last + 1).map((row) => ({ id: row.id, formula: row.input.value, rule: row.rule.value, refs: row.sources.slice(0, row.rule.value.startsWith("eq:") ? 1 : 2).map((s) => s.value) }));
+      const steps = trimBlankSteps(rows2.slice(0, last + 1).map((row) => ({ id: row.id, formula: row.input.value, rule: row.rule.value, refs: row.sources.slice(0, row.rule.value.startsWith("eq:") ? 1 : 2).map((s) => s.value), replacements: row.rule.value === "eq:replacements" ? row.replacements.get() : void 0 })));
       const result = checkArgument(exercise, mapping, premiseValues(), goalValue(), steps);
       if (result.phase === "translation") {
         invalidateProof();
         return;
       }
-      result.results.forEach((item, i) => show2(rows[i], item));
+      result.results.forEach((item, i) => {
+        show2(rows2[i], item);
+        rows2[i].replacements.showResult(item);
+      });
       accepted = steps.slice(0, result.results.filter((item) => item.ok).length);
       renderProof();
       summary.className = `bk-msg ${result.ok ? result.complete ? "bk-good" : "bk-info" : "bk-bad"}`;
       summary.textContent = result.ok ? result.complete ? `ההוכחה הושלמה! כל צעד מוצדק מתוך שורות קודמות. הוכחתם: ${exercise.goal.text}` : "כל הצעדים שכתבתם מוצדקים. הוסיפו צעד כדי להגיע למטרה." : `צריך לתקן את צעד ${result.results.length}. הצעדים שאחריו עדיין לא נבדקו.`;
       if (((_a = result.results.at(-1)) == null ? void 0 : _a.kind) === "missing-step") {
         summary.className = "bk-msg bk-info";
-        summary.textContent = `התוצאה בצעד ${result.results.length} נכונה, אך חסרה שורת ביניים. הוסיפו אותה עם הנימוק המתאים ובדקו שוב.`;
+        summary.textContent = `התוצאה בצעד ${result.results.length} שקולה למקור. פרטו את ההחלפות בחלקים נפרדים, או הוסיפו שורת ביניים כאשר שינוי פועל על תוצאה חדשה.`;
       }
-      rows.slice(result.results.length).forEach((row) => {
+      if (!result.results.length) {
+        summary.className = "bk-msg bk-info";
+        summary.textContent = "הוסיפו צעד מנומק כדי להתחיל.";
+      } else if (!result.ok && result.complete) summary.textContent = `המטרה כבר הוכחה בצעד ${result.goalStep}. תקנו או מחקו את הצעד הנוסף המסומן.`;
+      else if (!result.ok && result.targetReached) summary.textContent = "הגעתם לנוסחה שמבטאת את המטרה, אבל יש לתקן את ההצדקה בצעד המסומן לפני שההוכחה תושלם.";
+      rows2.slice(result.results.length).forEach((row) => {
         row.feedback.textContent = result.ok ? "הצעד הזה עדיין לא נבדק." : "ממתין לתיקון הצעד הקודם.";
       });
     }
@@ -2221,75 +2534,75 @@
     const counter = spec.mode === "truth" ? facts[0].value === spec.value : spec.mode === "argument" ? facts.slice(0, -1).every((f) => f.value) && !facts.at(-1).value : facts[0].value !== facts[1].value;
     return { facts, counter };
   }
-  function checkEvidence(spec, rows, choice) {
-    if (choice === "") return { ok: false, message: "בחרו שורה, או קבעו שאין שורה מתאימה." };
+  function checkEvidence(spec, rows2, choice2) {
+    if (choice2 === "") return { ok: false, message: "בחרו שורה, או קבעו שאין שורה מתאימה." };
     if (spec.mode === "truth") {
       const wanted = spec.value ? "אמת" : "שקר";
-      if (choice === "none") {
-        const exists = rows.some((env) => evidenceAt(spec, env).counter);
+      if (choice2 === "none") {
+        const exists = rows2.some((env) => evidenceAt(spec, env).counter);
         return { ok: !exists, message: exists ? `יש שורה שבה הפסוק ${wanted}. חפשו אותה ובחרו בה.` : `נכון. אין שורה שבה הפסוק ${wanted}.` };
       }
-      const i2 = Number(choice);
-      if (!Number.isInteger(i2) || i2 < 0 || i2 >= rows.length) return { ok: false, message: "בחרו אחת משורות הטבלה." };
-      const { facts: facts2, counter: counter2 } = evidenceAt(spec, rows[i2]);
+      const i2 = Number(choice2);
+      if (!Number.isInteger(i2) || i2 < 0 || i2 >= rows2.length) return { ok: false, message: "בחרו אחת משורות הטבלה." };
+      const { facts: facts2, counter: counter2 } = evidenceAt(spec, rows2[i2]);
       return { ok: counter2, facts: facts2, message: counter2 ? `נכון. בשורה שבחרתם הפסוק ${wanted}, כפי שנדרש.` : `בשורה שבחרתם הפסוק ${spec.value ? "שקר" : "אמת"}. חפשו שורה שבה הוא ${wanted}.` };
     }
-    if (choice === "none") {
-      const exists = rows.some((env) => evidenceAt(spec, env).counter);
+    if (choice2 === "none") {
+      const exists = rows2.some((env) => evidenceAt(spec, env).counter);
       return exists ? { ok: false, message: spec.mode === "argument" ? "יש בטבלה שורה שבה כל ההנחות אמת והמסקנה שקר. חפשו אותה ובחרו בה." : "יש בטבלה שורה שבה התוצאות שונות. חפשו אותה ובחרו בה." } : { ok: true, message: spec.mode === "argument" ? "נכון. בדקנו את כל השורות: אין שורה שבה כל ההנחות אמת והמסקנה שקר. לכן הטיעון תקף." : "נכון. בשום שורה התוצאות אינן שונות. לכן הנוסחאות שקולות לוגית." };
     }
-    const i = Number(choice);
-    if (!Number.isInteger(i) || i < 0 || i >= rows.length) return { ok: false, message: "בחרו אחת משורות הטבלה." };
-    const { facts, counter } = evidenceAt(spec, rows[i]);
+    const i = Number(choice2);
+    if (!Number.isInteger(i) || i < 0 || i >= rows2.length) return { ok: false, message: "בחרו אחת משורות הטבלה." };
+    const { facts, counter } = evidenceAt(spec, rows2[i]);
     return { ok: counter, facts, message: counter ? spec.mode === "argument" ? "זו דוגמה נגדית: כל ההנחות אמת והמסקנה שקר. לכן הטיעון אינו תקף." : "זו דוגמה נגדית לשקילות: באותה הצבה התקבלו תוצאות שונות." : spec.mode === "argument" ? facts.slice(0, -1).some((f) => !f.value) ? "זו אינה דוגמה נגדית: לפחות אחת ההנחות שקרית. כדי להפריך תקפות, כל ההנחות צריכות להיות אמת." : "זו אינה דוגמה נגדית: המסקנה אמת בשורה הזאת. חפשו שורה שבה כל ההנחות אמת והמסקנה שקר." : "בשורה שבחרתם התוצאות זהות. היא אינה מפריכה שקילות; חפשו שורה אחרת, או קבעו שאין כזאת." };
   }
-  function el3(tag, cls, text) {
+  function el5(tag, cls, text) {
     const n = document.createElement(tag);
     if (cls) n.className = cls;
     if (text) n.textContent = text;
     return n;
   }
-  function initTableEvidence(box, rows, onChange) {
+  function initTableEvidence(box, rows2, onChange) {
     if (!box.dataset.evidence) return null;
     const spec = box.dataset.evidence === "truth" ? { mode: "truth", formula: box.dataset.formula, value: box.dataset.value === "true" } : box.dataset.evidence === "argument" ? { mode: "argument", premises: box.dataset.premises.split(";"), conclusion: box.dataset.conclusion } : { mode: "equivalence", left: box.dataset.left, right: box.dataset.right };
-    const node = el3("fieldset", "table-evidence");
-    node.append(el3("legend", "", "מה הטבלה מלמדת?"));
-    node.append(el3("p", "", spec.mode === "truth" ? `בחרו שורה שבה הפסוק ${spec.value ? "אמת" : "שקר"}. אפשר לבחור כבר עכשיו וללחוץ ״בדיקה״.` : spec.mode === "argument" ? "כדי להפריך את הטיעון, צריך שורה שבה כל ההנחות אמת והמסקנה שקר. בחרו שורה כזאת, או קבעו שאין כזאת לאחר בדיקת כל הטבלה." : "האם יש שורה שבה שתי הנוסחאות נותנות תוצאות שונות? בחרו שורה כזאת, או קבעו שאין כזאת לאחר בדיקת כל הטבלה."));
+    const node = el5("fieldset", "table-evidence");
+    node.append(el5("legend", "", "מה הטבלה מלמדת?"));
+    node.append(el5("p", "", spec.mode === "truth" ? `בחרו שורה שבה הפסוק ${spec.value ? "אמת" : "שקר"}. אפשר לבחור כבר עכשיו וללחוץ ״בדיקה״.` : spec.mode === "argument" ? "כדי להפריך את הטיעון, צריך שורה שבה כל ההנחות אמת והמסקנה שקר. בחרו שורה כזאת, או קבעו שאין כזאת לאחר בדיקת כל הטבלה." : "האם יש שורה שבה שתי הנוסחאות נותנות תוצאות שונות? בחרו שורה כזאת, או קבעו שאין כזאת לאחר בדיקת כל הטבלה."));
     const statements = spec.mode === "truth" ? [["הפסוק", spec.formula]] : spec.mode === "argument" ? [...spec.premises.map((f, i) => [`הנחה ${i + 1}`, f]), ["מסקנה", spec.conclusion]] : [["נוסחה ראשונה", spec.left], ["נוסחה שנייה", spec.right]];
     for (const [label2, formula] of statements) {
-      const p = el3("p");
-      p.append(el3("strong", "", label2 + ": "));
-      const m2 = el3("span", "m", format(formula));
+      const p = el5("p");
+      p.append(el5("strong", "", label2 + ": "));
+      const m2 = el5("span", "m", format(formula));
       m2.dir = "ltr";
       p.append(m2);
       node.append(p);
     }
-    const label = el3("label", "proof-field", "השורה שבחרתם");
-    const select = el3("select", "proof-rule evidence-choice");
-    select.append(new Option("בחרו שורה…", ""), ...rows.map((env, i) => new Option(`שורה ${i + 1}: ` + Object.entries(env).map(([n, v]) => `${n}=${v ? "T" : "F"}`).join(", "), String(i))), new Option("אין שורה כזאת", "none"));
-    label.append(select);
+    const label = el5("label", "proof-field", "השורה שבחרתם");
+    const select2 = el5("select", "proof-rule evidence-choice");
+    select2.append(new Option("בחרו שורה…", ""), ...rows2.map((env, i) => new Option(`שורה ${i + 1}: ` + Object.entries(env).map(([n, v]) => `${n}=${v ? "T" : "F"}`).join(", "), String(i))), new Option("אין שורה כזאת", "none"));
+    label.append(select2);
     node.append(label);
-    const feedback = el3("div", "bk-msg");
+    const feedback = el5("div", "bk-msg");
     feedback.setAttribute("aria-live", "polite");
     node.append(feedback);
-    select.addEventListener("change", () => {
+    select2.addEventListener("change", () => {
       feedback.replaceChildren();
-      select.removeAttribute("aria-invalid");
+      select2.removeAttribute("aria-invalid");
       onChange();
     });
     function check() {
-      const result = checkEvidence(spec, rows, select.value);
+      const result = checkEvidence(spec, rows2, select2.value);
       feedback.className = `bk-msg ${result.ok ? "bk-good" : "bk-bad"}`;
       feedback.textContent = result.message;
       if (result.facts) result.facts.forEach((fact, i) => {
-        const p = el3("p");
-        p.append(el3("span", "", statements[i][0] + ": "));
-        const f = el3("span", "m", `${fact.formula} = ${fact.value ? "T" : "F"}`);
+        const p = el5("p");
+        p.append(el5("span", "", statements[i][0] + ": "));
+        const f = el5("span", "m", `${fact.formula} = ${fact.value ? "T" : "F"}`);
         f.dir = "ltr";
         p.append(f);
         feedback.append(p);
       });
-      select.setAttribute("aria-invalid", String(!result.ok));
+      select2.setAttribute("aria-invalid", String(!result.ok));
       return result.ok;
     }
     return {
@@ -2301,19 +2614,1498 @@
       invalidate() {
         node.disabled = false;
         feedback.replaceChildren();
-        select.removeAttribute("aria-invalid");
+        select2.removeAttribute("aria-invalid");
       },
       reset() {
-        select.value = "";
+        select2.value = "";
         this.invalidate();
       },
       reveal() {
-        select.value = String(rows.findIndex((env) => evidenceAt(spec, env).counter));
-        if (select.value === "") select.value = "none";
+        select2.value = String(rows2.findIndex((env) => evidenceAt(spec, env).counter));
+        if (select2.value === "") select2.value = "none";
         node.disabled = false;
         check();
       }
     };
+  }
+
+  // games/gate/knights.js
+  var ids = (level) => level.people.map((p) => p.id);
+  var person = (level, id) => level.people.find((p) => p.id === id);
+  var rows = (level) => assignments(ids(level));
+  function firstConflict(level, env) {
+    for (let index = 0; index < level.statements.length; index++) {
+      const statement = level.statements[index];
+      const value = evaluate(statement.formula, env);
+      const knight = !!env[statement.by];
+      if (value !== knight) return { index, statement, person: person(level, statement.by), value, knight };
+    }
+    return null;
+  }
+  var consistent = (level, env) => firstConflict(level, env) === null;
+  var solutions = (level) => rows(level).filter((env) => consistent(level, env));
+  var F = (p) => p.g === "f";
+  var roleWord = (p, knight) => knight ? F(p) ? "אבירה" : "אביר" : F(p) ? "נוכלת" : "נוכל";
+  var his = (p) => F(p) ? "שלה" : "שלו";
+  var quote = (s) => `״${s}״`;
+  function rowWords(level, env) {
+    return level.people.map((p) => `${p.name} — ${roleWord(p, !!env[p.id])}`).join(", ");
+  }
+  function conflictSentence(level, env) {
+    const c = firstConflict(level, env);
+    if (!c) return null;
+    const p = c.person, role = roleWord(p, c.knight);
+    const verdict = c.knight ? `שקרית — ו${role} אף פעם לא ${F(p) ? "משקרת" : "משקר"}` : `אמיתית — ו${role} אף פעם לא ${F(p) ? "אומרת" : "אומר"} אמת`;
+    return `סימנתם את ${p.name} כ${role}, אבל אז הטענה ${his(p)} ${quote(c.statement.text)} ${verdict}.`;
+  }
+  var SYM2 = { and: " ∧ ", or: " ∨ ", xor: " ⊕ ", imp: " → ", iff: " ↔ " };
+  function show(f, leaf, inner = false) {
+    f = parse(f);
+    leaf = leaf || ((n) => n.type === "var" ? n.name : n.value ? "T" : "F");
+    function go(n, inner2) {
+      switch (n.type) {
+        case "var":
+        case "const":
+          return leaf(n);
+        case "not":
+          return "¬" + go(n.arg, true);
+      }
+      const s = n.args ? n.args.map((a) => go(a, true)).join(SYM2[n.type]) : go(n.left, true) + SYM2[n.type] + go(n.right, true);
+      return inner2 ? "(" + s + ")" : s;
+    }
+    return go(f, inner);
+  }
+  var kids = (n) => n.type === "not" ? [n.arg] : n.args ? n.args : n.left ? [n.left, n.right] : [];
+  function rebuild2(n, k) {
+    if (n.type === "not") return { type: "not", arg: k[0] };
+    if (n.args) return { type: n.type, args: k };
+    return { type: n.type, left: k[0], right: k[1] };
+  }
+  function substitute(n, env) {
+    if (n.type === "var") return { type: "const", value: !!env[n.name] };
+    if (n.type === "const") return n;
+    return rebuild2(n, kids(n).map((c) => substitute(c, env)));
+  }
+  function reduceOnce(n) {
+    if (n.type === "const" || n.type === "var") return n;
+    const k = kids(n);
+    if (k.every((c) => c.type === "const")) return { type: "const", value: evaluate(n, {}) };
+    return rebuild2(n, k.map(reduceOnce));
+  }
+  function evaluationSteps(formula, env) {
+    const steps = [parse(formula)];
+    let t = substitute(steps[0], env);
+    if (steps[0].type !== "const") steps.push(t);
+    while (t.type !== "const") {
+      t = reduceOnce(t);
+      steps.push(t);
+    }
+    return steps;
+  }
+  function evaluationText(statement, env) {
+    return quote(statement.text) + " = " + evaluationSteps(statement.formula, env).map((s) => show(s)).join(" = ");
+  }
+
+  // games/shared/knight-intro.js
+  var el6 = (tag, attrs = {}, kids3 = []) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "text") n.textContent = v;
+      else if (k === "class") n.className = v;
+      else n.setAttribute(k, v);
+    }
+    kids3.forEach((c) => n.append(c));
+    return n;
+  };
+  var btn2 = (text, fn) => {
+    const b = el6("button", { type: "button", class: "bk-btn", text });
+    b.addEventListener("click", fn);
+    return b;
+  };
+  var say = (n, text, ok) => {
+    n.textContent = text;
+    n.className = "bk-msg " + (ok === true ? "bk-good" : ok === false ? "bk-bad" : "");
+  };
+  var tv = (v) => v ? "T" : "F";
+  function checkKnightFormula(input, level) {
+    if (!input.trim()) return { ok: false, message: "כתבו את האמירה של אלון בעזרת A ו־B." };
+    if (input.length > 120) return { ok: false, message: "הנוסחה ארוכה מדי. נסו לכתוב את האמירה בקיצור." };
+    let tree2;
+    try {
+      tree2 = parse(input.trim().toUpperCase(), { flatten: false });
+    } catch {
+      return { ok: false, message: "לא הצלחתי לקרוא את הנוסחה. בדקו את הסוגריים ואת סימני הקשרים." };
+    }
+    if (variables(tree2).some((v) => !level.people.some((p) => p.id === v))) return { ok: false, message: "השתמשו רק באותיות A ו־B שהוגדרו מעל התרגיל." };
+    const comparison = compare(tree2, level.statements[0].formula);
+    if (!comparison.equal) return { ok: false, message: "הנוסחה אינה מתאימה ל״שנינו נוכלים״. צריך לומר שאלון נוכל וגם בתיה נוכלת." };
+    return { ok: true, formula: format(tree2) };
+  }
+  function checkIntroRow(level, formula, env, value, fits) {
+    const truth = evaluate(formula, env), consistent2 = truth === env[level.statements[0].by];
+    if (value === "") return { ok: false, field: "value", message: "בחרו T או F לערך האמירה." };
+    if (value !== String(truth)) return { ok: false, field: "value", message: `ערך האמירה בשורה הזאת הוא ${tv(truth)}. ${evaluationText(level.statements[0], env)}` };
+    if (fits === "") return { ok: false, field: "fits", message: "בחרו אם המצב מתאים לכללי האי." };
+    if (fits !== String(consistent2)) return { ok: false, field: "fits", message: conflictSentence(level, env) || "המצב מתאים: אלון נוכל ואמירתו שקרית. בתיה אינה אומרת דבר." };
+    return { ok: true, consistent: consistent2 };
+  }
+  function checkIntroConclusion(level, roles) {
+    if (level.people.some((p) => !["true", "false"].includes(roles[p.id]))) return { ok: false, message: "בחרו סוג גם לאלון וגם לבתיה." };
+    const env = Object.fromEntries(level.people.map((p) => [p.id, roles[p.id] === "true"]));
+    if (!consistent(level, env)) return { ok: false, message: "הבחירה אינה מתאימה לשורה שנותרה בטבלה. " + conflictSentence(level, env) };
+    return { ok: true, message: "לכן אלון נוכל ובתיה אבירה. זו האפשרות היחידה שמתאימה לכללי האי ולדברי אלון." };
+  }
+  function mountKnightIntro(box, level) {
+    box.replaceChildren();
+    box.classList.add("knight-workshop", "kw-compact");
+    const input = el6("input", { class: "bk-input kw-formula-input", type: "text", dir: "ltr", maxlength: "120", autocomplete: "off", spellcheck: "false", "aria-label": "הצרנת האמירה של אלון" });
+    const formulaMessage = el6("p", { class: "bk-msg", "aria-live": "polite" }), work = el6("section", { class: "kw-compact-work" }), feedback = el6("div", { class: "kw-compact-feedback", "aria-live": "polite" });
+    work.hidden = true;
+    let formula = "", state = [], conclusion = null, roleFields = [], conclusionMsg = null;
+    function clearConclusion() {
+      if (!conclusion) return;
+      conclusion.hidden = true;
+      roleFields.forEach(({ field }) => {
+        field.value = "";
+        field.removeAttribute("aria-invalid");
+      });
+      say(conclusionMsg, "");
+    }
+    function invalidate() {
+      clearConclusion();
+      work.hidden = true;
+      input.removeAttribute("aria-invalid");
+      say(formulaMessage, "");
+      feedback.replaceChildren();
+    }
+    input.addEventListener("input", () => {
+      const a = input.selectionStart, b = input.selectionEnd;
+      input.value = input.value.toUpperCase();
+      input.setSelectionRange(a, b);
+      invalidate();
+    });
+    const form = el6("form", { class: "kw-formalization" }, [
+      el6("strong", { text: "1. כותבים את האמירה בסימנים" }),
+      el6("label", {}, [el6("span", { text: "אלון אומר ״שנינו נוכלים״. מהי הנוסחה?" }), input]),
+      keyboard(input, invalidate),
+      btn2("בדיקת ההצרנה", openTable),
+      formulaMessage
+    ]);
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      openTable();
+    });
+    function openTable() {
+      const r = checkKnightFormula(input.value, level);
+      say(formulaMessage, r.ok ? "נכון. נבדוק את הנוסחה בטבלה." : r.message, r.ok);
+      input.setAttribute("aria-invalid", String(!r.ok));
+      if (!r.ok) {
+        work.hidden = true;
+        return;
+      }
+      formula = r.formula;
+      work.hidden = false;
+      work.replaceChildren();
+      feedback.replaceChildren();
+      const header = el6("tr", {}, [...level.people.map((p) => el6("th", { scope: "col" }, [el6("bdi", { text: p.id }), el6("span", { class: "kw-column-meaning", text: `${p.name} ${p.g === "f" ? "אבירה" : "אביר"}` })])), el6("th", { scope: "col", class: "kw-statement" }, [el6("bdi", { dir: "ltr", text: formula }), el6("span", { class: "kw-column-meaning", text: level.statements[0].text })]), el6("th", { scope: "col", class: "kw-truth-heading", dir: "rtl", text: "אלון אומר אמת?" }), el6("th", { scope: "col", dir: "rtl", text: "מתאים?" })]);
+      const body = el6("tbody"), table = el6("table", { dir: "rtl", "aria-label": "ערך האמירה והתאמתה לכללי האי" }, [el6("thead", {}, [header]), body]);
+      const pick = (label, options) => el6("select", { "aria-label": label }, [el6("option", { value: "", text: "—" }), ...options.map(([value, text]) => el6("option", { value, text }))]);
+      state = rows(level).map((env, i) => {
+        const value = pick(`שורה ${i + 1}: ערך האמירה`, [["true", "T"], ["false", "F"]]);
+        value.className = "kw-value";
+        const fits = pick(`שורה ${i + 1}: מתאים לכללי האי?`, [["true", "כן"], ["false", "לא"]]);
+        fits.className = "kw-fits";
+        fits.dir = "rtl";
+        const truth = el6("td", { class: "kw-truth", text: "—" });
+        const row = el6("tr", {}, [...level.people.map((p) => el6("td", { text: tv(env[p.id]) })), el6("td", {}, [value]), truth, el6("td", {}, [fits])]);
+        for (const field of [value, fits]) field.addEventListener("change", () => {
+          field.removeAttribute("aria-invalid");
+          feedback.replaceChildren();
+          truth.textContent = value.value === "" ? "—" : value.value === "true" ? "כן" : "לא";
+          clearConclusion();
+        });
+        body.append(row);
+        return { env, value, fits };
+      });
+      conclusionMsg = el6("p", { class: "bk-msg", "aria-live": "polite" });
+      roleFields = level.people.map((p) => ({ person: p, field: pick(`מה הסוג של ${p.name}?`, [["true", p.g === "f" ? "אבירה" : "אביר"], ["false", p.g === "f" ? "נוכלת" : "נוכל"]]) }));
+      conclusion = el6("section", { class: "kw-conclusion" }, [
+        el6("strong", { text: "3. עונים על החידה: מי אביר ומי נוכל?" }),
+        el6("p", { text: "הסתכלו על השורה שמתאימה לכללים. מה היא אומרת על כל אחד מהתושבים?" }),
+        ...roleFields.map(({ person: person2, field }) => el6("label", {}, [el6("span", { text: person2.name + ":" }), field])),
+        btn2("בדיקת המסקנה", () => {
+          const r2 = checkIntroConclusion(level, Object.fromEntries(roleFields.map(({ person: person2, field }) => [person2.id, field.value])));
+          say(conclusionMsg, r2.message, r2.ok);
+        }),
+        conclusionMsg
+      ]);
+      conclusion.hidden = true;
+      roleFields.forEach(({ field }) => field.addEventListener("change", () => say(conclusionMsg, "")));
+      work.append(
+        el6("strong", { text: "2. בודקים את ארבע האפשרויות" }),
+        el6("p", { text: "בעמודות A ו־B: האות T פירושה אביר או אבירה, והאות F פירושה נוכל או נוכלת." }),
+        el6("p", { text: "חשבו את ערך האמירה, ובדקו אם הוא מתאים לסוגו של אלון. העמודה ״אלון אומר אמת?״ מציגה את אותו ערך במילים." }),
+        el6("div", { class: "kw-table-scroll" }, [table]),
+        btn2("בדיקת הטבלה", check),
+        feedback,
+        conclusion
+      );
+    }
+    function check() {
+      feedback.replaceChildren();
+      let all = true;
+      state.forEach(({ env, value, fits }, i) => {
+        for (const field of [value, fits]) field.removeAttribute("aria-invalid");
+        const r = checkIntroRow(level, formula, env, value.value, fits.value);
+        if (!r.ok) {
+          all = false;
+          (r.field === "value" ? value : fits).setAttribute("aria-invalid", "true");
+          const m2 = el6("p");
+          say(m2, `שורה ${i + 1} (A=${tv(env.A)}, B=${tv(env.B)}): ${r.message}`, false);
+          feedback.append(m2);
+        }
+      });
+      if (all) {
+        const m2 = el6("p");
+        say(m2, "הטבלה נכונה. עכשיו השתמשו בשורה שמתאימה כדי לענות מי אביר ומי נוכל.", true);
+        feedback.append(m2);
+        conclusion.hidden = false;
+      } else clearConclusion();
+    }
+    box.append(form, work, btn2("התחלה מחדש", () => {
+      input.value = "";
+      formula = "";
+      state = [];
+      work.replaceChildren();
+      invalidate();
+      input.focus();
+    }));
+  }
+
+  // games/gate/levels.js
+  var ALON = { id: "A", name: "אלון", g: "m", avatar: "alon" };
+  var BATYA = { id: "B", name: "בתיה", g: "f", avatar: "batya" };
+  var CARMEL = { id: "C", name: "כרמל", g: "m", avatar: "carmel" };
+  var LEVELS = [
+    {
+      id: "both-knights",
+      title: "שנינו אבירים",
+      guided: true,
+      guard: "עצרו! אני השומר, ובשער שלי עוברים רק אבירים. שניים כאן מדברים זה על זה — ואני, בכנות, הלכתי לאיבוד.",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
+      people: [ALON, BATYA],
+      statements: [
+        { by: "A", text: "שנינו אבירים", formula: "A & B" },
+        { by: "B", text: "אלון נוכל", formula: "!A" }
+      ],
+      hints: [
+        "בכל ניחוש בדקו שאלה אחת: האם כל אביר אומר אמת וכל נוכל משקר? אם אמירה אחת אינה מתאימה לסוג שבחרתם לדובר, האפשרות כולה נפסלת.",
+        "התחילו מאלון. אם הוא אביר, ״שנינו אבירים״ נכון — אז גם בתיה אבירה. האם הטענה של בתיה מסתדרת עם זה?",
+        "אם אלון אביר, גם בתיה אבירה, אבל אז ״אלון נוכל״ שקר — ואבירה לא משקרת. לכן אלון נוכל. עכשיו ״אלון נוכל״ נכון, אז בתיה…"
+      ],
+      debrief: `<p>אילו אלון היה אביר, דבריו היו מחייבים שגם בתיה אבירה. אבל בתיה אומרת שאלון נוכל — שקר במקרה הזה. לכן אלון נוכל. כעת דבריה של בתיה אמת, ולכן היא אבירה. שני הסוגים שמצאנו מתאימים לאמירות.</p>`
+    },
+    {
+      id: "both-knaves",
+      title: "שנינו נוכלים",
+      guard: "נוכל שאומר ״שנינו נוכלים״? או אביר שאומר את זה? אני צריך לשבת.",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
+      people: [ALON, BATYA],
+      statements: [
+        { by: "A", text: "שנינו נוכלים", formula: "!A & !B" }
+      ],
+      hints: [
+        "רק אלון מדבר, ולכן רק הטענה שלו יכולה לפסול שורה בטבלה.",
+        "האם אלון יכול להיות אביר? אם כן, ״שנינו נוכלים״ נכון — כולל החלק ״אלון נוכל״.",
+        "אלון לא יכול להיות אביר, ולכן הוא נוכל והטענה ״שנינו נוכלים״ שקרית. החלק ״אלון נוכל״ דווקא נכון — אז איזה חלק הוא השקרי?"
+      ],
+      debrief: `<p>אילו אלון היה אביר, דבריו היו אמת והוא היה נוכל — סתירה. לכן אלון נוכל ודבריו שקר. החלק ״אלון נוכל״ נכון, ולכן החלק ״בתיה נוכלת״ חייב להיות שקר: בתיה אבירה.</p>`
+    },
+    {
+      id: "or-knave",
+      title: "״או״ של נוכל",
+      guard: "״או״! שוב ״או״! תמיד יש מישהו עם ״או״.",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
+      people: [ALON, BATYA],
+      statements: [
+        { by: "A", text: "אני נוכל, או שבתיה אבירה", formula: "!A | B" }
+      ],
+      hints: [
+        "במתמטיקה ״או״ הוא <b>״או״ כולל</b>: הטענה נכונה אם לפחות אחד החלקים נכון (וגם אם שניהם).",
+        "נסו את אלון כנוכל: מה הערך של החלק ״אני נוכל״? ומה זה עושה ל״או״ כולו?",
+        "אם אלון נוכל, ״אני נוכל״ נכון, ולכן כל ה״או״ נכון — ונוכל לא אומר אמת. לכן אלון אביר. אז ״אני נוכל״ שקרי, וכדי שה״או״ יהיה נכון, החלק השני…"
+      ],
+      debrief: `<p>אילו אלון היה נוכל, החלק ״אני נוכל״ היה אמת, ולכן כל משפט ה״או״ היה אמת — סתירה. לכן אלון אביר. דבריו אמת, אך ״אני נוכל״ שקר, ולכן החלק האחר חייב להיות אמת: בתיה אבירה.</p>`
+    },
+    {
+      id: "at-least-one",
+      title: "לפחות אחד",
+      guard: "״לפחות אחד מאיתנו נוכל״, הוא אומר. תודה רבה! זה מצמצם את החשודים לשניים.",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
+      people: [ALON, BATYA],
+      statements: [
+        { by: "A", text: "לפחות אחד מאיתנו נוכל", formula: "!A | !B" }
+      ],
+      hints: [
+        "שוב רק אלון מדבר. בדקו מה קורה לו בכל אחד משני התפקידים.",
+        "אם אלון נוכל — האם ״לפחות אחד מאיתנו נוכל״ נכון או שקרי?",
+        "אם אלון נוכל, הטענה נכונה (הוא עצמו הנוכל) — סתירה. לכן אלון אביר, והטענה שלו נכונה: מישהו כאן נוכל, ואלון הוא לא…"
+      ],
+      debrief: `<p>אם אלון נוכל, המשפט ״לפחות אחד מאיתנו נוכל״ אמת — סתירה. לכן אלון אביר ודבריו אמת. לפחות אחד מהם נוכל, וזה אינו אלון; לכן בתיה נוכלת.</p>`
+    },
+    {
+      id: "three",
+      title: "שלושה בשער",
+      guard: "שלושה בבת אחת! בתיה וכרמל מדברים על אלון, ואלון מדבר על שניהם. אני כבר צריך תרשים כדי לעקוב.",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
+      people: [ALON, BATYA, CARMEL],
+      statements: [
+        { by: "A", text: "בתיה וכרמל שניהם נוכלים", formula: "!B & !C" },
+        { by: "B", text: "אלון נוכל", formula: "!A" },
+        { by: "C", text: "אלון אביר", formula: "A" }
+      ],
+      hints: [
+        "לא חייבים לבדוק את כל 8 השורות. חפשו קודם שתי טענות שקשורות זו לזו.",
+        "השוו את בתיה וכרמל: היא אומרת ״אלון נוכל״, והוא אומר ״אלון אביר״. כמה מהם יכולים לומר אמת?",
+        "בדיוק אחד מבתיה וכרמל אביר, ולכן ״בתיה וכרמל שניהם נוכלים״ שקרי — אלון נוכל. עכשיו: מי מהשניים אמר עליו את האמת?"
+      ],
+      debrief: `<p>בתיה וכרמל אומרים דברים הפוכים על אלון, ולכן בדיוק אחד מהם אביר. מכאן שהאמירה ״בתיה וכרמל שניהם נוכלים״ שקרית: אלון נוכל. בתיה אומרת עליו אמת ולכן היא אבירה; כרמל אומר שקר ולכן הוא נוכל.</p>`
+    },
+    {
+      id: "impossible",
+      title: "הדיווח של הרובוט",
+      answers: "all",
+      guard: "הרובוט של הקמפוס מדווח על תושב מוזר. אני כבר לא יודע במי להאמין. אפילו ברובוט.",
+      guardWin: "הדיווח אינו מתאים לכללי האי. אבקש מהרובוט לבדוק שוב מה שמע.",
+      report: { who: "הרובוט של הקמפוס", avatar: "robot", text: "פגשתי תושב שאמר ׳אני נוכל׳." },
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
+      people: [{ id: "A", name: "התושב", g: "m", avatar: "student" }],
+      statements: [
+        { by: "A", text: "אני נוכל", formula: "!A" }
+      ],
+      hints: [
+        "יש כאן רק תושב אחד, ולכן רק שתי שורות בטבלה. בדקו את שתיהן.",
+        "נסו את התושב כאביר: האם ״אני נוכל״ נכון? ואז כנוכל: האם ״אני נוכל״ שקרי?",
+        "אביר שאומר ״אני נוכל״ משקר; נוכל שאומר ״אני נוכל״ אומר אמת. שתי האפשרויות נפסלות — בחרו ״אין אפשרות מתאימה״."
+      ],
+      debrief: `<p>אביר אינו יכול לומר ״אני נוכל״, כי זו תהיה אמירת שקר. גם נוכל אינו יכול לומר זאת, כי זו תהיה אמירת אמת. שני המקרים נפסלים, ולכן הדיווח של הרובוט אינו אפשרי לפי כללי האי.</p>`
+    },
+    {
+      id: "ambiguous",
+      title: "״אני אביר״",
+      answers: "all",
+      guard: "״אני אביר״, הוא אומר. כולם אומרים את זה. כו-לם.",
+      guardWin: "אז אי אפשר לדעת?! אלון, חכה בצד עד שתגיד משהו מועיל.",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
+      people: [ALON],
+      statements: [
+        { by: "A", text: "אני אביר", formula: "A" }
+      ],
+      hints: [
+        "בטבלה יש שתי שורות. בדקו את שתיהן, ואל תעצרו בראשונה שעוברת.",
+        "האם אביר יכול לומר ״אני אביר״? והאם נוכל יכול?",
+        "אביר שאומר ״אני אביר״ דובר אמת; נוכל שאומר ״אני אביר״ משקר. שתי האפשרויות מתאימות — סמנו את שתיהן."
+      ],
+      debrief: "<p>שתי האפשרויות מתאימות: אביר שאומר ״אני אביר״ אומר אמת, ונוכל שאומר זאת משקר. לכן המשפט אינו מאפשר להבחין בין השניים. מציאת אפשרות מתאימה אחת אינה מספיקה כדי לקבוע שזה הפתרון היחיד.</p>"
+    },
+    {
+      id: "if-knight",
+      title: "״אם אני אביר...״",
+      guard: "הנה זה מתחיל: מישהו כאן מדבר ב״אם... אז...״. השומר מתיישב.",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
+      people: [ALON, BATYA],
+      statements: [
+        { by: "A", text: "אם אני אביר, אז גם בתיה אבירה", formula: "A -> B" }
+      ],
+      hints: [
+        "״אם... אז...״ שקרי רק כשההנחה אמת והמסקנה שקר.",
+        "נניח שאלון נוכל. אז ההנחה ״אני אביר״ שקרית, ולכן כל המשפט שלו... אמת. האם נוכל יכול לומר משפט אמת?",
+        "אלון לא יכול להיות נוכל, ולכן הוא אביר והמשפט שלו אמת. ההנחה ״אני אביר״ אמת, אז גם המסקנה: בתיה אבירה."
+      ],
+      debrief: "<p>נניח שאלון נוכל. אז ההנחה ״אני אביר״ שקרית, ולכן הגרירה ״אם אני אביר, אז בתיה אבירה״ אמיתית. נוכל אינו יכול לומר אמת, ולכן אלון חייב להיות אביר. כעת גם ההנחה וגם הגרירה אמיתיות, ולפי כלל הניתוק בתיה אבירה.</p>"
+    },
+    {
+      id: "if-batya",
+      title: "״אם בתיה אבירה...״",
+      guard: "עוד ״אם... אז...״? בסדר. אני עם עט ונייר.",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
+      people: [ALON, BATYA],
+      statements: [
+        { by: "A", text: "אם בתיה אבירה, אז אני נוכל", formula: "B -> !A" }
+      ],
+      hints: [
+        "שוב: ״אם... אז...״ שקרי רק כשההנחה אמת והמסקנה שקר.",
+        "נניח שאלון נוכל. אז המסקנה ״אני נוכל״ אמת, ולכן כל המשפט אמת, יהיה מה שיהיה. נוכל לא אומר אמת...",
+        "לכן אלון אביר, והמשפט שלו אמת. המסקנה ״אני נוכל״ שקרית, ולכן ההנחה חייבת להיות שקרית: בתיה נוכלת."
+      ],
+      debrief: "<p>נניח שאלון נוכל. אז המסקנה ״אני נוכל״ אמיתית, ולכן כל הגרירה אמיתית — בסתירה לכלל שנוכל משקר. מכאן שאלון אביר. הוא אומר אמת, אך המסקנה ״אני נוכל״ שקרית. לכן ההנחה ״בתיה אבירה״ חייבת להיות שקרית: בתיה נוכלת. זהו שימוש בכלל השלילה.</p>"
+    },
+    {
+      id: "exactly-one",
+      title: "אתגר: בדיוק אחד",
+      guard: "האתגר הגדול: שלושה תושבים, שתי טענות, ושומר אחד עם כאב ראש.",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
+      people: [ALON, BATYA, CARMEL],
+      statements: [
+        { by: "A", text: "כולנו נוכלים", formula: "!A & !B & !C" },
+        { by: "B", text: "בדיוק אחד מאיתנו אביר", formula: "(A & !B & !C) | (!A & B & !C) | (!A & !B & C)" }
+      ],
+      hints: [
+        "התחילו מהטענה הקיצונית ביותר: ״כולנו נוכלים״.",
+        "האם אלון יכול להיות אביר? ואם הוא נוכל, מה אומר על השאר זה שהטענה שלו שקרית?",
+        "אלון נוכל, ולכן יש לפחות אביר אחד: בתיה או כרמל. נסו את בתיה כנוכלת: אז כרמל הוא האביר היחיד — האם ״בדיוק אחד מאיתנו אביר״ נכון אז? ומה זה אומר על בתיה?"
+      ],
+      debrief: `<p>אביר לא אומר ״כולנו נוכלים״, ולכן אלון נוכל והטענה שלו שקרית: יש לפחות אביר אחד. אם בתיה נוכלת, האביר היחיד הוא כרמל — אבל אז ״בדיוק אחד מאיתנו אביר״ נכון, ונוכלת לא אומרת אמת. לכן בתיה אבירה, ומכיוון שהיא דוברת אמת, היא האבירה היחידה: כרמל נוכל.</p>`
+    }
+  ];
+
+  // games/shared/knight-workshop-data.js
+  var people = [{ id: "A", name: "אלון", g: "m" }, { id: "B", name: "בתיה", g: "f" }, { id: "C", name: "כרמל", g: "m" }];
+  var puzzle = (n, statements) => ({ people: people.slice(0, n), statements: statements.map(([by, text, formula]) => ({ by, text, formula })) });
+  var KNIGHT_PUZZLES = {
+    ...Object.fromEntries(LEVELS.map((l) => [l.id, l])),
+    "lecture-different": puzzle(2, [["A", "בתיה אבירה", "B"], ["B", "בדיוק אחד מאיתנו אביר", "A ^ B"]]),
+    "lecture-undetermined": puzzle(3, [["A", "כולנו אבירים", "A & B & C"], ["B", "אלון נוכל", "!A"]]),
+    "lecture-robot": puzzle(2, [["A", "שנינו אבירים", "A & B"], ["B", "שנינו אבירים", "A & B"]]),
+    "lecture-impossible": puzzle(2, [["A", "אם אני אביר, אז בתיה נוכלת", "A -> !B"], ["B", "אלון אביר", "A"]])
+  };
+  var step = (prompt, line, wrong, reason, wrongReason, feedback, kind) => ({ prompt, lines: [line, wrong], reasons: reason ? [reason, wrongReason] : null, feedback, kind });
+  var KNIGHT_PROOFS = {
+    contradiction: {
+      goal: "נראה שאלון נוכל ובתיה אבירה.",
+      steps: [
+        step(
+          "כדי להוכיח שאלון נוכל, מה נניח בדרך השלילה?",
+          "נניח שאלון אביר.",
+          "נניח שאלון נוכל.",
+          "מניחים זמנית את שלילת הטענה שרוצים להוכיח.",
+          "סוגו של אלון נתון בחידה.",
+          "רוצים להוכיח שהוא נוכל, ולכן בודקים מה יקרה אם הוא אביר.",
+          "assumption"
+        ),
+        step(
+          "לפי ההנחה, אלון אומר אמת. מה נובע מ״שנינו נוכלים״?",
+          "אלון נוכל וגם בתיה נוכלת.",
+          "אלון אביר וגם בתיה אבירה.",
+          "כדי ש״וגם״ יהיה אמת, שני חלקיו צריכים להיות אמת.",
+          "כדי ש״וגם״ יהיה אמת, מספיק חלק אחד.",
+          "אם דברי אלון אמת, כל אחד משניהם נוכל."
+        ),
+        step(
+          "מהי הסתירה, ומה מסיקים ממנה?",
+          "אלון גם אביר וגם נוכל. לכן ההנחה נדחית: אלון נוכל.",
+          "בתיה נוכלת. לכן ההנחה נדחית: אלון אביר.",
+          null,
+          null,
+          "הסתירה היא לגבי אלון: הנחנו שהוא אביר והסקנו שהוא נוכל. בתיה יכולה להיות נוכלת בלי לסתור את ההנחה.",
+          "contradiction"
+        ),
+        step(
+          "אלון נוכל, ולכן דבריו שקר. מה לגבי בתיה?",
+          "בתיה אבירה.",
+          "בתיה נוכלת.",
+          "״אלון נוכל״ אמת. כדי ש״שנינו נוכלים״ יהיה שקר, בתיה אינה נוכלת.",
+          "כאשר ״וגם״ שקר, שני חלקיו שקריים.",
+          "כבר הוכחנו שאלון נוכל. אם גם בתיה נוכלת, דבריו אמת — וזה בלתי אפשרי.",
+          "conclusion"
+        ),
+        step(
+          "האם התשובה מתאימה לסיפור?",
+          "כן. אלון נוכל ואומר שקר, כי בתיה אבירה. בתיה שותקת.",
+          "לא. אם אלון נוכל, גם בתיה חייבת להיות נוכלת.",
+          null,
+          null,
+          "אין כלל שמחייב את שניהם להיות מאותו סוג. בודקים את האמירה של אלון בלבד."
+        )
+      ]
+    },
+    direct: {
+      goal: "נמצא את סוגיהם של אלון ובתיה.",
+      conclusion: "נראה שאלון ובתיה נוכלים.",
+      steps: [
+        step(
+          "אלון אומר ״בתיה אבירה״. מה אפשר להסיק על הקשר ביניהם?",
+          "אלון ובתיה מאותו סוג.",
+          "אלון ובתיה מסוגים שונים.",
+          "אם אלון אביר, בתיה אבירה; אם הוא נוכל, בתיה נוכלת.",
+          "כל מי שמדבר על אביר הוא בעצמו אביר.",
+          "אביר אומר אמת, ולכן בתיה אבירה. נוכל אומר שקר, ולכן בתיה נוכלת. בשני המקרים הם מאותו סוג."
+        ),
+        step(
+          "מה ערך האמת של ״בדיוק אחד מאיתנו אביר״?",
+          "דברי בתיה שקריים.",
+          "דברי בתיה אמיתיים.",
+          "הם מאותו סוג: יש אפס אבירים או שניים, ולא בדיוק אחד.",
+          "בכל זוג תושבים יש אביר אחד ונוכל אחד.",
+          "השתמשו במסקנה הקודמת: הם מאותו סוג."
+        ),
+        step(
+          "מה אפשר להסיק כעת על שניהם?",
+          "בתיה נוכלת, וגם אלון נוכל.",
+          "בתיה נוכלת, ואלון אביר.",
+          "בתיה אמרה שקר, ואלון מאותו סוג כמוה.",
+          "אם אחד נוכל, האחר בהכרח אביר.",
+          "בתיה אמרה שקר, ולכן היא נוכלת. כבר הוכחנו שאלון מאותו סוג.",
+          "conclusion"
+        ),
+        step(
+          "נבדוק את התשובה מול שתי האמירות.",
+          "שתי האמירות שקריות: בתיה אינה אבירה, ואין ביניהם בדיוק אביר אחד. שני הנוכלים משקרים כנדרש.",
+          "רק האמירה של אלון שקרית; לכן התשובה מתאימה.",
+          null,
+          null,
+          "צריך לבדוק את שני הדוברים: כל נוכל צריך לומר שקר."
+        )
+      ]
+    },
+    cases: {
+      goal: "נבדוק באילו מקרים שניהם יכולים לומר ״שנינו אבירים״.",
+      conclusion: "הסיפור אפשרי בדיוק כאשר שני התושבים מאותו סוג.",
+      steps: [
+        step(
+          "מקרה א: שניהם אבירים. האם האמירות מתאימות?",
+          "המקרה מתאים.",
+          "המקרה אינו מתאים.",
+          "״שנינו אבירים״ אמת, ושניהם אומרים אמת.",
+          "אבירים אינם יכולים לדבר על עצמם.",
+          "אם שניהם אבירים, כל אחד מהם אומר אמת."
+        ),
+        step(
+          "מקרה ב: שניהם נוכלים. האם האמירות מתאימות?",
+          "גם המקרה הזה מתאים.",
+          "המקרה אינו מתאים.",
+          "״שנינו אבירים״ שקר, ושניהם אומרים שקר.",
+          "אם שניים אומרים אותו דבר, המשפט חייב להיות אמת.",
+          "שני נוכלים יכולים לומר את אותו משפט שקרי."
+        ),
+        step(
+          "מקרה ג: אחד אביר והאחר נוכל. האם המקרה מתאים?",
+          "המקרה אינו מתאים, בלי קשר לשאלה מי מהם האביר.",
+          "המקרה מתאים אם אלון הוא האביר.",
+          "״שנינו אבירים״ שקר, ולכן גם האביר אומר שקר.",
+          "שני תושבים חייבים להיות מאותו סוג בכל חידה.",
+          "בדקו את האביר: הוא אומר ששניהם אבירים, אף שהאחר נוכל.",
+          "contradiction"
+        ),
+        step(
+          "כיסינו את כל המקרים. מה המסקנה?",
+          "שניהם מאותו סוג. אי אפשר לקבוע אם שניהם אבירים או שניהם נוכלים.",
+          "שניהם אבירים, כי מצאנו שהאפשרות הזאת מתאימה.",
+          null,
+          null,
+          "שתי אפשרויות מתאימות. אסור לבחור רק אחת מהן בלי נתון נוסף.",
+          "conclusion"
+        )
+      ]
+    },
+    impossible: {
+      goal: "נבדוק אם יש אפשרות שמתאימה לשתי האמירות.",
+      conclusion: "נראה שאין פתרון לחידה.",
+      steps: [
+        step(
+          "מקרה א: אלון נוכל. האם הוא יכול לומר ״אם אני אביר, אז בתיה נוכלת״?",
+          "לא. התנאי שקר, ולכן הגרירה אמת. נוכל אינו אומר אמת.",
+          "כן. התנאי שקר, ולכן הגרירה שקר.",
+          null,
+          null,
+          "כאשר התנאי בגרירה שקר, הגרירה אמת. לכן האפשרות שאלון נוכל נפסלת.",
+          "contradiction"
+        ),
+        step(
+          "מקרה ב: אלון אביר. מה נובע מדבריו?",
+          "בתיה נוכלת.",
+          "בתיה אבירה.",
+          "אלון אומר אמת והתנאי ״אני אביר״ מתקיים, ולכן גם המסקנה מתקיימת.",
+          "כל מי שאביר מדבר רק עם נוכלים.",
+          "הגרירה אמת והתנאי אמת. לפי כלל הניתוק, בתיה נוכלת.",
+          "assumption"
+        ),
+        step(
+          "באותו מקרה, בתיה אומרת ״אלון אביר״. מה הבעיה?",
+          "המשפט שלה אמת, אף שהסקנו שהיא נוכלת. גם המקרה הזה נפסל.",
+          "אין בעיה: נוכלת יכולה לומר אמת אם אלון אביר.",
+          null,
+          null,
+          "עדיין בודקים את המקרה שאלון אביר. לכן דברי בתיה אמת, בסתירה לכך שהיא נוכלת.",
+          "contradiction"
+        ),
+        step(
+          "מה נובע מפסילת שני המקרים?",
+          "אין פתרון: אלון אינו יכול להיות אביר וגם אינו יכול להיות נוכל.",
+          "אלון נוכל, כי המקרה שהוא אביר נפסל.",
+          null,
+          null,
+          "שני הסוגים האפשריים לאלון נפסלו, ולא רק אחד מהם.",
+          "conclusion"
+        )
+      ]
+    }
+  };
+
+  // games/shared/knight-workshop.js
+  var el7 = (tag, attrs = {}, kids3 = []) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "text") n.textContent = v;
+      else if (k === "class") n.className = v;
+      else n.setAttribute(k, v);
+    }
+    kids3.forEach((c) => n.append(c));
+    return n;
+  };
+  var button2 = (text, fn) => {
+    const b = el7("button", { type: "button", class: "bk-btn", text });
+    b.addEventListener("click", fn);
+    return b;
+  };
+  var message = () => el7("p", { class: "bk-msg", "aria-live": "polite" });
+  var say2 = (n, text, ok) => {
+    n.textContent = text;
+    n.className = "bk-msg " + (ok === true ? "bk-good" : ok === false ? "bk-bad" : "bk-info");
+  };
+  function select(label, options) {
+    return el7("select", { "aria-label": label }, [el7("option", { value: "", text: "בחרו…" }), ...options.map(([value, text]) => el7("option", { value, text }))]);
+  }
+  function checkKnightSelection(level, selected, none = false) {
+    const rows2 = rows(level), want = rows2.map((env, i) => consistent(level, env) ? i : -1).filter((i) => i !== -1);
+    if (!selected.length && !none) return { ok: false, message: "סמנו את כל האפשרויות המתאימות, או בחרו במפורש ״אין אפשרות מתאימה״." };
+    if (none && selected.length) return { ok: false, message: "אי אפשר לבחור גם אפשרות מתאימה וגם ״אין אפשרות מתאימה״." };
+    if (none) return { ok: !want.length, message: want.length ? "יש לפחות אפשרות אחת שמתאימה. נסו למצוא אותה." : "נכון. אין סידור של סוגי התושבים שמתאים לכל האמירות יחד." };
+    const extra = selected.find((i) => !want.includes(i));
+    if (extra !== void 0) return { ok: false, message: `הבחירה אינה מתאימה. ${rows2[extra] ? conflictSentence(level, rows2[extra]) : "בחרו אפשרות מהרשימה."}` };
+    if (want.some((i) => !selected.includes(i))) return { ok: false, message: "האפשרויות שסימנתם מתאימות, אבל חסרה לפחות אפשרות אחת. מצאו את כולן." };
+    const roles = level.people.map((p) => {
+      const vals = want.map((i) => rows2[i][p.id]);
+      return `${p.name}: ${vals.every((v) => v === vals[0]) ? roleWord(p, vals[0]) : "אי אפשר לקבוע — שני הסוגים אפשריים"}`;
+    }).join(". ");
+    return { ok: true, message: `נכון. ${want.length === 1 ? "יש פתרון יחיד." : "מצאתם את כל האפשרויות המתאימות. "} ${roles}.` };
+  }
+  function mountKnightTable(box, level, { onSolved = () => {
+  }, onChange = () => {
+  }, showReset = true } = {}) {
+    box.classList.add("knight-workshop");
+    box.replaceChildren();
+    const rows2 = rows(level), feedback = message(), selected = /* @__PURE__ */ new Set();
+    let solved = false;
+    const changed = () => {
+      solved = false;
+      say2(feedback, "");
+      onChange();
+    };
+    const form = el7("form"), group = el7("fieldset", {}, [el7("legend", { text: "סמנו את כל האפשרויות שמתאימות לדברי התושבים." })]);
+    const choices2 = el7("div", { class: "kw-models" });
+    const boxes = rows2.map((env, i) => {
+      const input = el7("input", { type: "checkbox", "aria-label": `אפשרות ${i + 1}: ${rowWords(level, env)}` });
+      input.addEventListener("change", () => {
+        if (input.checked) {
+          selected.add(i);
+          none.checked = false;
+        } else selected.delete(i);
+        changed();
+      });
+      choices2.append(el7("label", { class: "kw-model" }, [input, el7("span", { text: rowWords(level, env) })]));
+      return input;
+    });
+    const none = el7("input", { type: "checkbox", "aria-label": "אין אפשרות מתאימה" });
+    none.addEventListener("change", () => {
+      if (none.checked) {
+        selected.clear();
+        boxes.forEach((b) => b.checked = false);
+      }
+      changed();
+    });
+    group.append(choices2, el7("label", {}, [none, el7("span", { text: "אין אפשרות מתאימה" })]));
+    form.append(group);
+    function checkFinal() {
+      const r = checkKnightSelection(level, [...selected], none.checked);
+      say2(feedback, r.message, r.ok);
+      if (r.ok && !solved) {
+        solved = true;
+        onSolved(r.message);
+      }
+      return r;
+    }
+    form.append(button2("בדיקת התשובה", checkFinal), feedback);
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      checkFinal();
+    });
+    box.append(form);
+    const details = el7("details", { class: "kw-work" }, [el7("summary", { text: "צריכים עזרה? בדקו בטבלה" }), el7("p", { text: "הסוגים בכל שורה הם אפשרות לבדיקה. קבעו אם כל אמירה היא אמת או שקר, ואם האפשרות מתאימה לכללי האי. אין חובה למלא את הטבלה." })]);
+    const table = el7("table", { dir: "rtl" }), head = el7("tr");
+    level.people.forEach((p) => head.append(el7("th", { scope: "col", text: p.name })));
+    level.statements.forEach((s) => head.append(el7("th", { scope: "col", text: `${person(level, s.by).name}: ״${s.text}״` })));
+    head.append(el7("th", { scope: "col", text: "מתאים?" }));
+    table.append(el7("thead", {}, [head]));
+    const body = el7("tbody");
+    table.append(body);
+    const state = rows2.map((env, i) => {
+      const row = el7("tr"), msg2 = message();
+      level.people.forEach((p) => row.append(el7("td", { text: roleWord(p, env[p.id]) })));
+      const values = level.statements.map((s) => {
+        const input = select(`אפשרות ${i + 1}: ערך האמת של דברי ${person(level, s.by).name}`, [["true", "T"], ["false", "F"]]);
+        input.className = "kw-value";
+        row.append(el7("td", {}, [input]));
+        return input;
+      });
+      const fits = select(`אפשרות ${i + 1}: מתאים לכללים?`, [["true", "כן"], ["false", "לא"]]);
+      fits.className = "kw-fits";
+      row.append(el7("td", {}, [fits]));
+      const msgRow = el7("tr", { class: "kw-row-feedback", hidden: "" }, [el7("td", { colspan: String(level.people.length + level.statements.length + 1) }, [msg2])]);
+      for (const input of [...values, fits]) input.addEventListener("change", () => {
+        input.removeAttribute("aria-invalid");
+        msgRow.hidden = true;
+        say2(msg2, "");
+      });
+      body.append(row, msgRow);
+      return { env, values, fits, msg: msg2, msgRow };
+    });
+    function checkTable() {
+      state.forEach(({ env, values, fits, msg: msg2, msgRow }) => {
+        [...values, fits].forEach((v) => v.removeAttribute("aria-invalid"));
+        const wrong = values.findIndex((v, j) => v.value !== String(evaluate(level.statements[j].formula, env)));
+        let text = "";
+        if (wrong >= 0) {
+          values[wrong].setAttribute("aria-invalid", "true");
+          text = values[wrong].value === "" ? "בחרו T או F לכל אמירה." : `בשורה זו: ${rowWords(level, env)}. לכן האמירה ״${level.statements[wrong].text}״ היא ${evaluate(level.statements[wrong].formula, env) ? "אמת (T)" : "שקר (F)"}.`;
+        } else if (fits.value !== String(consistent(level, env))) {
+          fits.setAttribute("aria-invalid", "true");
+          text = fits.value === "" ? "בחרו אם האפשרות מתאימה." : conflictSentence(level, env) || "כל דובר פועל לפי כללי האי. האפשרות מתאימה.";
+        }
+        msgRow.hidden = false;
+        say2(msg2, text || "נכון.", !text);
+      });
+    }
+    details.append(el7("div", { class: "kw-table-scroll", tabindex: "0", "aria-label": "טבלת עזר" }, [table]), button2("בדיקת הטבלה", checkTable));
+    box.append(details);
+    const reset = () => {
+      selected.clear();
+      boxes.forEach((b) => b.checked = false);
+      none.checked = false;
+      state.forEach(({ values, fits, msg: msg2, msgRow }) => {
+        [...values, fits].forEach((v) => {
+          v.value = "";
+          v.removeAttribute("aria-invalid");
+        });
+        say2(msg2, "");
+        msgRow.hidden = true;
+      });
+      details.open = false;
+      changed();
+    };
+    if (showReset) box.append(button2("התחלה מחדש", reset));
+    return { reset, check: checkFinal, reveal() {
+      reset();
+      state.forEach(({ env, values, fits }) => {
+        values.forEach((v, j) => v.value = String(evaluate(level.statements[j].formula, env)));
+        fits.value = String(consistent(level, env));
+      });
+      rows2.forEach((env, i) => {
+        if (consistent(level, env)) {
+          selected.add(i);
+          boxes[i].checked = true;
+        }
+      });
+      none.checked = !selected.size;
+      details.open = true;
+      say2(feedback, "התשובה מוצגת. " + checkKnightSelection(level, [...selected], none.checked).message);
+    } };
+  }
+  var choiceId = 0;
+  function radioChoices(title, items, onChange) {
+    const name = `kw-choice-${++choiceId}`, group = el7("fieldset", { class: "kw-options" }, [el7("legend", { text: title })]);
+    const inputs = items.map(([value, text]) => {
+      const input = el7("input", { type: "radio", name, value });
+      input.addEventListener("change", () => {
+        group.removeAttribute("aria-invalid");
+        onChange();
+      });
+      group.append(el7("label", {}, [input, el7("span", { text })]));
+      return input;
+    });
+    return { group, value: () => {
+      var _a;
+      return (_a = inputs.find((i) => i.checked)) == null ? void 0 : _a.value;
+    } };
+  }
+  function mountProof(box, data) {
+    box.replaceChildren();
+    box.classList.add("knight-workshop");
+    let index = 0;
+    const heading = el7("p", { class: "kw-goal", text: data.goal }), list = el7("ol");
+    const proofTitle = el7("strong", { text: "הפתרון עד כאן" }), proof2 = el7("section", { class: "kw-proof", "aria-label": "ההוכחה שנבנית" }, [proofTitle, heading, list]);
+    proof2.hidden = true;
+    const stage = el7("div", { class: "kw-proof-stage" }), feedback = message(), finish = el7("p", { class: "kw-finish" });
+    box.append(stage, feedback, proof2, finish, button2("התחלה מחדש", () => {
+      index = 0;
+      list.replaceChildren();
+      finish.textContent = "";
+      proof2.hidden = true;
+      heading.textContent = data.goal;
+      proofTitle.textContent = "הפתרון עד כאן";
+      say2(feedback, "");
+      draw();
+    }));
+    function draw() {
+      stage.replaceChildren();
+      if (index === data.steps.length) {
+        proofTitle.textContent = "ההוכחה המלאה";
+        heading.textContent = data.conclusion || data.goal;
+        finish.textContent = "נסו לכתוב את ההוכחה על דף במילים שלכם. אפשר גם לכתוב לפני הבדיקה כאן.";
+        say2(feedback, "ההוכחה הושלמה.", true);
+        return;
+      }
+      const q = data.steps[index], options = (xs, shift) => xs.map((text, i) => [String(i), text]).sort((a, b) => (Number(a[0]) + shift) % xs.length - (Number(b[0]) + shift) % xs.length);
+      const line = radioChoices(q.prompt, options(q.lines, index % 2), () => say2(feedback, ""));
+      const reason = q.reasons ? radioChoices("מדוע?", options(q.reasons, (index + 1) % 2), () => say2(feedback, "")) : null;
+      stage.append(el7("p", { class: "kw-goal", text: `צעד ${index + 1}` }), line.group);
+      if (reason) stage.append(reason.group);
+      stage.append(button2("בדיקת הצעד", () => {
+        const ok = line.value() === "0" && (!reason || reason.value() === "0");
+        line.group.setAttribute("aria-invalid", String(line.value() !== "0"));
+        if (reason) reason.group.setAttribute("aria-invalid", String(reason.value() !== "0"));
+        if (!ok) {
+          say2(feedback, line.value() === void 0 || reason && reason.value() === void 0 ? "בחרו תשובה בכל חלק." : q.feedback, false);
+          return;
+        }
+        const parts = [el7("p", { text: q.lines[0] })];
+        if (q.reasons) parts.push(el7("p", { class: "kw-justification", text: q.reasons[0] }));
+        list.append(el7("li", { class: q.kind ? `kw-step-${q.kind}` : "" }, parts));
+        proof2.hidden = false;
+        index++;
+        say2(feedback, "הצעד נכון.", true);
+        draw();
+      }));
+    }
+    draw();
+  }
+  function checkKnightEvidence(level, assignments2, conclusions) {
+    if (assignments2.some((env) => level.people.some((p) => !["true", "false"].includes(env[p.id])))) return { ok: false, message: "בחרו סוג לכל תושב בשתי האפשרויות." };
+    const envs = assignments2.map((env) => Object.fromEntries(level.people.map((p) => [p.id, env[p.id] === "true"])));
+    for (let i = 0; i < envs.length; i++) if (!consistent(level, envs[i])) return { ok: false, message: `אפשרות ${i + 1}: ${conflictSentence(level, envs[i])}` };
+    if (envs[0].C === envs[1].C) return { ok: false, message: "כדי להראות שסוגו של כרמל אינו נקבע, צריך שתי אפשרויות שבהן סוגו שונה." };
+    const solutions2 = solutions(level);
+    for (const p of level.people) {
+      const expected = solutions2.every((e) => e[p.id] === solutions2[0][p.id]) ? String(solutions2[0][p.id]) : "unknown";
+      if (conclusions[p.id] !== expected) return { ok: false, message: conclusions[p.id] ? "בדקו שוב מה אפשר להסיק על " + p.name + "." : "בחרו מסקנה לגבי " + p.name + "." };
+    }
+    return { ok: true, message: "נכון. אלון נוכל ובתיה אבירה; כרמל יכול להיות אביר או נוכל. שתי האפשרויות שהצגתם מתאימות לכל האמירות." };
+  }
+  function mountEvidence(box, level) {
+    box.replaceChildren();
+    box.classList.add("knight-workshop");
+    box.append(el7("p", { text: "הראו שסוגו של כרמל אינו נקבע: בחרו שתי אפשרויות שמתאימות לאמירות, ובהן כרמל מסוג שונה." }));
+    const fields = [0, 1].map((i) => {
+      const group2 = el7("fieldset", { class: "kw-evidence" }, [el7("legend", { text: `אפשרות ${i + 1}` })]), env = {};
+      level.people.forEach((p) => {
+        env[p.id] = select(p.name + ` — אפשרות ${i + 1}`, [["true", roleWord(p, true)], ["false", roleWord(p, false)]]);
+        group2.append(el7("label", {}, [el7("span", { text: p.name }), env[p.id]]));
+      });
+      box.append(group2);
+      return env;
+    });
+    const conclusions = {}, group = el7("fieldset", { class: "kw-evidence" }, [el7("legend", { text: "מה אפשר לקבוע על כל תושב?" })]);
+    level.people.forEach((p) => {
+      conclusions[p.id] = select("מסקנה לגבי " + p.name, [["true", roleWord(p, true)], ["false", roleWord(p, false)], ["unknown", "אי אפשר לקבוע"]]);
+      group.append(el7("label", {}, [el7("span", { text: p.name }), conclusions[p.id]]));
+    });
+    box.append(group);
+    const msg2 = message(), values = (obj) => Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, v.value]));
+    box.append(button2("בדיקת התשובה", () => {
+      const r = checkKnightEvidence(level, fields.map(values), values(conclusions));
+      say2(msg2, r.message, r.ok);
+    }), msg2, button2("התחלה מחדש", () => {
+      box.querySelectorAll("select").forEach((s) => s.value = "");
+      say2(msg2, "");
+    }));
+    box.querySelectorAll("select").forEach((s) => s.addEventListener("change", () => say2(msg2, "")));
+  }
+  function initKnightWorkshop(box) {
+    if (box.dataset.ready) return;
+    const proof2 = KNIGHT_PROOFS[box.dataset.knightProof], level = KNIGHT_PUZZLES[box.dataset.knightTable || box.dataset.knightEvidence];
+    if (!proof2 && !level) return;
+    box.dataset.ready = "true";
+    if (proof2) mountProof(box, proof2);
+    else if (box.dataset.knightEvidence) mountEvidence(box, level);
+    else if (box.dataset.knightIntro === "true") mountKnightIntro(box, level);
+    else mountKnightTable(box, level);
+  }
+
+  // games/shared/navigation.js
+  function initNavigation() {
+    var _a;
+    const sidebar = document.getElementById("quarto-sidebar");
+    if (!sidebar || sidebar.classList.contains("book-toc-ready")) return;
+    const currentToc = document.getElementById("TOC");
+    const data = document.getElementById("book-toc-data");
+    const chapters = data ? JSON.parse(data.textContent) : [];
+    const controls = [];
+    function disclosure(container, list, label, chapter = false) {
+      const id = `toc-branch-${controls.length}`;
+      list.id = list.id || id;
+      const button4 = document.createElement("button");
+      button4.type = "button";
+      button4.className = chapter ? "toc-chapter-toggle" : "toc-branch-toggle";
+      button4.setAttribute("aria-controls", list.id);
+      button4.setAttribute("aria-expanded", "false");
+      const arrow = document.createElement("span");
+      arrow.className = "toc-disclosure-arrow";
+      arrow.textContent = "◂";
+      arrow.setAttribute("aria-hidden", "true");
+      button4.append(arrow);
+      const set = (open) => {
+        container.classList.toggle("toc-open", open);
+        button4.setAttribute("aria-expanded", String(open));
+        button4.setAttribute("aria-label", `${open ? "קיפול" : "פתיחה"}: ${label}`);
+      };
+      button4.addEventListener("click", () => set(button4.getAttribute("aria-expanded") !== "true"));
+      set(false);
+      controls.push({ list, set });
+      return button4;
+    }
+    for (const link of sidebar.querySelectorAll(".sidebar-menu-container a.sidebar-link")) {
+      const url = new URL(link.href), file = url.pathname.split("/").pop();
+      const chapter = chapters.find((c) => c.file === file);
+      const isCurrent = url.pathname === location.pathname;
+      if (!chapter && !(isCurrent && currentToc)) continue;
+      const toc = isCurrent && currentToc ? currentToc : document.createElement("div");
+      if (toc !== currentToc) {
+        toc.innerHTML = chapter.html;
+        toc.querySelectorAll("[id]").forEach((el11) => el11.removeAttribute("id"));
+        toc.querySelectorAll("a").forEach((a) => {
+          a.href = new URL(file + a.getAttribute("href"), location.href).href;
+          a.removeAttribute("data-scroll-target");
+          a.classList.remove("active");
+        });
+      }
+      (_a = toc.querySelector(":scope > h2")) == null ? void 0 : _a.remove();
+      toc.classList.add("toc-tree");
+      toc.setAttribute("aria-label", link.textContent.trim());
+      const item = link.closest("li"), row = link.parentElement;
+      item.classList.add("toc-chapter");
+      row.classList.add("toc-chapter-row");
+      row.prepend(disclosure(item, toc, link.textContent.trim(), true));
+      item.append(toc);
+      toc.querySelectorAll("li").forEach((li) => {
+        const list = li.querySelector(":scope > ul"), a = li.querySelector(":scope > a");
+        if (!list || !a) return;
+        li.classList.add("toc-parent");
+        li.insertBefore(disclosure(li, list, a.textContent.trim()), a);
+      });
+    }
+    sidebar.classList.add("book-toc-ready");
+    function revealHash() {
+      if (!location.hash || !currentToc) return;
+      const link = [...currentToc.querySelectorAll("a[href]")].find((a) => a.hash === location.hash);
+      if (link) controls.filter((c) => c.list.contains(link)).forEach((c) => c.set(true));
+    }
+    window.addEventListener("hashchange", revealHash);
+    revealHash();
+  }
+
+  // games/shared/sets-data.js
+  var choice = (prompt, options, answer, why) => ({ prompt, options, answer, why });
+  var write = (prompt, answer, hint) => ({ prompt, answer, hint });
+  var SET_TASKS = {
+    cardinality: { type: "cardinality", items: [
+      { given: "A = {2, 5, 2, 8, 5}", answer: "{2,5,8}", hint: "ספרו איברים שונים, ולא הופעות ברשימה. אין צורך לחבר את ערכי המספרים." },
+      { given: "A = {4, {6, 7}}", answer: "{4,{6,7}}", hint: "קבוצה שמופיעה כאיבר נספרת כאיבר אחד. שמרו על הסוגריים כשאתם כותבים אותה." }
+    ], comparison: [
+      choice("A = {1, 9}, B = {2, 8}. לשתיהן אותה עצמה. האם הן שוות?", ["כן", "לא"], 1, "לכל קבוצה שני איברים, אבל אלו איברים שונים. אותה עצמה אינה מבטיחה שוויון קבוצות.")
+    ] },
+    "count-union": { type: "choice", items: [
+      choice("בסדנת צילום יש 10 משתתפים, ובסדנת ציור 7. שלושה משתתפים רשומים לשתיהן. כמה אנשים רשומים לפחות לאחת הסדנאות?", ["17", "14", "11"], 1, "מחברים 10 ועוד 7 ומחסירים 3: אלו המשתתפים שנספרו פעמיים. נשארים 14 אנשים שונים."),
+      choice("למה מחסירים את עצמת החיתוך בספירת איחוד?", ["כדי להוציא את המשותפים מהאיחוד", "כדי לספור כל איבר משותף פעם אחת במקום פעמיים", "כי האיחוד כולל רק את מי שבדיוק בקבוצה אחת"], 1, "המשותפים נשארים באיחוד. מחסירים רק את הספירה הנוספת שלהם."),
+      choice("בקבוצה A יש 6 איברים ובקבוצה B יש 4. הקבוצות זרות. כמה איברים יש באיחוד שלהן?", ["10", "6", "2"], 0, "בקבוצות זרות אין איברים שנספרו פעמיים. עצמת החיתוך היא אפס, ולכן 6 ועוד 4 הם 10.")
+    ] },
+    "count-three": { type: "choice", items: [
+      choice("בקבוצות A, B, C יש בהתאמה 10, 8, 7 איברים. בחיתוכים A ∩ B, A ∩ C, B ∩ C יש בהתאמה 4, 3, 2 איברים. איבר אחד שייך לשלושתן. כמה איברים באיחוד?", ["16", "17", "25"], 1, "מחברים 10+8+7, מחסירים 4+3+2 ומוסיפים 1. התוצאה היא 17. בלי התוספת האחרונה האיבר המשותף לשלושתן לא היה נספר כלל."),
+      choice("איבר שייך לשלוש הקבוצות A, B, C. האם הוא נכלל גם בספירת A ∩ B?", ["כן", "לא"], 0, "כן. כדי להיות בחיתוך A ∩ B צריך להיות בשתיהן; מותר להשתייך גם ל־C. לכן איבר בחיתוך המשולש נספר בכל שלושת החיתוכים הזוגיים.")
+    ] },
+    "count-power": { type: "choice", items: [
+      choice("A = {10, 20, 30, 40}. כמה איברים יש בקבוצת החזקה של A?", ["4", "8", "16", "100"], 2, "ב־A ארבעה איברים. לכל אחד שתי אפשרויות: להיכלל בתת־הקבוצה או לא. לכן יש 2⁴ = 16 תת־קבוצות."),
+      choice("לקבוצה A מוסיפים איבר חדש שלא היה בה. כיצד משתנה מספר תת־הקבוצות שלה?", ["גדל באחת", "מוכפל בשתיים", "אינו משתנה"], 1, "מכל תת־קבוצה קודמת מתקבלות שתיים: אחת בלי האיבר החדש ואחת איתו. לכן מספר תת־הקבוצות מוכפל בשתיים."),
+      choice("כמה איברים יש בקבוצת החזקה של הקבוצה הריקה?", ["0", "1", "2"], 1, "הריקה היא תת־הקבוצה היחידה של עצמה. קבוצת החזקה היא {∅}, ובה איבר אחד: 2⁰ = 1.")
+    ] },
+    "practice-counting": { type: "choice", items: [
+      choice("A = {3, 3, {1, 2}, {1, 2}}. מהי העצמה של A?", ["2", "3", "4"], 0, "האיברים השונים הם 3 והקבוצה {1,2}. כל אחד נספר פעם אחת, ולכן העצמה היא 2."),
+      choice("בקבוצה של 25 מטיילים, 14 ביקרו במוזיאון, 11 בגן הבוטני ו־5 בשניהם. כמה לא ביקרו באף אחד משני המקומות?", ["5", "20", "0"], 0, "באיחוד יש 14+11−5 = 20 מטיילים. מתוך 25 המטיילים, נשארו 5 שאינם באיחוד."),
+      choice("בקבוצות A, B, C יש בהתאמה 8, 7, 6 איברים. בחיתוכים A ∩ B, A ∩ C, B ∩ C יש בהתאמה 3, 2, 2 איברים, ובחיתוך המשולש איבר אחד. כמה איברים באיחוד?", ["14", "15", "21"], 1, "לפי הכלה והפרדה: 8+7+6−3−2−2+1 = 15. החיתוכים הזוגיים כוללים גם את האיבר שבחיתוך המשולש."),
+      choice("בקבוצת החזקה של A יש 32 איברים. כמה איברים יש ב־A?", ["5", "16", "32"], 0, "מחפשים כמה פעמים צריך להכפיל ב־2 כדי לקבל 32. מכיוון ש־2⁵ = 32, בקבוצה המקורית יש 5 איברים.")
+    ] },
+    membership: { type: "choice", items: [
+      choice("A = {1, 4, 7}. האם 4 ∈ A?", ["אמת", "שקר"], 0, "4 מופיע בין איברי A, ולכן הוא שייך לקבוצה."),
+      choice("A = {1, 4, 7}. האם 2 ∈ A?", ["אמת", "שקר"], 1, "2 אינו אחד מאיברי A. אין דרישה למלא את המספרים שבין 1 ל־7."),
+      choice("A = {1, 4, 7}. האם {4} ∈ A?", ["אמת", "שקר"], 1, "האיבר שמופיע ב־A הוא המספר 4, ולא הקבוצה {4}. הסוגריים משנים את האובייקט שעליו שואלים.")
+    ] },
+    filter: { type: "select", given: "D = {0, 1, 2, 3, 4, 5, 6}", prompt: "בחרו את כל המספרים ב־D שמקיימים x > 2 וגם x < 6.", candidates: ["0", "1", "2", "3", "4", "5", "6"], answer: ["3", "4", "5"], hint: "כל מספר צריך לעבור את שתי הבדיקות. 2 ו־6 אינם מתאימים לאי־שוויון חד." },
+    empty: { type: "choice", items: [
+      choice("כמה איברים יש בקבוצה ∅?", ["0", "1", "2"], 0, "אין בקבוצה הריקה אף איבר."),
+      choice("כמה איברים יש בקבוצה {∅}?", ["0", "1", "2"], 1, "יש בה איבר אחד: הקבוצה הריקה. קופסה שמכילה קופסה ריקה אינה קופסה ריקה."),
+      choice("A = {1, {2}, ∅}. איזה אובייקט אינו איבר של A?", ["1", "2", "{2}", "∅"], 1, "האיברים הם 1, הקבוצה {2}, והקבוצה הריקה. 2 נמצא בתוך אחד האיברים, אך אינו עצמו איבר של A.")
+    ] },
+    inclusion: { type: "choice", items: [
+      choice("A = {2, 8}, B = {8, 2, 8}. האם A = B?", ["כן", "לא"], 0, "בשתי הקבוצות אותם איברים. סדר וחזרות אינם משנים קבוצה."),
+      choice("A = {2, 8}, B = {2, 8, 9}. האם A ⊆ B?", ["כן", "לא"], 0, "כל איבר של A נמצא ב־B. ל־B מותר שיהיו איברים נוספים."),
+      choice("A = {2, 8}, B = {2, 8, 9}. איזה איבר מפריך B ⊆ A?", ["2", "8", "9"], 2, "9 שייך ל־B ואינו שייך ל־A. זה בדיוק מה שנדרש כדי להפריך את ההכלה הזאת."),
+      choice("האם לכל קבוצה A מתקיים A ⊆ A?", ["כן", "לא"], 0, "כן. כל איבר של A נמצא ב־A. הכלה מאפשרת שוויון."),
+      choice("האם ∅ ⊆ {1, 4}?", ["כן", "לא"], 0, "כן. אין בקבוצה הריקה איבר שאינו נמצא ב־{1,4}; אין איבר שיכול להפריך את ההכלה.")
+    ] },
+    "member-or-subset": { type: "choice", items: [
+      choice("A = {5, 9}. השלימו: 5 ___ A.", ["∈", "⊆"], 0, "5 הוא איבר של A. בסימון הכלה משווים שתי קבוצות."),
+      choice("A = {5, 9}. השלימו: {5} ___ A.", ["∈", "⊆"], 1, "כל איבר של {5} נמצא ב־A, ולכן {5} מוכלת ב־A. הקבוצה {5} אינה מופיעה כאיבר של A."),
+      choice("B = {{5}, 9}. האם {5} ∈ B?", ["אמת", "שקר"], 0, "כאן הקבוצה {5} עצמה מופיעה כאיבר של B. גם קבוצה יכולה להיות איבר.")
+    ] },
+    "venn-basic": { type: "venn", tasks: [
+      { formula: "A ∩ B", regions: [1], why: "חיתוך דורש גם A וגם B: רק האזור המשותף." },
+      { formula: "A ∪ B", regions: [0, 1, 2], why: "איחוד דורש A או B, ולכן גם האזור המשותף נכלל." }
+    ] },
+    operations: { type: "write", items: [
+      write("A = {0, 2, 5, 8}, B = {2, 6, 8}. כתבו את A ∩ B.", "{2,8}", "חפשו מספרים שמופיעים בשתי הרשימות."),
+      write("לאותן קבוצות, כתבו את A ∪ B.", "{0,2,5,6,8}", "כל מספר שמופיע באחת הרשימות נכנס. אין צורך לחזור על מספר שכבר כתבתם.")
+    ] },
+    "venn-difference": { type: "venn", tasks: [
+      { formula: "A ∖ B", regions: [0], why: "נשארים ב־A ומוציאים את כל מי ששייך גם ל־B." },
+      { formula: "B ∖ A", regions: [2], why: "כאן מתחילים מ־B. היפוך הסדר משנה את האזור שנשאר." },
+      { formula: "Aᶜ", regions: [2, 3], why: "המשלים הוא כל מה שבעולם U ואינו ב־A, כולל האזור שמחוץ לשתי הקבוצות." },
+      { formula: "A △ B", regions: [0, 2], why: "הפרש סימטרי: בדיוק קבוצה אחת. האזור המשותף אינו נכלל." }
+    ] },
+    differences: { type: "write", items: [
+      write("U = {1,2,3,4,5,6,7}, A = {1,3,5}, B = {3,4,5,7}. כתבו את A ∖ B.", "{1}", "מתחילים ב־A ומוחקים את האיברים ששייכים גם ל־B."),
+      write("לאותן קבוצות, כתבו את Aᶜ ביחס ל־U.", "{2,4,6,7}", "מותר לבחור רק מתוך U. השאירו את מה שאינו ב־A."),
+      write("לאותן קבוצות, כתבו את A △ B.", "{1,4,7}", "בחרו איברים שמופיעים בדיוק באחת משתי הקבוצות.")
+    ] },
+    powers: { type: "power", atoms: ["a", "b", "c"] },
+    "power-check": { type: "choice", items: [
+      choice("A = {2, 9}. האם {2} ∈ P(A)?", ["אמת", "שקר"], 0, "{2} היא תת־קבוצה של A, ולכן היא איבר בקבוצת החזקה."),
+      choice("A = {2, 9}. האם 2 ∈ P(A)?", ["אמת", "שקר"], 1, "איברי קבוצת החזקה הם קבוצות. כאן {2} שייכת לקבוצת החזקה, ואילו המספר 2 אינו אחת מתת־הקבוצות."),
+      choice("מהי P(∅)?", ["∅", "{∅}", "{0}"], 1, "לקבוצה הריקה יש תת־קבוצה אחת: היא עצמה. לכן קבוצת החזקה שלה מכילה איבר אחד.")
+    ] },
+    pairs: { type: "select", given: "A = {2, 3}, B = {1, 3}", prompt: "בחרו את כל הזוגות ששייכים ל־A × B. זכרו לבדוק את המקום הראשון ואת המקום השני בנפרד.", candidates: ["(2,1)", "(2,3)", "(3,1)", "(3,3)", "(1,2)", "(1,3)", "(3,2)"], answer: ["(2,1)", "(2,3)", "(3,1)", "(3,3)"], hint: "המקום הראשון נבחר מ־A והמקום השני מ־B. אותו מספר יכול להופיע בשני המקומות, אם הוא שייך לשתי הקבוצות." },
+    "pair-check": { type: "choice", items: [
+      choice("האם (3, 8) = (8, 3)?", ["כן", "לא"], 1, "בזוג סדור הסדר חשוב: האיברים הראשונים שונים."),
+      choice("האם {3, 8} = {8, 3}?", ["כן", "לא"], 0, "בקבוצה הסדר אינו חשוב. סוג הסוגריים משנה את המשמעות."),
+      choice("ל־A יש 2 איברים ול־B יש 3 איברים. כמה זוגות יש ב־A × B?", ["5", "6", "8"], 1, "לכל אחד משני האיברים הראשונים יש שלוש אפשרויות למקום השני: 2 כפול 3."),
+      choice("מהי A × ∅?", ["∅", "A", "{∅}"], 0, "אי אפשר לבחור איבר למקום השני מתוך הקבוצה הריקה, ולכן אין אף זוג.")
+    ] },
+    "proof-union": { type: "proof", goal: "נניח A ⊆ B. נראה ש־A ∪ C ⊆ B ∪ C.", intro: "יהי x איבר כלשהו של A ∪ C. נבדוק את שתי האפשרויות שמותרות לפי הגדרת האיחוד.", start: "x ∈ A ∪ C", link: "", end: "בכל אחד משני המקרים x ∈ B ∪ C. לכן כל איבר של A ∪ C נמצא ב־B ∪ C, ומכאן ההכלה המבוקשת.", steps: [
+      { options: ["x ∈ A או x ∈ C", "x ∈ A וגם x ∈ C", "x ∈ B"], answer: 0, rule: "הגדרת איחוד", why: "כדי להשתייך לאיחוד מספיק להשתייך לפחות לאחת מהקבוצות." },
+      { options: ["אם x ∈ A, אז x ∈ B ולכן x ∈ B ∪ C", "אם x ∈ A, אז x ∉ B", "אם x ∈ A, אז בהכרח x ∈ C"], answer: 0, rule: "הנתון A ⊆ B והגדרת איחוד", why: "הנתון מעביר איבר של A אל B; כל איבר של B נמצא גם באיחוד B ∪ C." },
+      { options: ["אם x ∈ C, אז x ∈ B ∪ C", "אם x ∈ C, אז x ∈ B", "אם x ∈ C, אז x ∈ A"], answer: 0, rule: "הגדרת איחוד", why: "לצורך שייכות ל־B ∪ C, די בכך שהאיבר שייך ל־C." },
+      { options: ["בשני המקרים x ∈ B ∪ C", "בשני המקרים x ∈ B ∩ C", "מכאן A = B"], answer: 0, rule: "בדיקת כל המקרים", why: "שתי האפשרויות של השייכות לאיחוד מכוסות, ובשתיהן מגיעים למטרה." }
+    ] },
+    "proof-demorgan": { type: "proof", goal: "נראה ש־(A ∪ B)ᶜ = Aᶜ ∩ Bᶜ.", intro: "כל המשלים נלקחים ביחס לאותו עולם U. יהי x ∈ U כלשהו. נראה ששייכות לשתי הקבוצות היא אותו תנאי.", start: "x ∈ (A ∪ B)ᶜ", link: "⇔", end: "כל המעברים פועלים בשני הכיוונים, ולכל x ∈ U. לכן בשתי הקבוצות בדיוק אותם איברים, והן שוות.", steps: [
+      { options: ["x ∉ A ∪ B", "x ∉ A ∩ B", "x ∈ A ∪ B"], answer: 0, rule: "הגדרת משלים", why: "בתוך U, שייכות למשלים פירושה אי־שייכות לקבוצה המקורית." },
+      { options: ["לא (x ∈ A או x ∈ B)", "לא (x ∈ A וגם x ∈ B)", "x ∈ A וגם x ∈ B"], answer: 0, rule: "הגדרת איחוד", why: "שייכות לאיחוד היא ״או״. השלילה חלה על כל התנאי הזה." },
+      { options: ["x ∉ A וגם x ∉ B", "x ∉ A או x ∉ B", "x ∈ A וגם x ∉ B"], answer: 0, rule: "חוק דה מורגן לפסוקים", why: "שלילת ״או״ היא ״וגם״ של שתי השלילות." },
+      { options: ["x ∈ Aᶜ ∩ Bᶜ", "x ∈ Aᶜ ∪ Bᶜ", "x ∈ A ∩ B"], answer: 0, rule: "הגדרות המשלים והחיתוך", why: "x נמצא בשני המשלים יחד, ולכן הוא בחיתוך שלהם." }
+    ] },
+    "practice-roster": { type: "write", items: [write("כתבו בלי חזרות את הקבוצה {7, 2, 7, 5, 2}.", "{2,5,7}", "סדר אינו משנה. כל איבר מופיע בתשובה פעם אחת."), write("D = {−2,−1,0,1,2,3}. כתבו את {x ∈ D : x ≥ 1}.", "{1,2,3}", "≥ כולל גם שוויון: 1 עומד בתנאי.")] },
+    "practice-relations": { type: "choice", items: [choice("A = {4, {6}}. האם 6 ∈ A?", ["אמת", "שקר"], 1, "האיבר השני הוא הקבוצה {6}, לא המספר 6."), choice("לאותה קבוצה, האם {6} ∈ A?", ["אמת", "שקר"], 0, "כן. הקבוצה {6} מופיעה בשלמותה כאיבר."), choice("לאותה קבוצה, האם {4} ⊆ A?", ["אמת", "שקר"], 0, "האיבר היחיד של {4} הוא 4, והוא שייך ל־A.")] },
+    "practice-counter": { type: "select", given: "A = {1, 2, 6}, B = {1, 3, 6}", prompt: "בחרו איבר אחד שמפריך A ⊆ B.", candidates: ["1", "2", "3", "6"], answer: ["2"], hint: "האיבר צריך להיות ב־A ולא ב־B. איבר שנמצא רק ב־B מפריך את הכיוון האחר." },
+    "practice-operations": { type: "write", items: [write("A = {2,4,6}, B = {1,4,6}, C = {2,6,8}. חשבו את (A ∪ B) ∩ C.", "{2,6}", "קודם חשבו את האיחוד, ואז השאירו ממנו רק איברים של C."), write("לאותן קבוצות, חשבו את A ∖ (B ∩ C).", "{2,4}", "קודם חשבו מה משותף ל־B ול־C, ואז הסירו את האיברים האלה מ־A.")] },
+    "practice-complement": { type: "write", items: [write("U = {1,2,3,4,5}, A = {2,5}. חשבו את Aᶜ.", "{1,3,4}", "בחרו מתוך U את האיברים שאינם ב־A."), write("כעת U = {1,2,3,4,5,6}, ואותה A. חשבו שוב את Aᶜ.", "{1,3,4,6}", "העולם גדל, ולכן יש עוד איבר שאינו ב־A.")] },
+    "practice-power": { type: "write", items: [write("כתבו את P({4, 8}).", "{{},{4},{8},{4,8}}", "כל איבר בתשובה הוא קבוצה. התחילו בריקה, המשיכו ביחידונים, וסיימו בקבוצה כולה."), write("כתבו את P({∅}).", "{{},{{}}}", "לקבוצה {∅} יש איבר אחד. יש שתי אפשרויות: לא לבחור בו, או לבחור בו.")] },
+    "practice-product": { type: "write", items: [write("A = {a, b}, B = {1, 3}. כתבו את A × B.", "{(a,1),(a,3),(b,1),(b,3)}", "לכל אות במקום הראשון צרפו כל אחד משני המספרים במקום השני."), write("לאותן קבוצות, כתבו את B × A.", "{(1,a),(1,b),(3,a),(3,b)}", "כעת המספר ראשון והאות שנייה.")] },
+    "practice-false-law": { type: "choice", items: [choice("הרובוט טוען: תמיד A ∖ B = B ∖ A. איזו בחירה מפריכה זאת?", ["A = {1}, B = {2}", "A = {1}, B = {1}", "A = ∅, B = ∅"], 0, "בבחירה הראשונה ההפרשים הם {1} ו־{2}. הם שונים. בשתי הבחירות האחרות ההפרשים דווקא שווים."), choice("האם בדיקה של דוגמה אחת שבה חוק מתקיים מוכיחה שהוא נכון לכל הקבוצות?", ["כן", "לא"], 1, "דוגמה מתאימה מאשרת רק את המקרה שנבדק. להוכחת חוק כללי צריך נימוק לכל הקבוצות; להפרכה מספיקה דוגמה נגדית אחת.")] }
+  };
+
+  // games/shared/sets.js
+  function parseObject(source) {
+    const s = source.replace(/[\u2066-\u2069]/g, "").replaceAll("−", "-").trim();
+    if (s.length > 1500) throw Error("התשובה ארוכה מדי לתרגיל הזה.");
+    let i = 0, count = 0;
+    const ws = () => {
+      while (/\s/.test(s[i] || "") && i < s.length) i++;
+    };
+    function read(depth = 0) {
+      ws();
+      if (depth > 8 || ++count > 150) throw Error("כתבו קבוצה קטנה כפי שנדרש בתרגיל.");
+      if (s[i] === "∅") {
+        i++;
+        return { type: "set", items: [] };
+      }
+      const open = s[i];
+      if (open === "{" || open === "(") {
+        i++;
+        const close = open === "{" ? "}" : ")", items = [];
+        ws();
+        if (s[i] !== close) {
+          for (; ; ) {
+            items.push(read(depth + 1));
+            ws();
+            if (s[i] === close) break;
+            if (s[i++] !== ",") throw Error("הפרידו בין איברים בפסיק וסגרו את הסוגריים.");
+          }
+        }
+        i++;
+        if (open === "(" && items.length !== 2) throw Error("בזוג סדור כותבים בדיוק שני רכיבים, בסוגריים עגולים.");
+        return { type: open === "{" ? "set" : "pair", items };
+      }
+      const match2 = s.slice(i).match(/^(?:-?\d+(?:\.\d+)?|[A-Za-zא-ת]+)/);
+      if (!match2) throw Error("כתבו איברים בתוך { }, זוגות בתוך ( ), או ∅ לקבוצה הריקה.");
+      i += match2[0].length;
+      const raw = match2[0];
+      return { type: "atom", value: /^-?\d/.test(raw) ? String(Number(raw)) : raw };
+    }
+    const result = read();
+    ws();
+    if (i !== s.length) throw Error("נשאר סימן שלא הצלחתי לקרוא. בדקו פסיקים וסוגריים.");
+    return result;
+  }
+  function key2(n) {
+    if (n.type === "atom") return "a:" + n.value;
+    const xs = n.items.map(key2);
+    return n.type === "pair" ? "p:" + JSON.stringify(xs) : "s:" + JSON.stringify([...new Set(xs)].sort());
+  }
+  function display2(n) {
+    if (n.type === "atom") return n.value;
+    const items = n.type === "set" ? [...new Map(n.items.map((x) => [key2(x), x])).values()] : n.items;
+    if (n.type === "set" && !items.length) return "∅";
+    return (n.type === "set" ? "{" : "(") + items.map(display2).join(", ") + (n.type === "set" ? "}" : ")");
+  }
+  function checkSetAnswer(input, expected) {
+    if (!input.trim()) return { ok: false, message: "כתבו את הקבוצה לפני הבדיקה. לקבוצה ריקה אפשר לכתוב ∅ או {}." };
+    let a;
+    try {
+      a = parseObject(input);
+    } catch (e) {
+      return { ok: false, message: e.message };
+    }
+    if (a.type !== "set") return { ok: false, message: "התשובה היא קבוצה. הקיפו את איבריה בסוגריים מסולסלים { }. מספר או זוג לבדם אינם אותה קבוצה." };
+    const b = parseObject(expected), ak = new Set(a.items.map(key2)), bk = new Set(b.items.map(key2));
+    const extra = a.items.find((x) => !bk.has(key2(x))), missing = b.items.find((x) => !ak.has(key2(x)));
+    if (extra) return { ok: false, message: `האיבר ⁦${display2(extra)}⁩ אינו שייך לקבוצת התשובה. בדקו את התנאי עבורו.` };
+    if (missing) return { ok: false, message: "האיברים שכתבתם מתאימים, אבל חסר לפחות איבר אחד. בדקו שוב את כל האפשרויות." };
+    return { ok: true, message: "נכון! אלה בדיוק איברי הקבוצה. הסדר שבו כתבתם אותם אינו משנה." };
+  }
+  function checkCardinalityAnswer(number, roster, expected) {
+    const size = new Set(parseObject(expected).items.map(key2)).size;
+    const text = number.trim(), valid = /^\d+$/.test(text), ok = valid && Number(text) === size;
+    const count = { ok, message: !text ? "כתבו את מספר האיברים." : !valid ? "כתבו מספר שלם שאינו שלילי." : ok ? "נכון! זהו מספר האיברים השונים בקבוצה." : "המספר אינו מתאים. ספרו כל איבר שונה פעם אחת; קבוצה פנימית היא איבר אחד." };
+    const elements = checkSetAnswer(roster, expected);
+    return { ok: count.ok && elements.ok, count, elements };
+  }
+  function subsets(atoms) {
+    return Array.from({ length: 2 ** atoms.length }, (_, mask) => ({ type: "set", items: atoms.filter((_2, j) => mask & 1 << j).map(parseObject) }));
+  }
+  function readable(text) {
+    if (!/[א-ת]/.test(text) || text.includes("⁦")) return text;
+    return text.replace(/[A-Za-z0-9∅{}()[\]∈∉⊆∩∪ᶜ△×¬⇒⇔∖≥≤][A-Za-z0-9∅{}()[\],. :\-−=<>∈∉⊆∩∪ᶜ△×¬⇒⇔∖≥≤]*/g, (chunk) => {
+      const core = chunk.trimEnd();
+      return "⁦" + core + "⁩" + chunk.slice(core.length);
+    });
+  }
+  var el8 = (tag, attrs = {}, kids3 = []) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "text") n.textContent = readable(v);
+      else if (k === "class") n.className = v;
+      else n.setAttribute(k, v);
+    }
+    for (const k of kids3) n.append(k);
+    return n;
+  };
+  var button3 = (text, fn) => {
+    const n = el8("button", { type: "button", class: "bk-btn", text });
+    n.addEventListener("click", fn);
+    return n;
+  };
+  var math = (t) => el8("span", { class: "sets-math", dir: /[א-ת]/.test(t) ? "rtl" : "ltr", text: t });
+  var msg = () => el8("p", { class: "bk-msg", "aria-live": "polite" });
+  function say3(n, text, ok) {
+    n.textContent = readable(text);
+    n.className = "bk-msg " + (ok === true ? "bk-good" : ok === false ? "bk-bad" : "");
+  }
+  function mixedText(text) {
+    const match2 = text.match(/^([A-Z][^.]*?)\. (.+)$/);
+    if (match2) {
+      return el8("div", { class: "sets-prompt" }, [el8("div", { class: "sets-given", dir: "ltr", text: match2[1] }), el8("p", { text: match2[2] })]);
+    }
+    return el8("p", { class: "sets-prompt", text });
+  }
+  var rotate = (xs, n) => xs.slice(n % xs.length).concat(xs.slice(0, n % xs.length));
+  function selectOptions(options, seed = 0) {
+    const s = el8("select", { "aria-label": "בחרו תשובה" }, [el8("option", { value: "", text: "בחרו…" })]);
+    for (const { text, i } of rotate(options.map((text2, i2) => ({ text: text2, i: i2 })), seed)) s.append(el8("option", { value: String(i), text }));
+    return s;
+  }
+  function initSets(box) {
+    if (box.dataset.ready) return;
+    const data = SET_TASKS[box.dataset.sets];
+    if (!data) return;
+    box.dataset.ready = "true";
+    box.classList.add("sets-ready");
+    box.replaceChildren();
+    if (data.type === "choice") return choices(box, data);
+    if (data.type === "cardinality") return cardinality(box, data);
+    if (data.type === "write") return writes(box, data);
+    if (data.type === "select") return selection(box, data);
+    if (data.type === "venn") return venn(box, data);
+    if (data.type === "power") return power(box, data);
+    if (data.type === "proof") return proof(box, data);
+  }
+  function choices(box, data, offset = 0) {
+    const form = el8("form");
+    box.append(form);
+    const rows2 = data.items.map((q, i) => {
+      const s = selectOptions(q.options, i + box.dataset.sets.length), feedback = msg();
+      s.setAttribute("aria-label", q.prompt);
+      const row = el8("fieldset", { class: "sets-item" }, [el8("legend", { class: "sets-item-number", text: `סעיף ${i + 1 + offset}` }), mixedText(q.prompt), s, feedback]);
+      s.addEventListener("change", () => {
+        say3(feedback, "");
+        s.removeAttribute("aria-invalid");
+      });
+      form.append(row);
+      return { q, s, feedback };
+    });
+    const result = msg();
+    form.append(button3("בדיקת התשובות", () => {
+      let all = true;
+      for (const { q, s, feedback } of rows2) {
+        const ok = s.value !== "" && Number(s.value) === q.answer;
+        all && (all = ok);
+        s.setAttribute("aria-invalid", String(!ok));
+        say3(feedback, s.value === "" ? "בחרו תשובה." : (ok ? "נכון. " : "כדאי לבדוק שוב. ") + q.why, ok);
+      }
+      say3(result, all ? data.success || "כל התשובות נכונות." : "בדקו את המשוב ונסו שוב.", all);
+    }), button3("איפוס", () => {
+      form.reset();
+      rows2.forEach(({ s, feedback }) => {
+        s.removeAttribute("aria-invalid");
+        say3(feedback, "");
+      });
+      say3(result, "");
+    }), result);
+    form.addEventListener("submit", (e) => e.preventDefault());
+  }
+  function cardinality(box, data) {
+    var _a;
+    data.items.forEach((q, i) => {
+      const count = el8("input", { type: "text", inputmode: "numeric", dir: "ltr", class: "bk-input sets-count-input", maxlength: "10", autocomplete: "off", "aria-label": `סעיף ${i + 1}: מספר האיברים`, placeholder: "מספר" });
+      const roster = el8("input", { type: "text", dir: "ltr", class: "bk-input sets-roster-input", maxlength: "1500", autocomplete: "off", spellcheck: "false", "aria-label": `סעיף ${i + 1}: איברי הקבוצה`, placeholder: "{ ... }" });
+      const countMsg = msg(), rosterMsg = msg(), summary = msg();
+      const form = el8("form", { class: "sets-item sets-count-item" }, [
+        el8("strong", { class: "sets-item-number", text: `סעיף ${i + 1}` }),
+        el8("div", { class: "sets-given", dir: "ltr", text: q.given }),
+        el8("label", {}, [el8("span", { text: "כמה איברים שונים יש בקבוצה?" }), count]),
+        countMsg,
+        el8("label", {}, [el8("span", { text: "כתבו את איברי הקבוצה בתוך סוגריים מסולסלים." }), roster]),
+        rosterMsg
+      ]);
+      const clear = () => {
+        [count, roster].forEach((n) => n.removeAttribute("aria-invalid"));
+        [countMsg, rosterMsg, summary].forEach((n) => say3(n, ""));
+      };
+      const check = () => {
+        const result = checkCardinalityAnswer(count.value, roster.value, q.answer);
+        for (const [input, feedback, r] of [[count, countMsg, result.count], [roster, rosterMsg, result.elements]]) {
+          input.setAttribute("aria-invalid", String(!r.ok));
+          say3(feedback, r.message, r.ok);
+        }
+        say3(summary, result.ok ? "נכון — גם מספר האיברים וגם רשימת האיברים מתאימים." : "תקנו את השדות המסומנים ונסו שוב.", result.ok);
+      };
+      [count, roster].forEach((n) => n.addEventListener("input", clear));
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        check();
+      });
+      form.append(el8("button", { type: "submit", class: "bk-btn", text: "בדיקה" }), button3("רמז", () => say3(summary, q.hint)), button3("איפוס", () => {
+        count.value = "";
+        roster.value = "";
+        clear();
+      }), summary);
+      box.append(form);
+    });
+    if ((_a = data.comparison) == null ? void 0 : _a.length) choices(box, { items: data.comparison, success: "התשובה להשוואת הקבוצות נכונה." }, data.items.length);
+  }
+  function writes(box, data) {
+    data.items.forEach((q, i) => {
+      const input = el8("input", { type: "text", dir: "ltr", class: "bk-input", maxlength: "1500", autocomplete: "off", spellcheck: "false", "aria-label": q.prompt, placeholder: "{ ... }" }), feedback = msg();
+      const form = el8("form", { class: "sets-item" }, [el8("label", {}, [el8("span", { class: "sets-item-number", text: `סעיף ${i + 1}` }), mixedText(q.prompt), input])]);
+      const check = () => {
+        const r = checkSetAnswer(input.value, q.answer);
+        input.setAttribute("aria-invalid", String(!r.ok));
+        say3(feedback, r.message, r.ok);
+      };
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        check();
+      });
+      input.addEventListener("input", () => {
+        say3(feedback, "");
+        input.removeAttribute("aria-invalid");
+      });
+      form.append(button3("בדיקה", check), button3("רמז", () => say3(feedback, q.hint)), button3("איפוס", () => {
+        input.value = "";
+        input.removeAttribute("aria-invalid");
+        say3(feedback, "");
+      }), feedback);
+      box.append(form);
+    });
+  }
+  function selection(box, data) {
+    box.append(math(data.given), mixedText(data.prompt));
+    const selected = /* @__PURE__ */ new Set(), cards = el8("div", { class: "sets-cards" }), feedback = msg();
+    const buttons = data.candidates.map((c) => {
+      const b = button3(c, () => {
+        selected.has(c) ? selected.delete(c) : selected.add(c);
+        b.setAttribute("aria-pressed", String(selected.has(c)));
+        say3(feedback, "");
+      });
+      b.dir = "ltr";
+      b.setAttribute("aria-pressed", "false");
+      cards.append(b);
+      return b;
+    });
+    box.append(cards, button3("בדיקה", () => {
+      const extra = [...selected].find((x) => !data.answer.includes(x));
+      const missing = data.answer.some((x) => !selected.has(x));
+      say3(feedback, extra ? `⁦${extra}⁩ אינו מתאים לתנאי. ${data.hint}` : missing ? "עדיין חסרה בחירה. " + data.hint : "נכון! נבחרו בדיוק כל האפשרויות המתאימות.", !extra && !missing);
+    }), button3("רמז", () => say3(feedback, data.hint)), button3("איפוס", () => {
+      selected.clear();
+      buttons.forEach((b) => b.setAttribute("aria-pressed", "false"));
+      say3(feedback, "");
+    }), feedback);
+  }
+  var REGIONS = ["רק ב־A", "גם ב־A וגם ב־B", "רק ב־B", "מחוץ לשתיהן, בתוך U"];
+  function venn(box, data) {
+    let stage = 0, selected = /* @__PURE__ */ new Set(), solved = false;
+    const heading = el8("p", { class: "sets-stage" }), formula = math(""), svgHost = el8("div", { class: "sets-venn" }), cards = el8("div", { class: "sets-cards" }), feedback = msg();
+    const lens = "M190 62.76 A76 76 0 0 1 190 177.24 A76 76 0 0 1 190 62.76 Z";
+    const circleA = "M64 120 a76 76 0 1 0 152 0 a76 76 0 1 0 -152 0 Z";
+    const circleB = "M164 120 a76 76 0 1 0 152 0 a76 76 0 1 0 -152 0 Z";
+    svgHost.innerHTML = `<svg viewBox="0 0 380 240" role="img" aria-label="עולם U ובו שתי קבוצות חופפות A ו־B"><rect data-region="3" x="4" y="4" width="372" height="232" rx="9"/><path data-region="0" fill-rule="evenodd" d="${circleA} ${lens}"/><path data-region="2" fill-rule="evenodd" d="${circleB} ${lens}"/><path data-region="1" d="${lens}"/><g class="sets-venn-label"><text x="25" y="30">U</text><text x="120" y="115">A</text><text x="260" y="115">B</text></g></svg>`;
+    const paths = [0, 1, 2, 3].map((i) => svgHost.querySelector(`[data-region="${i}"]`));
+    const buttons = REGIONS.map((name, i) => {
+      const b = button3(name, () => toggle(i));
+      b.setAttribute("aria-pressed", "false");
+      cards.append(b);
+      paths[i].addEventListener("click", () => toggle(i));
+      return b;
+    });
+    function toggle(i) {
+      selected.has(i) ? selected.delete(i) : selected.add(i);
+      solved = false;
+      next.disabled = true;
+      say3(feedback, "");
+      draw();
+    }
+    function draw() {
+      heading.textContent = `שלב ${stage + 1} מתוך ${data.tasks.length}`;
+      formula.textContent = data.tasks[stage].formula;
+      paths.forEach((p, i) => p.classList.toggle("selected", selected.has(i)));
+      buttons.forEach((b, i) => b.setAttribute("aria-pressed", String(selected.has(i))));
+      next.hidden = stage === data.tasks.length - 1;
+    }
+    const next = button3("לשלב הבא", () => {
+      if (!solved) return;
+      stage++;
+      selected.clear();
+      solved = false;
+      next.disabled = true;
+      say3(feedback, "");
+      draw();
+    });
+    next.disabled = true;
+    box.append(heading, mixedText("בחרו בתרשים או בכפתורים את כל האזורים ששייכים לקבוצה הבאה, ואז לחצו ״בדיקה״. מלבן U הוא העולם כולו."), formula, svgHost, cards, button3("בדיקה", () => {
+      const q = data.tasks[stage];
+      solved = selected.size === q.regions.length && q.regions.every((i) => selected.has(i));
+      next.disabled = !solved;
+      say3(feedback, (solved ? stage === data.tasks.length - 1 ? "סיימתם את כל האתגרים. " : "נכון! " : "האזורים שבחרתם עדיין אינם מתאימים. ") + q.why, solved);
+    }), next, button3("איפוס", () => {
+      stage = 0;
+      selected.clear();
+      solved = false;
+      next.disabled = true;
+      say3(feedback, "");
+      draw();
+    }), feedback);
+    draw();
+  }
+  function power(box, data) {
+    const expected = subsets(data.atoms), saved = /* @__PURE__ */ new Map(), chosen = /* @__PURE__ */ new Set(), feedback = msg(), progress = el8("p"), list = el8("div", { class: "sets-saved" }), cards = el8("div", { class: "sets-cards" });
+    const buttons = data.atoms.map((a) => {
+      const b = button3(a, () => {
+        chosen.has(a) ? chosen.delete(a) : chosen.add(a);
+        b.setAttribute("aria-pressed", String(chosen.has(a)));
+        say3(feedback, "");
+      });
+      b.setAttribute("aria-pressed", "false");
+      cards.append(b);
+      return b;
+    });
+    function update() {
+      progress.textContent = `נמצאו ${saved.size} מתוך ${expected.length} תת־קבוצות.`;
+      list.replaceChildren();
+      for (const [k, n] of saved) {
+        const b = button3(display2(n) + " ×", () => {
+          saved.delete(k);
+          say3(feedback, "");
+          update();
+        });
+        b.dir = "ltr";
+        b.setAttribute("aria-label", "מחיקת " + display2(n));
+        list.append(b);
+      }
+    }
+    box.append(math("A = {" + data.atoms.join(", ") + "}"), mixedText("בנו את כל תת־הקבוצות של A. בחרו איברים והוסיפו את הקבוצה שבניתם. כדי להוסיף את הקבוצה הריקה, השאירו את כל האיברים לא מסומנים. לחיצה על קבוצה שכבר הוספתם מוחקת אותה."), cards, button3("הוספת הקבוצה", () => {
+      const n = { type: "set", items: [...chosen].map(parseObject) }, k = key2(n);
+      if (saved.has(k)) return say3(feedback, "הקבוצה הזאת כבר ברשימה. שינוי הסדר אינו יוצר קבוצה חדשה.", false);
+      saved.set(k, n);
+      chosen.clear();
+      buttons.forEach((b) => b.setAttribute("aria-pressed", "false"));
+      say3(feedback, saved.size === expected.length ? "מצאתם את כל תת־הקבוצות! הרשימה שיצרתם היא קבוצת החזקה." : "הקבוצה נוספה. איזו אפשרות עוד חסרה?", true);
+      update();
+    }), button3("רמז", () => {
+      const missing = expected.filter((n) => !saved.has(key2(n)));
+      say3(feedback, missing.length ? `עדיין חסרה תת־קבוצה עם ${missing[0].items.length} איברים.` : "כבר מצאתם את כולן.");
+    }), button3("איפוס", () => {
+      saved.clear();
+      chosen.clear();
+      buttons.forEach((b) => b.setAttribute("aria-pressed", "false"));
+      say3(feedback, "");
+      update();
+    }), progress, list, feedback);
+    update();
+  }
+  function proof(box, data) {
+    let index = 0;
+    const preview = el8("ol", { class: "sets-proof-preview" }), area = el8("div"), feedback = msg();
+    const rules = [...new Set(data.steps.map((s) => s.rule)), "משפט נכון בדוגמה אחת"];
+    function row() {
+      area.replaceChildren();
+      if (index === data.steps.length) {
+        area.append(mixedText(data.end), mixedText("כתבו עכשיו את ההוכחה ברצף על דף, כולל המטרה והנימוקים."));
+        return;
+      }
+      const step2 = data.steps[index], formula = selectOptions(step2.options, index + 1), rule = selectOptions(rules, index + 2);
+      formula.setAttribute("aria-label", "השורה הבאה בהוכחה");
+      rule.setAttribute("aria-label", "הנימוק למעבר");
+      const selected = el8("p", { class: "sets-selected-formula" });
+      formula.addEventListener("change", () => {
+        selected.textContent = formula.value === "" ? "" : readable(step2.options[Number(formula.value)]);
+        say3(feedback, "");
+      });
+      rule.addEventListener("change", () => say3(feedback, ""));
+      area.append(el8("label", {}, [mixedText("בחרו את השורה הבאה:"), formula, selected]), el8("label", {}, [mixedText("בחרו נימוק:"), rule]), button3("בדיקת הצעד", () => {
+        if (formula.value === "" || rule.value === "") return say3(feedback, "בחרו גם שורה וגם נימוק.", false);
+        if (Number(formula.value) !== step2.answer) return say3(feedback, "השורה שבחרתם אינה המעבר המבוקש. " + step2.why, false);
+        if (rules[Number(rule.value)] !== step2.rule) return say3(feedback, "השורה מתאימה, אבל הנימוק אינו מצדיק את המעבר. " + step2.why, false);
+        preview.append(el8("li", {}, [math(data.link + " " + step2.options[step2.answer]), el8("span", { text: " — " + step2.rule })]));
+        index++;
+        say3(feedback, index === data.steps.length ? "ההוכחה הושלמה." : "הצעד נכון ונוסף להוכחה.", true);
+        row();
+      }));
+    }
+    const reset = () => {
+      index = 0;
+      preview.replaceChildren(el8("li", {}, [math(data.start), el8("span", { text: " — נקודת ההתחלה" })]));
+      say3(feedback, "");
+      row();
+    };
+    box.append(mixedText(data.goal), mixedText(data.intro), preview, area, button3("התחלה מחדש", reset), feedback);
+    reset();
   }
 
   // games/shared/practice-choices.js
@@ -3262,12 +5054,12 @@
     return "wrong";
   }
   var serial2 = 0;
-  function el4(tag, attrs = {}, children2 = []) {
+  function el9(tag, attrs = {}, children2 = []) {
     const node = document.createElement(tag);
-    for (const [key2, value] of Object.entries(attrs)) {
-      if (key2 === "text") node.textContent = value;
-      else if (key2 === "class") node.className = value;
-      else node.setAttribute(key2, value);
+    for (const [key3, value] of Object.entries(attrs)) {
+      if (key3 === "text") node.textContent = value;
+      else if (key3 === "class") node.className = value;
+      else node.setAttribute(key3, value);
     }
     children2.forEach((child) => node.append(child));
     return node;
@@ -3275,37 +5067,37 @@
   function initPracticeChoice(box) {
     const exercise = PRACTICE_CHOICES[box.dataset.choice];
     if (!exercise) return;
-    const summary = el4("div", { class: "bk-msg", "aria-live": "polite" });
-    const rows = exercise.map((question, index) => {
+    const summary = el9("div", { class: "bk-msg", "aria-live": "polite" });
+    const rows2 = exercise.map((question, index) => {
       const feedbackId = `practice-choice-feedback-${++serial2}`;
-      const select = el4("select", { class: "choice-select", "aria-label": question.prompt, "aria-describedby": feedbackId }, [
-        el4("option", { value: "", text: "בחרו תשובה…" }),
-        ...question.options.map((option, i) => el4("option", { value: String(i), text: option.text }))
+      const select2 = el9("select", { class: "choice-select", "aria-label": question.prompt, "aria-describedby": feedbackId }, [
+        el9("option", { value: "", text: "בחרו תשובה…" }),
+        ...question.options.map((option, i) => el9("option", { value: String(i), text: option.text }))
       ]);
-      const feedback = el4("div", { id: feedbackId, class: "bk-msg", "aria-live": "polite" });
-      select.addEventListener("change", () => {
+      const feedback = el9("div", { id: feedbackId, class: "bk-msg", "aria-live": "polite" });
+      select2.addEventListener("change", () => {
         feedback.textContent = "";
         feedback.className = "bk-msg";
-        select.removeAttribute("aria-invalid");
+        select2.removeAttribute("aria-invalid");
         summary.textContent = "";
         summary.className = "bk-msg";
       });
-      const fieldset = el4("fieldset", { class: "choice-item" }, [
-        el4("legend", { text: `${index + 1}. ${question.prompt}` }),
-        select,
+      const fieldset = el9("fieldset", { class: "choice-item" }, [
+        el9("legend", { text: `${index + 1}. ${question.prompt}` }),
+        select2,
         feedback
       ]);
       let input = null, substitutionFeedback = null, checkWritten = null;
       if (question.substitution) {
-        input = el4("input", { type: "text", class: "bk-input substitution-input", dir: "ltr", maxlength: "80", autocomplete: "off", spellcheck: "false", placeholder: "כתבו את הפסוק לאחר ההצבה", "aria-describedby": `${feedbackId}-substitution` });
-        substitutionFeedback = el4("div", { id: `${feedbackId}-substitution`, class: "bk-msg", "aria-live": "polite" });
-        const label = el4("label", {}, [el4("span", { text: `P(${question.substitution.value}):`, dir: "ltr" }), input]);
-        const checkInput = el4("button", { type: "button", class: "bk-btn", text: "בדיקת ההצבה" });
-        select.disabled = true;
+        input = el9("input", { type: "text", class: "bk-input substitution-input", dir: "ltr", maxlength: "80", autocomplete: "off", spellcheck: "false", placeholder: "כתבו את הפסוק לאחר ההצבה", "aria-describedby": `${feedbackId}-substitution` });
+        substitutionFeedback = el9("div", { id: `${feedbackId}-substitution`, class: "bk-msg", "aria-live": "polite" });
+        const label = el9("label", {}, [el9("span", { text: `P(${question.substitution.value}):`, dir: "ltr" }), input]);
+        const checkInput = el9("button", { type: "button", class: "bk-btn", text: "בדיקת ההצבה" });
+        select2.disabled = true;
         checkWritten = () => {
           const result = checkSubstitution(input.value, question.substitution);
           const correct = result === "correct";
-          select.disabled = !correct;
+          select2.disabled = !correct;
           input.setAttribute("aria-invalid", String(!correct));
           substitutionFeedback.className = `bk-msg ${correct ? "bk-good" : result === "empty" ? "bk-info" : "bk-bad"}`;
           substitutionFeedback.textContent = correct ? "ההצבה נכונה. עכשיו בדקו אם הפסוק שקיבלתם אמת או שקר ובחרו תשובה." : result === "empty" ? "כתבו תחילה את הפסוק שמתקבל כשמחליפים את x במספר הנתון." : result === "simplified" ? "כבר חישבתם את הסכום. כאן כתבו תחילה את הפסוק לאחר ההצבה, לפני חישוב הסכום." : `בהצבה מחליפים את x ב־${question.substitution.value}. שאר הביטוי נשאר כפי שהוא; כתבו שוויון שלם, כולל שני אגפיו.`;
@@ -3313,32 +5105,32 @@
         };
         checkInput.addEventListener("click", checkWritten);
         input.addEventListener("input", () => {
-          select.disabled = true;
-          select.value = "";
-          select.removeAttribute("aria-invalid");
+          select2.disabled = true;
+          select2.value = "";
+          select2.removeAttribute("aria-invalid");
           input.removeAttribute("aria-invalid");
           [feedback, substitutionFeedback, summary].forEach((n) => {
             n.textContent = "";
             n.className = "bk-msg";
           });
         });
-        fieldset.insertBefore(el4("div", { class: "substitution-entry" }, [label, checkInput, substitutionFeedback]), select);
-        select.setAttribute("aria-label", `ערך האמת של P(${question.substitution.value})`);
+        fieldset.insertBefore(el9("div", { class: "substitution-entry" }, [label, checkInput, substitutionFeedback]), select2);
+        select2.setAttribute("aria-label", `ערך האמת של P(${question.substitution.value})`);
       }
-      return { question, select, feedback, fieldset, input, substitutionFeedback, checkWritten };
+      return { question, select: select2, feedback, fieldset, input, substitutionFeedback, checkWritten };
     });
-    const check = el4("button", { type: "submit", class: "bk-btn bk-main", text: "בדיקת התשובות" });
-    const reset = el4("button", { type: "button", class: "bk-btn bk-quiet", text: "ניסיון חדש" });
-    const form = el4("form", {}, [
-      el4("p", { text: "בחרו תשובה לכל סעיף ולחצו ״בדיקת התשובות״. אפשר לתקן ולבדוק שוב. הרמזים והפתרון המודרך נמצאים בהמשך." }),
-      ...rows.map((r) => r.fieldset),
-      el4("div", { class: "bk-bar" }, [check, reset]),
+    const check = el9("button", { type: "submit", class: "bk-btn bk-main", text: "בדיקת התשובות" });
+    const reset = el9("button", { type: "button", class: "bk-btn bk-quiet", text: "ניסיון חדש" });
+    const form = el9("form", {}, [
+      el9("p", { text: "בחרו תשובה לכל סעיף ולחצו ״בדיקת התשובות״. אפשר לתקן ולבדוק שוב. הרמזים והפתרון המודרך נמצאים בהמשך." }),
+      ...rows2.map((r) => r.fieldset),
+      el9("div", { class: "bk-bar" }, [check, reset]),
       summary
     ]);
     form.addEventListener("submit", (event) => {
       event.preventDefault();
       let empty = 0, wrong = 0;
-      rows.forEach(({ question, select, feedback, checkWritten }) => {
+      rows2.forEach(({ question, select: select2, feedback, checkWritten }) => {
         if (checkWritten) {
           const result = checkWritten();
           if (result !== "correct") {
@@ -3347,34 +5139,34 @@
             return;
           }
         }
-        const choice = select.value === "" ? null : question.options[Number(select.value)];
-        if (!choice) empty++;
-        else if (!choice.correct) wrong++;
-        const correct = !!(choice == null ? void 0 : choice.correct);
-        feedback.className = `bk-msg ${!choice ? "bk-info" : correct ? "bk-good" : "bk-bad"}`;
-        feedback.textContent = choice ? `${correct ? "נכון. " : "כדאי לבדוק שוב. "}${choice.feedback}` : "בחרו תשובה לסעיף הזה.";
-        select.setAttribute("aria-invalid", correct ? "false" : "true");
+        const choice2 = select2.value === "" ? null : question.options[Number(select2.value)];
+        if (!choice2) empty++;
+        else if (!choice2.correct) wrong++;
+        const correct = !!(choice2 == null ? void 0 : choice2.correct);
+        feedback.className = `bk-msg ${!choice2 ? "bk-info" : correct ? "bk-good" : "bk-bad"}`;
+        feedback.textContent = choice2 ? `${correct ? "נכון. " : "כדאי לבדוק שוב. "}${choice2.feedback}` : "בחרו תשובה לסעיף הזה.";
+        select2.setAttribute("aria-invalid", correct ? "false" : "true");
       });
       summary.className = `bk-msg ${wrong ? "bk-bad" : empty ? "bk-info" : "bk-good"}`;
-      summary.textContent = wrong || empty ? `תשובות נכונות: ${rows.length - wrong - empty} מתוך ${rows.length}. ${empty ? `נשארו ${empty} סעיפים ללא תשובה. ` : ""}${wrong ? "קראו את ההסברים ליד התשובות המסומנות ונסו שוב." : ""}` : "כל התשובות נכונות! קראו את ההסברים, ונסו לנסח גם במילים שלכם מדוע.";
+      summary.textContent = wrong || empty ? `תשובות נכונות: ${rows2.length - wrong - empty} מתוך ${rows2.length}. ${empty ? `נשארו ${empty} סעיפים ללא תשובה. ` : ""}${wrong ? "קראו את ההסברים ליד התשובות המסומנות ונסו שוב." : ""}` : "כל התשובות נכונות! קראו את ההסברים, ונסו לנסח גם במילים שלכם מדוע.";
     });
     reset.addEventListener("click", () => {
-      rows.forEach(({ select, feedback, input, substitutionFeedback }) => {
-        select.value = "";
-        select.removeAttribute("aria-invalid");
+      rows2.forEach(({ select: select2, feedback, input, substitutionFeedback }) => {
+        select2.value = "";
+        select2.removeAttribute("aria-invalid");
         feedback.textContent = "";
         feedback.className = "bk-msg";
         if (input) {
           input.value = "";
           input.removeAttribute("aria-invalid");
-          select.disabled = true;
+          select2.disabled = true;
           substitutionFeedback.textContent = "";
           substitutionFeedback.className = "bk-msg";
         }
       });
       summary.textContent = "";
       summary.className = "bk-msg";
-      (rows[0].input || rows[0].select).focus();
+      (rows2[0].input || rows2[0].select).focus();
     });
     box.append(form);
     box.classList.add("choice-ready");
@@ -3432,12 +5224,12 @@
         trigger.setAttribute("aria-expanded", "false");
       })]
     ]) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "bk-btn bk-quiet";
-      button.textContent = label;
-      button.addEventListener("click", action);
-      controls.append(button);
+      const button4 = document.createElement("button");
+      button4.type = "button";
+      button4.className = "bk-btn bk-quiet";
+      button4.textContent = label;
+      button4.addEventListener("click", action);
+      controls.append(button4);
     }
     box.append(controls);
   }
@@ -3463,58 +5255,12 @@
     });
   }
 
-  // games/gate/knights.js
-  var SYM2 = { and: " ∧ ", or: " ∨ ", xor: " ⊕ ", imp: " → ", iff: " ↔ " };
-  function show(f, leaf, inner = false) {
-    f = parse(f);
-    leaf = leaf || ((n) => n.type === "var" ? n.name : n.value ? "T" : "F");
-    function go(n, inner2) {
-      switch (n.type) {
-        case "var":
-        case "const":
-          return leaf(n);
-        case "not":
-          return "¬" + go(n.arg, true);
-      }
-      const s = n.args ? n.args.map((a) => go(a, true)).join(SYM2[n.type]) : go(n.left, true) + SYM2[n.type] + go(n.right, true);
-      return inner2 ? "(" + s + ")" : s;
-    }
-    return go(f, inner);
-  }
-  var kids = (n) => n.type === "not" ? [n.arg] : n.args ? n.args : n.left ? [n.left, n.right] : [];
-  function rebuild2(n, k) {
-    if (n.type === "not") return { type: "not", arg: k[0] };
-    if (n.args) return { type: n.type, args: k };
-    return { type: n.type, left: k[0], right: k[1] };
-  }
-  function substitute(n, env) {
-    if (n.type === "var") return { type: "const", value: !!env[n.name] };
-    if (n.type === "const") return n;
-    return rebuild2(n, kids(n).map((c) => substitute(c, env)));
-  }
-  function reduceOnce(n) {
-    if (n.type === "const" || n.type === "var") return n;
-    const k = kids(n);
-    if (k.every((c) => c.type === "const")) return { type: "const", value: evaluate(n, {}) };
-    return rebuild2(n, k.map(reduceOnce));
-  }
-  function evaluationSteps(formula, env) {
-    const steps = [parse(formula)];
-    let t = substitute(steps[0], env);
-    if (steps[0].type !== "const") steps.push(t);
-    while (t.type !== "const") {
-      t = reduceOnce(t);
-      steps.push(t);
-    }
-    return steps;
-  }
-
   // games/shared/book.js
-  var tv = (b) => `<span class="tv-${b ? "T" : "F"}">${b ? "T" : "F"}</span>`;
+  var tv2 = (b) => `<span class="tv-${b ? "T" : "F"}">${b ? "T" : "F"}</span>`;
   var m = (s) => `<span class="m">${s}</span>`;
-  var chipLeaf = (n) => n.type === "var" ? n.name : tv(n.value);
-  var rowText = (names, env) => names.map((n) => m(`${n} = ${tv(env[n])}`)).join(", ");
-  function el5(tag, attrs, children2) {
+  var chipLeaf = (n) => n.type === "var" ? n.name : tv2(n.value);
+  var rowText = (names, env) => names.map((n) => m(`${n} = ${tv2(env[n])}`)).join(", ");
+  function el10(tag, attrs, children2) {
     const node = document.createElement(tag);
     for (const [k, v] of Object.entries(attrs || {})) {
       if (v === false || v == null) continue;
@@ -3538,14 +5284,14 @@
     if (!hints.length && !steps.length) return;
     let h = 0, s = 0;
     [...hints, ...steps].forEach((x) => x.classList.add("bk-hidden"));
-    hints.forEach((x, i) => x.prepend(el5("span", { class: "bk-label", text: hints.length > 1 ? `רמז ${i + 1}` : "רמז" })));
-    steps.forEach((x, i) => x.prepend(el5("span", { class: "bk-label", text: `צעד ${i + 1} מתוך ${steps.length}` })));
-    const live = el5("span", { class: "bk-sr", "aria-live": "polite" });
-    const bHint = el5("button", { type: "button", class: "bk-btn", onclick: () => reveal("hint") });
-    const bStep = el5("button", { type: "button", class: "bk-btn bk-main", onclick: () => reveal("step") });
-    const bAll = el5("button", { type: "button", class: "bk-btn bk-quiet", text: "כל הפתרון", onclick: () => reveal("all") });
-    const bHide = el5("button", { type: "button", class: "bk-btn bk-quiet", text: "הסתרה", onclick: () => reveal("none") });
-    const bar = el5("div", { class: "bk-bar" }, [el5("span", { class: "bk-title", text: "פתרון מודרך" }), bHint, bStep, bAll, bHide, live]);
+    hints.forEach((x, i) => x.prepend(el10("span", { class: "bk-label", text: hints.length > 1 ? `רמז ${i + 1}` : "רמז" })));
+    steps.forEach((x, i) => x.prepend(el10("span", { class: "bk-label", text: `צעד ${i + 1} מתוך ${steps.length}` })));
+    const live = el10("span", { class: "bk-sr", "aria-live": "polite" });
+    const bHint = el10("button", { type: "button", class: "bk-btn", onclick: () => reveal("hint") });
+    const bStep = el10("button", { type: "button", class: "bk-btn bk-main", onclick: () => reveal("step") });
+    const bAll = el10("button", { type: "button", class: "bk-btn bk-quiet", text: "כל הפתרון", onclick: () => reveal("all") });
+    const bHide = el10("button", { type: "button", class: "bk-btn bk-quiet", text: "הסתרה", onclick: () => reveal("none") });
+    const bar = el10("div", { class: "bk-bar" }, [el10("span", { class: "bk-title", text: "פתרון מודרך" }), bHint, bStep, bAll, bHide, live]);
     box.prepend(bar);
     box.classList.add("bk-solve");
     function draw() {
@@ -3587,54 +5333,54 @@
     const cols = (box.dataset.cols || box.getAttribute("cols") || "").split(";").map((x) => x.trim()).filter(Boolean).map(parse);
     if (!cols.length) return;
     const names = box.dataset.vars ? box.dataset.vars.split(",").map((x) => x.trim()) : [...new Set(cols.flatMap((c) => variables(c)))];
-    const rows = assignments(names);
+    const rows2 = assignments(names);
     const after = kids2(box, "after");
     after.forEach((x) => x.classList.add("bk-hidden"));
     let marks, wrong, focus;
-    const table = el5("table", { class: "bk-tt" });
-    const msg = el5("div", { class: "bk-msg", "aria-live": "polite" });
-    const btn2 = (text, fn, cls = "bk-btn") => el5("button", { type: "button", class: cls, text, onclick: fn });
-    const bar = el5("div", { class: "bk-bar" }, [
-      btn2("בדיקה", check, "bk-btn bk-main"),
-      btn2("רמז", hint),
-      btn2("העמודה הבאה", nextCol),
-      btn2("פתרון מלא", solveAll, "bk-btn bk-quiet"),
-      btn2("איפוס", reset, "bk-btn bk-quiet")
+    const table = el10("table", { class: "bk-tt" });
+    const msg2 = el10("div", { class: "bk-msg", "aria-live": "polite" });
+    const btn3 = (text, fn, cls = "bk-btn") => el10("button", { type: "button", class: cls, text, onclick: fn });
+    const bar = el10("div", { class: "bk-bar" }, [
+      btn3("בדיקה", check, "bk-btn bk-main"),
+      btn3("רמז", hint),
+      btn3("העמודה הבאה", nextCol),
+      btn3("פתרון מלא", solveAll, "bk-btn bk-quiet"),
+      btn3("איפוס", reset, "bk-btn bk-quiet")
     ]);
     box.classList.add("bk-ttq");
-    box.prepend(el5("div", { class: "bk-tt-wrap" }, [table]), bar, msg);
-    const evidence = initTableEvidence(box, rows, () => {
-      say("");
+    box.prepend(el10("div", { class: "bk-tt-wrap" }, [table]), bar, msg2);
+    const evidence = initTableEvidence(box, rows2, () => {
+      say4("");
       after.forEach((x) => x.classList.add("bk-hidden"));
     });
     if (evidence) {
       bar.before(evidence.node);
-      bar.append(btn2("בדיקת הטבלה", checkTable));
-      evidence.node.append(el5("p", { text: "מילוי הטבלה הוא רשות. אפשר לבחור שורה בלי למלא אותה. ״בדיקה״ בודק את התשובה שבחרתם; ״בדיקת הטבלה״ בודק בנפרד את תאי העזר שמילאתם." }));
+      bar.append(btn3("בדיקת הטבלה", checkTable));
+      evidence.node.append(el10("p", { text: "מילוי הטבלה הוא רשות. אפשר לבחור שורה בלי למלא אותה. ״בדיקה״ בודק את התשובה שבחרתם; ״בדיקת הטבלה״ בודק בנפרד את תאי העזר שמילאתם." }));
     }
     function invalidateEvidence() {
       if (evidence) {
         evidence.invalidate();
-        say("");
+        say4("");
         after.forEach((x) => x.classList.add("bk-hidden"));
       }
     }
-    function say(html, kind) {
-      msg.className = "bk-msg" + (kind ? " bk-" + kind : "");
-      msg.innerHTML = html;
+    function say4(html, kind) {
+      msg2.className = "bk-msg" + (kind ? " bk-" + kind : "");
+      msg2.innerHTML = html;
     }
     function draw() {
-      const head = el5("tr", {}, [...names.map((n) => el5("th", { html: m(n) })), ...cols.map((c) => el5("th", { html: m(format(c)) }))]);
-      const body = el5("tbody");
-      rows.forEach((env, r) => {
-        const tr = el5("tr", {}, names.map((n) => el5("td", { html: tv(env[n]) })));
+      const head = el10("tr", {}, [...names.map((n) => el10("th", { html: m(n) })), ...cols.map((c) => el10("th", { html: m(format(c)) }))]);
+      const body = el10("tbody");
+      rows2.forEach((env, r) => {
+        const tr = el10("tr", {}, names.map((n) => el10("td", { html: tv2(env[n]) })));
         cols.forEach((c, k) => {
           const v = marks[r][k];
-          tr.append(el5("td", {}, [el5("button", {
+          tr.append(el10("td", {}, [el10("button", {
             type: "button",
             class: "bk-cell" + (wrong[r][k] ? " bk-wrong" : "") + (focus && focus[0] === r && focus[1] === k ? " bk-focus" : ""),
             "aria-label": `שורה ${r + 1}, עמודה ${format(c)}: ${v === null ? "ריק" : v ? "T" : "F"}. לחצו כדי לשנות`,
-            html: v === null ? '<span class="bk-q">?</span>' : tv(v),
+            html: v === null ? '<span class="bk-q">?</span>' : tv2(v),
             onclick() {
               marks[r][k] = v === null ? true : v ? false : null;
               wrong[r][k] = false;
@@ -3646,16 +5392,16 @@
         });
         body.append(tr);
       });
-      table.replaceChildren(el5("thead", {}, [head]), body);
+      table.replaceChildren(el10("thead", {}, [head]), body);
     }
-    const truth = (r, k) => evaluate(cols[k], rows[r]);
+    const truth = (r, k) => evaluate(cols[k], rows2[r]);
     function check() {
       if (evidence) {
         if (!evidence.check()) {
-          say("בדקו את ההסבר ליד השורה שבחרתם ונסו שוב.", "info");
+          say4("בדקו את ההסבר ליד השורה שבחרתם ונסו שוב.", "info");
           return;
         }
-        say("התשובה נכונה! אפשר להיעזר בטבלה, אבל אין חובה למלא אותה.", "good");
+        say4("התשובה נכונה! אפשר להיעזר בטבלה, אבל אין חובה למלא אותה.", "good");
         after.forEach((x) => {
           x.classList.remove("bk-hidden");
           typeset(x);
@@ -3666,7 +5412,7 @@
     }
     function checkTable() {
       let empty = 0, bad = 0;
-      rows.forEach((_, r) => cols.forEach((_2, k) => {
+      rows2.forEach((_, r) => cols.forEach((_2, k) => {
         if (marks[r][k] === null) empty++;
         else {
           wrong[r][k] = marks[r][k] !== truth(r, k);
@@ -3675,38 +5421,38 @@
       }));
       focus = null;
       draw();
-      if (bad) return say(`${bad === 1 ? "תא אחד שגוי" : `${bad} תאים שגויים`} (מסומנים באדום). לחצו ״רמז״ כדי לקבל הסבר לאחד מהם.`, "bad");
-      if (empty) return say(`עד עכשיו הכול נכון. נשארו עוד ${empty} תאים ריקים.`, "info");
-      say(evidence ? "כל התאים נכונים. בחרו את התשובה ולחצו ״בדיקה״ כדי לבדוק אותה." : "כל התאים נכונים!", "good");
+      if (bad) return say4(`${bad === 1 ? "תא אחד שגוי" : `${bad} תאים שגויים`} (מסומנים באדום). לחצו ״רמז״ כדי לקבל הסבר לאחד מהם.`, "bad");
+      if (empty) return say4(`עד עכשיו הכול נכון. נשארו עוד ${empty} תאים ריקים.`, "info");
+      say4(evidence ? "כל התאים נכונים. בחרו את התשובה ולחצו ״בדיקה״ כדי לבדוק אותה." : "כל התאים נכונים!", "good");
       if (!evidence) after.forEach((x) => {
         x.classList.remove("bk-hidden");
         typeset(x);
       });
     }
     function firstOpen() {
-      for (let k = 0; k < cols.length; k++) for (let r = 0; r < rows.length; r++) {
+      for (let k = 0; k < cols.length; k++) for (let r = 0; r < rows2.length; r++) {
         if (marks[r][k] === null || marks[r][k] !== truth(r, k)) return [r, k];
       }
       return null;
     }
     function hint() {
       const f = firstOpen();
-      if (!f) return say("אין מה לרמוז: הטבלה מלאה ונכונה. לחצו ״בדיקה״.", "info");
+      if (!f) return say4("אין מה לרמוז: הטבלה מלאה ונכונה. לחצו ״בדיקה״.", "info");
       const [r, k] = f;
       focus = f;
       draw();
       const verb = marks[r][k] === null ? "התא הזה עוד ריק" : "התא הזה לא נכון";
-      say(`${verb} (מסומן במסגרת): בשורה ${rowText(names, rows[r])}, ${m(chain(cols[k], rows[r]))}.`, "info");
+      say4(`${verb} (מסומן במסגרת): בשורה ${rowText(names, rows2[r])}, ${m(chain(cols[k], rows2[r]))}.`, "info");
     }
     function nextCol() {
       invalidateEvidence();
       const f = firstOpen();
       if (!f) {
         if (evidence) evidence.enable();
-        return say("כל העמודות כבר נכונות.", "info");
+        return say4("כל העמודות כבר נכונות.", "info");
       }
       const k = f[1];
-      rows.forEach((_, r) => {
+      rows2.forEach((_, r) => {
         marks[r][k] = truth(r, k);
         wrong[r][k] = false;
       });
@@ -3714,7 +5460,7 @@
       draw();
       const c = cols[k];
       const sub = c.type === "not" ? "הפוך מהעמודה של " + m(format(c.arg)) : c.args ? `מחשבים ${c.type === "and" ? "״וגם״" : "״או״"} של ${c.args.map((a) => m(format(a))).join(" ו-")}` : c.type === "xor" ? "או מפריד: אמת כשבדיוק אחד משני החלקים אמת" : c.type === "iff" ? "אם ורק אם: אמת כששני החלקים מקבלים אותו ערך אמת" : c.type === "imp" ? `גרירה: שקר רק כש-${m(format(c.left))} אמת ו-${m(format(c.right))} שקר` : "";
-      say(`מילאנו את העמודה ${m(format(c))}${sub ? ": " + sub : ""}. למשל בשורה ${rowText(names, rows[0])}: ${m(chain(c, rows[0]))}.`, "info");
+      say4(`מילאנו את העמודה ${m(format(c))}${sub ? ": " + sub : ""}. למשל בשורה ${rowText(names, rows2[0])}: ${m(chain(c, rows2[0]))}.`, "info");
       if (!firstOpen()) {
         if (evidence) evidence.enable();
         else after.forEach((x) => {
@@ -3724,13 +5470,13 @@
       }
     }
     function solveAll() {
-      rows.forEach((_, r) => cols.forEach((_2, k) => {
+      rows2.forEach((_, r) => cols.forEach((_2, k) => {
         marks[r][k] = truth(r, k);
         wrong[r][k] = false;
       }));
       focus = null;
       draw();
-      say("זו הטבלה המלאה.", "info");
+      say4("זו הטבלה המלאה.", "info");
       if (evidence) evidence.reveal();
       after.forEach((x) => {
         x.classList.remove("bk-hidden");
@@ -3739,11 +5485,11 @@
     }
     function reset() {
       if (evidence) evidence.reset();
-      marks = rows.map(() => cols.map(() => null));
-      wrong = rows.map(() => cols.map(() => false));
+      marks = rows2.map(() => cols.map(() => null));
+      wrong = rows2.map(() => cols.map(() => false));
       focus = null;
       draw();
-      say("");
+      say4("");
       after.forEach((x) => x.classList.add("bk-hidden"));
     }
     reset();
@@ -3754,9 +5500,9 @@
     const allowed = (box.dataset.vars || variables(answer).join(",")).split(",").map((x) => x.trim());
     const hints = kids2(box, "hint"), explain = kids2(box, "explain");
     [...hints, ...explain].forEach((x) => x.classList.add("bk-hidden"));
-    hints.forEach((x, i) => x.prepend(el5("span", { class: "bk-label", text: hints.length > 1 ? `רמז ${i + 1}` : "רמז" })));
+    hints.forEach((x, i) => x.prepend(el10("span", { class: "bk-label", text: hints.length > 1 ? `רמז ${i + 1}` : "רמז" })));
     let h = 0;
-    const input = el5("input", {
+    const input = el10("input", {
       type: "text",
       class: "bk-input",
       dir: "ltr",
@@ -3784,26 +5530,26 @@
       input.setSelectionRange(a + sym.length, a + sym.length);
     };
     const symbols2 = box.dataset.symbols ? SYMS.filter(([s]) => box.dataset.symbols.includes(s)) : SYMS;
-    const keys = el5(
+    const keys = el10(
       "div",
       { class: "bk-keys", role: "group", "aria-label": "סמלים" },
-      symbols2.map(([s, name]) => el5("button", { type: "button", class: "bk-key", "aria-label": name, text: s, onclick: () => insert(s) }))
+      symbols2.map(([s, name]) => el10("button", { type: "button", class: "bk-key", "aria-label": name, text: s, onclick: () => insert(s) }))
     );
-    const msg = el5("div", { class: "bk-msg", "aria-live": "polite" });
-    const bHint = el5("button", { type: "button", class: "bk-btn", onclick: giveHint });
-    const bar = el5("div", { class: "bk-bar" }, [
-      el5("button", { type: "button", class: "bk-btn bk-main", text: "בדיקה", onclick: check }),
+    const msg2 = el10("div", { class: "bk-msg", "aria-live": "polite" });
+    const bHint = el10("button", { type: "button", class: "bk-btn", onclick: giveHint });
+    const bar = el10("div", { class: "bk-bar" }, [
+      el10("button", { type: "button", class: "bk-btn bk-main", text: "בדיקה", onclick: check }),
       bHint,
-      el5("button", { type: "button", class: "bk-btn bk-quiet", text: "הצגת תשובה", onclick: showAnswer })
+      el10("button", { type: "button", class: "bk-btn bk-quiet", text: "הצגת תשובה", onclick: showAnswer })
     ]);
     const firstHint = hints[0] || null;
-    box.insertBefore(el5("div", { class: "bk-fq-row" }, [input, keys]), firstHint);
+    box.insertBefore(el10("div", { class: "bk-fq-row" }, [input, keys]), firstHint);
     box.insertBefore(bar, firstHint);
-    box.insertBefore(msg, firstHint);
+    box.insertBefore(msg2, firstHint);
     box.classList.add("bk-fq");
-    function say(html, kind) {
-      msg.className = "bk-msg" + (kind ? " bk-" + kind : "");
-      msg.innerHTML = html;
+    function say4(html, kind) {
+      msg2.className = "bk-msg" + (kind ? " bk-" + kind : "");
+      msg2.innerHTML = html;
     }
     function drawHint() {
       bHint.hidden = !hints.length;
@@ -3820,22 +5566,22 @@
     }
     function check() {
       const text = input.value.trim();
-      if (!text) return say("כתבו נוסחה בשדה (אפשר להיעזר בכפתורי הסמלים), ואז לחצו ״בדיקה״.", "info");
+      if (!text) return say4("כתבו נוסחה בשדה (אפשר להיעזר בכפתורי הסמלים), ואז לחצו ״בדיקה״.", "info");
       let f;
       try {
         f = parse(text);
       } catch (e) {
-        return say("לא הצלחתי לקרוא את הנוסחה. בדקו שהסוגריים סגורים ושבין כל שני פסוקים יש קשר (למשל ∧ או ∨).", "bad");
+        return say4("לא הצלחתי לקרוא את הנוסחה. בדקו שהסוגריים סגורים ושבין כל שני פסוקים יש קשר (למשל ∧ או ∨).", "bad");
       }
       const extra = variables(f).filter((v) => !allowed.includes(v));
-      if (extra.length) return say(`הנוסחה משתמשת ב-${m(extra.join(", "))}, אבל במשפט יש רק ${m(allowed.join(", "))}.`, "bad");
+      if (extra.length) return say4(`הנוסחה משתמשת ב-${m(extra.join(", "))}, אבל במשפט יש רק ${m(allowed.join(", "))}.`, "bad");
       const required = (box.dataset.requiredVars || "").split(",").filter(Boolean);
       const missing = required.filter((v) => !variables(f).includes(v));
-      if (missing.length) return say(`בתרגיל הזה צריך להשתמש בשתי האותיות. הוסיפו לנוסחה גם את ${m(missing.join(", "))}.`, "bad");
+      if (missing.length) return say4(`בתרגיל הזה צריך להשתמש בשתי האותיות. הוסיפו לנוסחה גם את ${m(missing.join(", "))}.`, "bad");
       const r = compare(f, answer);
       if (r.equal) {
         const exact = format(f) === format(answer);
-        say(exact ? "נכון!" : `נכון! הנוסחה שלכם והנוסחה ${m(format(answer))} נותנות אותו ערך אמת בכל שורה של הטבלה.`, "good");
+        say4(exact ? "נכון!" : `נכון! הנוסחה שלכם והנוסחה ${m(format(answer))} נותנות אותו ערך אמת בכל שורה של הטבלה.`, "good");
         explain.forEach((x) => {
           x.classList.remove("bk-hidden");
           typeset(x);
@@ -3844,10 +5590,10 @@
       }
       const names = [.../* @__PURE__ */ new Set([...allowed])];
       const env = Object.fromEntries(names.map((n) => [n, !!r.row[n]]));
-      say(`עוד לא. הנה שורה שבה הנוסחה שלכם והנוסחה הנכונה נותנות ערכים שונים: ${rowText(names, env)}. אצלכם ${m(chain(f, env))}, אבל המשפט באמת ${evaluate(answer, env) ? "אמת" : "שקר"} במצב הזה.`, "bad");
+      say4(`עוד לא. הנה שורה שבה הנוסחה שלכם והנוסחה הנכונה נותנות ערכים שונים: ${rowText(names, env)}. אצלכם ${m(chain(f, env))}, אבל המשפט באמת ${evaluate(answer, env) ? "אמת" : "שקר"} במצב הזה.`, "bad");
     }
     function showAnswer() {
-      say(`תשובה אפשרית: ${m(format(answer))}`, "info");
+      say4(`תשובה אפשרית: ${m(format(answer))}`, "info");
       explain.forEach((x) => {
         x.classList.remove("bk-hidden");
         typeset(x);
@@ -3864,6 +5610,9 @@
     });
   }
   function init() {
+    initNavigation();
+    document.querySelectorAll(".knight-activity").forEach(initKnightWorkshop);
+    document.querySelectorAll(".sets-exercise").forEach(initSets);
     document.querySelectorAll(".choice-exercise").forEach(initPracticeChoice);
     document.querySelectorAll(".argument-editor").forEach(initArgumentEditor);
     document.querySelectorAll(".proof-editor").forEach(initProofEditor);

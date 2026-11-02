@@ -1,4 +1,6 @@
-import { RULES, checkStart, checkProof, ruleExamples } from "./proof-rules.js";
+import { keyboard } from "./formula-keyboard.js";
+import { replacementEditor } from "./replacement-editor.js";
+import { RULES, checkStart, checkProof, ruleExamples, stepReason, trimBlankSteps } from "./proof-rules.js";
 import { format, parse } from "./logic.js";
 
 function el(tag, attrs = {}, children = []) {
@@ -13,30 +15,16 @@ function el(tag, attrs = {}, children = []) {
   return node;
 }
 let nextId = 0;
-const symbols = [["¬","שלילה"],["∧","וגם"],["∨","או"],["→","גרירה"],["↔","אם ורק אם"],["(","סוגר פותח"],[")","סוגר סוגר"],["T","אמת"],["F","שקר"]];
 // Keep grouping visible: the student may have just justified an association step.
 const display = formula => format(parse(formula, { flatten: false }));
 
-function keyboard(input, changed) {
-  return el("div", { class: "bk-keys", role: "group", "aria-label": "סמלים לנוסחה" },
-    symbols.map(([symbol, name]) => el("button", {
-      type: "button", class: "bk-key", text: symbol, "aria-label": name,
-      onclick() {
-        const a = input.selectionStart ?? input.value.length, b = input.selectionEnd ?? a;
-        if (input.value.length - (b-a) + symbol.length > 240) return;
-        input.value = input.value.slice(0,a) + symbol + input.value.slice(b);
-        input.focus(); input.setSelectionRange(a+symbol.length,a+symbol.length);
-        changed();
-      },
-    })));
-}
 
 export function initProofEditor(box) {
   const start = box.dataset.start, target = box.dataset.target;
   const reversible = box.dataset.reversible === "true";
   const showTarget = box.dataset.showTarget !== "false";
   const rows = [];
-  let accepted = [], acceptedStart = null;
+  let accepted = [], acceptedStart = null, acceptedTarget = target;
   const list = el("div", { class: "proof-steps" });
   const summary = el("div", { class: "bk-msg", "aria-live": "polite" });
   const startFeedback = el("div", { id: `proof-start-feedback-${++nextId}`, class: "bk-msg", "aria-live": "polite" });
@@ -74,13 +62,14 @@ export function initProofEditor(box) {
     chain.replaceChildren();
     const goalStatement = (steps = []) => {
       // A simplification exercise must not disclose its answer before completion.
-      const known = showTarget || (acceptedStart && checkProof(acceptedStart, target, steps).complete);
+      const known = showTarget || (acceptedStart && checkProof(acceptedStart, acceptedTarget, steps).complete);
+      const from = acceptedStart || start;
+      const to = acceptedStart ? acceptedTarget : target;
       return el("p", {}, [el("strong", { text: known ? "נראה ש־" : "נפשט את הנוסחה:" }),
-        el("span", { class: "proof-formula", dir: "ltr", text: known ? `${display(start)} ≡ ${display(target)}` : display(start) }),
+        el("span", { class: "proof-formula", dir: "ltr", text: known ? `${display(from)} ≡ ${display(to)}` : display(from) }),
       ]);
     };
     goal.replaceChildren(goalStatement(accepted));
-    for (const row of rows) { row.localProof.replaceChildren(); row.localPreview.hidden = true; }
     if (!acceptedStart) {
       chain.append(el("p", { text: "לאחר בדיקת נקודת המוצא, ההוכחה תתחיל להופיע כאן." }));
       return;
@@ -91,14 +80,7 @@ export function initProofEditor(box) {
       el("span", { class: "proof-chain-reason", dir: "rtl", text: reason }),
     ]);
     chain.append(line(acceptedStart, "נקודת המוצא", true));
-    accepted.forEach((step,i) => {
-      chain.append(line(step.formula, `לפי ${RULES.find(r => r.id === step.rule).name}`));
-      rows[i].localPreview.hidden = false;
-      rows[i].localTitle.textContent = `ההוכחה עד צעד ${i+1}`;
-      rows[i].localGoal.replaceChildren(goalStatement(accepted.slice(0,i+1)));
-      rows[i].localProof.append(line(acceptedStart, "נקודת המוצא", true));
-      accepted.slice(0,i+1).forEach(s => rows[i].localProof.append(line(s.formula, `לפי ${RULES.find(r => r.id === s.rule).name}`)));
-    });
+    accepted.forEach(step=>chain.append(line(step.formula,stepReason(step))));
   }
   function clearFeedback(from = 0, resetStart = false) {
     accepted = accepted.slice(0, from);
@@ -107,6 +89,7 @@ export function initProofEditor(box) {
       startFeedback.textContent = "";
       startInput.removeAttribute("aria-invalid");
     }
+    refreshReplacements();
     renderChain();
     summary.textContent = "";
     summary.className = "bk-msg";
@@ -116,6 +99,9 @@ export function initProofEditor(box) {
       row.input.removeAttribute("aria-invalid");
       row.select.removeAttribute("aria-invalid");
     }
+  }
+  function refreshReplacements(){
+    rows.forEach((row,i)=>row.replacements.setSource(i?rows[i-1].input.value:startInput.value));
   }
   function refreshNumbers() {
     rows.forEach((row, i) => {
@@ -143,23 +129,23 @@ export function initProofEditor(box) {
     });
     const select = el("select", { class: "proof-rule", "aria-describedby": id }, [
       el("option", { value: "", text: "בחרו חוק…" }),
+      el("option", { value:"replacements", text:"החלפות מפורטות — חלקים נפרדים באותו צעד" }),
       ...RULES.map(rule => el("option", { value: rule.id, text: rule.name })),
     ]);
+    select.value="replacements";
     const reference = el("details", { class: "proof-reference" }, [el("summary", { text: "תזכורת לחוק שבחרתם" })]);
     reference.hidden = true;
     select.addEventListener("change", () => {
       clearFeedback(rows.indexOf(row));
-      reference.hidden = !select.value;
+      reference.hidden = !select.value || select.value === "replacements";
+      row.replacements.activate(select.value === "replacements");
       reference.replaceChildren(el("summary", { text: "תזכורת לחוק שבחרתם" }),
         ...ruleExamples(select.value).map(text => el("div", { class: "proof-formula", dir: "ltr", text })));
     });
     const keys = keyboard(input, () => clearFeedback(rows.indexOf(row)));
     const legend = el("legend");
-    const localTitle = el("strong");
-    const localGoal = el("div", { class: "proof-goal" });
-    const localProof = el("div", { class: "proof-chain", "aria-live": "polite" });
-    const localPreview = el("section", { class: "proof-local" }, [localTitle, localGoal, localProof]);
-    localPreview.hidden = true;
+    const replacements=replacementEditor(()=>clearFeedback(rows.indexOf(row)));
+    replacements.activate(true);
     const remove = el("button", { type: "button", class: "bk-btn bk-quiet", text: "מחיקת הצעד", onclick() {
       const index = rows.indexOf(row);
       rows.splice(index,1); fieldset.remove();
@@ -169,13 +155,13 @@ export function initProofEditor(box) {
     } });
     const fieldset = el("fieldset", { class: "proof-step" }, [legend,
       el("label", { class: "proof-field" }, [el("span", { text: "הנוסחה שמתקבלת" }), input]), keys,
-      el("label", { class: "proof-field" }, [el("span", { text: "החוק שמסביר את השינוי" }), select]),
-      reference, feedback, el("div", { class: "bk-bar" }, [
+      el("label", { class: "proof-field" }, [el("span", { text: "אופן הנימוק — בחירת חלקים, או חוק לשינוי יחיד" }), select]),
+      reference, replacements.box, feedback, el("div", { class: "bk-bar" }, [
         el("button", { type: "button", class: "bk-btn", text: "בדיקת הצעד והוספה להוכחה", onclick: () => check(rows.indexOf(row)) }), remove,
-      ]), localPreview,
+      ]),
     ]);
-    const row = { input, select, legend, remove, feedback, fieldset, localProof, localPreview, localTitle, localGoal };
-    rows.push(row); list.append(fieldset); refreshNumbers();
+    const row = { input, select, legend, remove, feedback, fieldset, replacements };
+    rows.push(row); list.append(fieldset); refreshNumbers(); refreshReplacements();
     if (focus) input.focus();
   }
   function check(last = rows.length - 1) {
@@ -192,9 +178,9 @@ export function initProofEditor(box) {
       return;
     }
     startInput.removeAttribute("aria-invalid");
-    acceptedStart = origin.start;
+    acceptedStart = origin.start; acceptedTarget = origin.target;
     if (last < 0) { renderChain(); return; }
-    const steps = rows.slice(0,last+1).map(r => ({ formula: r.input.value, rule: r.select.value }));
+    const steps = trimBlankSteps(rows.slice(0,last+1).map(r => ({ formula: r.input.value, rule: r.select.value, replacements:r.select.value === "replacements" ? r.replacements.get():undefined })));
     const result = checkProof(origin.start, origin.target, steps);
     accepted = steps.slice(0, result.results.filter(r => r.kind === "valid").length);
     renderChain();
@@ -202,19 +188,23 @@ export function initProofEditor(box) {
       const row = rows[i], good = step.kind === "valid";
       row.feedback.className = `bk-msg ${good ? "bk-good" : step.kind === "missing-step" ? "bk-info" : "bk-bad"}`;
       row.feedback.textContent = step.message;
+      row.replacements.showResult(step);
       if (step.intermediate) row.feedback.append(el("div", { class: "proof-formula", dir: "ltr", text: step.intermediate }));
       if (step.row) {
         row.feedback.append(el("div", { class: "proof-formula", dir: "ltr", text: Object.entries(step.row).map(([n,v]) => `${n} = ${v ? "T" : "F"}`).join(", ") }));
       }
       if (!good && step.kind !== "missing-step") (step.kind === "rule" || step.kind === "wrong-rule" ? row.select : row.input).setAttribute("aria-invalid", "true");
     });
+    if (!result.results.length) {summary.className="bk-msg bk-info";summary.textContent="הוסיפו צעד מנומק כדי להתחיל.";return;}
     if (!result.valid) {
       const index = result.results.length-1;
       const missing = result.results[index].kind === "missing-step";
       summary.className = `bk-msg ${missing ? "bk-info" : "bk-bad"}`;
       summary.textContent = missing
-        ? `התוצאה בצעד ${index+1} נכונה, אך חסרה שורת ביניים. פצלו אותו לצעדים מנומקים ובדקו שוב. ההוכחה המוצגת נעצרת לפני הצעד הזה עד להשלמת הפירוט.`
+        ? `התוצאה בצעד ${index+1} שקולה לקודמת, אך צריך לפרט את ההחלפות או להוסיף שורת ביניים. ההוכחה המוצגת כוללת רק צעדים שהוצדקו.`
         : `צריך לתקן את צעד ${index+1}. ${index ? "הצעדים שלפניו נכונים. " : ""}הצעדים שאחריו עדיין לא נבדקו. לאחר התיקון לחצו שוב על ״בדיקת הפתרון״.`;
+      if(result.complete)summary.textContent=`המטרה כבר הוכחה בצעד ${result.goalStep}. יש לתקן או למחוק את הצעד הנוסף המסומן.`;
+      else if(result.targetReached)summary.textContent="הגעתם לנוסחת היעד, אבל ההוכחה עדיין אינה מלאה: תקנו את ההחלפות או את הנימוק בצעד המסומן.";
       rows.slice(index+1).forEach(row => { row.feedback.textContent = "ממתין לתיקון הצעד הקודם."; });
     } else {
       summary.className = `bk-msg ${result.complete ? "bk-good" : "bk-info"}`;

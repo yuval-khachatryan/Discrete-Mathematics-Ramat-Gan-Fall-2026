@@ -137,7 +137,7 @@
     }
     root.replaceChildren(head2, el("section", { class: "g-mission" }, [missionTitle, goal]), stage, controls, feedback, hintList, debrief, foot);
     let ctl = null, hintsShown = 0, won = false;
-    function say(html, kind) {
+    function say2(html, kind) {
       feedback.className = "g-feedback" + (kind ? " g-" + kind : "");
       feedback.innerHTML = html || "";
     }
@@ -164,7 +164,7 @@
       won = true;
       store.markDone(levels[index].id);
       completedHere.add(levels[index].id);
-      say(html || "כל הכבוד! הצלחתם.", "good");
+      say2(html || "כל הכבוד! הצלחתם.", "good");
       showDebrief();
       btnNext.hidden = index >= levels.length - 1;
       btnNext.classList.add("g-ready");
@@ -191,7 +191,7 @@
       hintList.replaceChildren();
       debrief.hidden = true;
       debrief.replaceChildren();
-      say("");
+      say2("");
       ctl = game.mount(lvl, ui) || {};
       btnCheck.hidden = typeof ctl.check !== "function";
       btnSolve.hidden = typeof ctl.solve !== "function";
@@ -214,9 +214,9 @@
     btnCheck.addEventListener("click", () => {
       if (!ctl || !ctl.check) return;
       const r = ctl.check() || {};
-      if (r.ok && won) say(r.message || "כבר פתרתם את השלב הזה.", "good");
+      if (r.ok && won) say2(r.message || "כבר פתרתם את השלב הזה.", "good");
       else if (r.ok) win(r.message);
-      else say(r.message || "עדיין לא. נסו שוב.", r.kind || "bad");
+      else say2(r.message || "עדיין לא. נסו שוב.", r.kind || "bad");
     });
     btnHint.addEventListener("click", () => {
       const hints = levels[index].hints || [];
@@ -236,18 +236,18 @@
       debrief.hidden = true;
       btnNext.hidden = true;
       btnNext.classList.remove("g-ready");
-      say("");
+      say2("");
     });
     btnSolve.addEventListener("click", () => {
       if (!ctl || !ctl.solve) return;
       won = true;
       const msg = ctl.solve();
-      say(msg || "זה הפתרון. כדאי לעבור עליו שורה אחר שורה, ואז לנסות את השלב שוב בעצמכם (איפוס).", "info");
+      say2(msg || "זה הפתרון. כדאי לעבור עליו שורה אחר שורה, ואז לנסות את השלב שוב בעצמכם (איפוס).", "info");
       showDebrief();
       btnNext.hidden = index >= levels.length - 1;
     });
     btnNext.addEventListener("click", () => go(index + 1));
-    const ui = { stage, say, win, el, embed, present, get level() {
+    const ui = { stage, say: say2, win, el, embed, present, get level() {
       return levels[index];
     } };
     go(index);
@@ -264,7 +264,7 @@
       title: "שנינו אבירים",
       guided: true,
       guard: "עצרו! אני השומר, ובשער שלי עוברים רק אבירים. שניים כאן מדברים זה על זה — ואני, בכנות, הלכתי לאיבוד.",
-      goal: "<p><b>כללי האי:</b> כל תושב הוא אביר שתמיד אומר אמת או נוכל שתמיד אומר דבר שקר. רק אבירים רשאים לעבור בשער. יש לקבוע את סוג התושבים לפי דבריהם; המראה שלהם אינו מספק מידע.</p><p>אלון אומר ״שנינו אבירים״. בתיה אומרת ״אלון נוכל״.</p><p><b>המשימה:</b> בחרו לכל תושב ״אביר״ או ״נוכל״, ולחצו ״בדיקה״. בחירה מתאימה רק אם כל אמירה של אביר אמיתית וכל אמירה של נוכל שקרית. אפשר גם ללחוץ על שורה בטבלה כדי לבחור את האפשרות שהיא מציגה.</p>",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
       people: [ALON, BATYA],
       statements: [
         { by: "A", text: "שנינו אבירים", formula: "A & B" },
@@ -275,13 +275,13 @@
         "התחילו מאלון. אם הוא אביר, ״שנינו אבירים״ נכון — אז גם בתיה אבירה. האם הטענה של בתיה מסתדרת עם זה?",
         "אם אלון אביר, גם בתיה אבירה, אבל אז ״אלון נוכל״ שקר — ואבירה לא משקרת. לכן אלון נוכל. עכשיו ״אלון נוכל״ נכון, אז בתיה…"
       ],
-      debrief: '<p>יש ארבע דרכים לבחור את הסוגים של אלון ובתיה. כל דרך היא שורה בטבלה. אילו אלון היה אביר, דבריו היו מחייבים שגם בתיה אבירה; אבל בתיה אומרת שאלון נוכל, בניגוד להנחה. לכן אלון נוכל. דבריה של בתיה אמיתיים, ולכן היא אבירה. זו האפשרות היחידה שמתאימה לשתי האמירות: <span class="m">A = F, B = T</span>.</p>'
+      debrief: `<p>אילו אלון היה אביר, דבריו היו מחייבים שגם בתיה אבירה. אבל בתיה אומרת שאלון נוכל — שקר במקרה הזה. לכן אלון נוכל. כעת דבריה של בתיה אמת, ולכן היא אבירה. שני הסוגים שמצאנו מתאימים לאמירות.</p>`
     },
     {
       id: "both-knaves",
       title: "שנינו נוכלים",
       guard: "נוכל שאומר ״שנינו נוכלים״? או אביר שאומר את זה? אני צריך לשבת.",
-      goal: "<p><b>כללי האי:</b> כל תושב הוא אביר שתמיד אומר אמת או נוכל שתמיד אומר דבר שקר. רק אבירים רשאים לעבור בשער. יש לקבוע את סוג התושבים לפי דבריהם; המראה שלהם אינו מספק מידע.</p><p>אלון אומר על עצמו ועל בתיה: ״שנינו נוכלים״. בתיה אינה אומרת דבר, ולכן אין אמירה שלה שצריך לבדוק.</p><p><b>המשימה:</b> בחרו לכל תושב ״אביר״ או ״נוכל״, ולחצו ״בדיקה״. בחירה מתאימה רק אם כל אמירה של אביר אמיתית וכל אמירה של נוכל שקרית. אפשר גם ללחוץ על שורה בטבלה כדי לבחור את האפשרות שהיא מציגה.</p>",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
       people: [ALON, BATYA],
       statements: [
         { by: "A", text: "שנינו נוכלים", formula: "!A & !B" }
@@ -291,13 +291,13 @@
         "האם אלון יכול להיות אביר? אם כן, ״שנינו נוכלים״ נכון — כולל החלק ״אלון נוכל״.",
         "אלון לא יכול להיות אביר, ולכן הוא נוכל והטענה ״שנינו נוכלים״ שקרית. החלק ״אלון נוכל״ דווקא נכון — אז איזה חלק הוא השקרי?"
       ],
-      debrief: `<p>הטענה של אלון שקרית: <span class="m">¬A ∧ ¬B = F</span>. אבל ״וגם״ שקרי <b>לא</b> אומר ששני החלקים שקריים — מספיק שאחד מהם שקרי. כאן ״אלון נוכל״ נכון, ולכן ״בתיה נוכלת״ הוא החלק השקרי: בתיה אבירה.</p>`
+      debrief: `<p>אילו אלון היה אביר, דבריו היו אמת והוא היה נוכל — סתירה. לכן אלון נוכל ודבריו שקר. החלק ״אלון נוכל״ נכון, ולכן החלק ״בתיה נוכלת״ חייב להיות שקר: בתיה אבירה.</p>`
     },
     {
       id: "or-knave",
       title: "״או״ של נוכל",
       guard: "״או״! שוב ״או״! תמיד יש מישהו עם ״או״.",
-      goal: "<p><b>כללי האי:</b> כל תושב הוא אביר שתמיד אומר אמת או נוכל שתמיד אומר דבר שקר. רק אבירים רשאים לעבור בשער. יש לקבוע את סוג התושבים לפי דבריהם; המראה שלהם אינו מספק מידע.</p><p>אלון אומר ״אני נוכל, או שבתיה אבירה״. בתיה שותקת.</p><p><b>המשימה:</b> בחרו לכל תושב ״אביר״ או ״נוכל״, ולחצו ״בדיקה״. בחירה מתאימה רק אם כל אמירה של אביר אמיתית וכל אמירה של נוכל שקרית. אפשר גם ללחוץ על שורה בטבלה כדי לבחור את האפשרות שהיא מציגה.</p>",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
       people: [ALON, BATYA],
       statements: [
         { by: "A", text: "אני נוכל, או שבתיה אבירה", formula: "!A | B" }
@@ -307,13 +307,13 @@
         "נסו את אלון כנוכל: מה הערך של החלק ״אני נוכל״? ומה זה עושה ל״או״ כולו?",
         "אם אלון נוכל, ״אני נוכל״ נכון, ולכן כל ה״או״ נכון — ונוכל לא אומר אמת. לכן אלון אביר. אז ״אני נוכל״ שקרי, וכדי שה״או״ יהיה נכון, החלק השני…"
       ],
-      debrief: `<p>נוכל אף פעם לא יכול לומר ״אני נוכל, או …״: אצל נוכל החלק הראשון נכון, ולכן כל ה״או״ נכון — וזו אמת. זה ה״או״ הכולל: <span class="m">¬A ∨ B</span> נכון ברגע שלפחות חלק אחד נכון. לכן אלון אביר, החלק ״אני נוכל״ שקרי, והחלק השני חייב להיות נכון: גם בתיה אבירה.</p>`
+      debrief: `<p>אילו אלון היה נוכל, החלק ״אני נוכל״ היה אמת, ולכן כל משפט ה״או״ היה אמת — סתירה. לכן אלון אביר. דבריו אמת, אך ״אני נוכל״ שקר, ולכן החלק האחר חייב להיות אמת: בתיה אבירה.</p>`
     },
     {
       id: "at-least-one",
       title: "לפחות אחד",
       guard: "״לפחות אחד מאיתנו נוכל״, הוא אומר. תודה רבה! זה מצמצם את החשודים לשניים.",
-      goal: "<p><b>כללי האי:</b> כל תושב הוא אביר שתמיד אומר אמת או נוכל שתמיד אומר דבר שקר. רק אבירים רשאים לעבור בשער. יש לקבוע את סוג התושבים לפי דבריהם; המראה שלהם אינו מספק מידע.</p><p>אלון אומר על עצמו ועל בתיה: ״לפחות אחד מאיתנו נוכל״. בתיה שותקת.</p><p><b>המשימה:</b> בחרו לכל תושב ״אביר״ או ״נוכל״, ולחצו ״בדיקה״. בחירה מתאימה רק אם כל אמירה של אביר אמיתית וכל אמירה של נוכל שקרית. אפשר גם ללחוץ על שורה בטבלה כדי לבחור את האפשרות שהיא מציגה.</p>",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
       people: [ALON, BATYA],
       statements: [
         { by: "A", text: "לפחות אחד מאיתנו נוכל", formula: "!A | !B" }
@@ -323,13 +323,13 @@
         "אם אלון נוכל — האם ״לפחות אחד מאיתנו נוכל״ נכון או שקרי?",
         "אם אלון נוכל, הטענה נכונה (הוא עצמו הנוכל) — סתירה. לכן אלון אביר, והטענה שלו נכונה: מישהו כאן נוכל, ואלון הוא לא…"
       ],
-      debrief: `<p>אם אלון נוכל, ״לפחות אחד מאיתנו נוכל״ נכון — ונוכל לא אומר אמת. לכן אלון אביר, הטענה שלו נכונה, והנוכלת היחידה שנשארה היא בתיה. בנוסחה: <span class="m">¬A ∨ ¬B</span> עם <span class="m">A = T</span> מחייב <span class="m">B = F</span>.</p>`
+      debrief: `<p>אם אלון נוכל, המשפט ״לפחות אחד מאיתנו נוכל״ אמת — סתירה. לכן אלון אביר ודבריו אמת. לפחות אחד מהם נוכל, וזה אינו אלון; לכן בתיה נוכלת.</p>`
     },
     {
       id: "three",
       title: "שלושה בשער",
       guard: "שלושה בבת אחת! בתיה וכרמל מדברים על אלון, ואלון מדבר על שניהם. אני כבר צריך תרשים כדי לעקוב.",
-      goal: "<p><b>כללי האי:</b> כל תושב הוא אביר שתמיד אומר אמת או נוכל שתמיד אומר דבר שקר. רק אבירים רשאים לעבור בשער. יש לקבוע את סוג התושבים לפי דבריהם; המראה שלהם אינו מספק מידע.</p><p>אלון אומר ״בתיה וכרמל שניהם נוכלים״. בתיה אומרת ״אלון נוכל״. כרמל אומר ״אלון אביר״.</p><p><b>המשימה:</b> בחרו לכל תושב ״אביר״ או ״נוכל״, ולחצו ״בדיקה״. בחירה מתאימה רק אם כל אמירה של אביר אמיתית וכל אמירה של נוכל שקרית. אפשר גם ללחוץ על שורה בטבלה כדי לבחור את האפשרות שהיא מציגה.</p>",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
       people: [ALON, BATYA, CARMEL],
       statements: [
         { by: "A", text: "בתיה וכרמל שניהם נוכלים", formula: "!B & !C" },
@@ -341,7 +341,7 @@
         "השוו את בתיה וכרמל: היא אומרת ״אלון נוכל״, והוא אומר ״אלון אביר״. כמה מהם יכולים לומר אמת?",
         "בדיוק אחד מבתיה וכרמל אביר, ולכן ״בתיה וכרמל שניהם נוכלים״ שקרי — אלון נוכל. עכשיו: מי מהשניים אמר עליו את האמת?"
       ],
-      debrief: `<p>בתיה וכרמל אומרים דברים הפוכים על אלון (<span class="m">¬A</span> מול <span class="m">A</span>), ולכן בדיוק אחד מהם אביר. מכאן ״שניהם נוכלים״ שקרי, אלון נוכל — ולכן בתיה אבירה וכרמל נוכל. מתוך 8 השורות בטבלה שורדת רק אחת.</p>`
+      debrief: `<p>בתיה וכרמל אומרים דברים הפוכים על אלון, ולכן בדיוק אחד מהם אביר. מכאן שהאמירה ״בתיה וכרמל שניהם נוכלים״ שקרית: אלון נוכל. בתיה אומרת עליו אמת ולכן היא אבירה; כרמל אומר שקר ולכן הוא נוכל.</p>`
     },
     {
       id: "impossible",
@@ -350,7 +350,7 @@
       guard: "הרובוט של הקמפוס מדווח על תושב מוזר. אני כבר לא יודע במי להאמין. אפילו ברובוט.",
       guardWin: "הדיווח אינו מתאים לכללי האי. אבקש מהרובוט לבדוק שוב מה שמע.",
       report: { who: "הרובוט של הקמפוס", avatar: "robot", text: "פגשתי תושב שאמר ׳אני נוכל׳." },
-      goal: "<p><b>כללי האי:</b> כל תושב הוא אביר שתמיד אומר אמת או נוכל שתמיד אומר דבר שקר. רק אבירים רשאים לעבור בשער. יש לקבוע את סוג התושבים לפי דבריהם; המראה שלהם אינו מספק מידע.</p><p>הרובוט מדווח שפגש תושב שאמר ״אני נוכל״. בדקו אם דיווח כזה אפשרי לפי כללי האי.</p><p><b>המשימה:</b> בדקו את שתי האפשרויות: התושב אביר או התושב נוכל. אם רק אחת מתאימה לדבריו, בחרו בה ולחצו ״בדיקה״. אם אף אחת אינה מתאימה, בחרו ״אין אפשרות מתאימה״; אם שתיהן מתאימות, בחרו ״יש יותר מאפשרות אחת״.</p>",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
       people: [{ id: "A", name: "התושב", g: "m", avatar: "student" }],
       statements: [
         { by: "A", text: "אני נוכל", formula: "!A" }
@@ -358,9 +358,9 @@
       hints: [
         "יש כאן רק תושב אחד, ולכן רק שתי שורות בטבלה. בדקו את שתיהן.",
         "נסו את התושב כאביר: האם ״אני נוכל״ נכון? ואז כנוכל: האם ״אני נוכל״ שקרי?",
-        "אביר שאומר ״אני נוכל״ משקר; נוכל שאומר ״אני נוכל״ אומר אמת. שתי האפשרויות נפסלות — איזה כפתור מתאים?"
+        "אביר שאומר ״אני נוכל״ משקר; נוכל שאומר ״אני נוכל״ אומר אמת. שתי האפשרויות נפסלות — בחרו ״אין אפשרות מתאימה״."
       ],
-      debrief: `<p>אביר לא יכול לומר ״אני נוכל״ (זה שקר), וגם נוכל לא יכול (זו אמת): הערך של <span class="m">¬A</span> אמור להיות שווה לערך של <span class="m">A</span>, וזה לא קורה באף שורה. לכן אף אחד באי לא יכול לומר את המשפט הזה — והחלק השקרי בסיפור הוא הדיווח של הרובוט.</p>`
+      debrief: `<p>אביר אינו יכול לומר ״אני נוכל״, כי זו תהיה אמירת שקר. גם נוכל אינו יכול לומר זאת, כי זו תהיה אמירת אמת. שני המקרים נפסלים, ולכן הדיווח של הרובוט אינו אפשרי לפי כללי האי.</p>`
     },
     {
       id: "ambiguous",
@@ -368,7 +368,7 @@
       answers: "all",
       guard: "״אני אביר״, הוא אומר. כולם אומרים את זה. כו-לם.",
       guardWin: "אז אי אפשר לדעת?! אלון, חכה בצד עד שתגיד משהו מועיל.",
-      goal: "<p><b>כללי האי:</b> כל תושב הוא אביר שתמיד אומר אמת או נוכל שתמיד אומר דבר שקר. רק אבירים רשאים לעבור בשער. יש לקבוע את סוג התושבים לפי דבריהם; המראה שלהם אינו מספק מידע.</p><p>אלון אומר רק ״אני אביר״. בדקו אם המשפט הזה מספיק כדי לקבוע אם הוא אביר או נוכל.</p><p><b>המשימה:</b> בדקו את שתי האפשרויות: התושב אביר או התושב נוכל. אם רק אחת מתאימה לדבריו, בחרו בה ולחצו ״בדיקה״. אם אף אחת אינה מתאימה, בחרו ״אין אפשרות מתאימה״; אם שתיהן מתאימות, בחרו ״יש יותר מאפשרות אחת״.</p>",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
       people: [ALON],
       statements: [
         { by: "A", text: "אני אביר", formula: "A" }
@@ -376,7 +376,7 @@
       hints: [
         "בטבלה יש שתי שורות. בדקו את שתיהן, ואל תעצרו בראשונה שעוברת.",
         "האם אביר יכול לומר ״אני אביר״? והאם נוכל יכול?",
-        "אביר שאומר ״אני אביר״ דובר אמת; נוכל שאומר ״אני אביר״ משקר. שתי השורות מתאימות — איזה כפתור מתאים?"
+        "אביר שאומר ״אני אביר״ דובר אמת; נוכל שאומר ״אני אביר״ משקר. שתי האפשרויות מתאימות — סמנו את שתיהן."
       ],
       debrief: "<p>שתי האפשרויות מתאימות: אביר שאומר ״אני אביר״ אומר אמת, ונוכל שאומר זאת משקר. לכן המשפט אינו מאפשר להבחין בין השניים. מציאת אפשרות מתאימה אחת אינה מספיקה כדי לקבוע שזה הפתרון היחיד.</p>"
     },
@@ -384,7 +384,7 @@
       id: "if-knight",
       title: "״אם אני אביר...״",
       guard: "הנה זה מתחיל: מישהו כאן מדבר ב״אם... אז...״. השומר מתיישב.",
-      goal: "<p><b>כללי האי:</b> כל תושב הוא אביר שתמיד אומר אמת או נוכל שתמיד אומר דבר שקר. רק אבירים רשאים לעבור בשער. יש לקבוע את סוג התושבים לפי דבריהם; המראה שלהם אינו מספק מידע.</p><p>אלון אומר ״אם אני אביר, אז גם בתיה אבירה״. בתיה שותקת. השתמשו בטבלת האמת של גרירה.</p><p><b>המשימה:</b> בחרו לכל תושב ״אביר״ או ״נוכל״, ולחצו ״בדיקה״. בחירה מתאימה רק אם כל אמירה של אביר אמיתית וכל אמירה של נוכל שקרית. אפשר גם ללחוץ על שורה בטבלה כדי לבחור את האפשרות שהיא מציגה.</p>",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
       people: [ALON, BATYA],
       statements: [
         { by: "A", text: "אם אני אביר, אז גם בתיה אבירה", formula: "A -> B" }
@@ -400,7 +400,7 @@
       id: "if-batya",
       title: "״אם בתיה אבירה...״",
       guard: "עוד ״אם... אז...״? בסדר. אני עם עט ונייר.",
-      goal: "<p><b>כללי האי:</b> כל תושב הוא אביר שתמיד אומר אמת או נוכל שתמיד אומר דבר שקר. רק אבירים רשאים לעבור בשער. יש לקבוע את סוג התושבים לפי דבריהם; המראה שלהם אינו מספק מידע.</p><p>אלון אומר ״אם בתיה אבירה, אז אני נוכל״. בתיה שותקת. השתמשו בטבלת האמת של גרירה.</p><p><b>המשימה:</b> בחרו לכל תושב ״אביר״ או ״נוכל״, ולחצו ״בדיקה״. בחירה מתאימה רק אם כל אמירה של אביר אמיתית וכל אמירה של נוכל שקרית. אפשר גם ללחוץ על שורה בטבלה כדי לבחור את האפשרות שהיא מציגה.</p>",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
       people: [ALON, BATYA],
       statements: [
         { by: "A", text: "אם בתיה אבירה, אז אני נוכל", formula: "B -> !A" }
@@ -416,7 +416,7 @@
       id: "exactly-one",
       title: "אתגר: בדיוק אחד",
       guard: "האתגר הגדול: שלושה תושבים, שתי טענות, ושומר אחד עם כאב ראש.",
-      goal: "<p><b>כללי האי:</b> כל תושב הוא אביר שתמיד אומר אמת או נוכל שתמיד אומר דבר שקר. רק אבירים רשאים לעבור בשער. יש לקבוע את סוג התושבים לפי דבריהם; המראה שלהם אינו מספק מידע.</p><p>אלון אומר ״כולנו נוכלים״. בתיה אומרת ״בדיוק אחד מאיתנו אביר״. שניהם מתכוונים לאלון, לבתיה ולכרמל. כרמל שותק.</p><p><b>המשימה:</b> בחרו לכל תושב ״אביר״ או ״נוכל״, ולחצו ״בדיקה״. בחירה מתאימה רק אם כל אמירה של אביר אמיתית וכל אמירה של נוכל שקרית. אפשר גם ללחוץ על שורה בטבלה כדי לבחור את האפשרות שהיא מציגה.</p>",
+      goal: "<p>מצאו את כל האפשרויות שמתאימות לאמירות. ייתכן שיש יותר מאפשרות אחת — וייתכן שאין אף אחת.</p>",
       people: [ALON, BATYA, CARMEL],
       statements: [
         { by: "A", text: "כולנו נוכלים", formula: "!A & !B & !C" },
@@ -440,9 +440,9 @@
     while (pos < src.length) {
       if (/^\s*$/.test(src.slice(pos))) break;
       TOKEN.lastIndex = pos;
-      const m2 = TOKEN.exec(src);
-      if (!m2) throw new SyntaxError(`logic.js: cannot read "${src.slice(pos)}" in "${src}"`);
-      out.push(m2[1]);
+      const m = TOKEN.exec(src);
+      if (!m) throw new SyntaxError(`logic.js: cannot read "${src.slice(pos)}" in "${src}"`);
+      out.push(m[1]);
       pos = TOKEN.lastIndex;
     }
     return out;
@@ -546,12 +546,12 @@
     }
     throw new Error(`logic.js: unknown node ${f.type}`);
   }
-  function assignments(names2) {
+  function assignments(names) {
     const rows2 = [];
-    const n = names2.length;
+    const n = names.length;
     for (let k = 0; k < 2 ** n; k++) {
       const env = {};
-      names2.forEach((name, j) => {
+      names.forEach((name, j) => {
         env[name] = (k >> n - 1 - j & 1) === 0;
       });
       rows2.push(env);
@@ -563,8 +563,6 @@
   var ids = (level) => level.people.map((p) => p.id);
   var person = (level, id) => level.people.find((p) => p.id === id);
   var rows = (level) => assignments(ids(level));
-  var sameRow = (level, a, b) => ids(level).every((id) => !!a[id] === !!b[id]);
-  var rowIndex = (level, env) => rows(level).findIndex((r) => sameRow(level, r, env));
   function firstConflict(level, env) {
     for (let index = 0; index < level.statements.length; index++) {
       const statement = level.statements[index];
@@ -576,14 +574,6 @@
   }
   var consistent = (level, env) => firstConflict(level, env) === null;
   var solutions = (level) => rows(level).filter((env) => consistent(level, env));
-  function answerFor(level) {
-    const n = solutions(level).length;
-    return n === 0 ? "none" : n === 1 ? "one" : "many";
-  }
-  function judgeAnswer(level, choice) {
-    const actual = answerFor(level);
-    return { correct: choice === actual, actual, count: solutions(level).length };
-  }
   var F = (p) => p.g === "f";
   var roleWord = (p, knight) => knight ? F(p) ? "אבירה" : "אביר" : F(p) ? "נוכלת" : "נוכל";
   var his = (p) => F(p) ? "שלה" : "שלו";
@@ -598,65 +588,358 @@
     const verdict = c.knight ? `שקרית — ו${role} אף פעם לא ${F(p) ? "משקרת" : "משקר"}` : `אמיתית — ו${role} אף פעם לא ${F(p) ? "אומרת" : "אומר"} אמת`;
     return `סימנתם את ${p.name} כ${role}, אבל אז הטענה ${his(p)} ${quote(c.statement.text)} ${verdict}.`;
   }
-  var SYM = { and: " ∧ ", or: " ∨ ", xor: " ⊕ ", imp: " → ", iff: " ↔ " };
-  function show(f, leaf, inner = false) {
-    f = parse(f);
-    leaf = leaf || ((n) => n.type === "var" ? n.name : n.value ? "T" : "F");
-    function go(n, inner2) {
-      switch (n.type) {
-        case "var":
-        case "const":
-          return leaf(n);
-        case "not":
-          return "¬" + go(n.arg, true);
+
+  // games/shared/knight-workshop-data.js
+  var people = [{ id: "A", name: "אלון", g: "m" }, { id: "B", name: "בתיה", g: "f" }, { id: "C", name: "כרמל", g: "m" }];
+  var puzzle = (n, statements) => ({ people: people.slice(0, n), statements: statements.map(([by, text, formula]) => ({ by, text, formula })) });
+  var KNIGHT_PUZZLES = {
+    ...Object.fromEntries(LEVELS.map((l) => [l.id, l])),
+    "lecture-different": puzzle(2, [["A", "בתיה אבירה", "B"], ["B", "בדיוק אחד מאיתנו אביר", "A ^ B"]]),
+    "lecture-undetermined": puzzle(3, [["A", "כולנו אבירים", "A & B & C"], ["B", "אלון נוכל", "!A"]]),
+    "lecture-robot": puzzle(2, [["A", "שנינו אבירים", "A & B"], ["B", "שנינו אבירים", "A & B"]]),
+    "lecture-impossible": puzzle(2, [["A", "אם אני אביר, אז בתיה נוכלת", "A -> !B"], ["B", "אלון אביר", "A"]])
+  };
+  var step = (prompt, line, wrong, reason, wrongReason, feedback, kind) => ({ prompt, lines: [line, wrong], reasons: reason ? [reason, wrongReason] : null, feedback, kind });
+  var KNIGHT_PROOFS = {
+    contradiction: {
+      goal: "נראה שאלון נוכל ובתיה אבירה.",
+      steps: [
+        step(
+          "כדי להוכיח שאלון נוכל, מה נניח בדרך השלילה?",
+          "נניח שאלון אביר.",
+          "נניח שאלון נוכל.",
+          "מניחים זמנית את שלילת הטענה שרוצים להוכיח.",
+          "סוגו של אלון נתון בחידה.",
+          "רוצים להוכיח שהוא נוכל, ולכן בודקים מה יקרה אם הוא אביר.",
+          "assumption"
+        ),
+        step(
+          "לפי ההנחה, אלון אומר אמת. מה נובע מ״שנינו נוכלים״?",
+          "אלון נוכל וגם בתיה נוכלת.",
+          "אלון אביר וגם בתיה אבירה.",
+          "כדי ש״וגם״ יהיה אמת, שני חלקיו צריכים להיות אמת.",
+          "כדי ש״וגם״ יהיה אמת, מספיק חלק אחד.",
+          "אם דברי אלון אמת, כל אחד משניהם נוכל."
+        ),
+        step(
+          "מהי הסתירה, ומה מסיקים ממנה?",
+          "אלון גם אביר וגם נוכל. לכן ההנחה נדחית: אלון נוכל.",
+          "בתיה נוכלת. לכן ההנחה נדחית: אלון אביר.",
+          null,
+          null,
+          "הסתירה היא לגבי אלון: הנחנו שהוא אביר והסקנו שהוא נוכל. בתיה יכולה להיות נוכלת בלי לסתור את ההנחה.",
+          "contradiction"
+        ),
+        step(
+          "אלון נוכל, ולכן דבריו שקר. מה לגבי בתיה?",
+          "בתיה אבירה.",
+          "בתיה נוכלת.",
+          "״אלון נוכל״ אמת. כדי ש״שנינו נוכלים״ יהיה שקר, בתיה אינה נוכלת.",
+          "כאשר ״וגם״ שקר, שני חלקיו שקריים.",
+          "כבר הוכחנו שאלון נוכל. אם גם בתיה נוכלת, דבריו אמת — וזה בלתי אפשרי.",
+          "conclusion"
+        ),
+        step(
+          "האם התשובה מתאימה לסיפור?",
+          "כן. אלון נוכל ואומר שקר, כי בתיה אבירה. בתיה שותקת.",
+          "לא. אם אלון נוכל, גם בתיה חייבת להיות נוכלת.",
+          null,
+          null,
+          "אין כלל שמחייב את שניהם להיות מאותו סוג. בודקים את האמירה של אלון בלבד."
+        )
+      ]
+    },
+    direct: {
+      goal: "נמצא את סוגיהם של אלון ובתיה.",
+      conclusion: "נראה שאלון ובתיה נוכלים.",
+      steps: [
+        step(
+          "אלון אומר ״בתיה אבירה״. מה אפשר להסיק על הקשר ביניהם?",
+          "אלון ובתיה מאותו סוג.",
+          "אלון ובתיה מסוגים שונים.",
+          "אם אלון אביר, בתיה אבירה; אם הוא נוכל, בתיה נוכלת.",
+          "כל מי שמדבר על אביר הוא בעצמו אביר.",
+          "אביר אומר אמת, ולכן בתיה אבירה. נוכל אומר שקר, ולכן בתיה נוכלת. בשני המקרים הם מאותו סוג."
+        ),
+        step(
+          "מה ערך האמת של ״בדיוק אחד מאיתנו אביר״?",
+          "דברי בתיה שקריים.",
+          "דברי בתיה אמיתיים.",
+          "הם מאותו סוג: יש אפס אבירים או שניים, ולא בדיוק אחד.",
+          "בכל זוג תושבים יש אביר אחד ונוכל אחד.",
+          "השתמשו במסקנה הקודמת: הם מאותו סוג."
+        ),
+        step(
+          "מה אפשר להסיק כעת על שניהם?",
+          "בתיה נוכלת, וגם אלון נוכל.",
+          "בתיה נוכלת, ואלון אביר.",
+          "בתיה אמרה שקר, ואלון מאותו סוג כמוה.",
+          "אם אחד נוכל, האחר בהכרח אביר.",
+          "בתיה אמרה שקר, ולכן היא נוכלת. כבר הוכחנו שאלון מאותו סוג.",
+          "conclusion"
+        ),
+        step(
+          "נבדוק את התשובה מול שתי האמירות.",
+          "שתי האמירות שקריות: בתיה אינה אבירה, ואין ביניהם בדיוק אביר אחד. שני הנוכלים משקרים כנדרש.",
+          "רק האמירה של אלון שקרית; לכן התשובה מתאימה.",
+          null,
+          null,
+          "צריך לבדוק את שני הדוברים: כל נוכל צריך לומר שקר."
+        )
+      ]
+    },
+    cases: {
+      goal: "נבדוק באילו מקרים שניהם יכולים לומר ״שנינו אבירים״.",
+      conclusion: "הסיפור אפשרי בדיוק כאשר שני התושבים מאותו סוג.",
+      steps: [
+        step(
+          "מקרה א: שניהם אבירים. האם האמירות מתאימות?",
+          "המקרה מתאים.",
+          "המקרה אינו מתאים.",
+          "״שנינו אבירים״ אמת, ושניהם אומרים אמת.",
+          "אבירים אינם יכולים לדבר על עצמם.",
+          "אם שניהם אבירים, כל אחד מהם אומר אמת."
+        ),
+        step(
+          "מקרה ב: שניהם נוכלים. האם האמירות מתאימות?",
+          "גם המקרה הזה מתאים.",
+          "המקרה אינו מתאים.",
+          "״שנינו אבירים״ שקר, ושניהם אומרים שקר.",
+          "אם שניים אומרים אותו דבר, המשפט חייב להיות אמת.",
+          "שני נוכלים יכולים לומר את אותו משפט שקרי."
+        ),
+        step(
+          "מקרה ג: אחד אביר והאחר נוכל. האם המקרה מתאים?",
+          "המקרה אינו מתאים, בלי קשר לשאלה מי מהם האביר.",
+          "המקרה מתאים אם אלון הוא האביר.",
+          "״שנינו אבירים״ שקר, ולכן גם האביר אומר שקר.",
+          "שני תושבים חייבים להיות מאותו סוג בכל חידה.",
+          "בדקו את האביר: הוא אומר ששניהם אבירים, אף שהאחר נוכל.",
+          "contradiction"
+        ),
+        step(
+          "כיסינו את כל המקרים. מה המסקנה?",
+          "שניהם מאותו סוג. אי אפשר לקבוע אם שניהם אבירים או שניהם נוכלים.",
+          "שניהם אבירים, כי מצאנו שהאפשרות הזאת מתאימה.",
+          null,
+          null,
+          "שתי אפשרויות מתאימות. אסור לבחור רק אחת מהן בלי נתון נוסף.",
+          "conclusion"
+        )
+      ]
+    },
+    impossible: {
+      goal: "נבדוק אם יש אפשרות שמתאימה לשתי האמירות.",
+      conclusion: "נראה שאין פתרון לחידה.",
+      steps: [
+        step(
+          "מקרה א: אלון נוכל. האם הוא יכול לומר ״אם אני אביר, אז בתיה נוכלת״?",
+          "לא. התנאי שקר, ולכן הגרירה אמת. נוכל אינו אומר אמת.",
+          "כן. התנאי שקר, ולכן הגרירה שקר.",
+          null,
+          null,
+          "כאשר התנאי בגרירה שקר, הגרירה אמת. לכן האפשרות שאלון נוכל נפסלת.",
+          "contradiction"
+        ),
+        step(
+          "מקרה ב: אלון אביר. מה נובע מדבריו?",
+          "בתיה נוכלת.",
+          "בתיה אבירה.",
+          "אלון אומר אמת והתנאי ״אני אביר״ מתקיים, ולכן גם המסקנה מתקיימת.",
+          "כל מי שאביר מדבר רק עם נוכלים.",
+          "הגרירה אמת והתנאי אמת. לפי כלל הניתוק, בתיה נוכלת.",
+          "assumption"
+        ),
+        step(
+          "באותו מקרה, בתיה אומרת ״אלון אביר״. מה הבעיה?",
+          "המשפט שלה אמת, אף שהסקנו שהיא נוכלת. גם המקרה הזה נפסל.",
+          "אין בעיה: נוכלת יכולה לומר אמת אם אלון אביר.",
+          null,
+          null,
+          "עדיין בודקים את המקרה שאלון אביר. לכן דברי בתיה אמת, בסתירה לכך שהיא נוכלת.",
+          "contradiction"
+        ),
+        step(
+          "מה נובע מפסילת שני המקרים?",
+          "אין פתרון: אלון אינו יכול להיות אביר וגם אינו יכול להיות נוכל.",
+          "אלון נוכל, כי המקרה שהוא אביר נפסל.",
+          null,
+          null,
+          "שני הסוגים האפשריים לאלון נפסלו, ולא רק אחד מהם.",
+          "conclusion"
+        )
+      ]
+    }
+  };
+
+  // games/shared/knight-workshop.js
+  var el2 = (tag, attrs = {}, kids = []) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "text") n.textContent = v;
+      else if (k === "class") n.className = v;
+      else n.setAttribute(k, v);
+    }
+    kids.forEach((c) => n.append(c));
+    return n;
+  };
+  var button = (text, fn) => {
+    const b = el2("button", { type: "button", class: "bk-btn", text });
+    b.addEventListener("click", fn);
+    return b;
+  };
+  var message = () => el2("p", { class: "bk-msg", "aria-live": "polite" });
+  var say = (n, text, ok) => {
+    n.textContent = text;
+    n.className = "bk-msg " + (ok === true ? "bk-good" : ok === false ? "bk-bad" : "bk-info");
+  };
+  function select(label, options) {
+    return el2("select", { "aria-label": label }, [el2("option", { value: "", text: "בחרו…" }), ...options.map(([value, text]) => el2("option", { value, text }))]);
+  }
+  function checkKnightSelection(level, selected, none = false) {
+    const rows2 = rows(level), want = rows2.map((env, i) => consistent(level, env) ? i : -1).filter((i) => i !== -1);
+    if (!selected.length && !none) return { ok: false, message: "סמנו את כל האפשרויות המתאימות, או בחרו במפורש ״אין אפשרות מתאימה״." };
+    if (none && selected.length) return { ok: false, message: "אי אפשר לבחור גם אפשרות מתאימה וגם ״אין אפשרות מתאימה״." };
+    if (none) return { ok: !want.length, message: want.length ? "יש לפחות אפשרות אחת שמתאימה. נסו למצוא אותה." : "נכון. אין סידור של סוגי התושבים שמתאים לכל האמירות יחד." };
+    const extra = selected.find((i) => !want.includes(i));
+    if (extra !== void 0) return { ok: false, message: `הבחירה אינה מתאימה. ${rows2[extra] ? conflictSentence(level, rows2[extra]) : "בחרו אפשרות מהרשימה."}` };
+    if (want.some((i) => !selected.includes(i))) return { ok: false, message: "האפשרויות שסימנתם מתאימות, אבל חסרה לפחות אפשרות אחת. מצאו את כולן." };
+    const roles = level.people.map((p) => {
+      const vals = want.map((i) => rows2[i][p.id]);
+      return `${p.name}: ${vals.every((v) => v === vals[0]) ? roleWord(p, vals[0]) : "אי אפשר לקבוע — שני הסוגים אפשריים"}`;
+    }).join(". ");
+    return { ok: true, message: `נכון. ${want.length === 1 ? "יש פתרון יחיד." : "מצאתם את כל האפשרויות המתאימות. "} ${roles}.` };
+  }
+  function mountKnightTable(box, level, { onSolved = () => {
+  }, onChange = () => {
+  }, showReset = true } = {}) {
+    box.classList.add("knight-workshop");
+    box.replaceChildren();
+    const rows2 = rows(level), feedback = message(), selected = /* @__PURE__ */ new Set();
+    let solved = false;
+    const changed = () => {
+      solved = false;
+      say(feedback, "");
+      onChange();
+    };
+    const form = el2("form"), group = el2("fieldset", {}, [el2("legend", { text: "סמנו את כל האפשרויות שמתאימות לדברי התושבים." })]);
+    const choices = el2("div", { class: "kw-models" });
+    const boxes = rows2.map((env, i) => {
+      const input = el2("input", { type: "checkbox", "aria-label": `אפשרות ${i + 1}: ${rowWords(level, env)}` });
+      input.addEventListener("change", () => {
+        if (input.checked) {
+          selected.add(i);
+          none.checked = false;
+        } else selected.delete(i);
+        changed();
+      });
+      choices.append(el2("label", { class: "kw-model" }, [input, el2("span", { text: rowWords(level, env) })]));
+      return input;
+    });
+    const none = el2("input", { type: "checkbox", "aria-label": "אין אפשרות מתאימה" });
+    none.addEventListener("change", () => {
+      if (none.checked) {
+        selected.clear();
+        boxes.forEach((b) => b.checked = false);
       }
-      const s = n.args ? n.args.map((a) => go(a, true)).join(SYM[n.type]) : go(n.left, true) + SYM[n.type] + go(n.right, true);
-      return inner2 ? "(" + s + ")" : s;
+      changed();
+    });
+    group.append(choices, el2("label", {}, [none, el2("span", { text: "אין אפשרות מתאימה" })]));
+    form.append(group);
+    function checkFinal() {
+      const r = checkKnightSelection(level, [...selected], none.checked);
+      say(feedback, r.message, r.ok);
+      if (r.ok && !solved) {
+        solved = true;
+        onSolved(r.message);
+      }
+      return r;
     }
-    return go(f, inner);
-  }
-  var kids = (n) => n.type === "not" ? [n.arg] : n.args ? n.args : n.left ? [n.left, n.right] : [];
-  function rebuild(n, k) {
-    if (n.type === "not") return { type: "not", arg: k[0] };
-    if (n.args) return { type: n.type, args: k };
-    return { type: n.type, left: k[0], right: k[1] };
-  }
-  function substitute(n, env) {
-    if (n.type === "var") return { type: "const", value: !!env[n.name] };
-    if (n.type === "const") return n;
-    return rebuild(n, kids(n).map((c) => substitute(c, env)));
-  }
-  function reduceOnce(n) {
-    if (n.type === "const" || n.type === "var") return n;
-    const k = kids(n);
-    if (k.every((c) => c.type === "const")) return { type: "const", value: evaluate(n, {}) };
-    return rebuild(n, k.map(reduceOnce));
-  }
-  function evaluationSteps(formula, env) {
-    const steps = [parse(formula)];
-    let t = substitute(steps[0], env);
-    if (steps[0].type !== "const") steps.push(t);
-    while (t.type !== "const") {
-      t = reduceOnce(t);
-      steps.push(t);
+    form.append(button("בדיקת התשובה", checkFinal), feedback);
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      checkFinal();
+    });
+    box.append(form);
+    const details = el2("details", { class: "kw-work" }, [el2("summary", { text: "צריכים עזרה? בדקו בטבלה" }), el2("p", { text: "הסוגים בכל שורה הם אפשרות לבדיקה. קבעו אם כל אמירה היא אמת או שקר, ואם האפשרות מתאימה לכללי האי. אין חובה למלא את הטבלה." })]);
+    const table = el2("table", { dir: "rtl" }), head2 = el2("tr");
+    level.people.forEach((p) => head2.append(el2("th", { scope: "col", text: p.name })));
+    level.statements.forEach((s) => head2.append(el2("th", { scope: "col", text: `${person(level, s.by).name}: ״${s.text}״` })));
+    head2.append(el2("th", { scope: "col", text: "מתאים?" }));
+    table.append(el2("thead", {}, [head2]));
+    const body2 = el2("tbody");
+    table.append(body2);
+    const state = rows2.map((env, i) => {
+      const row = el2("tr"), msg = message();
+      level.people.forEach((p) => row.append(el2("td", { text: roleWord(p, env[p.id]) })));
+      const values = level.statements.map((s) => {
+        const input = select(`אפשרות ${i + 1}: ערך האמת של דברי ${person(level, s.by).name}`, [["true", "T"], ["false", "F"]]);
+        input.className = "kw-value";
+        row.append(el2("td", {}, [input]));
+        return input;
+      });
+      const fits = select(`אפשרות ${i + 1}: מתאים לכללים?`, [["true", "כן"], ["false", "לא"]]);
+      fits.className = "kw-fits";
+      row.append(el2("td", {}, [fits]));
+      const msgRow = el2("tr", { class: "kw-row-feedback", hidden: "" }, [el2("td", { colspan: String(level.people.length + level.statements.length + 1) }, [msg])]);
+      for (const input of [...values, fits]) input.addEventListener("change", () => {
+        input.removeAttribute("aria-invalid");
+        msgRow.hidden = true;
+        say(msg, "");
+      });
+      body2.append(row, msgRow);
+      return { env, values, fits, msg, msgRow };
+    });
+    function checkTable() {
+      state.forEach(({ env, values, fits, msg, msgRow }) => {
+        [...values, fits].forEach((v) => v.removeAttribute("aria-invalid"));
+        const wrong = values.findIndex((v, j) => v.value !== String(evaluate(level.statements[j].formula, env)));
+        let text = "";
+        if (wrong >= 0) {
+          values[wrong].setAttribute("aria-invalid", "true");
+          text = values[wrong].value === "" ? "בחרו T או F לכל אמירה." : `בשורה זו: ${rowWords(level, env)}. לכן האמירה ״${level.statements[wrong].text}״ היא ${evaluate(level.statements[wrong].formula, env) ? "אמת (T)" : "שקר (F)"}.`;
+        } else if (fits.value !== String(consistent(level, env))) {
+          fits.setAttribute("aria-invalid", "true");
+          text = fits.value === "" ? "בחרו אם האפשרות מתאימה." : conflictSentence(level, env) || "כל דובר פועל לפי כללי האי. האפשרות מתאימה.";
+        }
+        msgRow.hidden = false;
+        say(msg, text || "נכון.", !text);
+      });
     }
-    return steps;
-  }
-  var chip = (v) => `<span class="tv-${v ? "T" : "F"}">${v ? "T" : "F"}</span>`;
-  var chipLeaf = (n) => n.type === "var" ? n.name : chip(n.value);
-  function stepHTML(f, leaf = chipLeaf, prefix = "") {
-    f = parse(f);
-    const split = (f.type === "and" || f.type === "or") && f.args.some((a) => a.args || a.left);
-    const parts = split ? f.args.map((a, i) => (i ? SYM[f.type].trim() + " " : "") + show(a, leaf, true)) : [show(f, leaf)];
-    parts[0] = prefix + parts[0];
-    return `<span class="k-step">${parts.map((p) => `<span class="m">${p}</span>`).join(" ")}</span>`;
-  }
-  function formulaHTML(f) {
-    return `<span class="k-chain" dir="ltr">${stepHTML(f)}</span>`;
-  }
-  function evaluationHTML(statement, env) {
-    const chain = evaluationSteps(statement.formula, env).map((s, i) => stepHTML(s, chipLeaf, i ? "= " : "")).join(" ");
-    return `<span class="k-q">${quote(statement.text)}</span> בנוסחה: <span class="k-chain" dir="ltr">${chain}</span>`;
+    details.append(el2("div", { class: "kw-table-scroll", tabindex: "0", "aria-label": "טבלת עזר" }, [table]), button("בדיקת הטבלה", checkTable));
+    box.append(details);
+    const reset = () => {
+      selected.clear();
+      boxes.forEach((b) => b.checked = false);
+      none.checked = false;
+      state.forEach(({ values, fits, msg, msgRow }) => {
+        [...values, fits].forEach((v) => {
+          v.value = "";
+          v.removeAttribute("aria-invalid");
+        });
+        say(msg, "");
+        msgRow.hidden = true;
+      });
+      details.open = false;
+      changed();
+    };
+    if (showReset) box.append(button("התחלה מחדש", reset));
+    return { reset, check: checkFinal, reveal() {
+      reset();
+      state.forEach(({ env, values, fits }) => {
+        values.forEach((v, j) => v.value = String(evaluate(level.statements[j].formula, env)));
+        fits.value = String(consistent(level, env));
+      });
+      rows2.forEach((env, i) => {
+        if (consistent(level, env)) {
+          selected.add(i);
+          boxes[i].checked = true;
+        }
+      });
+      none.checked = !selected.size;
+      details.open = true;
+      say(feedback, "התשובה מוצגת. " + checkKnightSelection(level, [...selected], none.checked).message);
+    } };
   }
 
   // games/shared/signal.js
@@ -841,14 +1124,7 @@
   // games/gate/game.js
   var pic = (name, cls) => el("span", { class: cls, "aria-hidden": "true", html: sprite(name) });
   var picHTML = (name, cls) => `<span class="${cls}" aria-hidden="true">${sprite(name)}</span>`;
-  var chip2 = (v) => el("span", { class: "tv-" + (v ? "T" : "F"), text: v ? "T" : "F" });
-  var m = (s) => `<span class="m">${s}</span>`;
   var isF = (p) => p.g === "f";
-  function names(list) {
-    const n = list.map((p) => p.name);
-    return n.length < 2 ? n.join("") : n.slice(0, -1).join(", ") + " ו" + n[n.length - 1];
-  }
-  var verb = (list, ms, fs, mp, fp) => list.length === 1 ? isF(list[0]) ? fs : ms : list.every(isF) ? fp : mp;
   var GATE_SVG = `
 <svg class="k-gate" viewBox="0 0 120 92" aria-hidden="true" focusable="false">
   <rect x="22" y="40" width="76" height="48" fill="#bbf7d0"/>
@@ -872,312 +1148,53 @@
   <path d="M60 4l14 4l-14 4Z" fill="#ef4444"/>
   <rect x="0" y="88" width="120" height="4" fill="#a8a29e"/>
 </svg>`;
-  var GUARD_BAD = [
-    "סתירה! השער נשאר סגור.",
-    "אחת האמירות אינה מתאימה לסוג שבחרתם לדובר. בדקו את ההסבר.",
-    "לא, לא, לא. ככה אני לא פותח שער.",
-    "סתירה נוספת! עוד אחת ואני מתחיל לאסוף אותן."
-  ];
   function mount(level, ui) {
-    const people = level.people;
-    const rows2 = rows(level);
-    const sols = solutions(level);
-    const askAll = level.answers === "all";
-    const labels = {};
-    let status = rows2.map(() => null);
-    let done = false, wasWin = false, checks = 0, grumble = 0;
-    const guardLine = el("span", { class: "k-guard-line" });
-    const gate = el("div", { class: "k-gate-wrap", html: GATE_SVG });
+    const solutions2 = solutions(level);
+    const guardLine = el("span", { class: "k-guard-line", text: level.guard });
     const scene = el("div", { class: "k-scene" }, [
       el("div", { class: "k-guard", "aria-hidden": "true", html: sprite("guard") }),
       el("p", { class: "k-guard-bubble" }, [el("b", { text: "השומר: " }), guardLine]),
-      gate
+      el("div", { class: "k-gate-wrap", html: GATE_SVG })
     ]);
-    const guard = (s) => {
-      guardLine.textContent = s;
-    };
-    const rules = el("p", { class: "k-rules", html: `${picHTML("knight", "k-ico")} <b>אבירים ואבירות</b> תמיד אומרים אמת · ${picHTML("knave", "k-ico")} <b>נוכלים ונוכלות</b> תמיד משקרים` });
-    const report = level.report ? el("div", { class: "k-report" }, [
-      el("div", { class: "k-report-avatar", "aria-hidden": "true", html: sprite(level.report.avatar) }),
-      el("p", { class: "k-report-text" }, [el("b", { text: level.report.who + " מדווח: " }), quote(level.report.text)])
-    ]) : null;
-    const cards = {};
+    const rules = el("p", { class: "k-rules", html: `${picHTML("knight", "k-ico")} <b>אבירים אומרים אמת</b> · ${picHTML("knave", "k-ico")} <b>נוכלים אומרים שקר</b>` });
     const peopleBox = el("div", { class: "k-people" });
-    for (const p of people) {
+    for (const p of level.people) {
       const st = level.statements.find((s) => s.by === p.id);
-      const btnK = el(
-        "button",
-        { type: "button", "aria-pressed": "false", onclick() {
-          setLabel(p.id, true);
-        } },
-        [pic("knight", "k-ico"), roleWord(p, true)]
-      );
-      const btnN = el(
-        "button",
-        { type: "button", "aria-pressed": "false", onclick() {
-          setLabel(p.id, false);
-        } },
-        [pic("knave", "k-ico"), roleWord(p, false)]
-      );
-      const mark = el("span", { class: "k-mark", "aria-hidden": "true" });
-      let formula = null, toggle = null;
-      if (st) {
-        const fid = `k-f-${level.id}-${p.id}`;
-        formula = el("p", { class: "k-formula", id: fid, hidden: true, html: `בנוסחה: ${formulaHTML(st.formula)}` });
-        toggle = el("button", {
-          type: "button",
-          class: "g-link k-ftoggle",
-          "aria-expanded": "false",
-          "aria-controls": fid,
-          text: "הצגת הנוסחה",
-          onclick() {
-            formula.hidden = !formula.hidden;
-            toggle.setAttribute("aria-expanded", String(!formula.hidden));
-            toggle.textContent = formula.hidden ? "הצגת הנוסחה" : "הסתרת הנוסחה";
-          }
-        });
-      }
-      const bubble = st ? el("p", { class: "k-bubble" }, [el("span", { class: "k-sr", text: isF(p) ? "אומרת: " : "אומר: " }), quote(st.text)]) : el("p", { class: "k-bubble k-silent" }, [el("span", { "aria-hidden": "true", text: "… " }), isF(p) ? "שותקת" : "שותק"]);
-      const note2 = el("p", { class: "k-note", hidden: true });
-      const card = el("article", { class: "k-card", "aria-label": p.name }, [
-        el("div", { class: "k-avatar", "aria-hidden": "true" }, [pic(p.avatar || "student", "k-face"), mark]),
+      peopleBox.append(el("article", { class: "k-card", "aria-label": p.name }, [
+        pic(p.avatar || "student", "k-face"),
         el("h3", { class: "k-name", text: p.name }),
-        bubble,
-        toggle,
-        formula,
-        el("div", { class: "g-choice k-role", role: "group", "aria-label": `${p.name}: ${roleWord(p, true)} או ${roleWord(p, false)}?` }, [btnK, btnN]),
-        note2
-      ]);
-      cards[p.id] = { card, btnK, btnN, mark, formula, toggle, note: note2 };
-      peopleBox.append(card);
-    }
-    const meaning = people.map((p) => `<span class="k-nw">${m(p.id)} = ״${p.name} ${roleWord(p, true)}״</span>`).join(" ");
-    const tbody = el("tbody");
-    const trs = rows2.map((env2, i) => {
-      const btn = el("button", { type: "button", class: "k-rowbtn", onclick(e) {
-        e.stopPropagation();
-        loadRow(i);
-      } });
-      const tr = el("tr", { onclick() {
-        loadRow(i);
-      } }, [
-        ...people.map((p) => el("td", { title: roleWord(p, env2[p.id]) }, [el("span", { class: "m" }, [chip2(env2[p.id])])])),
-        el("td", { class: "k-res" }, [btn])
-      ]);
-      tbody.append(tr);
-      return { tr, btn };
-    });
-    const table = el("table", { class: "k-table" }, [
-      el("thead", {}, [el("tr", {}, [
-        ...people.map((p) => el("th", { scope: "col", html: `${p.name}<br>${m(p.id)}` })),
-        el("th", { scope: "col", text: "תוצאה" })
-      ])]),
-      tbody
-    ]);
-    const tally = el("p", { class: "k-tally" });
-    const panel = el("section", { class: "k-panel", "aria-label": "טבלת האפשרויות" }, [
-      el("h3", { text: "טבלת האפשרויות" }),
-      el("p", { class: "k-legend", html: `כל שורה מציגה אפשרות אחת לסוגי התושבים. בטבלה ${rows2.length} שורות. לחיצה על שורה מסמנת בכרטיסים את הסוגים המופיעים בה.` }),
-      el("p", { class: "k-legend k-vars", html: `${meaning} <span class="k-nw">(<span class="tv-T">T</span> = אביר או אבירה, <span class="tv-F">F</span> = נוכל או נוכלת)</span>` }),
-      el("div", { class: "k-table-wrap" }, [table]),
-      tally
-    ]);
-    const ansBtn = {};
-    if (askAll) {
-      ansBtn.none = el("button", { type: "button", class: "g-btn k-ans", "aria-pressed": "false", text: "אין אפשרות מתאימה", onclick() {
-        answer("none");
-      } });
-      ansBtn.many = el("button", { type: "button", class: "g-btn k-ans", "aria-pressed": "false", text: "יש יותר מאפשרות אחת", onclick() {
-        answer("many");
-      } });
-      panel.append(el("div", { class: "k-answers", role: "group", "aria-label": "תשובה על הטבלה כולה" }, [
-        el("p", { html: "אם אף אפשרות אינה מתאימה, או אם מתאימה יותר מאפשרות אחת, בחרו:" }),
-        ansBtn.none,
-        ansBtn.many
+        el("p", { class: st ? "k-bubble" : "k-bubble k-silent" }, st ? [quote(st.text)] : [isF(p) ? "שותקת" : "שותק"])
       ]));
     }
-    ui.stage.append(el("div", { class: "k-board" }, [
-      scene,
-      rules,
-      report,
-      el("div", { class: "k-main" }, [peopleBox, panel])
-    ]));
-    const complete = () => people.every((p) => labels[p.id] !== void 0);
-    const env = () => Object.fromEntries(people.map((p) => [p.id, !!labels[p.id]]));
-    function draw() {
-      for (const p of people) {
-        const c = cards[p.id], v = labels[p.id];
-        c.btnK.setAttribute("aria-pressed", String(v === true));
-        c.btnN.setAttribute("aria-pressed", String(v === false));
-        c.card.classList.toggle("k-knight", v === true);
-        c.card.classList.toggle("k-knave", v === false);
-        if (v === void 0) c.mark.textContent = "?";
-        else c.mark.innerHTML = sprite(v ? "knight" : "knave");
-        c.mark.classList.toggle("k-mark-pic", v !== void 0);
+    const report = level.report ? el("p", { class: "k-report-text" }, [el("b", { text: level.report.who + " מדווח: " }), quote(level.report.text)]) : null;
+    const panel = el("section", { class: "k-panel", "aria-label": "התשובה שלכם" });
+    const finish = () => {
+      scene.classList.toggle("k-open", solutions2.length === 1);
+      guardLine.textContent = level.guardWin || "הבדיקה הושלמה. עכשיו ברור מה אפשר להסיק מהאמירות.";
+    };
+    const table = mountKnightTable(panel, level, {
+      showReset: false,
+      onChange() {
+        scene.classList.remove("k-open");
+        guardLine.textContent = level.guard;
+        ui.say("");
+      },
+      onSolved() {
+        finish();
+        ui.win("מצאתם את כל האפשרויות המתאימות.");
       }
-      const cur = complete() ? rowIndex(level, env()) : -1;
-      trs.forEach((r, i) => {
-        const s = status[i];
-        r.tr.className = (s ? s.ok ? "k-ok" : "k-bad" : "") + (i === cur ? " k-current" : "");
-        if (i === cur) r.tr.setAttribute("aria-current", "true");
-        else r.tr.removeAttribute("aria-current");
-        r.btn.textContent = !s ? "?" : s.ok ? "✓ מתאימה" : "✗ " + s.who.name;
-        r.btn.setAttribute("aria-label", `שורה ${i + 1}, ${rowWords(level, rows2[i])}: ` + (!s ? "עוד לא נבדקה" : s.ok ? "מתאימה לכל האמירות" : `נפסלה: האמירה של ${s.who.name} אינה מתאימה לסימון`) + ". לחיצה מסמנת בכרטיסים את הסוגים שבשורה.");
-      });
-      const atWin = done && sols.length === 1 && complete() && sameRow(level, env(), sols[0]);
-      scene.classList.toggle("k-open", atWin);
-      if (done && sols.length === 1 && atWin !== wasWin)
-        guard(atWin ? level.guardWin || passLine(sols[0]) : "רגע! שיניתם סימון — השער נסגר עד שיתברר מי זה מי.");
-      wasWin = atWin;
-      for (const p of people) {
-        const c = cards[p.id];
-        if (atWin) note(p.id, labels[p.id] ? "k-pass" : "k-stay", labels[p.id] ? isF(p) ? "עוברת בשער ←" : "עובר בשער ←" : isF(p) ? "נשארת בחוץ" : "נשאר בחוץ");
-        else if (/k-pass|k-stay/.test(c.note.className)) {
-          c.note.hidden = true;
-          c.note.className = "k-note";
-        }
+    });
+    ui.stage.append(el("div", { class: "k-board" }, [scene, rules, report, peopleBox, panel]));
+    return {
+      reset() {
+        table.reset();
+      },
+      solve() {
+        table.reveal();
+        finish();
+        return "התשובה מוצגת. בדקו כיצד כל אמירה מתאימה לסוג הדובר.";
       }
-      const n = status.filter(Boolean).length;
-      tally.textContent = `נבדקו ${n} מתוך ${rows2.length} שורות.` + (n ? " ✓ = האפשרות מתאימה לכל האמירות; ✗ = האפשרות נפסלה, ולצדה שם הדמות שאמירתה אינה מתאימה לסימון." : "");
-    }
-    function clearNotes() {
-      for (const p of people) {
-        const c = cards[p.id];
-        c.card.classList.remove("k-conflict");
-        c.note.hidden = true;
-        c.note.className = "k-note";
-        c.note.textContent = "";
-      }
-    }
-    function note(id, cls, text) {
-      const c = cards[id];
-      c.note.hidden = false;
-      c.note.className = "k-note " + cls;
-      c.note.textContent = text;
-    }
-    function setLabel(id, v) {
-      labels[id] = labels[id] === v ? void 0 : v;
-      clearNotes();
-      draw();
-    }
-    function loadRow(i) {
-      for (const p of people) labels[p.id] = rows2[i][p.id];
-      clearNotes();
-      draw();
-      ui.say(`הסוגים שבשורה סומנו בכרטיסים: ${rowWords(level, rows2[i])}. עכשיו לחצו <b>בדיקה</b>.`, "info");
-    }
-    function fillAll() {
-      status = rows2.map((r) => {
-        const c = firstConflict(level, r);
-        return c ? { ok: false, who: c.person } : { ok: true };
-      });
-    }
-    function showFormulas(on) {
-      for (const p of people) {
-        const c = cards[p.id];
-        if (!c.formula) continue;
-        c.formula.hidden = !on;
-        c.toggle.hidden = on;
-        c.toggle.setAttribute("aria-expanded", "false");
-        c.toggle.textContent = "הצגת הנוסחה";
-      }
-    }
-    function passLine(r) {
-      const pass = people.filter((p) => r[p.id]), stay = people.filter((p) => !r[p.id]);
-      const a = pass.length ? `${names(pass)} ${verb(pass, "עובר", "עוברת", "עוברים", "עוברות")}` : "אף אחד לא עובר היום";
-      const b = stay.length ? `${names(stay)} ${verb(stay, "נשאר", "נשארת", "נשארים", "נשארות")} בחוץ` : "";
-      return `השער נפתח! ${a}${b ? ", ו" + b : ""}.`;
-    }
-    function finish(r) {
-      done = true;
-      fillAll();
-      showFormulas(true);
-      clearNotes();
-      guard(level.guardWin || (r ? passLine(r) : "השער נשאר סגור — והפעם בצדק."));
-      draw();
-    }
-    function soft(msg) {
-      return { ok: false, message: msg, kind: "info" };
-    }
-    function answer(choice) {
-      const j = judgeAnswer(level, choice);
-      if (j.correct) {
-        for (const k in ansBtn) ansBtn[k].setAttribute("aria-pressed", String(k === choice));
-        finish(null);
-        const msg = choice === "none" ? `נכון — <b>אין אפשרות מתאימה</b>. בכל אחת מ־${rows2.length} השורות בטבלה יש אמירה שאינה מתאימה לסוג שסומן לדובר, ולכן אף אחד לא יכול לומר את המשפט הזה.` : `נכון — <b>יש יותר מאפשרות אחת</b>: ${j.count} שורות מתאימות בטבלה, ולכן אי אפשר לדעת מי הוא מי.`;
-        ui.say(msg, "good");
-        ui.win(msg);
-        return;
-      }
-      if (done) {
-        ui.say("השלב כבר פתור. כדי לנסות שוב מההתחלה לחצו <b>איפוס</b>.", "info");
-        return;
-      }
-      guard("הממ. השומר מרים גבה אחת. ואז את השנייה.");
-      ui.say(j.actual === "none" ? "יותר מאפשרות אחת? השומר היה מסתפק גם באחת! בדקו את השורות בטבלה: האם יש אפילו שורה אחת שמתאימה?" : j.actual === "one" ? "לא בדיוק: יש כאן שורה אחת בלבד שמתאימה. מצאו אותה, סמנו אותה ולחצו <b>בדיקה</b>." : "דווקא יש שורה בטבלה שמתאימה לכל האמירות. נסו את השורות שעדיין מסומנות ״?״.", "bad");
-    }
-    function check() {
-      const missing = people.filter((p) => labels[p.id] === void 0);
-      if (missing.length) {
-        guard("עוד לא נבחר סוג לכל התושבים. השלימו את הבחירה.");
-        return soft(`השומר צריך תשובה על כולם: עוד לא סימנתם את ${names(missing)}. סמנו, ואז לחצו <b>בדיקה</b>.`);
-      }
-      const r = env(), i = rowIndex(level, r), c = firstConflict(level, r);
-      checks++;
-      clearNotes();
-      if (c) {
-        status[i] = { ok: false, who: c.person };
-        cards[c.person.id].card.classList.add("k-conflict");
-        note(c.person.id, "k-bad", "✗ כאן הסתירה");
-        guard(GUARD_BAD[grumble++ % GUARD_BAD.length]);
-        draw();
-        const open = status.filter((s) => !s).length;
-        let next;
-        if (open) next = `מה עכשיו? שנו סימון ובדקו שוב, או לחצו בטבלה על שורה שעדיין מסומנת ״?״ (${open === 1 ? "נשארה אחת" : `נשארו ${open}`}).`;
-        else if (askAll && !status.some((s) => s.ok)) next = "כל השורות בטבלה נפסלו. אז מה התשובה? יש כפתור בדיוק בשביל זה.";
-        else next = "כל השורות נבדקו. ספרו כמה מהן מתאימות לכל האמירות, ובחרו תשובה.";
-        const intro = level.guided && checks === 1 ? "הניחוש נרשם בטבלת האפשרויות: השורה שלו מסומנת עכשיו ✗, עם שם הדמות שאמירתה אינה מתאימה לסימון. " : "";
-        return {
-          ok: false,
-          message: `${conflictSentence(level, r)}<div class="k-eval">${evaluationHTML(c.statement, r)}</div><p class="k-next">${intro}${next}</p>`
-        };
-      }
-      status[i] = { ok: true };
-      if (sols.length === 1) {
-        finish(r);
-        const msg = `${passLine(r)} כל אביר כאן אומר אמת וכל נוכל משקר. הטבלה מלאה עכשיו: זו השורה היחידה שמתאימה לכל האמירות.`;
-        return { ok: true, message: msg };
-      }
-      guard("האפשרות מתאימה. האם יש אפשרות נוספת שמתאימה?");
-      draw();
-      return soft(`האפשרות שבחרתם מתאימה לכל האמירות, והשורה סומנה ✓ בטבלה. אבל האם היא <b>היחידה</b>? בדקו את שאר השורות, ואז בחרו תשובה בכפתורים שמתחת לטבלה.`);
-    }
-    function reset() {
-      for (const p of people) delete labels[p.id];
-      status = rows2.map(() => null);
-      done = false;
-      checks = 0;
-      grumble = 0;
-      for (const k in ansBtn) ansBtn[k].setAttribute("aria-pressed", "false");
-      showFormulas(false);
-      clearNotes();
-      guard(level.guard);
-      draw();
-    }
-    function solve() {
-      reset();
-      if (sols.length === 1) {
-        Object.assign(labels, sols[0]);
-        finish(sols[0]);
-        return `הפתרון: ${rowWords(level, sols[0])}. רק שורה אחת מתאימה לכל האמירות (✓). בכל שורה אחרת מצוין מי אמר דבר שאינו מתאים לסוג שסומן לו.`;
-      }
-      const k = sols.length ? "many" : "none";
-      if (ansBtn[k]) ansBtn[k].setAttribute("aria-pressed", "true");
-      finish(null);
-      return sols.length === 0 ? `התשובה: <b>אין אפשרות מתאימה</b>. כל ${rows2.length} השורות בטבלה נפסלו — בכל אחת מהן יש אמירה שאינה מתאימה לסוג שסומן לדובר.` : `התשובה: <b>יש יותר מאפשרות אחת</b>. ${sols.length} שורות מתאימות (✓), ולכן אי אפשר לקבוע מי הוא מי.`;
-    }
-    reset();
-    return { check, reset, solve };
+    };
   }
   startGame({ id: "gate", title: "מי עובר בשער?", levels: LEVELS, mount });
 })();

@@ -19,5 +19,6 @@ dir: rtl
 
 - נ. ליניאל ומ. פרנס, *מתמטיקה בדידה*, ירושלים, 2001.
 - ש. גירון וש. ודר, *מתמטיקה בדידה (דיסקרטית)*, אקדמיה, 1999.
+- Daniel J. Velleman, *How to Prove It: A Structured Approach*, 2nd edition, Cambridge University Press, 2006.
 - Kenneth H. Rosen, *Discrete Mathematics and Its Applications*, 7th edition, McGraw-Hill, 2012.
 - Raymond M. Smullyan, *What Is the Name of This Book? The Riddle of Dracula and Other Logical Puzzles*, Prentice-Hall, 1978.

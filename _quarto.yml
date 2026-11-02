@@ -11,6 +11,7 @@ project:
   # the games also work when the book is opened from disk (file://). Needs node
   # and `npm install` once; see tools/build-games.mjs.
   pre-render: tools/build-games.mjs
+  post-render: tools/build-navigation.mjs
 
 book:
   title: "מתמטיקה בדידה — מערכי הרצאה"
@@ -49,6 +50,7 @@ format:
     theme: cosmo
     toc: true
     toc-depth: 4
-    toc-title: "תוכן העניינים"
-    toc-expand: true
+    toc-title: "סעיפי הפרק"
+    toc-location: left
+    toc-expand: false
     include-in-header: _styles.html

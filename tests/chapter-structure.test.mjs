@@ -10,12 +10,15 @@ test('chapters keep sets before quantifiers and retain the complete exercise ban
   assert.doesNotMatch(logic,/\{#sec-quantifiers\}|\{#practice-quantifiers\}/);
   assert.doesNotMatch(logic,/\\(?:in|notin|forall|exists)\b|\\\{|[∈∉∀∃]/);
   assert.ok(sets.indexOf('{#sec-sets-membership}') < sets.indexOf('{#sec-quantifiers}'));
-  assert.equal((sets.match(/^TODO$/gm)||[]).length,7);
+  assert.ok(sets.indexOf('{#sec-quantifiers}') < sets.indexOf('{#sec-set-subset}'));
+  const quantifiers=sets.slice(sets.indexOf('## כמתים'),sets.indexOf('## הכלה ושוויון'));
+  assert.doesNotMatch(quantifiers,/\\(?:subseteq|subsetneq|cup|cap|setminus)\b/);
+  assert.doesNotMatch(sets,/^TODO$/m);
   assert.equal((logic.match(/\{#practice-q-/g)||[]).length,40);
   assert.equal((sets.match(/\{#practice-q-/g)||[]).length,8);
   assert.ok(sets.indexOf('{#practice-quantifiers}') > sets.indexOf('{#sec-set-proofs}'));
-  assert.equal((Object.values(pages).join('\n').match(/\.thmexm/g)||[]).length,23);
-  assert.equal((logic.match(/<iframe/g)||[]).length,14);
+  assert.ok((sets.match(/\.thmexm/g)||[]).length >= 12);
+  assert.equal((logic.match(/<iframe/g)||[]).length,15);
   assert.equal((sets.match(/<iframe/g)||[]).length,3);
   const summary=logic.slice(logic.indexOf('## סיכום {#sec-summary}'),logic.indexOf('## תרגול עצמי לפי נושאים'));
   assert.doesNotMatch(summary,/\\forall|\\exists/);

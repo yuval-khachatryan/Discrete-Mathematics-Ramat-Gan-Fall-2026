@@ -50,6 +50,7 @@ local BOX = {
   thmdef = { word = "הגדרה", css = "definition"  },
   thmterm = { word = "מונח חדש", css = "terminology" },
   thmmethod = { word = "שיטה", css = "method" },
+  thmrule = { word = "כלל", css = "method" },
   thmthm = { word = "משפט",  css = "theorem"     },
   thmprp = { word = "טענה",  css = "proposition" },
   thmexm = { word = "דוגמה", css = "example"     },

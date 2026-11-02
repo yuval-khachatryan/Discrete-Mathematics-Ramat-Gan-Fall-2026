@@ -53,6 +53,9 @@ import { initOpenStatement } from "./open-statement.js";
 import { initProofEditor } from "./proof-editor.js";
 import { initArgumentEditor } from "./argument-editor.js";
 import { initTableEvidence } from "./table-evidence.js";
+import { initKnightWorkshop } from "./knight-workshop.js";
+import { initNavigation } from "./navigation.js";
+import { initSets } from "./sets.js";
 import { initPracticeChoice } from "./practice-choice.js";
 import { initLectureTable, initLectureAnswers } from "./lecture-reveal.js";
 import { evaluationSteps, show } from "../gate/knights.js";
@@ -326,6 +329,9 @@ function initTF(quiz) {
 }
 
 function init() {
+  initNavigation();
+  document.querySelectorAll(".knight-activity").forEach(initKnightWorkshop);
+  document.querySelectorAll(".sets-exercise").forEach(initSets);
   document.querySelectorAll(".choice-exercise").forEach(initPracticeChoice);
   document.querySelectorAll(".argument-editor").forEach(initArgumentEditor);
   document.querySelectorAll(".proof-editor").forEach(initProofEditor);

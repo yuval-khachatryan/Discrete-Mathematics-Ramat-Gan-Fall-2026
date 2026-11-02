@@ -45,7 +45,7 @@ try {
    await row.locator('input').fill(formula);await row.locator('select').selectOption(rule);
    await row.getByRole('button',{name:'בדיקת הצעד והוספה להוכחה',exact:true}).click();
    assert.equal(await lines.count(),i+2);
-   assert.equal(await row.locator('.proof-local .proof-chain-line').count(),i+2);
+   assert.equal(await row.locator('.proof-local').count(),0);
   }
   assert.match(await proof.locator('.proof-form > .bk-msg').innerText(),/הושלם/);
   assert.deepEqual(await lines.locator('.proof-formula').allTextContents(),['¬(A ∧ ¬B)','¬A ∨ ¬¬B','¬A ∨ B','A → B']);
