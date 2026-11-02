@@ -1331,7 +1331,7 @@ window.Quarto = {
 <li>הקו <span class="math inline">\(\mid\)</span> נקרא כאן ״<span class="term"><strong>כך ש־</strong></span>״. הוא מפריד בין המועמדים לתנאי.</li>
 <li><span class="math inline">\(x&gt;2\)</span> אומר <strong>איזה מבחן צריך לעבור</strong>.</li>
 </ul>
-<p>לכן במקרה הזה <span class="math inline">\(A=\{3,4,5,6\}\)</span>. לעיתים כותבים נקודתיים במקום הקו: <span class="math inline">\(\{x\in D:x&gt;2\}\)</span>.</p>
+<p>לכן במקרה הזה <span class="math inline">\(A=\{3,4,5,6\}\)</span>. לעיתים כותבים נקודתיים במקום הקו: <span class="math inline">\(\{x\in D\colon x&gt;2\}\)</span>.</p>
 </div>
 <div class="thmbox thmbox-example" title="מי עובר את מבחן הקבלה?">
 <p><strong>דוגמה 2.1.14 — מי עובר את מבחן הקבלה?</strong></p>
@@ -1474,15 +1474,16 @@ window.Quarto = {
 <p><strong>הגדרה 2.2.1.</strong></p>
 <p>נניח ש־<span class="math inline">\(D\)</span> הוא עולם הדיון וש־<span class="math inline">\(P(x)\)</span> הוא פסוק פתוח על איבריו.</p>
 <ul>
-<li><span class="math inline">\(\forall x\in D\,P(x)\)</span> — קוראים: ״<span class="term"><strong>לכל</strong></span> <span class="math inline">\(x\)</span> ששייך ל־<span class="math inline">\(D\)</span>, מתקיים <span class="math inline">\(P(x)\)</span>״. הפסוק אמת כאשר <strong>כל</strong> איבר בתחום מקיים את התיאור.</li>
-<li><span class="math inline">\(\exists x\in D\,P(x)\)</span> — קוראים: ״<span class="term"><strong>קיים</strong></span> <span class="math inline">\(x\)</span> ששייך ל־<span class="math inline">\(D\)</span> כך שמתקיים <span class="math inline">\(P(x)\)</span>״. הפסוק אמת כאשר <strong>לפחות איבר אחד</strong> בתחום מקיים את התיאור.</li>
+<li><span class="math inline">\(\forall x\in D\colon P(x)\)</span> — קוראים: ״<span class="term"><strong>לכל</strong></span> <span class="math inline">\(x\)</span> ששייך ל־<span class="math inline">\(D\)</span>, מתקיים <span class="math inline">\(P(x)\)</span>״. הפסוק אמת כאשר <strong>כל</strong> איבר בתחום מקיים את התיאור.</li>
+<li><span class="math inline">\(\exists x\in D\colon P(x)\)</span> — קוראים: ״<span class="term"><strong>קיים</strong></span> <span class="math inline">\(x\)</span> ששייך ל־<span class="math inline">\(D\)</span> כך שמתקיים <span class="math inline">\(P(x)\)</span>״. הפסוק אמת כאשר <strong>לפחות איבר אחד</strong> בתחום מקיים את התיאור.</li>
 </ul>
+<p>הנקודתיים מפרידות בין המשתנה והתחום שלו לבין הטענה שבודקים. למשל, ב־<span class="math inline">\(\forall x\in D\colon P(x)\)</span> הטענה היא <span class="math inline">\(P(x)\)</span>. כשהטענה מורכבת, נקיף אותה בסוגריים כדי שיהיה ברור על מה הכמת חל.</p>
 <p><span class="math inline">\(\forall\)</span> נקרא <span class="term"><strong>הכמת הכולל</strong></span>, ו־<span class="math inline">\(\exists\)</span> נקרא <span class="term"><strong>הכמת הישי</strong></span>. השמות אינם העיקר: חשוב לזכור אם צריך לבדוק את כולם או למצוא לפחות אחד, ותמיד — מתוך התחום שנבחר.</p>
 </div>
-<p>אצלנו, <span class="math inline">\(D=\{1,2,3,4\}\)</span> ו־<span class="math inline">\(P(x)\)</span> אומר ״<span class="math inline">\(x&gt;2\)</span>״. לכן <span class="math inline">\(\forall x\in D\,P(x)\)</span> שקר, למשל בגלל <span class="math inline">\(1\)</span>. לעומת זאת, <span class="math inline">\(\exists x\in D\,P(x)\)</span> אמת, למשל בגלל <span class="math inline">\(3\)</span>.</p>
+<p>אצלנו, <span class="math inline">\(D=\{1,2,3,4\}\)</span> ו־<span class="math inline">\(P(x)\)</span> אומר ״<span class="math inline">\(x&gt;2\)</span>״. לכן <span class="math inline">\(\forall x\in D\colon P(x)\)</span> שקר, למשל בגלל <span class="math inline">\(1\)</span>. לעומת זאת, <span class="math inline">\(\exists x\in D\colon P(x)\)</span> אמת, למשל בגלל <span class="math inline">\(3\)</span>.</p>
 <div class="thmbox thmbox-method" title="לפעמים מקצרים את הכתיבה">
 <p><strong>שיטה 2.2.2 — לפעמים מקצרים את הכתיבה.</strong></p>
-<p>כאשר עולם הדיון כבר נאמר וברור מההקשר, אפשר לקצר ולכתוב <span class="math inline">\(\forall x\,P(x)\)</span> או <span class="math inline">\(\exists x\,P(x)\)</span> בלי לחזור על <span class="math inline">\(\in D\)</span>. זו רק השמטה של מידע שכבר ידוע: המשתנה עדיין נבחר מאותו תחום. בדוגמאות הראשונות כאן התחום הוא <span class="math inline">\(\{1,2,3,4\}\)</span>; בכל מעבר לתחום אחר נציין אותו. כדי שיהיה קל לעקוב, בדרך כלל נכתוב כאן את התחום גם בתוך הנוסחה.</p>
+<p>כאשר עולם הדיון כבר נאמר וברור מההקשר, אפשר לקצר ולכתוב <span class="math inline">\(\forall x\colon P(x)\)</span> או <span class="math inline">\(\exists x\colon P(x)\)</span> בלי לחזור על <span class="math inline">\(\in D\)</span>. זו רק השמטה של מידע שכבר ידוע: המשתנה עדיין נבחר מאותו תחום. בדוגמאות הראשונות כאן התחום הוא <span class="math inline">\(\{1,2,3,4\}\)</span>; בכל מעבר לתחום אחר נציין אותו. כדי שיהיה קל לעקוב, בדרך כלל נכתוב כאן את התחום גם בתוך הנוסחה.</p>
 </div>
 <p><span id="sec-free-variable"></span></p>
 <div id="box-def-free-variable" class="thmbox thmbox-definition" title="משתנה חופשי ומשתנה קשור — בתוך העולם שבחרנו">
@@ -1509,12 +1510,12 @@ window.Quarto = {
 <td style="text-align: left;">חופשי: יודעים שמותר לבחור מתוך <span class="math inline">\(D\)</span>, אבל עדיין צריך ערך מסוים</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;"><span class="math inline">\(\forall x\in D\,(x&gt;2)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\forall x\in D\colon (x&gt;2)\)</span></td>
 <td style="text-align: left;">כל מספר בתחום גדול מ־2</td>
 <td style="text-align: left;">קשור: בודקים את כל ארבעת הערכים; הטענה שקרית</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;"><span class="math inline">\(\exists x\in D\,(x&gt;2)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\exists x\in D\colon (x&gt;2)\)</span></td>
 <td style="text-align: left;">יש מספר בתחום שגדול מ־2</td>
 <td style="text-align: left;">קשור: מחפשים לפחות ערך מתאים אחד; הטענה אמיתית בגלל <span class="math inline">\(3\)</span></td>
 </tr>
@@ -1526,8 +1527,8 @@ window.Quarto = {
 </div>
 <p>בתחום הקטן שלנו אפשר לכתוב את כל הבדיקות במפורש:</p>
 <ul>
-<li><span class="math inline">\(\forall x\in D\,P(x)\)</span> דורש <span class="math inline">\(P(1)\land P(2)\land P(3)\land P(4)\)</span>. כל ארבע הבדיקות צריכות להצליח יחד; כאן זה לא קורה.</li>
-<li><span class="math inline">\(\exists x\in D\,P(x)\)</span> דורש <span class="math inline">\(P(1)\lor P(2)\lor P(3)\lor P(4)\)</span>. מספיק שאחת תצליח; כאן גם <span class="math inline">\(3\)</span> וגם <span class="math inline">\(4\)</span> מתאימים.</li>
+<li><span class="math inline">\(\forall x\in D\colon P(x)\)</span> דורש <span class="math inline">\(P(1)\land P(2)\land P(3)\land P(4)\)</span>. כל ארבע הבדיקות צריכות להצליח יחד; כאן זה לא קורה.</li>
+<li><span class="math inline">\(\exists x\in D\colon P(x)\)</span> דורש <span class="math inline">\(P(1)\lor P(2)\lor P(3)\lor P(4)\)</span>. מספיק שאחת תצליח; כאן גם <span class="math inline">\(3\)</span> וגם <span class="math inline">\(4\)</span> מתאימים.</li>
 </ul>
 <div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea">
 <p><strong>חשוב לזכור.</strong></p>
@@ -1567,10 +1568,10 @@ window.Quarto = {
 <section id="sec-bar-again" class="level3" data-number="2.2.2">
 <h3 data-number="2.2.2" class="anchored" data-anchor-id="sec-bar-again"><span class="header-section-number">2.2.2</span> ״כולם״ ו״מישהו״ בשפת הכמתים</h3>
 <p>התחום בדוגמה הזאת הוא שלושת המתמטיקאים שבדוכן. נמספר אותם לפי סדר התשובות: <span class="math inline">\(1\)</span>, <span class="math inline">\(2\)</span> ו־<span class="math inline">\(3\)</span>. כאן עולם הדיון הוא <span class="math inline">\(D=\{1,2,3\}\)</span>, מספרי הדמויות שבדוכן. נסמן ב־<span class="math inline">\(W(x)\)</span> את הפסוק הפתוח ״הדמות שמספרה <span class="math inline">\(x\)</span> רוצה פלאפל״. כדי לקצר, נכתוב <span class="math inline">\(W_1\)</span> במקום <span class="math inline">\(W(1)\)</span>, ובאותו אופן <span class="math inline">\(W_2\)</span> ו־<span class="math inline">\(W_3\)</span>.</p>
-<p>שאלת המוכר ״<strong>כולם</strong> רוצים פלאפל?״ מבקשת לדעת אם הפסוק <span class="math inline">\(\forall x\in D\,W(x)\)</span> נכון. בתחום של שלוש הדמויות זה בדיוק:</p>
+<p>שאלת המוכר ״<strong>כולם</strong> רוצים פלאפל?״ מבקשת לדעת אם הפסוק <span class="math inline">\(\forall x\in D\colon W(x)\)</span> נכון. בתחום של שלוש הדמויות זה בדיוק:</p>
 <p><span class="math display">\[W_1 \land W_2 \land W_3\]</span></p>
 <p>כל שלוש הדמויות צריכות לרצות. מספיק שאחת אינה רוצה כדי שהטענה על כולם תהיה שגויה.</p>
-<p>לעומת זאת, השאלה ״<strong>מישהו</strong> רוצה פלאפל?״ מבקשת לדעת אם <span class="math inline">\(\exists x\in D\,W(x)\)</span> נכון. בתחום הזה מדובר בפסוק:</p>
+<p>לעומת זאת, השאלה ״<strong>מישהו</strong> רוצה פלאפל?״ מבקשת לדעת אם <span class="math inline">\(\exists x\in D\colon W(x)\)</span> נכון. בתחום הזה מדובר בפסוק:</p>
 <p><span class="math display">\[W_1 \lor W_2 \lor W_3\]</span></p>
 <p>כאן מספיק שרק אחת הדמויות רוצה. גם שתי דמויות או שלוש דמויות שרוצות מתאימות: ״קיים״ אומר <strong>לפחות אחד</strong>, ולא ״בדיוק אחד״.</p>
 <p><span class="key-rule"><strong>״לא כולם״ שונה מ״אף אחד״.</strong></span> במשחק הבא נראה איך השאלה ״כולם?״ או ״מישהו?״ משנה את משמעות התשובות.</p>
@@ -1627,10 +1628,10 @@ window.Quarto = {
 <div class="thmbox thmbox-key-point thmicon-rule" data-icon="rule">
 <p><strong>כלל.</strong></p>
 <ul>
-<li>כדי להראות ש־<span class="math inline">\(\exists x\in D\, P(x)\)</span> <strong>אמת</strong>, <span class="key-rule"><strong>מספיקה דוגמה אחת</strong></span>: <span class="math inline">\(a\in D\)</span> שעבורו <span class="math inline">\(P(a)\)</span> אמת — כלומר, איבר מתוך התחום שמקיים את הדרישה. היא נקראת <span class="term"><strong>עד</strong></span>.</li>
-<li>כדי להראות ש־<span class="math inline">\(\forall x\in D\, P(x)\)</span> <strong>שקר</strong>, <span class="key-rule"><strong>מספיקה דוגמה נגדית אחת</strong></span>: <span class="math inline">\(a\in D\)</span> שעבורו <span class="math inline">\(P(a)\)</span> שקר — כלומר, איבר מתוך התחום שאינו מקיים את הדרישה.</li>
-<li>כדי להראות ש־<span class="math inline">\(\forall x\in D\, P(x)\)</span> <strong>אמת</strong>, צריך לתת נימוק שמראה שכל איבר בתחום מקיים את הדרישה.</li>
-<li>כדי להראות ש־<span class="math inline">\(\exists x\in D\, P(x)\)</span> <strong>שקר</strong>, צריך לתת נימוק שמראה שאין בתחום אף איבר שמקיים את הדרישה.</li>
+<li>כדי להראות ש־<span class="math inline">\(\exists x\in D\colon P(x)\)</span> <strong>אמת</strong>, <span class="key-rule"><strong>מספיקה דוגמה אחת</strong></span>: <span class="math inline">\(a\in D\)</span> שעבורו <span class="math inline">\(P(a)\)</span> אמת — כלומר, איבר מתוך התחום שמקיים את הדרישה. היא נקראת <span class="term"><strong>עד</strong></span>.</li>
+<li>כדי להראות ש־<span class="math inline">\(\forall x\in D\colon P(x)\)</span> <strong>שקר</strong>, <span class="key-rule"><strong>מספיקה דוגמה נגדית אחת</strong></span>: <span class="math inline">\(a\in D\)</span> שעבורו <span class="math inline">\(P(a)\)</span> שקר — כלומר, איבר מתוך התחום שאינו מקיים את הדרישה.</li>
+<li>כדי להראות ש־<span class="math inline">\(\forall x\in D\colon P(x)\)</span> <strong>אמת</strong>, צריך לתת נימוק שמראה שכל איבר בתחום מקיים את הדרישה.</li>
+<li>כדי להראות ש־<span class="math inline">\(\exists x\in D\colon P(x)\)</span> <strong>שקר</strong>, צריך לתת נימוק שמראה שאין בתחום אף איבר שמקיים את הדרישה.</li>
 </ul>
 <p><span class="key-rule"><strong>בשני המקרים האחרונים הנימוק צריך לכסות את כל איברי התחום.</strong></span> בתחום סופי אפשר לבדוק אותם אחד־אחד, אבל אפשר גם להשתמש בנימוק כללי שמתאים לכולם. בתחום אינסופי אי אפשר לסיים בדיקה אחד־אחד, ולכן צריך נימוק כללי.</p>
 </div>
@@ -1645,7 +1646,7 @@ window.Quarto = {
 <h3 data-number="2.2.4" class="anchored" data-anchor-id="sec-domain"><span class="header-section-number">2.2.4</span> התחום חשוב</h3>
 <div id="box-exm-domain" class="thmbox thmbox-example">
 <p><strong>דוגמה 2.2.8.</strong></p>
-<p>נבדוק את <span class="math inline">\(\exists x\in D\,(x+3=1)\)</span>.</p>
+<p>נבדוק את <span class="math inline">\(\exists x\in D\colon (x+3=1)\)</span>.</p>
 <p><strong>א.</strong> האם הטענה אמת או שקר כאשר <span class="math inline">\(D=\{0,1,2,3,\dots\}\)</span>?</p>
 <div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="בחירת תשובה לסעיף א">
 <button type="button" class="tf-opt" data-val="0">
@@ -1658,7 +1659,7 @@ window.Quarto = {
 
 </div>
 <div class="tf-why">
-<p>הפסוק <span class="math inline">\(\exists x\in D\, (x + 3 = 1)\)</span> הוא <strong>שקר</strong> כאשר <span class="math inline">\(D\)</span> הוא התחום <span class="math inline">\(\{0, 1, 2, 3, \dots\}\)</span>: כל מספר כזה ועוד <span class="math inline">\(3\)</span> גדול מ־<span class="math inline">\(.1\)</span></p>
+<p>הפסוק <span class="math inline">\(\exists x\in D\colon (x + 3 = 1)\)</span> הוא <strong>שקר</strong> כאשר <span class="math inline">\(D\)</span> הוא התחום <span class="math inline">\(\{0, 1, 2, 3, \dots\}\)</span>: כל מספר כזה ועוד <span class="math inline">\(3\)</span> גדול מ־<span class="math inline">\(.1\)</span></p>
 </div>
 </div>
 <p><strong>ב.</strong> האם הטענה אמת או שקר כאשר <span class="math inline">\(D\)</span> הוא אוסף כל המספרים השלמים?</p>
@@ -1688,9 +1689,9 @@ window.Quarto = {
 <p>הרובוט שוב קיצר. ״לא <strong>כל</strong> הסטודנטים הגישו״ אומר רק ש<strong>יש</strong> סטודנט שלא הגיש. אולי כל השאר הגישו.</p>
 <div id="box-thm-neg-quantifiers" class="thmbox thmbox-theorem" title="שלילה של כמתים">
 <p><strong>משפט 2.2.9 — שלילה של כמתים.</strong></p>
-<p><span class="math display">\[\neg \forall x\in D\, P(x) \;\equiv\; \exists x\in D\, \neg P(x)\]</span> <span class="math display">\[.\neg \exists x\in D\, P(x) \;\equiv\; \forall x\in D\, \neg P(x)\]</span></p>
+<p><span class="math display">\[\neg \forall x\in D\colon P(x) \;\equiv\; \exists x\in D\colon \neg P(x)\]</span> <span class="math display">\[.\neg \exists x\in D\colon P(x) \;\equiv\; \forall x\in D\colon \neg P(x)\]</span></p>
 </div>
-<p>אלה בדיוק חוקי דה מורגן, בגרסה ארוכה: בתחום סופי, <span class="math inline">\(\neg\forall x\in D\, P(x)\)</span> הוא <span class="math inline">\(,\neg(P(a_1) \land \dots \land P(a_n))\)</span> ולפי דה מורגן זה <span class="math inline">\(.\neg P(a_1) \lor \dots \lor \neg P(a_n)\)</span> כשמכניסים שלילה פנימה, <span class="math inline">\(\forall\)</span> הופך ל־<span class="math inline">\(\exists\)</span> ו־<span class="math inline">\(\exists\)</span> הופך ל־<span class="math inline">\(,\forall\)</span> כמו ש״וגם״ הופך ל״או״.</p>
+<p>אלה בדיוק חוקי דה מורגן, בגרסה ארוכה: בתחום סופי, <span class="math inline">\(\neg\forall x\in D\colon P(x)\)</span> הוא <span class="math inline">\(,\neg(P(a_1) \land \dots \land P(a_n))\)</span> ולפי דה מורגן זה <span class="math inline">\(.\neg P(a_1) \lor \dots \lor \neg P(a_n)\)</span> כשמכניסים שלילה פנימה, <span class="math inline">\(\forall\)</span> הופך ל־<span class="math inline">\(\exists\)</span> ו־<span class="math inline">\(\exists\)</span> הופך ל־<span class="math inline">\(,\forall\)</span> כמו ש״וגם״ הופך ל״או״.</p>
 <div id="box-check-negate-exists" class="thmbox thmbox-self-check" title="פלאפל בלי חומוס: איך שוללים ״יש״?">
 <p><strong>בדיקה עצמית — פלאפל בלי חומוס: איך שוללים ״יש״?</strong></p>
 <p>נסמן ב־<span class="math inline">\(D\)</span> את הסטודנטים בכיתה. נסמן ב־<span class="math inline">\(P(x)\)</span> את כל המשפט ״הסטודנט <span class="math inline">\(x\)</span> אוכל פלאפל בלי חומוס״. מה השלילה של ״<strong>יש לפחות סטודנט אחד שאוכל פלאפל בלי חומוס</strong>״?</p>
@@ -1698,7 +1699,7 @@ window.Quarto = {
 <button class="tf-opt" data-val="true">״יש סטודנט שלא אוכל פלאפל בלי חומוס״</button>
 <button class="tf-opt" data-val="false">״אף סטודנט לא אוכל פלאפל בלי חומוס״</button>
 <div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why"><b>השלילה היא ״אף סטודנט לא אוכל פלאפל בלי חומוס״</b>, כלומר \(\forall x\in D\,\neg P(x)\). כדי לשלול את ״יש לפחות אחד״, צריך שלא יהיה אף סטודנט שמתאים לתיאור. האפשרות הראשונה אינה מספיקה: למשל, דנה אוכלת פלאפל בלי חומוס, ויואב אוכל אותו עם חומוס. אז יש מי שמתאים לתיאור וגם יש מי שלא, ולכן שתי טענות הקיום נכונות יחד ואינן שלילה זו של זו.</div>
+<div class="tf-why"><b>השלילה היא ״אף סטודנט לא אוכל פלאפל בלי חומוס״</b>, כלומר \(\forall x\in D\colon \neg P(x)\). כדי לשלול את ״יש לפחות אחד״, צריך שלא יהיה אף סטודנט שמתאים לתיאור. האפשרות הראשונה אינה מספיקה: למשל, דנה אוכלת פלאפל בלי חומוס, ויואב אוכל אותו עם חומוס. אז יש מי שמתאים לתיאור וגם יש מי שלא, ולכן שתי טענות הקיום נכונות יחד ואינן שלילה זו של זו.</div>
 </div>
 </div>
 </section>
@@ -1706,14 +1707,14 @@ window.Quarto = {
 <h3 data-number="2.2.6" class="anchored" data-anchor-id="sec-quantifier-order"><span class="header-section-number">2.2.6</span> סדר הכמתים</h3>
 <p>כשיש שני משתנים, חשוב <strong>באיזה סדר</strong> כותבים את הכמתים. נסמן ב־<span class="math inline">\(L(x, y)\)</span> את הטענה ״הסטודנט <span class="math inline">\(x\)</span> אוהב את הפריט <span class="math inline">\(y\)</span>״. נסמן ב־<span class="math inline">\(S\)</span> את קבוצת הסטודנטים בכיתה וב־<span class="math inline">\(M\)</span> את קבוצת הפריטים בתפריט שמופיע במשחק. לכן כותבים <span class="math inline">\(x\in S\)</span> ו־<span class="math inline">\(y\in M\)</span>:</p>
 <ul>
-<li><span class="math display">\[\forall x\in S\, \exists y\in M\, L(x, y)\]</span>: לכל סטודנט <strong>יש לפחות פריט אחד בתפריט שהוא אוהב</strong>. הבחירה בפריט יכולה להיות תלויה בסטודנט; מותר גם לבחור אותו פריט לכמה סטודנטים. התפריט עצמו נשאר קבוע.</li>
-<li><span class="math display">\[\exists y\in M\, \forall x\in S\, L(x, y)\]</span>: <strong>יש לפחות פריט אחד בתפריט שכל הסטודנטים אוהבים</strong>. כאן מחפשים פריט משותף לכולם; ייתכן שיש יותר מפריט אחד כזה.</li>
+<li><span class="math display">\[\forall x\in S\colon \exists y\in M\colon L(x, y)\]</span>: לכל סטודנט <strong>יש לפחות פריט אחד בתפריט שהוא אוהב</strong>. הבחירה בפריט יכולה להיות תלויה בסטודנט; מותר גם לבחור אותו פריט לכמה סטודנטים. התפריט עצמו נשאר קבוע.</li>
+<li><span class="math display">\[\exists y\in M\colon \forall x\in S\colon L(x, y)\]</span>: <strong>יש לפחות פריט אחד בתפריט שכל הסטודנטים אוהבים</strong>. כאן מחפשים פריט משותף לכולם; ייתכן שיש יותר מפריט אחד כזה.</li>
 </ul>
 <p>הפסוק השני חזק יותר: אם יש פריט בתפריט שכולם אוהבים, אז בפרט לכל סטודנט יש פריט בתפריט שהוא אוהב. ההפך לא נכון. בשלב האחרון של המשחק אפשר לראות כיתה שבה הראשון אמת והשני שקר.</p>
 <div id="box-exm-order" class="thmbox thmbox-example">
 <p><strong>דוגמה 2.2.10.</strong></p>
 <p>בדוגמה הזאת <span class="math inline">\(D=\{0,1,2,3,\dots\}\)</span>. קבעו אמת או שקר:</p>
-<p><strong>א.</strong> <span class="math inline">\(\forall x\in D\,\exists y\in D\,(y&gt;x)\)</span>.</p>
+<p><strong>א.</strong> <span class="math inline">\(\forall x\in D\colon \exists y\in D\colon (y&gt;x)\)</span>.</p>
 <div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="בחירת תשובה לסעיף א">
 <button type="button" class="tf-opt" data-val="0">
 אמת
@@ -1725,10 +1726,10 @@ window.Quarto = {
 
 </div>
 <div class="tf-why">
-<p>הפסוק <span class="math display">\[\forall x\in D\, \exists y\in D\, (y &gt; x)\]</span> הוא <strong>אמת</strong>: לכל מספר יש מספר גדול ממנו (למשל <span class="math inline">\(y = x + 1\)</span>).</p>
+<p>הפסוק <span class="math display">\[\forall x\in D\colon \exists y\in D\colon (y &gt; x)\]</span> הוא <strong>אמת</strong>: לכל מספר יש מספר גדול ממנו (למשל <span class="math inline">\(y = x + 1\)</span>).</p>
 </div>
 </div>
-<p><strong>ב.</strong> <span class="math inline">\(\exists y\in D\,\forall x\in D\,(y&gt;x)\)</span>.</p>
+<p><strong>ב.</strong> <span class="math inline">\(\exists y\in D\colon \forall x\in D\colon (y&gt;x)\)</span>.</p>
 <div class="tf-quiz example-choice" data-correct="1" role="group" aria-label="בחירת תשובה לסעיף ב">
 <button type="button" class="tf-opt" data-val="0">
 אמת
@@ -1740,7 +1741,7 @@ window.Quarto = {
 
 </div>
 <div class="tf-why">
-<p>אבל <span class="math display">\[\exists y\in D\, \forall x\in D\, (y &gt; x)\]</span> הוא <strong>שקר</strong>: אין מספר שגדול מכל המספרים, כי הוא לא גדול מעצמו.</p>
+<p>אבל <span class="math display">\[\exists y\in D\colon \forall x\in D\colon (y &gt; x)\]</span> הוא <strong>שקר</strong>: אין מספר שגדול מכל המספרים, כי הוא לא גדול מעצמו.</p>
 </div>
 </div>
 </div>
@@ -1748,7 +1749,7 @@ window.Quarto = {
 <p><strong>בדיקה עצמית.</strong></p>
 <p>התחום הוא <span class="math inline">\(.D = \{1, 2, 3, 4\}\)</span> אמת או שקר?</p>
 <ol type="1">
-<li><span class="math inline">\(\forall x\in D\, (x &lt; 5)\)</span></li>
+<li><span class="math inline">\(\forall x\in D\colon (x &lt; 5)\)</span></li>
 </ol>
 <div class="tf-quiz" data-correct="true">
 <button class="tf-opt" data-val="true">אמת</button>
@@ -1757,7 +1758,7 @@ window.Quarto = {
 <div class="tf-why"><b>אמת:</b> בדקנו את כל ארבעת האיברים, וכולם קטנים מ-\(5\). זה המקרה שבו צריך לבדוק את כל התחום.</div>
 </div>
 <ol start="2" type="1">
-<li><span class="math inline">\(\exists x\in D\, (x &gt; 4)\)</span></li>
+<li><span class="math inline">\(\exists x\in D\colon (x &gt; 4)\)</span></li>
 </ol>
 <div class="tf-quiz" data-correct="false">
 <button class="tf-opt" data-val="true">אמת</button>
@@ -1766,7 +1767,7 @@ window.Quarto = {
 <div class="tf-why"><b>שקר:</b> אף אחד מ-\(1, 2, 3, 4\) אינו גדול מ-\(4\). גם כאן צריך לבדוק את כולם.</div>
 </div>
 <ol start="3" type="1">
-<li><span class="math inline">\(,\forall x\in D\, E(x)\)</span> כאשר <span class="math inline">\(E(x)\)</span> = ״<span class="math inline">\(x\)</span> זוגי״</li>
+<li><span class="math inline">\(,\forall x\in D\colon E(x)\)</span> כאשר <span class="math inline">\(E(x)\)</span> = ״<span class="math inline">\(x\)</span> זוגי״</li>
 </ol>
 <div class="tf-quiz" data-correct="false">
 <button class="tf-opt" data-val="true">אמת</button>
@@ -1775,7 +1776,7 @@ window.Quarto = {
 <div class="tf-why"><b>שקר:</b> מספיקה דוגמה נגדית אחת, למשל \(x = 1\).</div>
 </div>
 <ol start="4" type="1">
-<li><span class="math inline">\(\exists x\in D\, (x^2 = 9)\)</span></li>
+<li><span class="math inline">\(\exists x\in D\colon (x^2 = 9)\)</span></li>
 </ol>
 <div class="tf-quiz" data-correct="true">
 <button class="tf-opt" data-val="true">אמת</button>
@@ -1784,7 +1785,7 @@ window.Quarto = {
 <div class="tf-why"><b>אמת:</b> העד הוא \(x = 3\). שימו לב ש-\(x = -3\) לא בתחום, אבל עד אחד מספיק.</div>
 </div>
 <ol start="5" type="1">
-<li><span class="math display">\[\forall x\in D\, \exists y\in D\, (y &gt; x)\]</span></li>
+<li><span class="math display">\[\forall x\in D\colon \exists y\in D\colon (y &gt; x)\]</span></li>
 </ol>
 <div class="tf-quiz" data-correct="false">
 <button class="tf-opt" data-val="true">אמת</button>
@@ -1805,13 +1806,13 @@ window.Quarto = {
 <p>בשלילה כל כמת מתחלף: <span class="math inline">\(\forall\)</span> הופך ל־<span class="math inline">\(\exists\)</span> ו־<span class="math inline">\(\exists\)</span> הופך ל־<span class="math inline">\(,\forall\)</span> וה־<span class="math inline">\(\neg\)</span> מגיע עד <span class="math inline">\(.L(x, y)\)</span></p>
 </div>
 <div class="step">
-<p><strong>הנוסחה:</strong> <span class="math display">\[.\forall x\in S\, \exists y\in M\, L(x, y)\]</span></p>
+<p><strong>הנוסחה:</strong> <span class="math display">\[.\forall x\in S\colon \exists y\in M\colon L(x, y)\]</span></p>
 </div>
 <div class="step">
-<p><strong>שלילה:</strong> <span class="math display">\[.\neg \forall x\in S\, \exists y\in M\, L(x, y) \;\equiv\; \exists x\in S\, \neg \exists y\in M\, L(x, y)\]</span></p>
+<p><strong>שלילה:</strong> <span class="math display">\[.\neg \forall x\in S\colon \exists y\in M\colon L(x, y) \;\equiv\; \exists x\in S\colon \neg \exists y\in M\colon L(x, y)\]</span></p>
 </div>
 <div class="step">
-<p><strong>ועוד פעם פנימה:</strong> <span class="math display">\[.\exists x\in S\, \neg \exists y\in M\, L(x, y) \;\equiv\; \exists x\in S\, \forall y\in M\, \neg L(x, y)\]</span></p>
+<p><strong>ועוד פעם פנימה:</strong> <span class="math display">\[.\exists x\in S\colon \neg \exists y\in M\colon L(x, y) \;\equiv\; \exists x\in S\colon \forall y\in M\colon \neg L(x, y)\]</span></p>
 </div>
 <div class="step">
 <p><strong>במילים:</strong> ״<strong>יש</strong> סטודנט שלא אוהב <strong>אף</strong> פריט בתפריט.״ שימו לב להבדל: השלילה אומרת שיש סטודנט מסוים שאינו אוהב אף פריט בתפריט. היא אינה טוענת שלכל סטודנט יש פריט שאינו אוהב.</p>
@@ -1837,7 +1838,7 @@ window.Quarto = {
 <p><strong>הגדרה 2.3.1 — הכלה ותת־קבוצה.</strong></p>
 <p>אומרים ש־<span class="math inline">\(A\)</span> <span class="term"><strong>מוכלת</strong></span> ב־<span class="math inline">\(B\)</span>, או ש־<span class="math inline">\(A\)</span> היא <span class="term"><strong>תת־קבוצה</strong></span> של <span class="math inline">\(B\)</span>, אם <strong>כל איבר של <span class="math inline">\(A\)</span> הוא גם איבר של <span class="math inline">\(B\)</span></strong>. מסמנים <span class="math inline">\(A\subseteq B\)</span>.</p>
 <p>בעזרת הכמת ״לכל״ כותבים:</p>
-<p><span class="math display">\[A\subseteq B\quad\Longleftrightarrow\quad \forall x\in A\;(x\in B).\]</span></p>
+<p><span class="math display">\[A\subseteq B\quad\Longleftrightarrow\quad \forall x\in A\colon (x\in B).\]</span></p>
 <p>קוראים: ״לכל איבר <span class="math inline">\(x\)</span> של <span class="math inline">\(A\)</span>, מתקיים ש־<span class="math inline">\(x\)</span> שייך גם ל־<span class="math inline">\(B\)</span>״.</p>
 <p>הסימון מאפשר שוויון. אם <span class="math inline">\(A\subseteq B\)</span> וגם <span class="math inline">\(A\ne B\)</span>, זו <span class="term"><strong>הכלה ממש</strong></span>, ומסמנים <span class="math inline">\(A\subsetneq B\)</span>.</p>
 </div>
@@ -2594,9 +2595,9 @@ window.Quarto = {
 <section id="sec-set-proof-goals" class="level3" data-number="2.8.1">
 <h3 data-number="2.8.1" class="anchored" data-anchor-id="sec-set-proof-goals"><span class="header-section-number">2.8.1</span> מה צריך להראות?</h3>
 <p>כעת אפשר לכתוב בקיצור את הדרישה ״כל איבר של <span class="math inline">\(A\)</span> נמצא גם ב־<span class="math inline">\(B\)</span>״:</p>
-<p><span class="math display">\[A\subseteq B\quad\Longleftrightarrow\quad \forall x\in A\,(x\in B).\]</span></p>
+<p><span class="math display">\[A\subseteq B\quad\Longleftrightarrow\quad \forall x\in A\colon (x\in B).\]</span></p>
 <p>כדי להפריך אותה, צריך למצוא איבר מהסוג ההפוך:</p>
-<p><span class="math display">\[A\nsubseteq B\quad\Longleftrightarrow\quad \exists x\in A\,(x\notin B).\]</span></p>
+<p><span class="math display">\[A\nsubseteq B\quad\Longleftrightarrow\quad \exists x\in A\colon (x\notin B).\]</span></p>
 <p>הסימן <span class="math inline">\(\nsubseteq\)</span> אומר ״אינה מוכלת ב־״. שימו לב: האיבר שמפריך את ההכלה חייב להתחיל ב־<span class="math inline">\(A\)</span>.</p>
 <div class="thmbox thmbox-method" title="הוכחת הכלה — עוקבים אחרי איבר כלשהו">
 <p><strong>שיטה 2.8.1 — הוכחת הכלה — עוקבים אחרי איבר כלשהו.</strong></p>
@@ -2644,7 +2645,7 @@ window.Quarto = {
 <h3 data-number="2.8.3" class="anchored" data-anchor-id="sec-set-equality-proof"><span class="header-section-number">2.8.3</span> שוויון: אותם איברים בשני הכיוונים</h3>
 <p>כדי להראות <span class="math inline">\(A=B\)</span> אפשר להוכיח שתי הכלות: <span class="math inline">\(A\subseteq B\)</span> וגם <span class="math inline">\(B\subseteq A\)</span>. אפשר גם להראות ישירות שכל איבר שייך ל־<span class="math inline">\(A\)</span> <strong>אם ורק אם</strong> הוא שייך ל־<span class="math inline">\(B\)</span>.</p>
 <p>כש־<span class="math inline">\(A,B\subseteq U\)</span>, הניסוח השני הוא:</p>
-<p><span class="math display">\[A=B\quad\Longleftrightarrow\quad\forall x\in U\,\bigl((x\in A)\leftrightarrow(x\in B)\bigr).\]</span></p>
+<p><span class="math display">\[A=B\quad\Longleftrightarrow\quad\forall x\in U\colon \bigl((x\in A)\leftrightarrow(x\in B)\bigr).\]</span></p>
 <div class="thmbox thmbox-example" title="החלפת סדר בחיתוך">
 <p><strong>דוגמה 2.8.4 — החלפת סדר בחיתוך.</strong></p>
 <p>נוכיח <span class="math inline">\(A\cap B=B\cap A\)</span>.</p>
@@ -2763,7 +2764,7 @@ x\in A\cap B
 <p>לפני הפתרון סמנו את התחום. <span class="term"><strong>עד</strong></span> הוא איבר שמראה שטענת ״קיים״ נכונה. <span class="term"><strong>דוגמה נגדית</strong></span> היא איבר שמראה שטענת ״לכל״ שגויה. דוגמה אחת שמתאימה אינה מספיקה להוכיח ״לכל״.</p>
 <div id="practice-q-free" class="thmbox thmbox-question" title="איזה משתנה עדיין חופשי?">
 <p><strong>שאלה 2.10.1 — איזה משתנה עדיין חופשי?</strong></p>
-<p>התחום של <span class="math inline">\(x\)</span> ושל <span class="math inline">\(y\)</span> הוא <span class="math inline">\(D=\{1,2,3\}\)</span>. הסתכלו על <span class="math inline">\(\forall x\in D\,(x\le y)\)</span>.</p>
+<p>התחום של <span class="math inline">\(x\)</span> ושל <span class="math inline">\(y\)</span> הוא <span class="math inline">\(D=\{1,2,3\}\)</span>. הסתכלו על <span class="math inline">\(\forall x\in D\colon (x\le y)\)</span>.</p>
 <ol type="1">
 <li>על איזה משתנה חל הכמת ״לכל״?</li>
 <li>איזה משתנה נשאר חופשי?</li>
@@ -2791,10 +2792,10 @@ x\in A\cap B
 <p><strong>שאלה 2.10.2 — ארבע טענות על תחום קטן.</strong></p>
 <p>התחום הוא <span class="math inline">\(D=\{0,1,2,3\}\)</span>. קבעו אמת או שקר ותנו הסבר: עד, דוגמה נגדית או בדיקה של כל התחום, לפי הצורך.</p>
 <ol type="1">
-<li><span class="math inline">\(\forall x\in D\,(x\ge0)\)</span>.</li>
-<li><span class="math inline">\(\exists x\in D\,(x^2=4)\)</span>.</li>
-<li><span class="math inline">\(\forall x\in D\,(x&lt;3)\)</span>.</li>
-<li><span class="math inline">\(\exists x\in D\,(x&gt;3)\)</span>.</li>
+<li><span class="math inline">\(\forall x\in D\colon (x\ge0)\)</span>.</li>
+<li><span class="math inline">\(\exists x\in D\colon (x^2=4)\)</span>.</li>
+<li><span class="math inline">\(\forall x\in D\colon (x&lt;3)\)</span>.</li>
+<li><span class="math inline">\(\exists x\in D\colon (x&gt;3)\)</span>.</li>
 </ol>
 <p>הסימן <span class="math inline">\(\ge\)</span> פירושו ״גדול או שווה״. <span class="math inline">\(x^2\)</span> הוא <span class="math inline">\(x\)</span> כפול עצמו.</p>
 <div class="choice-exercise" data-choice="quant-finite">
@@ -2822,7 +2823,7 @@ x\in A\cap B
 </div>
 <div id="practice-q-quant-domain" class="thmbox thmbox-question" title="איבר חדש משנה את התשובה">
 <p><strong>שאלה 2.10.3 — איבר חדש משנה את התשובה.</strong></p>
-<p>בדקו את <span class="math inline">\(\forall x\in D\,(x\ne0)\)</span> בשני עולמות דיון:</p>
+<p>בדקו את <span class="math inline">\(\forall x\in D\colon (x\ne0)\)</span> בשני עולמות דיון:</p>
 <ol type="1">
 <li><span class="math inline">\(D=\{1,2,3\}\)</span>.</li>
 <li><span class="math inline">\(D=\{0,1,2,3\}\)</span>.</li>
@@ -2858,7 +2859,7 @@ x\in A\cap B
 <p>שלילת ״לכל״ דורשת לפחות דוגמה נגדית אחת, ולא כישלון של כולם.</p>
 </div>
 <div class="step">
-<p>המשפט הוא <span class="math inline">\(\forall x\in D\,P(x)\)</span>. שלילתו היא <span class="math inline">\(\exists x\in D\,\neg P(x)\)</span>.</p>
+<p>המשפט הוא <span class="math inline">\(\forall x\in D\colon P(x)\)</span>. שלילתו היא <span class="math inline">\(\exists x\in D\colon \neg P(x)\)</span>.</p>
 </div>
 <div class="step">
 <p>במילים: יש לפחות סטודנט אחד שלא החזיר את הספר. ייתכן שכל האחרים החזירו. לכן אין להסיק שאף אחד לא החזיר.</p>
@@ -2878,7 +2879,7 @@ x\in A\cap B
 <p>כיסא תפוס אחד אינו אומר מה קורה בשאר הכיסאות.</p>
 </div>
 <div class="step">
-<p>המשפט הוא <span class="math inline">\(\exists x\in D\,P(x)\)</span>. שלילתו היא <span class="math inline">\(\forall x\in D\,\neg P(x)\)</span>: אף כיסא בכיתה אינו פנוי.</p>
+<p>המשפט הוא <span class="math inline">\(\exists x\in D\colon P(x)\)</span>. שלילתו היא <span class="math inline">\(\forall x\in D\colon \neg P(x)\)</span>: אף כיסא בכיתה אינו פנוי.</p>
 </div>
 <div class="step">
 <p>מספר הכיסאות בכיתה סופי, ולכן אפשר לבדוק את כולם ולוודא שאף כיסא אינו פנוי. כיסא תפוס אחד אינו מספיק, כי ייתכן שיש כיסא פנוי לצדו.</p>
@@ -2916,8 +2917,8 @@ x\in A\cap B
 </table>
 <p>נסמן ב־<span class="math inline">\(L(x,y)\)</span> את ״המתנדב <span class="math inline">\(x\)</span> פנוי במועד <span class="math inline">\(y\)</span>״. קבעו אמת או שקר:</p>
 <ol type="1">
-<li><span class="math display">\[\forall x\in S\,\exists y\in M\,L(x,y)\]</span>.</li>
-<li><span class="math display">\[\exists y\in M\,\forall x\in S\,L(x,y)\]</span>.</li>
+<li><span class="math display">\[\forall x\in S\colon \exists y\in M\colon L(x,y)\]</span>.</li>
+<li><span class="math display">\[\exists y\in M\colon \forall x\in S\colon L(x,y)\]</span>.</li>
 </ol>
 <p>הסבירו את ההבדל בין בחירת מועד לכל מתנדב בנפרד לבין קביעת מפגש משותף לכולם.</p>
 <div class="choice-exercise" data-choice="quant-menu">
@@ -2941,8 +2942,8 @@ x\in A\cap B
 <p><strong>שאלה 2.10.7 — מספר אחר לכל אחד?</strong></p>
 <p>התחום של שני המשתנים הוא <span class="math inline">\(D=\{1,2,3\}\)</span>. קבעו אמת או שקר:</p>
 <ol type="1">
-<li><span class="math display">\[\forall x\in D\,\exists y\in D\,(x+y=4)\]</span>.</li>
-<li><span class="math display">\[\exists y\in D\,\forall x\in D\,(x+y=4)\]</span>.</li>
+<li><span class="math display">\[\forall x\in D\colon \exists y\in D\colon (x+y=4)\]</span>.</li>
+<li><span class="math display">\[\exists y\in D\colon \forall x\in D\colon (x+y=4)\]</span>.</li>
 </ol>
 <p>בסעיף הראשון כתבו איזה <span class="math inline">\(y\)</span> מתאים לכל <span class="math inline">\(x\)</span>. בסעיף השני בדקו אם אותו <span class="math inline">\(y\)</span> יכול לעבוד לכולם.</p>
 <div class="choice-exercise" data-choice="quant-order">
@@ -2976,16 +2977,16 @@ x\in A\cap B
 <p>מתחילים מבחירת ספר אחד: קיים y. בשלילה כל כמת מתחלף, אבל סדר המשתנים אינו מתחלף.</p>
 </div>
 <div class="step">
-<p>המשפט הוא <span class="math display">\[\exists y\in B\,\forall x\in S\,R(x,y)\]</span>.</p>
+<p>המשפט הוא <span class="math display">\[\exists y\in B\colon \forall x\in S\colon R(x,y)\]</span>.</p>
 </div>
 <div class="step">
-<p>תחילה שוללים את המשפט כולו: <span class="math display">\[\neg\exists y\in B\,\forall x\in S\,R(x,y)\]</span>.</p>
+<p>תחילה שוללים את המשפט כולו: <span class="math display">\[\neg\exists y\in B\colon \forall x\in S\colon R(x,y)\]</span>.</p>
 </div>
 <div class="step">
-<p>מכניסים את השלילה מעבר ל״קיים״. הכמת מתחלף ל״לכל״: <span class="math display">\[\forall y\in B\,\neg\forall x\in S\,R(x,y)\]</span>.</p>
+<p>מכניסים את השלילה מעבר ל״קיים״. הכמת מתחלף ל״לכל״: <span class="math display">\[\forall y\in B\colon \neg\forall x\in S\colon R(x,y)\]</span>.</p>
 </div>
 <div class="step">
-<p>מכניסים את השלילה גם מעבר ל״לכל״. הוא מתחלף ל״קיים״: <span class="math display">\[\forall y\in B\,\exists x\in S\,\neg R(x,y)\]</span>.</p>
+<p>מכניסים את השלילה גם מעבר ל״לכל״. הוא מתחלף ל״קיים״: <span class="math display">\[\forall y\in B\colon \exists x\in S\colon \neg R(x,y)\]</span>.</p>
 </div>
 <div class="step">
 <p>במילים: לכל ספר יש לפחות סטודנט אחד שלא קרא אותו. ייתכן שבכל ספר זה סטודנט אחר. לא נובע שיש סטודנט אחד שלא קרא אף ספר.</p>

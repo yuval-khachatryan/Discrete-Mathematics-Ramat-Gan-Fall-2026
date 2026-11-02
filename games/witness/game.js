@@ -379,8 +379,8 @@ function mountOrder(level, ui) {
       partStatus[i].textContent = done[i] ? " ✓ הושלם" : "";
     });
     task.innerHTML = part === 0
-      ? "<b>חלק 1:</b> בכל <b>שורה</b> בחרו פריט שהסטודנט אוהב. כך מראים ש־" + m("∀x∈D ∃y∈M L(x, y)") + " נכון."
-      : "<b>חלק 2:</b> בכל <b>עמודה</b> בחרו סטודנט שלא אוהב את הפריט. כך מראים ש־" + m("∃y∈M ∀x∈D L(x, y)") + " שקרי.";
+      ? "<b>חלק 1:</b> בכל <b>שורה</b> בחרו פריט שהסטודנט אוהב. כך מראים ש־" + m("∀x∈D: ∃y∈M: L(x, y)") + " נכון."
+      : "<b>חלק 2:</b> בכל <b>עמודה</b> בחרו סטודנט שלא אוהב את הפריט. כך מראים ש־" + m("∃y∈M: ∀x∈D: L(x, y)") + " שקרי.";
     for (const x of D) for (const y of Y) {
       const { b, mark } = cells[x.id][y.id];
       const on = part === 0 ? picks[0][x.id] === y.id : picks[1][y.id] === x.id;
