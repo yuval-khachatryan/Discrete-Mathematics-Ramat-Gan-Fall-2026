@@ -1,4 +1,4 @@
-import {stepReason} from "./proof-rules.js";
+import {stepReason,sourceCitation,deductionReason,proofSourceLabel} from "./proof-rules.js";
 import { parse, format } from './logic.js';
 import { rename, ruleName } from './argument-rules.js';
 
@@ -7,7 +7,7 @@ import { rename, ruleName } from './argument-rules.js';
 // grouping rather than guessing an implication's causal meaning.
 export function formulaWords(formula, exercise, mapping) {
   const text = s => s.replace(/[.。]+$/, '');
-  const exact = [...exercise.premises, exercise.goal,
+  const exact = [...exercise.premises, exercise.goal, ...exercise.solution.filter(s=>s.text),
     ...exercise.atoms.map(a => ({formula:a.id,text:a.text}))];
   const normalized = format(formula);
   const match = exact.find(item => rename(item.formula,mapping) === normalized);
@@ -28,12 +28,12 @@ export function formulaWords(formula, exercise, mapping) {
 
 export function argumentLines(exercise,mapping,premises,steps) {
   const numbers=new Map(premises.map((_,i)=>[`p${i+1}`,i+1]));
-  const lines=premises.map((formula,i)=>({number:i+1,formula:format(formula),reason:'נתון',words:formulaWords(formula,exercise,mapping)}));
+  const lines=premises.map((formula,i)=>({number:i+1,label:proofSourceLabel(i+1,premises.length),formula:format(formula),reason:'נתון',words:formulaWords(formula,exercise,mapping)}));
   steps.forEach(step=>{
     const number=lines.length+1;
     const refs=step.refs.map(id=>numbers.get(id));
-    lines.push({number,formula:format(parse(step.formula,{flatten:false})),
-      reason:`${step.rule === "eq:replacements" ? stepReason(step):ruleName(step.rule)}, ${refs.length===1?'משורה':'משורות'} ${refs.join(' ו־')}`,
+    lines.push({number,label:`צעד ${number-premises.length}`,ruleLabel:step.rule==="eq:replacements"?null:ruleName(step.rule),sources:refs.map(n=>({label:proofSourceLabel(n,premises.length),formula:lines[n-1].formula})),formula:format(parse(step.formula,{flatten:false})),
+      reason:step.rule === "eq:replacements" ? `${stepReason(step)}, ${refs.map(n=>sourceCitation(proofSourceLabel(n,premises.length),lines[n-1].formula)).join("; ")}` : deductionReason(ruleName(step.rule),refs.map(n=>({number:n,label:proofSourceLabel(n,premises.length),formula:lines[n-1].formula})),step.formula),
       words:formulaWords(step.formula,exercise,mapping)});
     numbers.set(step.id,number);
   });

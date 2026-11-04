@@ -10,8 +10,12 @@ project:
   # Bundle each game into one classic script (games/<name>/game.bundle.js), so
   # the games also work when the book is opened from disk (file://). Needs node
   # and `npm install` once; see tools/build-games.mjs.
-  pre-render: tools/build-games.mjs
-  post-render: tools/build-navigation.mjs
+  pre-render:
+    - tools/build-games.mjs
+    - node tools/build-equivalence-tables.mjs
+  post-render:
+    - tools/build-navigation.mjs
+    - python3 tools/build-reference-index.py
 
 book:
   title: "מתמטיקה בדידה — מערכי הרצאה"

@@ -96,3 +96,14 @@ test("underlined-or is accepted as the XOR alias", () => {
   assert.equal(format("A ⊻ B"), "A ⊕ B");
   assert.equal(col("(A ⊻ B) | C"), col("(A ⊕ B) | C"));
 });
+
+
+test("short identifiers preserve whole names and reject unsafe or reserved spellings",()=>{
+  const f=parse("HAS_CARD -> BORROW_1");
+  assert.deepEqual(variables(f),["HAS_CARD","BORROW_1"]);
+  assert.equal(format(f),"HAS_CARD → BORROW_1");
+  assert.equal(evaluate(f,{HAS_CARD:true,BORROW_1:false}),false);
+  for(const name of ["A".repeat(17),"1NAME","_NAME","A-B","A B","AND","OR","XOR","NOT","IFF","TRUE","FALSE","<script>"]){
+    assert.throws(()=>parse(name),name);
+  }
+});

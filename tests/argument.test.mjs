@@ -15,7 +15,7 @@ test("all assisted arguments are embedded and have valid authored proofs under d
   const qmd=["01-logic.qmd","02-sets.qmd"].map(f=>readFileSync(new URL(`../${f}`,import.meta.url),"utf8")).join("\n");
   for(const [id,ex] of Object.entries(ARGUMENTS)) {
     assert.ok(qmd.includes(`data-argument="${id}"`));
-    for(const names of [["A","B","C"],["C","A","B"],["G","M","H"],["Z","Y","X"]]) {
+    for(const names of [["A","B","C"],["C","A","B"],["G","M","H"],["Z","Y","X"],["HAS_CARD","CAN_BORROW","STUDY_1"]]) {
       const mapping=Object.fromEntries(ex.atoms.map((a,i)=>[a.id,names[i]]));
       assert.ok(checkMapping(ex,mapping).ok);
       const result=run(ex,ex.solution,mapping);
@@ -29,9 +29,9 @@ test("all assisted arguments are embedded and have valid authored proofs under d
   }
 });
 
-test("names must be unique letters; truth constants cannot name statements",()=>{
+test("names must be distinct identifiers; truth constants cannot name statements",()=>{
   const ex=ARGUMENTS.library;
-  for(const mapping of [{A:"A",B:"A"},{A:"T",B:"B"},{A:"F",B:"B"},{A:"A1",B:"B"},{A:"",B:"B"}]) assert.equal(checkMapping(ex,mapping).ok,false);
+  for(const mapping of [{A:"A",B:"A"},{A:"T",B:"B"},{A:"F",B:"B"},{A:"1A",B:"B"},{A:"",B:"B"}]) assert.equal(checkMapping(ex,mapping).ok,false);
   assert.ok(!LETTERS.includes("F")&&!LETTERS.includes("T"));
   assert.equal(rename("A -> !B",{A:"B",B:"A"}),"B → ¬A");
 });
@@ -60,13 +60,14 @@ test("translations are checked using the chosen names, including negation and im
   }
 });
 
-test("equivalent translations work but a structural rewrite must be justified before inference",()=>{
-  const ex=ARGUMENTS.library,map=identity(ex),premises=["!A | B","A"];
-  assert.ok(checkTranslations(ex,map,premises,"B").ok);
-  assert.equal(run(ex,ex.solution,map,premises).ok,false);
-  const solution=[step("s1","A -> B","eq:implication",["p1"]),step("s2","B","mp",["s1","p2"])];
-  assert.ok(run(ex,solution,map,premises).complete);
-  assert.equal(run(ex,[step("s1","A -> B","eq:double",["p1"])],map,premises).ok,false);
+test("initial translations preserve structure; later justified rewrites remain flexible",()=>{
+  const ex=ARGUMENTS.library,map=identity(ex);
+  assert.equal(checkTranslations(ex,map,["!A | B","A"],"B").ok,false);
+  assert.equal(checkTranslations(ex,map,["A -> B","!!A"],"B").ok,false);
+  assert.equal(checkTranslations(ex,map,["A -> B","A"],"!!B").ok,false);
+  assert.ok(checkTranslations(ex,map,[" (A → B) ","(A)"],"B").ok);
+  const solution=[step("s1","!A | B","eq:implication",["p1"]),step("s2","A -> B","eq:implication",["s1"]),step("s3","B","mp",["s2","p2"])];
+  assert.ok(run(ex,solution).complete);
 });
 
 test("different valid proof paths and reversed source selection are accepted",()=>{
@@ -108,11 +109,25 @@ test("earlier mistakes invalidate dependent steps; malformed and foreign-variabl
   }
 });
 
-test("assisted argument rewrites preserve omitted-double-negation guidance",()=>{
+test("assisted argument rewrites accept De Morgan with immediate double-negation cancellation",()=>{
   const ex={atoms:[{id:"A"},{id:"B"}],premises:[{formula:"!(!A | B)"}],goal:{formula:"A & !B"}};
   const result=run(ex,[step("s1","A & !B","eq:demorgan",["p1"])]);
-  assert.equal(result.ok,false);
-  assert.equal(result.results[0].kind,"missing-step");
-  assert.equal(result.results[0].intermediate,"¬¬A ∧ ¬B");
-  assert.match(result.results[0].message,/התוצאה נכונה/);
+  assert.equal(result.ok,true);
+  assert.equal(result.complete,true);
+  assert.equal(result.results[0].kind,"valid");
+});
+
+
+test("new rule exercises require justified intermediate steps and the correct number of sources",()=>{
+ const parcel=ARGUMENTS['rule-parcel'];
+ assert.equal(run(parcel,[step('s1','!B','and-out',['p1','p2'])]).ok,false);
+ assert.equal(run(parcel,[step('s1','B','and-out',['p1'])]).ok,false);
+ assert.equal(run(parcel,[step('s1','C','mp',['p1','p2'])]).ok,false);
+ assert.equal(run(parcel,parcel.solution.slice(0,1)).complete,false);
+ const registration=ARGUMENTS['rule-registration'];
+ assert.equal(run(registration,[step('s1','B & !C','and-in',['p1','p3'])]).ok,false);
+ assert.equal(run(registration,[registration.solution[0],step('s2','!C & B','and-in',['p3','s1'])]).complete,true);
+ const parking=ARGUMENTS['rule-parking'];
+ assert.equal(run(parking,[step('s1','A','iff-use',['p1','p2'])]).ok,false);
+ assert.equal(run(parking,[step('s1','!A','iff-use',['p2','p1']),parking.solution[1]]).complete,true);
 });

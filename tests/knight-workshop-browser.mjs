@@ -1,7 +1,7 @@
 import {chromium} from 'playwright-core';
 import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
-import {KNIGHT_PROOFS} from '../games/shared/knight-workshop-data.js';
+import {KNIGHT_PROOFS,KNIGHT_PUZZLES} from '../games/shared/knight-workshop-data.js';
 import {LEVELS} from '../games/gate/levels.js';
 import * as K from '../games/gate/knights.js';
 import {evaluate} from '../games/shared/logic.js';
@@ -19,24 +19,41 @@ try{
  assert.equal(await page.locator('#knight-rule-proof').count(),1);
  assert.notEqual(await page.locator('#knight-rule-proof').evaluate(n=>getComputedStyle(n).backgroundColor),'rgb(255, 255, 255)');
  for(const [id,data] of Object.entries(KNIGHT_PROOFS)){
-  const box=page.locator(`[data-knight-proof="${id}"]`);
-  assert.equal(await box.locator('.kw-proof').isVisible(),false);
-  assert.equal(await box.locator('select').count(),0);
-  for(let i=0;i<data.steps.length;i++){
-   const groups=box.locator('.kw-proof-stage .kw-options'),submit=box.getByRole('button',{name:'בדיקת הצעד',exact:true});
-   await submit.click();assert.equal(await box.locator('.kw-proof li').count(),i);
-   for(const group of await groups.all())await group.locator('input[value="0"]').check();
-   await groups.first().locator('input[value="1"]').check();await submit.click();assert.equal(await box.locator('.kw-proof li').count(),i);
-   assert.ok(await box.locator('[aria-invalid=true]').count());
-   await groups.first().locator('input[value="0"]').check();
-   if(data.steps[i].reasons){await groups.nth(1).locator('input[value="1"]').check();await submit.click();assert.equal(await box.locator('.kw-proof li').count(),i);await groups.nth(1).locator('input[value="0"]').check();}
-   await submit.click();assert.equal(await box.locator('.kw-proof li').count(),i+1);
+  const level=KNIGHT_PUZZLES[data.level],box=page.locator(`[data-knight-proof="${id}"]`);
+  assert.equal(await box.locator('.kp-work').isVisible(),false);
+  assert.equal(await box.locator('.argument-letter').count(),0);
+  const approve=box.getByRole('button',{name:'בדיקת ההצרנה ופתיחת ההוכחה',exact:true});
+  await approve.click();assert.equal(await box.locator('.kp-work').isVisible(),false);
+  for(const [i,st]of level.statements.entries())await box.locator('.kp-statement').nth(i).fill(st.formula);
+  await approve.click();assert.equal(await box.locator('.kp-work').isVisible(),true);
+  assert.equal(await box.locator('.kp-rule').inputValue(),'');
+  for(const [i,step]of data.model.entries()){
+   if(i)await box.getByRole('button',{name:'הוספת שורה',exact:true}).click();
+   const row=box.locator('.kp-step').nth(i);
+   await row.locator('.kp-formula').fill(step.formula);await row.locator('.kp-rule').selectOption(step.rule);
+   for(const [j,ref]of step.refs.entries()){if(j>=await row.locator('.kp-sources').count())await row.getByRole('button',{name:'הוספת שורת מקור',exact:true}).click();await row.locator('.kp-sources').nth(j).selectOption(String(ref));}
+   await row.getByRole('button',{name:'בדיקת השורה',exact:true}).click();
+   assert.equal(await row.getAttribute('aria-invalid'),'false',await row.innerText());
+   assert.equal(await box.locator('.kp-written .kp-proof-table > tbody > tr:not(.kp-evidence-row)').count(),data.premises.length+i+1);
   }
-  assert.equal(await box.locator('.kw-proof').count(),1);
-  assert.match(await box.locator('.kw-proof').innerText(),/ההוכחה המלאה/);
-  assert.equal(await box.locator('.kw-proof-stage input').count(),0);
-  await box.screenshot({path:`/tmp/knight-proof-${id}.png`});
-  await box.getByRole('button',{name:'התחלה מחדש',exact:true}).click();assert.equal(await box.locator('.kw-proof li').count(),0);
+  assert.equal(await box.locator('.kp-written').count(),1);
+  assert.match(await box.locator('.kp-work > .bk-msg').innerText(),/ההוכחה הושלמה/);
+  assert.match(await box.locator('.kp-written').innerText(),/ההוכחה המלאה/);
+  await box.locator('.kp-written').screenshot({path:`/tmp/knight-proof-${id}.png`});
+  await box.locator('.kp-model > summary').click();
+  assert.match(await box.locator('.kp-model').innerText(),/ההוכחה המלאה/);
+  await box.getByRole('button',{name:'איפוס ההוכחה',exact:true}).click();
+  assert.equal(await box.locator('.kp-step').count(),1);assert.equal(await box.locator('.kp-formula').inputValue(),'');
+  assert.equal(await box.locator('.kp-written .kp-proof-table').count(),0);
+  // Correct formula with a false justification is rejected, then an alternative
+  // truth-table proof is accepted without reproducing the model's steps.
+  const target=id==='contradiction'?'!A & B':id==='direct'?'!A & !B':id==='cases'?'A <-> B':'F';
+  const row=box.locator('.kp-step').first();
+  await row.locator('.kp-formula').fill(target);await row.locator('.kp-rule').selectOption('and-out');await row.locator('.kp-sources').selectOption('1');
+  await box.getByRole('button',{name:'בדיקת ההוכחה',exact:true}).click();assert.equal(await row.getAttribute('aria-invalid'),'true');
+  await row.locator('.kp-rule').selectOption('table');for(let j=0;j<data.premises.length;j++){if(j>=await row.locator('.kp-sources').count())await row.getByRole('button',{name:'הוספת שורת מקור',exact:true}).click();await row.locator('.kp-sources').nth(j).selectOption(String(j+1));}
+  await box.getByRole('button',{name:'בדיקת ההוכחה',exact:true}).click();assert.match(await box.locator('.kp-work > .bk-msg').innerText(),/ההוכחה הושלמה/);
+  const evidence=box.locator('.kp-written .kp-table-evidence');assert.equal(await evidence.count(),1);await evidence.locator('summary').click();assert.equal(await evidence.locator('tbody tr').count(),4);
  }
  const evidence=page.locator('[data-knight-evidence]'),fields=evidence.locator('select');
  const submitEvidence=evidence.getByRole('button',{name:'בדיקת התשובה',exact:true});
@@ -78,5 +95,5 @@ try{
  }
  await page.setViewportSize({width:390,height:1000});await page.goto(url('games/gate/index.html?levels=three&embed=1'));await page.locator('.knight-workshop form').waitFor();
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'game fits mobile');assert.ok(await page.locator('.k-card').evaluateAll(ns=>Math.max(...ns.map(n=>n.getBoundingClientRect().top))-Math.min(...ns.map(n=>n.getBoundingClientRect().top))<2));await page.screenshot({path:'/tmp/knight-game-mobile.png',fullPage:true});
- assert.deepEqual(errors,[]);console.log('Passed: four strategy-specific proofs, two-witness exercise, all game stages, single answer area, optional table, errors, resets, reveals and mobile layout.');
+ assert.deepEqual(errors,[]);console.log('Passed: four open proof editors, alternate routes, formalization, two-witness exercise, all game stages, single answer area, optional table, errors, resets, reveals and mobile layout.');
 }finally{await browser.close();}

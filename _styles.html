@@ -465,8 +465,11 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .argument-ready .argument-offline { display: none; }
 .argument-stage { margin: .8rem 0; padding: .7rem; border: 1px solid #c4b5fd; border-radius: 10px; background: #fff; min-width: 0; }
 .argument-stage h4 { font-size: 1.1em; color: #6b21a8; margin-top: 0; }
+.argument-source-pair { display:grid; grid-template-columns:minmax(7rem,1fr) minmax(0,1fr); gap:.6rem; align-items:center; }
+.argument-source-pair select { min-width:0; width:100%; }
+.argument-source-preview { padding:.5rem; background:#eef2ff; color:#3730a3; overflow-wrap:anywhere; font-family:"Cambria Math",serif; font-weight:400; }
 .argument-mapping { display: flex; align-items: center; gap: .7rem; padding: .5rem 0; }
-.argument-letter { flex: 0 0 4rem; min-height: 44px; direction: ltr; text-align: center; font: inherit; font-weight: 700; border: 1px solid #7c3aed; border-radius: 6px; color: #581c87; background: #faf5ff; }
+.argument-letter { flex: 0 1 12rem; min-width:0; min-height: 44px; direction: ltr; text-align: center; font: inherit; font-weight: 700; border: 1px solid #7c3aed; border-radius: 6px; color: #581c87; background: #faf5ff; }
 .argument-source { width: 100%; min-width: 0; min-height: 44px; padding: .35rem; font: inherit; border: 1px solid #94a3b8; border-radius: 6px; background: #fff; }
 .argument-letter:focus-visible, .argument-source:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
 .argument-translation { padding: .7rem 0; border-bottom: 1px solid #e2e8f0; }
@@ -486,6 +489,7 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .choice-select:focus-visible, .argument-formula-bank:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
 .choice-ready .choice-offline { display: none; }
 .bk-keys { display: flex; flex-wrap: wrap; gap: 0.25rem; direction: ltr; }
+.bk-keys[hidden] { display:none !important; }
 .bk-key { min-width: 40px; min-height: 40px; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; font: 1.1rem "Cambria Math", "STIX Two Math", serif; cursor: pointer; }
 .bk-key:hover { background: #eef2ff; }
 .bk-fq .hint, .bk-fq .explain, .bk-ttq .after { margin: 0.4rem 0; padding: 0.4rem 0.7rem; border-radius: 8px; }
@@ -554,7 +558,68 @@ figure.knight-scene { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)
   .knight-speaker img { width:46px; height:46px; }
   .knight-speaker .knight-speech { padding:.45rem .25rem; font-size:.88rem; overflow-wrap:anywhere; }
 }
+
+.activity-help { margin:.5rem 0 .8rem; font-size:.92rem; }
+.activity-help summary { cursor:pointer; color:#4338ca; }
+.activity-help ol { padding: .7rem 1.7rem .7rem .7rem; background:#f8fafc; border-radius:8px; }
+.activity-help li + li { margin-top:.5rem; }
+.proof-preview[hidden] { display:none; }
+.replacement-editor > p:empty { display:none; }
+.proof-stairs { max-width:760px; margin:1rem auto; }
+.proof-stairs img { width:100%; height:auto; }
+.proof-stairs figcaption { color:#475569; font-size:.92rem; text-align:center; }
+
+/* One compact reference list; rule statements stay visible, proofs expand below. */
+.equivalence-laws { border-block:1px solid #cbd5e1; font-size:.9rem; }
+.equivalence-law { display:grid; grid-template-columns:8rem minmax(0,1fr) 5.6rem; align-items:start; gap:.25rem .6rem; margin:0; padding:.35rem .25rem; border-bottom:1px solid #e2e8f0; }
+.equivalence-law:last-child { border-bottom:0; }
+.law-heading { display:contents; }
+.law-heading > strong { font-size:.9em; line-height:1.4; color:#334155; }
+.law-formulas { min-width:0; line-height:1.35; }
+.law-proof { min-width:0; margin:0; font-size:.9em; }
+.law-proof:not([open]) .law-proof-hide, .law-proof[open] .law-proof-show { display:none; }
+.law-proof > summary { cursor:pointer; color:#3730a3; line-height:1.4; }
+.law-proof[open] { grid-column:1/-1; font-size:1rem; padding:.5rem; background:#f8fafc; }
+.law-proof[open] > summary { margin-bottom:.5rem; }
+.law-summary-formula { display:inline-block; max-width:100%; overflow-x:auto; vertical-align:middle; padding:0; }
+@media(max-width:600px) {
+ .equivalence-law { grid-template-columns:minmax(0,1fr) auto; gap:.2rem .5rem; padding:.4rem .1rem; }
+ .law-heading > strong { grid-column:1; grid-row:1; }
+ .law-formulas { grid-column:1/-1; grid-row:2; }
+ .law-proof { grid-column:2; grid-row:1; }
+ .law-proof[open] { grid-column:1/-1; grid-row:3; }
+}
+.law-table-scroll { max-width:100%; overflow-x:auto; margin:.8rem 0; }
+.law-truth-table { width:100%; border-collapse:collapse; font-size:.82rem; }
+.law-truth-table caption { caption-side:top; text-align:center; direction:ltr; unicode-bidi:isolate; color:#172033; padding:.6rem; }
+.law-truth-table th,.law-truth-table td { text-align:center; vertical-align:middle; padding:.35rem; border:1px solid #cbd5e1; }
+.law-truth-table th { background:#f8fafc; }
+.law-truth-table .law-result { background:#ede9fe; color:#4c1d95; font-weight:700; }
+.law-side { display:block; font-size:.8rem; margin-bottom:.3rem; }
+.law-formula { display:inline-block; white-space:nowrap; }
+.law-verdict { color:#4c1d95; margin:.5rem 0 0; }
+.xref-panel { border:1px solid #cbd5e1; border-inline-start:4px solid #4338ca; background:#f8fafc; margin:.5rem 0 1rem; padding:.65rem; min-width:0; }
+.xref-head { display:flex; justify-content:space-between; align-items:center; gap:.8rem; margin-bottom:.5rem; font-size:.9rem; }
+.xref-close { border:1px solid #cbd5e1; border-radius:4px; background:white; color:#334155; cursor:pointer; padding:.2rem .5rem; }
+.xref-body { max-height:65vh; overflow:auto; }
+.xref-body > .thmbox { margin:0; }
+.xref-note { color:#475569; }
+.step-compact { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem 1rem; }
+.step-compact[hidden],.step-editor[hidden] { display:none !important; }
+.step-compact .proof-formula { max-width:100%; overflow-x:auto; }
+.step-compact-reason { flex:1 1 12rem; overflow-wrap:anywhere; color:#475569; font-size:.9rem; }
+.step-accepted { border-color:#86b69c; background:#f5faf7; }
+a.xref-open { background:#ede9fe; border-radius:3px; }
+.equivalence-law summary:focus-visible,.law-table-scroll:focus-visible { outline:3px solid #6366f1; outline-offset:3px; }
 </style>
+<script>
+// Start the proofs folded, including when the browser restores a page.
+window.addEventListener('pageshow', function () {
+  document.querySelectorAll('details.law-proof').forEach(function (law) {
+    law.open = false;
+  });
+});
+</script>
 <script src="games/shared/book.bundle.js" defer></script>
 <script>
 /* ---------------------------------------------------------------------------
@@ -749,7 +814,13 @@ window.addEventListener("message", function (e) {
 .replacement-item legend { font-size:1rem; font-weight:700; }
 .replacement-item label { display:block; margin:.5rem 0; }
 .replacement-item select,.replacement-item input { display:block; width:100%; max-width:100%; min-height:44px; font:inherit; }
-.replacement-part { direction:ltr; }
+ .replacement-result-tools { margin:.6rem 0; }
+.replacement-recovery { padding:.5rem; border-inline-start:3px solid #b45309; background:#fffbeb; }
+.replacement-recovery:empty { display:none; }
+.replacement-difference summary { cursor:pointer; font-weight:600; }
+.replacement-difference .proof-formula { white-space:normal; overflow-wrap:anywhere; padding:.3rem 0; }
+.replacement-rule-reference { margin:.4rem 0; }
+.replacement-item > .proof-formula { white-space:normal; overflow-wrap:anywhere; color:#5b21b6; font-weight:600; }
 .replacement-item[aria-invalid=true] { border:2px solid #b91c1c; }
 </style>
 
@@ -790,4 +861,139 @@ window.addEventListener("message", function (e) {
 <style>
 .sets-count-item label { display:block; margin-top:.6rem; }
 .sets-count-item .sets-count-input { max-width:9rem; }
+</style>
+
+<style>
+/* One proof, with inline editable rows; larger controls appear only while editing. */
+.proof-ledger { border:1px solid #b7c8d8; border-radius:7px; padding:.6rem; margin:.6rem 0; background:#fff; min-width:0; }
+.proof-ledger .proof-step { margin:.35rem 0; padding:.45rem; border-radius:4px; }
+.proof-ledger .step-accepted { border:0; border-bottom:1px solid #dbe3ea; background:transparent; padding:.3rem .2rem; }
+.proof-ledger .step-accepted legend { font-size:.8rem; color:#64748b; }
+.proof-ledger .step-compact { gap:.25rem .65rem; font-size:.94rem; }
+.proof-ledger .step-compact .bk-btn { padding:.15rem .5rem; min-height:32px; font-size:.85rem; }
+.step-compact-words { flex-basis:100%; color:#475569; }
+.proof-ledger .proof-goal p { margin:.2rem 0 .5rem; }
+.proof-ledger .proof-start { background:#f0f9ff; }
+.proof-start-choice { width:100%; min-width:0; direction:ltr; font:inherit; padding:.4rem; }
+.proof-custom-start { margin-top:.4rem; }
+.proof-ledger .replacement-editor { padding:.3rem; border:0; background:transparent; }
+.proof-ledger .replacement-source { padding:.3rem; font-size:1.1rem; }
+.replacement-parts > summary,.replacement-suggestions > summary { cursor:pointer; color:#3730a3; }
+.proof-ledger .replacement-item { margin:.4rem 0; padding:.4rem; }
+.proof-ledger .replacement-item label { margin:.3rem 0; font-size:.9rem; }
+.proof-ledger .replacement-item input,.proof-ledger .replacement-item select { min-height:38px; font-size:.9rem; }
+.replacement-suggestions { margin:.4rem 0; font-size:.9rem; }
+.replacement-suggestions > div { display:flex; flex-wrap:wrap; gap:.4rem; }
+.replacement-suggestions button { direction:ltr; font-family:'Cambria Math',serif; overflow-wrap:anywhere; }
+.proof-ledger .bk-msg:empty { display:none; }
+.proof-ledger .argument-premises,.proof-ledger .kp-givens { margin:.4rem 0; }
+.proof-ledger .argument-premises li,.proof-ledger .kp-givens li { border-bottom:1px solid #e2e8f0; padding:.35rem; }
+.proof-ledger .argument-premises strong { font-size:.9rem; font-weight:normal; }
+.proof-ledger .argument-premises .bk-btn,.proof-ledger .kp-givens .bk-btn { padding:.15rem .5rem; margin-inline-start:.5rem; font-size:.85rem; }
+.proof-ledger .argument-rule-help { margin:.3rem 0; }
+.proof-ledger .proof-field { margin:.3rem 0; }
+.proof-ledger select { max-width:100%; min-width:0; }
+.proof-ledger .step-compact > .kp-table-evidence { flex-basis:100%; }
+.proof-ledger[hidden],.proof-steps[hidden],.proof-goal[hidden],.bk-bar[hidden] { display:none!important; }
+@media(max-width:600px){
+ .proof-ledger { padding:.35rem; }
+ .proof-ledger .replacement-item input,.proof-ledger .replacement-item select,.proof-ledger .step-compact .bk-btn { min-height:44px; }
+}
+</style>
+
+<style>
+.proof-ledger .proof-goal p { display:flex; flex-wrap:wrap; align-items:baseline; gap:.25rem .5rem; }
+.proof-ledger .proof-goal .proof-formula { display:inline; margin:0; }
+.step-compact-reason details > summary { cursor:pointer; color:#475569; }
+.step-compact-reason details > div { font-size:.9em; margin-top:.35rem; overflow-wrap:anywhere; }
+</style>
+
+<style>
+.proof-ledger .side-labelled > .step-label { display:none; }
+.proof-ledger .side-labelled > .step-editor { min-width:0; }
+.proof-ledger .side-labelled.step-accepted { display:grid; grid-template-columns:5.2rem minmax(0,1fr); column-gap:.5rem; align-items:start; }
+.proof-ledger .side-labelled.step-accepted > legend { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+.proof-ledger .side-labelled.step-accepted > .step-label { display:block; grid-column:1; grid-row:1; font-size:.8rem; font-weight:600; color:#64748b; padding-top:.35rem; }
+.proof-ledger .side-labelled.step-accepted > .step-compact { grid-column:2; grid-row:1; min-width:0; }
+.proof-ledger .side-labelled > .step-compact { padding:.15rem 0; }
+.replacement-check[hidden] { display:none!important; }
+@media(max-width:600px){.proof-ledger .side-labelled.step-accepted{grid-template-columns:3.6rem minmax(0,1fr);column-gap:.3rem}}
+</style>
+
+<style>
+/* Physical left/right placement is explicit; Hebrew prose stays RTL. */
+.proof-ledger .step-compact { display:grid; direction:ltr; grid-template-columns:3.3rem minmax(0,1fr); align-items:start; }
+.proof-ledger .step-compact > .step-edit { grid-column:1; grid-row:1; justify-self:start; margin:0; direction:rtl; }
+.proof-ledger .step-statement { grid-column:2; grid-row:1; display:grid; grid-template-columns:minmax(0,1fr); align-items:baseline; gap:.4rem; min-width:0; }
+.proof-ledger .step-statement.has-words { grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); }
+.proof-ledger .step-statement > .proof-formula { grid-column:1; margin:0; white-space:normal; overflow-wrap:anywhere; overflow:visible; min-width:0; text-align:left; }
+.proof-ledger .step-statement > .step-compact-words { grid-column:2; direction:rtl; text-align:right; font-size:.9em; }
+.proof-ledger .step-compact-reason { grid-column:2; grid-row:2; direction:rtl; text-align:right; font-size:.85rem; }
+.proof-ledger .step-compact > .kp-table-evidence { grid-column:2; direction:rtl; }
+.proof-ledger .proof-qed { grid-column:2; direction:rtl; justify-self:start; color:#166534; font-weight:700; }
+.proof-qed[hidden],.step-compact-words[hidden] { display:none!important; }
+.proof-ledger .argument-premises li,.proof-ledger .kp-givens li,.argument-ready .proof-ledger > .proof-start { display:grid; direction:ltr; grid-template-columns:3.3rem minmax(0,1fr) minmax(0,1.2fr); gap:.35rem .5rem; align-items:baseline; }
+.proof-ledger .argument-premises li > .bk-btn,.proof-ledger .kp-givens li > .bk-btn,.argument-ready .proof-ledger > .proof-start > .bk-btn { grid-column:1; grid-row:1; margin:0; padding:.15rem .4rem; direction:rtl; justify-self:start; }
+.proof-ledger .argument-premises li > .proof-formula,.proof-ledger .kp-givens li > .proof-formula,.argument-ready .proof-ledger > .proof-start > .proof-formula { grid-column:2; grid-row:1; margin:0; white-space:normal; overflow-wrap:anywhere; }
+.proof-ledger .argument-premises li > strong,.proof-ledger .kp-givens li > span,.argument-ready .proof-ledger > .proof-start > strong { grid-column:3; grid-row:1; direction:rtl; text-align:right; font-size:.9rem; }
+.proof-ledger .argument-rule-help:not(:empty),.proof-ledger .kp-rule-help { background:none; border:0; padding:0; margin:.25rem 0; font-size:.85rem; }
+.proof-ledger .argument-rule-help > summary,.proof-ledger .kp-rule-help > summary { cursor:pointer; color:#475569; }
+.proof-ledger .argument-rule-help p,.proof-ledger .kp-rule-help p { margin:.25rem 0; }
+@media(max-width:480px){
+ .proof-ledger .step-statement.has-words { grid-template-columns:minmax(0,1fr); }
+ .proof-ledger .step-statement > .step-compact-words { grid-column:1; }
+ .proof-ledger .argument-premises li,.proof-ledger .kp-givens li,.argument-ready .proof-ledger > .proof-start { grid-template-columns:3.3rem minmax(0,1fr); }
+ .proof-ledger .argument-premises li > strong,.proof-ledger .kp-givens li > span,.argument-ready .proof-ledger > .proof-start > strong { grid-column:2; grid-row:2; }
+}
+</style>
+
+<style>
+@media(min-width:601px){
+ .proof-ledger .step-compact:has(> .step-statement:not(.has-words)) { grid-template-columns:3.3rem minmax(0,1.5fr) minmax(0,1fr); align-items:baseline; }
+ .proof-ledger .step-compact:has(> .step-statement:not(.has-words)) > .step-compact-reason { grid-column:3; grid-row:1; }
+ .proof-ledger .step-compact:has(> .step-compact-reason:empty) > .step-statement { grid-column:2/-1; }
+}
+</style>
+
+<style>
+.formal-inference { display:grid; grid-template-columns:max-content minmax(0,1fr); gap:.4rem .8rem; align-items:start; direction:rtl; font-size:.9rem; }
+.formal-rule-name { font-weight:600; }
+.formal-rule-stack { min-width:0; direction:ltr; }
+.formal-rule-premise { display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .5rem; }
+.formal-rule-source { color:#64748b; font-size:.85em; }
+.formal-rule-conclusion { border-top:1px solid #475569; margin-top:.2rem; padding-top:.2rem; text-align:left; }
+.formal-inference .proof-formula { margin:0; white-space:normal; overflow-wrap:anywhere; }
+.proof-ledger .side-labelled.step-accepted > .step-label,.proof-ledger .argument-premises li > .given-label,.proof-ledger .kp-givens li > .given-label { font-family:inherit; font-size:.85rem; line-height:1.5; font-weight:600; color:#475569; }
+.proof-ledger .argument-premises li,.proof-ledger .kp-givens li { grid-template-columns:3.3rem minmax(0,1fr) minmax(0,1.2fr) 5.2rem; border-radius:0; background:transparent; }
+.proof-ledger .argument-premises li > .given-label,.proof-ledger .kp-givens li > .given-label { grid-column:4; grid-row:1; direction:rtl; text-align:right; }
+.proof-ledger .argument-premises li > strong,.proof-ledger .kp-givens li > .given-words { font-size:.9rem; font-weight:400; color:#475569; }
+.proof-ledger .step-compact-words { font-size:.9rem; color:#475569; }
+@media(max-width:600px){
+ .formal-inference { grid-template-columns:minmax(0,1fr); gap:.25rem; }
+ .proof-ledger .argument-premises li,.proof-ledger .kp-givens li { grid-template-columns:3.3rem minmax(0,1fr) 3.6rem; }
+ .proof-ledger .argument-premises li > .given-label,.proof-ledger .kp-givens li > .given-label { grid-column:3; }
+ .proof-ledger .argument-premises li > strong,.proof-ledger .kp-givens li > .given-words { grid-column:2; grid-row:2; }
+}
+</style>
+
+<style>
+.formula-autocomplete { display:flex; flex-wrap:wrap; gap:.3rem; flex-basis:100%; padding-top:.3rem; }
+.formula-autocomplete[hidden] { display:none!important; }
+.formula-autocomplete button { border:1px solid #a5b4fc; background:#fff; color:#3730a3; border-radius:4px; padding:.3rem .5rem; font-size:.9rem; }
+.formula-autocomplete button[aria-selected=true] { outline:2px solid #6366f1; background:#eef2ff; }
+</style>
+
+<style>
+.deduction-hint { margin:.35rem 0; font-size:.9rem; }
+.deduction-hint > summary { cursor:pointer; color:#3730a3; }
+.deduction-hint > div { display:flex; flex-wrap:wrap; gap:.4rem; }
+.deduction-hint button { overflow-wrap:anywhere; font-family:"Cambria Math",serif; }
+.deduction-hint[hidden] { display:none!important; }
+
+/* Optional, fillable truth-table proofs. */
+.proof-table-practice { margin:.65rem 0; }
+.proof-table-practice > summary { cursor:pointer; color:#4338ca; font-weight:600; }
+.proof-table-practice .bk-tt select { min-width:3.4rem; padding:.3rem; text-align:center; }
+.proof-table-practice [aria-invalid="true"] { outline:2px solid #b91c1c; }
+.proof-table-practice th { vertical-align:top; }
 </style>

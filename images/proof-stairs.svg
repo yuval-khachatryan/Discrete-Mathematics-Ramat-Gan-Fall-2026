@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="240" viewBox="0 0 760 240" role="img" aria-labelledby="title desc">
+<title id="title">מן הנתונים אל המסקנה, בצעדים מנומקים</title>
+<desc id="desc">מימין למטה הנתונים. שלוש מדרגות עולות שמאלה אל המסקנה. לכל מעבר יש נימוק.</desc>
+<rect x="1" y="1" width="758" height="238" rx="16" fill="#f8fafc" stroke="#e2e8f0"/>
+<path d="M700 188H570V142H410V96H250V50H65" fill="none" stroke="#6366f1" stroke-width="5" stroke-linejoin="round"/>
+<path d="M630 173L585 120M465 127L425 74M305 80L265 30" fill="none" stroke="#a5b4fc" stroke-width="3" stroke-linecap="round"/>
+<path d="M585 120L587 134M585 120L599 123M425 74L428 88M425 74L439 78M265 30L269 44M265 30L280 34" fill="none" stroke="#a5b4fc" stroke-width="3"/>
+<g font-family="Arial, sans-serif" font-size="28" text-anchor="middle" direction="rtl">
+<rect x="599" y="191" width="132" height="35" rx="9" fill="#fef3c7"/><text x="665" y="215" fill="#92400e" font-weight="bold">הנתונים</text>
+<rect x="40" y="9" width="134" height="34" rx="9" fill="#dcfce7"/><text x="107" y="33" fill="#166534" font-weight="bold">המסקנה</text>
+<text x="495" y="131" fill="#4338ca">צעד 1</text><text x="335" y="85" fill="#4338ca">צעד 2</text><text x="215" y="38" fill="#4338ca">צעד 3</text>
+<text x="490" y="177" fill="#475569" font-size="26">נימוק</text><text x="330" y="131" fill="#475569" font-size="26">נימוק</text><text x="170" y="85" fill="#475569" font-size="26">נימוק</text>
+</g>
+</svg>

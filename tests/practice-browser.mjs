@@ -89,8 +89,8 @@ try {
   const startFeedback=simplify.locator('.proof-start > .bk-msg');
   assert.doesNotMatch(await startFeedback.innerText(),/A ∧ B|המטרה/);
   assert.equal(await startFeedback.locator('.proof-formula').count(),0);
-  assert.doesNotMatch(await simplify.locator('.proof-preview .proof-goal').innerText(),/A ∧ B|≡/);
-  assert.match(await simplify.locator('.proof-preview .proof-goal').innerText(),/נפשט/);
+  assert.match(await simplify.locator('.proof-preview .proof-goal').innerText(),/A ∧ B/);
+  assert.match(await simplify.locator('.proof-preview .proof-goal').innerText(),/נראה ש/);
   assert.match(await page.locator('#box-def-equivalence').locator('..').innerText(),/שקילות פועלת בשני הכיוונים/);
   const model = page.locator('.proof-model');
   assert.equal(await model.locator('.proof-chain-line').count(),4);
@@ -105,7 +105,7 @@ try {
   }
   await page.locator('#box-thm-hs').screenshot({path:'/tmp/discrete-stacked-rule.png'});
   const argument=page.locator('[data-argument="library"]');
-  await argument.getByRole('button',{name:'אישור הסימונים',exact:true}).click();
+  assert.equal(await argument.locator(".argument-translation input").first().isVisible(),true);
   const ex=ARGUMENTS.library;
   for(const [i,f] of [...ex.premises.map(p=>p.formula),ex.goal.formula].entries())
    await argument.locator('.argument-translation input').nth(i).fill(f);
@@ -117,7 +117,7 @@ try {
    const boxes=await rule.locator('.proof-formula').evaluateAll(nodes=>nodes.map(n=>n.getBoundingClientRect().y));
    assert.ok(boxes[0]<boxes[1] && boxes[1]<boxes[2]);
   }
-  await argument.getByRole('button',{name:'הצגת דרך פתרון לפי האותיות שלי',exact:true}).click();
+  await argument.getByRole('button',{name:'הצגת דרך פתרון לפי הסימונים שלי',exact:true}).click();
   assert.match(await argument.locator('.argument-solution').innerText(),/נראה שמתוך ההנחות/);
 
   assert.equal(await page.locator('mjx-merror').count(),0);
@@ -183,7 +183,8 @@ try {
   const b=bank.locator(`[data-argument="${id}"]`);
   const names=['C','A','B'];
   const map=Object.fromEntries(ex.atoms.map((a,i)=>[a.id,names[i]]));
-  for(const [i,name]of ex.atoms.map((a,i)=>names[i]).entries())await b.locator('.argument-letter').nth(i).selectOption(name);
+  await b.locator(".argument-symbol-options > summary").click();
+  for(const [i,name]of ex.atoms.map((a,i)=>names[i]).entries())await b.locator('.argument-letter').nth(i).fill(name);
   await b.getByRole('button',{name:'אישור הסימונים',exact:true}).click();
   const formulas=[...ex.premises.map(p=>p.formula),ex.goal.formula].map(f=>rename(f,map));
   for(const [i,f]of formulas.entries())await b.locator('.argument-translation input').nth(i).fill(f);
@@ -200,7 +201,7 @@ try {
   const summary=b.locator('.argument-stage').nth(2).locator('form > .bk-msg');
   await b.getByRole('button',{name:'בדיקת ההוכחה',exact:true}).click();
   assert.match(await summary.innerText(),/הושלמה/,id);
-  await b.getByRole('button',{name:'הצגת דרך פתרון לפי האותיות שלי',exact:true}).click();
+  await b.getByRole('button',{name:'הצגת דרך פתרון לפי הסימונים שלי',exact:true}).click();
   for(const step of ex.solution)assert.ok((await b.locator('.argument-solution').innerText()).includes(rename(step.formula,map)),id);
   await b.getByRole('button',{name:'רמז',exact:true}).click();
   assert.ok((await b.locator('.argument-hints').innerText()).length>0);

@@ -43,7 +43,7 @@ test("rule schemas are equivalent and work in both directions with compound subs
 test("an equivalent answer is rejected when the selected law does not justify it", () => {
   assert.equal(checkStep("!(A & B)","!A | !B","double",["A","B"]).kind,"wrong-rule");
   assert.equal(checkStep("!(A & !B)","A -> B","demorgan",["A","B"]).kind,"wrong-rule");
-  assert.equal(checkStep("!(A & !B)","!A | B","demorgan",["A","B"]).kind,"missing-step");
+  assert.equal(checkStep("!(A & !B)","!A | B","demorgan",["A","B"]).kind,"valid");
   assert.equal(checkStep("!!A & !!B","A & B","double",["A","B"]).kind,"missing-step");
   assert.equal(checkStep("A | !A","B | !B","tautology",["A","B"]).kind,"wrong-rule");
 });
@@ -105,27 +105,34 @@ test("a starting expression must be an authored endpoint, not an unjustified equ
 });
 
 
-test("omitted double negation gets a correct-result message and a justified intermediate", () => {
-  for (const [before,after,rule] of [
-    ["!(A & !B)","!A | B","demorgan"],
-    ["!(!A | B)","A & !B","demorgan"],
-    ["!A | B","!(A & !B)","demorgan"],
-    ["!!A & !!B","A & B","double"],
-    ["!(A & !B) -> C","(!A | B) -> C","demorgan"],
+test("De Morgan can cancel newly created double negations in either direction", () => {
+  for (const [before,after] of [
+    ["!(A & !B)","!A | B"],
+    ["!(!A | B)","A & !B"],
+    ["!(!A & !B)","A | B"],
+    ["!(!A & !B)","!!A | B"],
+    ["!(A & !B) -> C","(!A | B) -> C"],
+    ["!(!(A -> B) | C)","(A -> B) & !C"],
   ]) {
-    const result = checkStep(before,after,rule,["A","B","C"]);
-    assert.equal(result.kind,"missing-step");
-    assert.match(result.message,/התוצאה נכונה/);
-    assert.ok(compare(before,result.intermediate).equal);
-    assert.ok(compare(result.intermediate,after).equal);
-    assert.ok(checkStep(before,result.intermediate,rule,["A","B","C"]).kind === "valid"
-      || checkStep(result.intermediate,after,rule,["A","B","C"]).kind === "valid");
+    assert.equal(checkStep(before,after,"demorgan",["A","B","C"]).kind,"valid");
+    assert.equal(checkStep(after,before,"demorgan",["A","B","C"]).kind,"valid");
   }
+  for (const [before,after] of [
+    ["!(A & !B)","B | !A"],
+    ["!(A & !B) & !!C","(!A | B) & C"],
+    ["!((!!A | B) & C)","!(A | B) | !C"],
+    ["!!A & !!B","A & B"],
+  ]) assert.notEqual(checkStep(before,after,"demorgan",["A","B","C"]).kind,"valid");
   assert.equal(checkStep("!(A & !B)","!A & B","demorgan",["A","B"]).kind,"different");
-  assert.equal(checkStep("!(A & !B)","B | !A","demorgan",["A","B"]).kind,"wrong-rule");
   assert.equal(checkStep("!(A & !B)","!A | B","commute",["A","B"]).kind,"wrong-rule");
   assert.equal(checkStep("!(A & !B)","!A | !!B","demorgan",["A","B"]).kind,"valid");
-  assert.equal(checkProof("!(A & !B)","!A | B",[{formula:"!A | B",rule:"demorgan"}]).complete,false);
+  assert.equal(checkProof("!(A & !B)","!A | B",[{formula:"!A | B",rule:"demorgan"}]).complete,true);
+});
+
+test("unrelated omitted double-negation steps still need justification", () => {
+  const result=checkStep("!!A & !!B","A & B","double",["A","B"]);
+  assert.equal(result.kind,"missing-step");
+  assert.ok(compare("!!A & !!B",result.intermediate).equal);
 });
 
 test('tautology and contradiction require distinct justifications',()=>{
@@ -148,7 +155,7 @@ test('De Morgan accepts the outer-negation forms and the reported 1.8.6 route',(
   {formula:'!(A & !B)',rule:'double'},
  ]);
  assert.ok(result.valid&&result.complete);
- // Still require a separate double-negation step when no accepted schema matches.
- assert.equal(checkStep('!A | B','!(A & !B)','demorgan',['A','B']).kind,'missing-step');
+ // The double negation created by De Morgan may also be removed immediately.
+ assert.equal(checkStep('!A | B','!(A & !B)','demorgan',['A','B']).kind,'valid');
  assert.equal(checkStep('!A | B','!(!!A | !B)','demorgan',['A','B']).kind,'different');
 });

@@ -43,7 +43,8 @@ try{
   await box.getByRole('button',{name:'פתרון מלא',exact:true}).click();assert.equal(await select.inputValue(),expected<0?'none':String(expected));
  }
  const ex=ARGUMENTS.projector,b=page.locator('[data-argument="projector"]'),map={A:'C',B:'A',C:'B'};
- for(const [i,a] of ex.atoms.entries())await b.locator('.argument-letter').nth(i).selectOption(map[a.id]);
+ await b.locator(".argument-symbol-options > summary").click();
+ for(const [i,a] of ex.atoms.entries())await b.locator('.argument-letter').nth(i).fill(map[a.id]);
  await b.getByRole('button',{name:'אישור הסימונים',exact:true}).click();
  for(const [i,item] of [...ex.premises,ex.goal].entries())await b.locator('.argument-translation input').nth(i).fill(rename(item.formula,map));
  await b.getByRole('button',{name:'בדיקת התרגום ופתיחת ההוכחה',exact:true}).click();

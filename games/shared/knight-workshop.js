@@ -1,3 +1,4 @@
+import {mountKnightProof} from "./knight-proof-editor.js";
 import {mountKnightIntro} from "./knight-intro.js";
 import { evaluate } from './logic.js';
 import * as K from '../gate/knights.js';
@@ -87,35 +88,6 @@ export function mountKnightTable(box,level,{onSolved=()=>{},onChange=()=>{},show
   }};
 }
 
-let choiceId=0;
-function radioChoices(title,items,onChange){
-  const name=`kw-choice-${++choiceId}`,group=el('fieldset',{class:'kw-options'},[el('legend',{text:title})]);
-  const inputs=items.map(([value,text])=>{const input=el('input',{type:'radio',name,value});input.addEventListener('change',()=>{group.removeAttribute('aria-invalid');onChange();});group.append(el('label',{},[input,el('span',{text})]));return input;});
-  return {group,value:()=>inputs.find(i=>i.checked)?.value};
-}
-function mountProof(box,data){
-  box.replaceChildren();box.classList.add('knight-workshop');let index=0;
-  const heading=el('p',{class:'kw-goal',text:data.goal}),list=el('ol');
-  const proofTitle=el('strong',{text:'הפתרון עד כאן'}),proof=el('section',{class:'kw-proof','aria-label':'ההוכחה שנבנית'},[proofTitle,heading,list]);
-  proof.hidden=true;
-  const stage=el('div',{class:'kw-proof-stage'}),feedback=message(),finish=el('p',{class:'kw-finish'});
-  box.append(stage,feedback,proof,finish,button('התחלה מחדש',()=>{index=0;list.replaceChildren();finish.textContent='';proof.hidden=true;heading.textContent=data.goal;proofTitle.textContent='הפתרון עד כאן';say(feedback,'');draw();}));
-  function draw(){
-    stage.replaceChildren();if(index===data.steps.length){proofTitle.textContent='ההוכחה המלאה';heading.textContent=data.conclusion||data.goal;finish.textContent='נסו לכתוב את ההוכחה על דף במילים שלכם. אפשר גם לכתוב לפני הבדיקה כאן.';say(feedback,'ההוכחה הושלמה.',true);return;}
-    const q=data.steps[index],options=(xs,shift)=>xs.map((text,i)=>[String(i),text]).sort((a,b)=>((Number(a[0])+shift)%xs.length)-((Number(b[0])+shift)%xs.length));
-    const line=radioChoices(q.prompt,options(q.lines,index%2),()=>say(feedback,''));
-    const reason=q.reasons?radioChoices('מדוע?',options(q.reasons,(index+1)%2),()=>say(feedback,'')):null;
-    stage.append(el('p',{class:'kw-goal',text:`צעד ${index+1}`}),line.group);if(reason)stage.append(reason.group);
-    stage.append(button('בדיקת הצעד',()=>{
-      const ok=line.value()==='0'&&(!reason||reason.value()==='0');
-      line.group.setAttribute('aria-invalid',String(line.value()!=='0'));if(reason)reason.group.setAttribute('aria-invalid',String(reason.value()!=='0'));
-      if(!ok){say(feedback,line.value()===undefined||(reason&&reason.value()===undefined)?'בחרו תשובה בכל חלק.':q.feedback,false);return;}
-      const parts=[el('p',{text:q.lines[0]})];if(q.reasons)parts.push(el('p',{class:'kw-justification',text:q.reasons[0]}));
-      list.append(el('li',{class:q.kind?`kw-step-${q.kind}`:''},parts));proof.hidden=false;index++;say(feedback,'הצעד נכון.',true);draw();
-    }));
-  }draw();
-}
-
 export function checkKnightEvidence(level,assignments,conclusions){
   if(assignments.some(env=>level.people.some(p=>!['true','false'].includes(env[p.id]))))return {ok:false,message:'בחרו סוג לכל תושב בשתי האפשרויות.'};
   const envs=assignments.map(env=>Object.fromEntries(level.people.map(p=>[p.id,env[p.id]==='true'])));
@@ -137,5 +109,5 @@ function mountEvidence(box,level){
 }
 export function initKnightWorkshop(box){
   if(box.dataset.ready)return;const proof=KNIGHT_PROOFS[box.dataset.knightProof],level=KNIGHT_PUZZLES[box.dataset.knightTable||box.dataset.knightEvidence];if(!proof&&!level)return;box.dataset.ready='true';
-  if(proof)mountProof(box,proof);else if(box.dataset.knightEvidence)mountEvidence(box,level);else if(box.dataset.knightIntro==='true')mountKnightIntro(box,level);else mountKnightTable(box,level);
+  if(proof)mountKnightProof(box,KNIGHT_PUZZLES[proof.level],proof);else if(box.dataset.knightEvidence)mountEvidence(box,level);else if(box.dataset.knightIntro==='true')mountKnightIntro(box,level);else mountKnightTable(box,level);
 }

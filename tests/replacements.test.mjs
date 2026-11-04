@@ -15,7 +15,7 @@ test('parallel rewrites include two double negations and independent different l
  assert.equal(checkReplacements(inverse,source,[replace(inverse,'r.0','!!A','double'),replace(inverse,'r.1','!!B','double')],allowed).kind,'valid');
 });
 test('replacement checker rejects sequential changes, overlaps, stale paths, wrong rules and unreported edits',()=>{
- assert.notEqual(checkReplacements('!(A & !B)','!A | B',[replace('!(A & !B)','r','!A | B','demorgan')],allowed).kind,'valid');
+ assert.notEqual(checkReplacements('!(A & !B)','B | !A',[replace('!(A & !B)','r','B | !A','demorgan')],allowed).kind,'valid');
  assert.notEqual(checkReplacements('!!!!A','A',[replace('!!!!A','r','!!A','double'),replace('!!!!A','r.0.0','A','double')],allowed).kind,'valid');
  assert.notEqual(checkReplacements(source,'A | B',[both[0],both[0]],allowed).kind,'valid');
  assert.notEqual(checkReplacements(source,'B | A',both,allowed).kind,'valid');
@@ -72,4 +72,65 @@ test('explicit and parallel replacements accept the added De Morgan forms',()=>{
  assert.equal(checkReplacements(after,before,[replace(after,'r',before,'demorgan')],allowed).kind,'valid');
  const s='(!A | B) & !!C';
  assert.equal(checkReplacements(s,'!(!!A & !B) & C',[replace(s,'r.0',after,'demorgan'),replace(s,'r.1','C','double')],allowed).kind,'valid');
+});
+
+test('valid local replacements expose the exact assembly and the differing part, without accepting it',()=>{
+ const result=checkReplacements(source,'A | C',both,allowed);
+ assert.equal(result.kind,'assembly');assert.equal(result.expected,'A ∨ B');
+ assert.deepEqual(result.difference,{path:'r.1',expected:'B',actual:'C'});
+ for(const output of ['', 'A |', 'B | A']){
+  const r=checkReplacements(source,output,both,allowed);assert.equal(r.kind,'assembly');assert.equal(r.expected,'A ∨ B');
+ }
+ assert.equal(checkReplacements(source,'A | B',[{...both[0],rule:'demorgan'},both[1]],allowed).expected,undefined);
+ const partial=checkReplacements(source,'A | B',[both[0]],allowed);
+ assert.equal(partial.expected,'A ∨ ¬¬B'); // Never silently changes an unselected occurrence.
+ assert.equal(checkProof(source,'A | B',[{formula:'A | C',rule:'replacements',replacements:both}]).complete,false);
+});
+
+test('deduction reports assembly feedback even when the whole-formula field is blank or malformed',()=>{
+ const ex={atoms:[{id:'A',text:'א'},{id:'B',text:'ב'}],premises:[{formula:source,text:'נתון'}],goal:{formula:'A | B',text:'המטרה'}};
+ for(const formula of ['', 'A |', 'A & B']){
+  const r=checkArgument(ex,{A:'A',B:'B'},[source],'A | B',[{id:'d1',formula,rule:'eq:replacements',refs:['p1'],replacements:both}]);
+  assert.equal(r.ok,false);assert.equal(r.results[0].expected,'A ∨ B');
+ }
+ const bad=checkArgument(ex,{A:'A',B:'B'},[source],'A | B',[{id:'d1',formula:'',rule:'eq:replacements',refs:['d1'],replacements:both}]);
+ assert.equal(bad.results[0].expected,undefined);
+});
+
+
+test('XOR expands and contracts by all stated laws, including a selected compound occurrence',()=>{
+ for(const expanded of ['(A | B) & !(A & B)','(A & !B) | (!A & B)','A <-> !B']){
+  for(const [before,after]of [['A ^ B',expanded],[expanded,'A ^ B']]){
+   assert.equal(checkReplacements(before,after,[replace(before,'r',after,'xor')],allowed).kind,'valid');
+  }
+ }
+ const s='C -> (A ^ !B)',after='C -> ((A & !!B) | (!A & !B))';
+ assert.equal(checkReplacements(s,after,[replace(s,'r.1','(A & !!B) | (!A & !B)','xor')],allowed).kind,'valid');
+ assert.notEqual(checkReplacements('A ^ B','A | B',[replace('A ^ B','r','A | B','xor')],allowed).kind,'valid');
+});
+
+
+test('inclusive OR rewrites directly to a conditional with a negated antecedent',()=>{
+ for(const [before,after]of [['A | B','!A -> B'],['!A -> B','A | B']])assert.equal(checkReplacements(before,after,[replace(before,'r',after,'implication')],allowed).kind,'valid');
+ const before='(A | B) & C',after='(!A -> B) & C';
+ assert.equal(checkReplacements(before,after,[replace(before,'r.0','!A -> B','implication')],allowed).kind,'valid');
+ assert.notEqual(checkReplacements('A | B','A -> B',[replace('A | B','r','A -> B','implication')],allowed).kind,'valid');
+});
+
+
+test('OR-to-implication allows either operand order in both directions without reversing implication alone',()=>{
+ for(const [left,right]of [['A | B','!A -> B'],['A | B','!B -> A'],['A -> B','!A | B'],['A -> B','B | !A']]){
+  for(const [before,after]of [[left,right],[right,left]])assert.equal(checkReplacements(before,after,[replace(before,'r',after,'implication')],allowed).kind,'valid',before+' => '+after);
+ }
+ assert.notEqual(checkReplacements('!A -> B','B -> !A',[replace('!A -> B','r','B -> !A','implication')],allowed).kind,'valid');
+});
+
+test('explicit De Morgan replacements accept immediate double-negation cancellation',()=>{
+ for(const [before,after] of [['!(A & !B)','!A | B'],['!(!A | !B)','A & B'],['!(!A | !B)','!!A & B']]){
+  assert.equal(checkReplacements(before,after,[replace(before,'r',after,'demorgan')],allowed).kind,'valid');
+  assert.equal(checkReplacements(after,before,[replace(after,'r',before,'demorgan')],allowed).kind,'valid');
+ }
+ const s='!(A & !B) & !!C';
+ assert.equal(checkReplacements(s,'(!A | B) & C',[replace(s,'r.0','!A | B','demorgan'),replace(s,'r.1','C','double')],allowed).kind,'valid');
+ assert.notEqual(checkReplacements(s,'(!A | B) & C',[replace(s,'r','(!A | B) & C','demorgan')],allowed).kind,'valid');
 });

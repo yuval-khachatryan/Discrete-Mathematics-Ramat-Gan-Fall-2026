@@ -9,8 +9,8 @@ test('proof display translates chosen letters and numbers premises and reference
  const steps=[{id:'d4',formula:'X -> Y',rule:'hs',refs:['p1','p2']},{id:'d7',formula:'Y',rule:'mp',refs:['d4','p3']}];
  const lines=argumentLines(ex,map,premises,steps);
  assert.deepEqual(lines.map(l=>l.number),[1,2,3,4,5]);
- assert.equal(lines[3].reason,'כלל השרשרת, משורות 1 ו־2');
- assert.equal(lines[4].reason,'כלל הניתוק, משורות 4 ו־3');
+ assert.equal(lines[3].reason,'כלל השרשרת: אם ⁦X → Z⁩ (נתון 1) וגם ⁦Z → Y⁩ (נתון 2), אז ⁦X → Y⁩.');
+ assert.equal(lines[4].reason,'כלל הניתוק: אם ⁦X → Y⁩ (מסקנת צעד 1) וגם ⁦X⁩ (נתון 3), אז ⁦Y⁩.');
  assert.match(lines[3].words,/אם \(המחשב מחובר למקרן\), אז \(אפשר להתחיל את ההצגה\)/);
  assert.equal(lines[4].words,'אפשר להתחיל את ההצגה');
  assert.equal(argumentLines(ex,map,premises,steps.slice(0,1)).length,4);

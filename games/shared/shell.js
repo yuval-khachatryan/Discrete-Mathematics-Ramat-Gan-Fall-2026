@@ -1,3 +1,4 @@
+import { gamePresentation } from "./game-help.js";
 /* shell.js — the frame every game shares.
    ---------------------------------------------------------------------------
    A game supplies its levels and a mount() function; the shell supplies the
@@ -115,6 +116,8 @@ export function startGame(game) {
   ]);
   const missionTitle = el("h2", { class: "g-mission-title" });
   const goal = el("div", { class: "g-goal" });
+  const helpBody = el("div");
+  const help = el("details", { class: "g-help", hidden: true }, [el("summary", { text: "איך משחקים? — הוראות מפורטות" }), helpBody]);
   const stage = el("div", { class: "g-stage" });
   const feedback = el("div", { class: "g-feedback", role: "status", "aria-live": "polite" });
   const hintList = el("ol", { class: "g-hints", "aria-label": "רמזים" });
@@ -140,7 +143,7 @@ export function startGame(game) {
     }));
   }
 
-  root.replaceChildren(head, el("section", { class: "g-mission" }, [missionTitle, goal]), stage, controls, feedback, hintList, debrief, foot);
+  root.replaceChildren(head, el("section", { class: "g-mission" }, [missionTitle, goal, help]), stage, controls, feedback, hintList, debrief, foot);
 
   /* ---- per level ------------------------------------------------------ */
   let ctl = null, hintsShown = 0, won = false;
@@ -193,7 +196,11 @@ export function startGame(game) {
     completedHere.delete(lvl.id);
     won = false; hintsShown = 0;
     missionTitle.textContent = (levels.length > 1 ? `שלב ${index + 1} — ` : "") + lvl.title;
-    goal.innerHTML = lvl.goal || "";
+    const presentation = gamePresentation(game.id, lvl);
+    goal.innerHTML = presentation.goal;
+    helpBody.innerHTML = presentation.help;
+    help.hidden = !presentation.help;
+    help.open = false;
     stage.replaceChildren();
     hintList.replaceChildren();
     debrief.hidden = true; debrief.replaceChildren();

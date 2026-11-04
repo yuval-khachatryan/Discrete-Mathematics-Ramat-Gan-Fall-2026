@@ -1,3 +1,4 @@
+import {proofFormula,partFormula} from './proof-notation.js';
 // A step is one named equivalence applied in either direction to one subtree.
 // Truth-table agreement alone does not justify the selected rule.
 import { parse, compare, variables, format, evaluate } from "./logic.js";
@@ -8,9 +9,10 @@ export const RULES = [
   { id: "associate", name: "קיבוץ", pairs: [["(A & B) & C", "A & (B & C)"], ["(A | B) | C", "A | (B | C)"]] },
   { id: "distribute", name: "פילוג", pairs: [["A & (B | C)", "(A & B) | (A & C)"], ["A | (B & C)", "(A | B) & (A | C)"]] },
   { id: "demorgan", name: "דה מורגן", pairs: [["!(A & B)", "!A | !B"], ["!(A | B)", "!A & !B"], ["A | B", "!(!A & !B)"], ["A & B", "!(!A | !B)"]] },
-  { id: "implication", name: "גרירה כ״או״", pairs: [["A -> B", "!A | B"]] },
+  { id: "implication", name: "גרירה כ״או״", pairs: [["A -> B", "!A | B"], ["A -> B", "B | !A"], ["A | B", "!A -> B"], ["A | B", "!B -> A"]] },
   { id: "contrapositive", name: "גרירה נגדית", pairs: [["A -> B", "!B -> !A"]] },
   { id: "iff", name: "אם ורק אם", pairs: [["A <-> B", "(A -> B) & (B -> A)"]] },
+  { id: "xor", name: "או מפריד (XOR)", pairs: [["A ^ B", "(A | B) & !(A & B)"], ["A ^ B", "(A & !B) | (!A & B)"], ["A ^ B", "A <-> !B"]] },
   { id: "tautology", name: "טאוטולוגיה", pairs: [["A | !A", "T"]] },
   { id: "contradiction", name: "סתירה", pairs: [["A & !A", "F"]] },
   { id: "identity", name: "איבר ניטרלי", pairs: [["F | A", "A"], ["A | F", "A"], ["T & A", "A"], ["A & T", "A"]] },
@@ -30,6 +32,33 @@ const same = (a, b) => key(a) === key(b);
 const children = n => n.args || (n.arg ? [n.arg] : n.left ? [n.left, n.right] : []);
 const patterns = new Map(RULES.map(r => [r.id, r.pairs.map(([a,b]) => [tree(a), tree(b)])]));
 
+
+// Menu variants are narrower choices; legacy family IDs remain valid for saved
+// and authored proofs. Keep the published reference's canonical pairs unchanged.
+export const RULE_CHOICES = RULES.flatMap(rule => {
+  const names={
+    commute:['חילוף ב״וגם״','חילוף ב״או״'],
+    associate:['קיבוץ ב״וגם״','קיבוץ ב״או״'],
+    distribute:['פילוג ״וגם״ על ״או״','פילוג ״או״ על ״וגם״'],
+    xor:['או מפריד כ״וגם״','או מפריד כ״או״','או מפריד כ״אם ורק אם״'],
+  }[rule.id];
+  return names ? names.map((name,index)=>({id:`${rule.id}:${index}`,family:rule.id,name,pairs:[rule.pairs[index]]})) : [{...rule,family:rule.id}];
+});
+for (const choice of RULE_CHOICES) if (!patterns.has(choice.id)) patterns.set(choice.id,choice.pairs.map(([a,b])=>[tree(a),tree(b)]));
+const addPattern=(id,a,b)=>patterns.get(id).push([tree(a),tree(b)]);
+addPattern('tautology','!A | A','T');
+addPattern('contradiction','!A & A','F');
+for (const [index,a,b] of [[0,'(B | C) & A','(B & A) | (C & A)'],[1,'(B & C) | A','(B | A) & (C | A)']]) {
+  addPattern('distribute',a,b);addPattern(`distribute:${index}`,a,b);
+}
+export const ruleInfo=id=>RULE_CHOICES.find(r=>r.id===id)||RULES.find(r=>r.id===id);
+// General templates use different letters from the exercise's statements.
+const templateLetters=text=>text.replace(/\b[ABC]\b/g,letter=>({A:'P',B:'Q',C:'R'}[letter]));
+export function ruleOptionLabel(rule) {
+  const descriptions={demorgan:'שלילת ״וגם״ ↔ ״או״ של השלילות; ושלילת ״או״ ↔ ״וגם״',implication:'A → B ≡ ¬A ∨ B',identity:'F ∨ A ≡ A; T ∧ A ≡ A'};
+  return `${rule.name} — ⁦${templateLetters(descriptions[rule.id]||rule.pairs.map(([a,b])=>`${format(tree(a))} ≡ ${format(tree(b))}`).join('; '))}⁩`;
+}
+
 function match(pattern, value, bindings) {
   if (pattern.type === "var") {
     if (bindings.has(pattern.name)) return same(bindings.get(pattern.name), value);
@@ -43,6 +72,8 @@ function match(pattern, value, bindings) {
 }
 
 function rootApplies(before, after, pairs) {
+  if (pairs === patterns.get('demorgan') &&
+      (deMorganResult(before, after) || deMorganResult(after, before))) return true;
   for (const [a, b] of pairs) {
     for (const [from, to] of [[a,b], [b,a]]) {
       const bindings = new Map();
@@ -50,6 +81,18 @@ function rootApplies(before, after, pairs) {
     }
   }
   return false;
+}
+// Cancel only the double negations created at the two operands by this law.
+// Existing negations inside operands and changes elsewhere still need justification.
+function deMorganResult(before, after) {
+  const negate = n => [{type:'not',arg:n}, ...(n.type==='not'?[n.arg]:[])];
+  const matches = (source, result, outer) => {
+    if (!['and','or'].includes(source.type)) return false;
+    const target = outer ? result.type==='not' && result.arg : result;
+    if (!target || target.type !== (source.type==='and'?'or':'and')) return false;
+    return source.args.length===target.args.length && source.args.every((n,i)=>negate(n).some(v=>same(v,target.args[i])));
+  };
+  return (before.type==='not' && matches(before.arg,after,false)) || matches(before,after,true);
 }
 function applies(before, after, pairs) {
   if (rootApplies(before, after, pairs)) return true;
@@ -133,12 +176,12 @@ export function checkStep(beforeText, afterText, ruleId, allowed) {
     const other = RULES.find(r => applies(before, after, patterns.get(r.id)));
     const intermediate = !other && skippedDouble(before, after, patterns.get(ruleId));
     if (intermediate) return { kind: "missing-step", intermediate: format(intermediate),
-      message: "התוצאה נכונה ושקולה לנוסחה הקודמת. עם זאת, יש לפרט את ההחלפות שמצדיקות את המעבר. אם שיניתם חלקים נפרדים של נוסחת המקור, בחרו ״החלפות מפורטות״. אם השלילה הכפולה נוצרה רק במהלך הצעד, הסירו אותה בצעד הבא. אפשר להיעזר בשורת הביניים שלהלן." };
+      message: "התוצאה נכונה ושקולה לנוסחה הקודמת. עם זאת, יש לפרט את ההחלפות שמצדיקות את המעבר. אם שיניתם חלקים נפרדים של נוסחת המקור, בחרו ״החלפות מפורטות״. אפשר להסיר שלילה כפולה באותו צעד של דה מורגן רק כשהיא נוצרת ישירות בהפעלת החוק על החלק שבחרתם. שינויים נוספים דורשים נימוק משלהם. אפשר להיעזר בשורת הביניים שלהלן." };
     return { kind: "wrong-rule", message: other
       ? `הנוסחאות שקולות, אבל החוק שבחרתם אינו מסביר את השינוי. המעבר הזה מתאים לחוק ״${other.name}״.`
       : "הנוסחאות שקולות, אבל לא מצאתי כאן הפעלה אחת של החוק שבחרתם. אפשר לבחור ״החלפות מפורטות״ כדי להצדיק שינויים בחלקים נפרדים. אם אחד השינויים פועל על תוצאה חדשה, הוסיפו שורת ביניים." };
   }
-  return { kind: "valid", message: `הצעד נכון, והחוק ״${RULES.find(r => r.id === ruleId).name}״ מתאים לשינוי.`, formula: format(after) };
+  return { kind: "valid", message: `הצעד נכון, והחוק ״${ruleInfo(ruleId).name}״ מתאים לשינוי.`, formula: format(after) };
 }
 
 export function checkStart(input, start, target, reversible = false) {
@@ -181,16 +224,16 @@ export function checkProof(start, target, inputSteps) {
 // Paths identify occurrences, including identical text in different positions.
 export function expressionParts(source) {
   const result=[];
-  function visit(n,path){result.push({path,formula:format(n),node:n});children(n).forEach((c,i)=>visit(c,path+'.'+i));}
+  function visit(n,path){result.push({path,formula:partFormula(n),node:n});children(n).forEach((c,i)=>visit(c,path+'.'+i));}
   visit(tree(source.trim().toUpperCase()),'r');return result;
 }
 export const overlappingPaths=(a,b)=>a===b||a.startsWith(b+'.')||b.startsWith(a+'.');
-export function checkReplacements(beforeText,afterText,replacements,allowed) {
-  if(!afterText.trim())return {kind:'empty',message:'כתבו את הנוסחה שמתקבלת לאחר כל ההחלפות.'};
-  if(afterText.length>240||beforeText.length>240)return {kind:'syntax',message:'כתבו נוסחה קצרה יותר.'};
-  let before,after,parts;
-  try {before=tree(beforeText);after=tree(afterText.trim().toUpperCase());parts=expressionParts(beforeText);}
-  catch {return {kind:'syntax',message:'בדקו את הנוסחאות ואת הסוגריים.'};}
+export function assembleReplacements(beforeText,replacements,allowed) {
+  if(beforeText.length>240)return {kind:'syntax',message:'כתבו נוסחה קצרה יותר.'};
+  let before,parts;
+  try {before=tree(beforeText);parts=expressionParts(beforeText);}
+  catch {return {kind:'syntax',message:'בחרו או כתבו נוסחת מקור תקינה.'};}
+  allowed ||= variables(before);
   if(!replacements.length)return {kind:'rule',message:'הוסיפו לפחות החלפה אחת ובחרו את החלק, התוצאה והחוק.'};
   if(replacements.length>24)return {kind:'rule',message:'פצלו את העבודה לכמה שורות.'};
   const chosen=new Map();
@@ -208,21 +251,51 @@ export function checkReplacements(beforeText,afterText,replacements,allowed) {
     if(same(part.node,replacement))return fail('החלק שנבחר לא השתנה. מחקו את ההחלפה המיותרת.');
     if(!rootApplies(part.node,replacement,patterns.get(change.rule))){
       const other=RULES.find(r=>rootApplies(part.node,replacement,patterns.get(r.id)));
-      return fail(other ? `ההחלפה נכונה, אבל הנימוק אינו מתאים. כאן משתמשים ב״${other.name}״.`
-        : 'החוק אינו מצדיק את ההחלפה של החלק שנבחר. בחרו את החלק המדויק שעליו פועל החוק. שינוי בתוצאה של החלפה קודמת שייך לצעד הבא.');
+      if(other)return fail(`ההחלפה נכונה, אבל הנימוק אינו מתאים. כאן משתמשים ב״${other.name}״.`);
+      const comparison=compare(part.node,replacement);
+      if(!comparison.equal){
+        const values=Object.entries(comparison.row).map(([n,v])=>`${n}=${v?'T':'F'}`).join(', ');
+        return fail(`הביטוי החלופי אינו שקול לחלק שבחרתם: בהצבה ⁦${values}⁩, החלק המקורי הוא ${evaluate(part.node,comparison.row)?'T':'F'}, והחלופי הוא ${evaluate(replacement,comparison.row)?'T':'F'}.`);
+      }
+      if(applies(part.node,replacement,patterns.get(change.rule)))return fail('בחרתם ביטוי גדול מדי עבור ההחלפה הזאת. סמנו רק את החלק הפנימי שעליו החוק פועל; שאר הנוסחה נשארת ללא שינוי.');
+      return fail(`הביטויים שקולים, אך המעבר אינו הפעלה אחת של ״${ruleInfo(change.rule).name}״ על החלק שבחרתם. אם שיניתם כמה חלקים, סמנו אותם בנפרד. שינוי בתוצאה חדשה דורש צעד נוסף.`);
     }
     chosen.set(change.path,replacement);
   }
   function replace(n,path){return chosen.get(path)||rebuild(n,children(n).map((c,i)=>replace(c,path+'.'+i)));}
-  if(!same(replace(before,'r'),after))return {kind:'replacement',message:'ההחלפות שסימנתם אינן נותנות את הנוסחה שכתבתם. בדקו שלא שיניתם חלק נוסף או הפעלתם חוק על תוצאה שנוצרה רק בצעד הזה.'};
-  return {kind:'valid',formula:format(after),message:'הצעד נכון. כל ההחלפות מוצדקות ופועלות על חלקים נפרדים של נוסחת המקור.'};
+  const result=replace(before,'r'),formula=format(result);
+  if(formula.length>240)return {kind:'syntax',message:'הנוסחה המתקבלת ארוכה מדי. פצלו את העבודה לצעדים קצרים יותר.'};
+  return {kind:'valid',formula,tree:result,message:'כל ההחלפות שנבחרו מוצדקות.'};
 }
+function firstDifference(expected,actual,path='r'){
+  if(same(expected,actual))return null;
+  const a=children(expected),b=children(actual);
+  if(expected.type===actual.type && a.length===b.length){
+    const changed=a.map((n,i)=>same(n,b[i])?-1:i).filter(i=>i>=0);
+    if(changed.length===1)return firstDifference(a[changed[0]],b[changed[0]],path+'.'+changed[0]);
+  }
+  return {path,expected:format(expected),actual:format(actual)};
+}
+export function checkReplacements(beforeText,afterText,replacements,allowed) {
+  const assembled=assembleReplacements(beforeText,replacements,allowed);
+  if(assembled.kind!=='valid')return assembled;
+  const mismatch={kind:'assembly',expected:assembled.formula,message:'ההחלפות שבחרתם נכונות, אבל הנוסחה השלמה אינה תואמת להן. החלקים שלא בחרתם צריכים להישאר כפי שהיו. אפשר להציג את ההבדל או להרכיב את הנוסחה אוטומטית.'};
+  if(!afterText.trim())return {...mismatch,message:'ההחלפות נכונות. כתבו את הנוסחה השלמה, או הרכיבו אותה אוטומטית מן ההחלפות.'};
+  let after;try{if(afterText.length>240)throw Error();after=tree(afterText.trim().toUpperCase());}
+  catch{return {...mismatch,message:'ההחלפות נכונות, אך לא ניתן לקרוא את הנוסחה השלמה. בדקו סוגריים וסמלים, או הרכיבו אותה אוטומטית.'};}
+  if(!same(assembled.tree,after))return {...mismatch,difference:firstDifference(assembled.tree,after)};
+  return {kind:'valid',formula:assembled.formula,message:'הצעד נכון. ההחלפות מוצדקות והנוסחה השלמה מתאימה להן.'};
+}
+export function stepRuleNames(step){
+  return [...new Set((step.replacements||[]).map(c=>ruleInfo(c.rule)?.name||''))].join(' + ');
+}
+
 export function stepReason(step) {
   if(step.rule==='replacements'||step.rule==='eq:replacements')return (step.replacements||[]).map(c=>{
     let after=c.after;try{after=format(tree(c.after.trim().toUpperCase()));}catch{}
-    return `${RULES.find(r=>r.id===c.rule)?.name||''}: ⁦${c.before} ↦ ${after}⁩`;
+    return `${ruleInfo(c.rule)?.name||''}: ⁦${c.before} ↦ ${after}⁩`;
   }).join('; ');
-  return RULES.find(r=>r.id===step.rule)?.name||'';
+  return ruleInfo(step.rule)?.name||'';
 }
 
 // A grouped display for the rule reference; format() intentionally hides
@@ -232,6 +305,39 @@ function ruleFormula(n) {
   if (n.type === "const") return n.value ? "T" : "F";
   if (n.arg) return `¬${ruleFormula(n.arg)}`;
   const [a,b] = children(n);
-  return `(${ruleFormula(a)} ${{and:"∧",or:"∨",imp:"→",iff:"↔"}[n.type]} ${ruleFormula(b)})`;
+  return `(${ruleFormula(a)} ${{and:"∧",or:"∨",xor:"⊕",imp:"→",iff:"↔"}[n.type]} ${ruleFormula(b)})`;
 }
-export const ruleExamples = id => (patterns.get(id) || []).map(([a,b]) => `${ruleFormula(a)} ≡ ${ruleFormula(b)}`);
+export const ruleExamples = id => (patterns.get(id) || []).map(([a,b]) => templateLetters(`${ruleFormula(a)} ≡ ${ruleFormula(b)}`));
+
+// Only replacements of the selected root, never its descendants or newly
+// produced expressions. Reverse schemas with unbound symbols need manual input.
+export function replacementSuggestions(source,ruleId){
+  let before;try{before=tree(source);}catch{return [];}
+  const pairs=patterns.get(ruleId);if(!pairs)return [];
+  const results=[];
+  for(const [a,b] of pairs)for(const [from,to] of [[a,b],[b,a]]){
+    const bindings=new Map();
+    if(match(from,before,bindings)){const n=instantiate(to,bindings);if(n)results.push(n);}
+  }
+  if(ruleId==='demorgan'){
+    const negate=n=>[{type:'not',arg:n},...(n.type==='not'?[n.arg]:[])];
+    const source=before.type==='not'?before.arg:before;
+    if(['and','or'].includes(source.type)){
+      for(const a of negate(source.args[0]))for(const b of negate(source.args[1])){
+        const n={type:source.type==='and'?'or':'and',args:[a,b]};
+        results.push(before.type==='not'?n:{type:'not',arg:n});
+      }
+    }
+    // The outer-negation form can also be introduced when the input is negated.
+    if(['and','or'].includes(before.type))for(const a of negate(before.args[0]))for(const b of negate(before.args[1]))results.push({type:'not',arg:{type:before.type==='and'?'or':'and',args:[a,b]}});
+  }
+  return [...new Set(results.filter(n=>!same(before,n)&&rootApplies(before,n,pairs)).map(format))].filter(s=>s.length<=240);
+}
+
+export const proofSourceLabel=(number,premiseCount,temporary=false)=>number<=premiseCount?`נתון ${number}`:`${temporary?'הנחה זמנית בצעד':'מסקנת צעד'} ${number-premiseCount}`;
+export const sourceCitation=(label,formula)=>`${typeof label==='number'?'שורה '+label:label}: ⁦${proofFormula(formula)}⁩`;
+
+export function deductionReason(name,sources,conclusion){
+ const clauses=sources.map(({number,label,formula})=>`⁦${proofFormula(formula)}⁩ (${label||'שורה '+number})`);
+ return `${name}: אם ${clauses.join(' וגם ')}, אז ⁦${format(conclusion)}⁩.`;
+}

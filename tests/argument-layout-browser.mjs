@@ -1,3 +1,4 @@
+import {writeArgumentStep} from './rewrite-browser-helpers.mjs';
 import {chromium} from 'playwright-core';
 import assert from 'node:assert/strict';
 import {ARGUMENTS} from '../games/shared/argument-exercises.js';
@@ -10,7 +11,8 @@ try {
  await page.goto(new URL('../_book/01-logic.html',import.meta.url).href);
  for(const id of ['library','projector']){
   const ex=ARGUMENTS[id],box=page.locator(`[data-argument="${id}"]`),map={A:'C',B:'A',C:'B'};
-  for(const [i,a]of ex.atoms.entries())await box.locator('.argument-letter').nth(i).selectOption(map[a.id]);
+  await box.locator(".argument-symbol-options > summary").click();
+  for(const [i,a]of ex.atoms.entries())await box.locator('.argument-letter').nth(i).fill(map[a.id]);
   await box.getByRole('button',{name:'אישור הסימונים',exact:true}).click();
   for(const [i,p]of [...ex.premises,ex.goal].entries())await box.locator('.argument-translation input').nth(i).fill(rename(p.formula,map));
   await box.getByRole('button',{name:'בדיקת התרגום ופתיחת ההוכחה',exact:true}).click();
@@ -21,8 +23,7 @@ try {
   for(const [i,s]of ex.solution.entries()){
    if(i)await box.getByRole('button',{name:'הוספת צעד',exact:true}).click();
    const row=box.locator('.argument-steps .proof-step').nth(i);
-   await row.locator('.proof-input').fill(rename(s.formula,map));await row.locator('.proof-rule').selectOption(s.rule);
-   for(const [j,ref]of s.refs.entries())await row.locator('.argument-source').nth(j).selectOption(ref.replace(/^s/,'d'));
+   await writeArgumentStep(box,row,s,rename(s.formula,map));
    await row.getByRole('button',{name:'בדיקת הצעד והוספה להוכחה',exact:true}).click();
   }
   assert.match(await box.locator('form > .bk-msg').innerText(),/ההוכחה הושלמה/);
@@ -34,7 +35,7 @@ try {
    assert.equal(await preview.locator('.argument-written-goal .proof-formula').innerText(),'A');
    for(const width of [1200,390]){await page.setViewportSize({width,height:900});await preview.screenshot({path:`/tmp/noa-proof-${width}.png`});const r=await preview.boundingBox();assert.ok(r.x>=0&&r.x+r.width<=width);}
   }
-  await box.getByRole('button',{name:'הצגת דרך פתרון לפי האותיות שלי',exact:true}).click();
+  await box.getByRole('button',{name:'הצגת דרך פתרון לפי הסימונים שלי',exact:true}).click();
   assert.equal(await box.locator('.argument-solution .argument-written-givens li').count(),ex.premises.length);
   assert.equal(await box.locator('.argument-solution tbody tr').count(),ex.solution.length);
  }

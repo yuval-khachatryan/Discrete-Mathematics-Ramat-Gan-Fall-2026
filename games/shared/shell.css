@@ -181,3 +181,7 @@ html:not(.g-embedded) body { background: var(--soft); }
 
 /* Past completion is history, not a success mark for the current attempt. */
 .g-history { color: var(--muted); margin-inline-start: .25em; }
+
+.g-help { margin-top:.6em; font-size:.92em; }
+.g-help summary { cursor:pointer; color:var(--accent); font-weight:600; }
+.g-help > div { border-inline-start:3px solid var(--line); padding:.2em .8em; margin-top:.6em; }
