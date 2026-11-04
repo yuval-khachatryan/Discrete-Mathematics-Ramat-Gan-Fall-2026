@@ -74,3 +74,34 @@
 .knight-workshop .kw-evidence label { display:inline-flex; margin-inline-end:.6rem; flex-wrap:wrap; }
 .knight-workshop:not(.kw-compact) .kw-fits { min-width:4rem; }
 .knight-workshop .bk-msg:empty,.knight-workshop .kw-finish:empty { display:none; }
+
+.knight-proof-editor .kp-translation { margin:.7rem 0; }
+.knight-proof-editor .proof-field { display:block; margin:.5rem 0; }
+.knight-proof-editor .proof-field input { width:100%; box-sizing:border-box; }
+.knight-proof-editor .kp-step { border:1px solid #cbd5e1; border-radius:8px; padding:.7rem; margin:.8rem 0; }
+.knight-proof-editor .kp-sources { width:100%; max-width:100%; min-width:0; }
+.knight-proof-editor .kp-document { margin-top:1rem; padding:.7rem; background:#f8fafc; border-inline-start:4px solid #6366f1; }
+.knight-proof-editor .kp-proof-table th,.knight-proof-editor .kp-proof-table td { min-width:0; }
+.knight-proof-editor .kp-proof-table th:first-child { width:3rem; }
+.knight-proof-editor .proof-formula { overflow-wrap:anywhere; }
+.knight-proof-editor .kp-proof-table details { margin-top:.35rem; font-size:.85rem; }
+.knight-proof-editor .kp-assumption { background:#fff7df; }
+.knight-proof-editor .kp-under-assumption td:nth-child(2) { border-inline-start:3px solid #d97706; }
+.knight-proof-editor .kp-discharge { background:#ecfdf5; }
+.knight-proof-editor .kp-scope { display:block; color:#92400e; }
+.knight-proof-editor .kp-relevant { background:#e0e7ff; }
+.knight-proof-editor .kp-conclusion { color:#166534; font-weight:600; }
+.knight-proof-editor summary { cursor:pointer; }
+.knight-proof-editor .kp-givens .proof-formula { display:inline; }
+.knight-proof-editor .kp-model { margin-top:1rem; }
+.knight-proof-editor .kp-step select { width:100%; }
+
+.knight-workshop [hidden] { display:none !important; }
+.knight-proof-editor .kp-no-sources { color:#475569; font-size:.95rem; }
+
+.knight-proof-editor .kp-source-line { display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto; align-items:center; gap:.6rem; margin:.6rem 0; }
+.knight-proof-editor .kp-source-line label { display:block; font-size:.9rem; padding:0; }
+.knight-proof-editor .kp-source-line input { width:100%; box-sizing:border-box; }
+.knight-proof-editor .kp-source-preview { display:block; min-width:0; padding:.5rem; background:#eef2ff; color:#3730a3; overflow-wrap:anywhere; font-family:'Cambria Math',serif; }
+.knight-proof-editor .kp-source-error { color:#991b1b; background:#fef2f2; }
+@media(max-width:600px){.knight-proof-editor .kp-source-line{grid-template-columns:minmax(0,1fr)}.knight-proof-editor .kp-source-line > button{grid-column:1 / -1;justify-self:start}}

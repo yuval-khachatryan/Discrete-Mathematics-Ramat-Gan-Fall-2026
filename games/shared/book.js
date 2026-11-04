@@ -1,3 +1,4 @@
+import {initMethodProof} from './method-proof-editor.js';
 /* book.js — interactive exercises inside the chapters (not inside a game).
    ---------------------------------------------------------------------------
    Worked examples keep questions visible and reveal answers on request; independent
@@ -55,6 +56,8 @@ import { initArgumentEditor } from "./argument-editor.js";
 import { initTableEvidence } from "./table-evidence.js";
 import { initKnightWorkshop } from "./knight-workshop.js";
 import { initNavigation } from "./navigation.js";
+import { initReferences } from "./references.js";
+import { contextualKeyboard } from "./formula-keyboard.js";
 import { initSets } from "./sets.js";
 import { initPracticeChoice } from "./practice-choice.js";
 import { initLectureTable, initLectureAnswers } from "./lecture-reveal.js";
@@ -269,6 +272,7 @@ function initFQ(box) {
   const symbols = box.dataset.symbols ? SYMS.filter(([s]) => box.dataset.symbols.includes(s)) : SYMS;
   const keys = el("div", { class: "bk-keys", role: "group", "aria-label": "סמלים" },
     symbols.map(([s, name]) => el("button", { type: "button", class: "bk-key", "aria-label": name, text: s, onclick: () => insert(s) })));
+  contextualKeyboard(input,keys);
   const msg = el("div", { class: "bk-msg", "aria-live": "polite" });
   const bHint = el("button", { type: "button", class: "bk-btn", onclick: giveHint });
   const bar = el("div", { class: "bk-bar" }, [
@@ -330,7 +334,9 @@ function initTF(quiz) {
 
 function init() {
   initNavigation();
+  initReferences();
   document.querySelectorAll(".knight-activity").forEach(initKnightWorkshop);
+  document.querySelectorAll(".method-proof").forEach(initMethodProof);
   document.querySelectorAll(".sets-exercise").forEach(initSets);
   document.querySelectorAll(".choice-exercise").forEach(initPracticeChoice);
   document.querySelectorAll(".argument-editor").forEach(initArgumentEditor);

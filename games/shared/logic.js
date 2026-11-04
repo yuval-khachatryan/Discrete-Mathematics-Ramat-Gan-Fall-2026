@@ -8,7 +8,7 @@
    Accepted spellings (ASCII or the book's symbols):
        not  !  ¬  ~        and  &  ∧        or  |  ∨        xor  ^  ⊕  ⊻
        implies  ->  →      iff  <->  ↔      constants  T F  1 0
-   Variables are a capital Latin letter optionally followed by digits (A, B, W1);
+   Variables are 1–16 uppercase Latin letters/digits/underscores, letter first;
    T and F are the constants, so they cannot be variable names.
 
    Precedence, tightest first: ¬, ∧, ⊕, ∨, →, ↔. → is right-associative;
@@ -25,7 +25,9 @@
        {type:"xor", left, right}
    --------------------------------------------------------------------------- */
 
-const TOKEN = /\s*(<->|↔|->|→|[!¬~&∧|∨^⊕⊻()]|[A-Z][0-9]*|[TF01])/y;
+const TOKEN = /\s*(<->|↔|->|→|[!¬~&∧|∨^⊕⊻()]|[A-Z][A-Z0-9_]*|[01])/y;
+const RESERVED_NAMES=new Set(['T','F','TRUE','FALSE','NOT','AND','OR','XOR','IMPLIES','IFF']);
+export const validIdentifier=name=>typeof name==='string'&&/^[A-Z][A-Z0-9_]{0,15}$/.test(name)&&!RESERVED_NAMES.has(name);
 
 function tokenize(src) {
   const out = [];
@@ -94,7 +96,7 @@ export function parse(src, { flatten = true } = {}) {
     }
     if (tok === "T" || tok === "1") return { type: "const", value: true };
     if (tok === "F" || tok === "0") return { type: "const", value: false };
-    if (/^[A-Z][0-9]*$/.test(tok)) return { type: "var", name: tok };
+    if (validIdentifier(tok)) return { type: "var", name: tok };
     throw new SyntaxError(`logic.js: unexpected "${tok}" in "${src}"`);
   }
 
@@ -233,3 +235,18 @@ export function format(f, names) {
 }
 
 export const TV = { true: "T", false: "F" };
+
+// Initial formalization preserves connectives, order, and grouping. Equivalent
+// rewrites belong to the proof, not to the givens or the requested conclusion.
+export function sameFormulaStructure(actual,expected,mapping={}){
+ try{
+  const rename=n=>{
+   if(n.type==='var')return {...n,name:mapping[n.name]||n.name};
+   if(n.args)return {...n,args:n.args.map(rename)};
+   if(n.arg)return {...n,arg:rename(n.arg)};
+   if(n.left)return {...n,left:rename(n.left),right:rename(n.right)};
+   return n;
+  };
+  return JSON.stringify(parse(actual.trim().toUpperCase(),{flatten:false}))===JSON.stringify(rename(parse(expected,{flatten:false})));
+ }catch{return false;}
+}
