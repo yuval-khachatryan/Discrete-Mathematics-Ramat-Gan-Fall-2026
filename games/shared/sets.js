@@ -1,4 +1,5 @@
 import {answerPanel,answerReveal} from './answer-panel.js';
+import {robotSpeech} from './robot-speech.js';
 import { SET_TASKS } from './sets-data.js';
 
 // Finite sets and ordered pairs are different objects. No JavaScript evaluation.
@@ -75,6 +76,7 @@ function selectOptions(options,seed=0){const s=el('select',{'aria-label':'בחר
 export function initSets(box){
   if(box.dataset.ready)return;const data=SET_TASKS[box.dataset.sets];if(!data)return;
   box.dataset.ready='true';box.classList.add('sets-ready');box.replaceChildren();
+  if(data.robot)box.append(robotSpeech(data.robot.text,data.robot.formula));
   if(data.type==='choice')return choices(box,data);
   if(data.type==='cardinality')return cardinality(box,data);
   if(data.type==='write')return writes(box,data);

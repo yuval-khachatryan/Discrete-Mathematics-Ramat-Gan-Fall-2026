@@ -1,4 +1,5 @@
 import {contextualKeyboard} from './formula-keyboard.js';
+import {robotSpeech} from './robot-speech.js';
 import {initCountingLab} from './set-counting-lab.js';
 import {parseObject,key,display} from './sets.js';
 import {parseStatement} from './set-proof-syntax.js';
@@ -54,7 +55,7 @@ function grid(box){
  table.append(el('thead',{},[el('tr',{},[el('th',{text:'מי אוהב איזה שיר?'}),...songs.map(text=>el('th',{text}))])]));
  const body=el('tbody');people.forEach((name,i)=>{const row=el('tr',{},[el('th',{text:name,scope:'row'})]);songs.forEach((song,j)=>{const b=btn('לא',()=>{matrix[i][j]=!matrix[i][j];b.textContent=matrix[i][j]?'♥':'לא';b.setAttribute('aria-pressed',String(matrix[i][j]));feedback.textContent='';});b.setAttribute('aria-pressed','false');b.setAttribute('aria-label',`${name} אוהב/ת את ${song}`);buttons.push(b);row.append(el('td',{},[b]));});body.append(row);});table.append(body);
  function update(){task.textContent=stage===0?'בנו מצב שבו לכל אדם קיים שיר אהוב, אבל אין שיר שכולם אוהבים. לחצו על התאים כדי לקבוע מי אוהב מה.':'כעת שנו את הלוח כך שלכל אדם יהיה שיר אהוב, וגם יהיה שיר אחד שכולם אוהבים.';}
- box.append(el('p',{text:'הרובוט של המסיבה בטוח: ״אם לכל אחד קיים שיר אהוב, בטח קיים שיר שכולם אוהבים!״ בדקו את הביטחון שלו.'}),task,el('p',{text:'S היא קבוצת שלושת האנשים; M היא קבוצת שלושת השירים; L(x,y) אומר ש־x אוהב את y.'}),el('p',{dir:'ltr',class:'set-proof-formula',text:'∀x ∈ S (∃y ∈ M (L(x,y)))     /     ∃y ∈ M (∀x ∈ S (L(x,y)))'}),table,
+ box.append(robotSpeech('אם לכל אחד קיים שיר אהוב, בטח קיים שיר שכולם אוהבים!'),task,el('p',{text:'S היא קבוצת שלושת האנשים; M היא קבוצת שלושת השירים; L(x,y) אומר ש־x אוהב את y.'}),el('p',{dir:'ltr',class:'set-proof-formula',text:'∀x ∈ S (∃y ∈ M (L(x,y)))     /     ∃y ∈ M (∀x ∈ S (L(x,y)))'}),table,
  btn('בדיקת הלוח',()=>{const bad=matrix.findIndex(row=>!row.some(Boolean)),common=songs.findIndex((_,j)=>matrix.every(row=>row[j]));
    if(bad>=0){say(feedback,`ל־${people[bad]} עדיין אין שיר אהוב. הטענה ״לכל אדם קיים שיר״ אינה מתקיימת.`);return;}
    if(stage===0&&common>=0){say(feedback,`${songs[common]} אהוב על כולם. צריך לבנות מצב שבו אין שיר משותף לכולם.`);return;}
@@ -70,7 +71,7 @@ function mailing(box){
  const keys=el('div');for(const symbol of ['A','B','∩','∪','∖','(',')'])keys.append(btn(symbol,()=>{field.setRangeText(symbol,field.selectionStart,field.selectionEnd,'end');field.focus();}));
  contextualKeyboard(field,keys,{shortcuts:false});
  function update(){title.textContent=tasks[stage].text;next.hidden=true;}
- box.append(el('p',{text:'A — נרשמו לציור; B — נרשמו למוזיקה. לרובוט יש רשימות, אבל הוא צריך מכם את הביטוי שקובע למי לשלוח הודעה.'}),roster,title,lab('כתבו את קבוצת הנמענים',field),keys,btn('בדיקת הרשימה',()=>{try{
+ box.append(el('p',{text:'A — נרשמו לציור; B — נרשמו למוזיקה.'}),roster,robotSpeech(title),lab('כתבו את קבוצת הנמענים',field),keys,btn('בדיקת הרשימה',()=>{try{
   const n=parseStatement('x ∈ ('+field.value+')');const chosen=evaluateSet(n.args[1],env),correct=tasks[stage].answer,extra=[...chosen].find(x=>!correct.has(x)),missing=[...correct].find(x=>!chosen.has(x));
   if(extra!==undefined){say(feedback,`${names[extra]} נכלל/ת ברשימה, אבל אינו/ה עומד/ת בתנאי המבוקש. בדקו את שתי ההרשמות שלו/ה.`);return;}
   if(missing!==undefined){say(feedback,`${names[missing]} עומד/ת בתנאי, אבל נשמט/ה מהרשימה.`);return;}
@@ -79,12 +80,13 @@ function mailing(box){
 }
 function counter(box,kind){
  const descriptions={
- 'union-equal':'בנו קבוצות A ו־B שמפריכות את הטענה A ∪ B = A ∩ B. כתבו גם איבר שמבדיל בין שני הצדדים.',
+ 'union-equal':'בנו קבוצות A ו־B שמפריכות את טענת הרובוט. כתבו גם איבר שמבדיל בין שני הצדדים.',
  'inclusion-error':'נתון A ⊆ C וגם B ⊆ C. הטענה היא ש־A ⊆ B. בנו דוגמה שמקיימת את שני הנתונים, וכתבו איבר של A שאינו ב־B.',
  'two-witnesses':'מישהו טוען: ״אם A ו־B אינן ריקות, אז קיים איבר משותף לשתיהן״. כתבו שתי קבוצות לא ריקות שמפריכות את הטענה.',
  'strict-union-diff':'ההכלה (A ∪ B) ∖ C ⊆ A ∪ (B ∖ C) נכונה. בנו דוגמה שבה אין שוויון, וכתבו איבר שמבדיל בין הצדדים.',
  'difference-brackets':'בנו דוגמה שמראה כי A ∖ (B ∖ C) אינה בהכרח שווה ל־(A ∖ B) ∖ C. כתבו גם איבר שמבדיל בין הצדדים.',
  };
+ if(kind==='union-equal')box.append(robotSpeech('לכל שתי קבוצות, האיחוד והחיתוך שווים!', 'A ∪ B = A ∩ B'));
  const feedback=message(),fields={},form=el('form');form.append(el('p',{text:descriptions[kind]}));
  for(const name of ['A','B',...(['inclusion-error','strict-union-diff','difference-brackets'].includes(kind)?['C']:[])]){fields[name]=input('קבוצה '+name);form.append(lab(name,fields[name]));}
  const witness=input('איבר שמפריך את הטענה','למשל 4');if(kind!=='two-witnesses')form.append(lab('איבר שמראה את הכישלון',witness));

@@ -296,6 +296,15 @@ main table.table th, main table.table td { padding: 0.3rem 1rem; text-align: cen
 /* The characters are the games' own sprites (games/shared/sprites/, built by
    tools/build-sprites.mjs). The URL is relative to the chapter page. */
 .says.robot::before     { background-image: url("games/shared/sprites/robot.svg"); }
+.robot-scene { display:flex; align-items:flex-start; gap:.7rem; margin:.8rem 0; direction:rtl; }
+.robot-portrait { flex:0 0 4.2rem; width:4.2rem; height:4.2rem; }
+.robot-portrait svg { display:block; width:100%; height:100%; }
+.robot-bubble { position:relative; flex:1; min-width:0; padding:.6rem .85rem; background:#f0f9ff; border:1px solid #7dd3fc; border-radius:14px; }
+.robot-bubble::before { content:""; position:absolute; right:-7px; top:1.3rem; width:12px; height:12px; background:inherit; border:1px solid #7dd3fc; border-left:0; border-bottom:0; transform:rotate(45deg); }
+.robot-speaker { color:#075985; font-size:.9em; }
+.robot-bubble p { margin:.25rem 0 0; }
+.robot-bubble .set-proof-formula { display:block; overflow-wrap:anywhere; }
+@media(max-width:450px) { .robot-portrait { flex-basis:3rem; width:3rem; height:3rem; } }
 .says.guard::before     { background-image: url("games/shared/sprites/guard.svg"); }
 .says.pigeon::before    { background-image: url("games/shared/sprites/pigeon.svg"); }
 .says.barman::before    { background-image: url("games/shared/sprites/barman.svg"); }
