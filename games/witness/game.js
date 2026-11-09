@@ -105,10 +105,10 @@ function mountEvidence(level, ui) {
 
   /* the long ∧ / ∨ that the claim is, on a finite domain */
   const terms = el("div", { class: "w-terms" });
-  const expansion = el("section", { class: "w-exp", "aria-label": isAll ? "״לכל״ כ״וגם״ ארוך" : "״יש״ כ״או״ ארוך" }, [
+  const expansion = el("section", { class: "w-exp", "aria-label": isAll ? "״לכל״ כ״וגם״ ארוך" : "״קיים״ כ״או״ ארוך" }, [
     el("p", { class: "w-exp-title", html: isAll
       ? "על תחום סופי ״לכל״ הוא <b>״וגם״ ארוך</b>. כל כרטיס שבודקים ממלא בו חלק אחד:"
-      : "על תחום סופי ״יש״ הוא <b>״או״ ארוך</b>. כל כרטיס שבודקים ממלא בו חלק אחד:" }),
+      : "על תחום סופי ״קיים״ הוא <b>״או״ ארוך</b>. כל כרטיס שבודקים ממלא בו חלק אחד:" }),
     terms,
   ]);
 
@@ -394,7 +394,7 @@ function mountOrder(level, ui) {
       : `נבחרה דוגמה נגדית ב־${n} מתוך ${Y.length} העמודות.`;
     const lines = [];
     if (done[0]) lines.push(`<p><b>חלק 1 ✓</b> לכל סטודנט נבחר פריט שהוא אוהב: ${D.map(x => `${x.name} ← ${Yof(picks[0][x.id]).name}`).join(" · ")}</p>`);
-    if (done[1]) lines.push(`<p><b>חלק 2 ✓</b> לכל ${m("y")} יש מי שלא אוהב אותו: ${Y.map(y => `${y.name} ← ${Xof(picks[1][y.id]).name}`).join(" · ")}</p>`);
+    if (done[1]) lines.push(`<p><b>חלק 2 ✓</b> לכל ${m("y")} קיים סטודנט שלא אוהב אותו: ${Y.map(y => `${y.name} ← ${Xof(picks[1][y.id]).name}`).join(" · ")}</p>`);
     sums.innerHTML = lines.join("");
   }
 
@@ -409,7 +409,7 @@ function mountOrder(level, ui) {
     if (done[0] && done[1]) {
       robot.set(level.asideWin);
       draw();
-      return { ok: true, message: r.message + " שני החלקים הושלמו: לכל סטודנט יש פריט שהוא אוהב, אך אין פריט אחד שכולם אוהבים." };
+      return { ok: true, message: r.message + " שני החלקים הושלמו: לכל סטודנט קיים פריט שהוא אוהב, אך אין פריט אחד שכולם אוהבים." };
     }
     part = done[0] ? 1 : 0;
     draw();
@@ -427,7 +427,7 @@ function mountOrder(level, ui) {
     part = 1;
     robot.set(level.asideWin);
     draw();
-    return "הפתרון: בחלק 1 נבחר תא עם לב בכל שורה, ולכן לכל סטודנט יש פריט שהוא אוהב. בחלק 2 נבחר תא בלי לב בכל עמודה, ולכן לכל פריט יש סטודנט שאינו אוהב אותו. אפשר לעבור בין החלקים כדי לראות את הבחירות. הסיכומים מופיעים מתחת לטבלה.";
+    return "הפתרון: בחלק 1 נבחר תא עם לב בכל שורה, ולכן לכל סטודנט קיים פריט שהוא אוהב. בחלק 2 נבחר תא בלי לב בכל עמודה, ולכן לכל פריט קיים סטודנט שאינו אוהב אותו. אפשר לעבור בין החלקים כדי לראות את הבחירות. הסיכומים מופיעים מתחת לטבלה.";
   }
 
   reset();

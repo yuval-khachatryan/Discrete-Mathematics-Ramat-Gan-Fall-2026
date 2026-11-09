@@ -10,8 +10,11 @@ test('chapters keep sets before quantifiers and retain the complete exercise ban
   assert.doesNotMatch(logic,/\{#sec-quantifiers\}|\{#practice-quantifiers\}/);
   assert.doesNotMatch(logic,/\\(?:in|notin|forall|exists)\b|\\\{|[∈∉∀∃]/);
   assert.ok(sets.indexOf('{#sec-sets-membership}') < sets.indexOf('{#sec-quantifiers}'));
-  assert.ok(sets.indexOf('{#sec-quantifiers}') < sets.indexOf('{#sec-set-subset}'));
-  const quantifiers=sets.slice(sets.indexOf('## כמתים'),sets.indexOf('## הכלה ושוויון'));
+  assert.ok(sets.indexOf('{#sec-quantifiers}') < sets.indexOf('{#sec-set-equality '));
+  assert.ok(sets.indexOf('{#sec-set-equality ') < sets.indexOf('{#sec-set-order}'));
+  assert.ok(sets.indexOf('{#sec-set-order}') < sets.indexOf('{#sec-set-subset}'));
+  assert.ok(sets.indexOf('{#sec-set-equality ') < sets.indexOf('data-sets="cardinality"'));
+  const quantifiers=sets.slice(sets.indexOf('## כמתים'),sets.indexOf('## שוויון והכלה'));
   assert.doesNotMatch(quantifiers,/\\(?:subseteq|subsetneq|cup|cap|setminus)\b/);
   assert.doesNotMatch(sets,/^TODO$/m);
   assert.equal((logic.match(/\{#practice-q-/g)||[]).length,40);

@@ -86,3 +86,11 @@
 .set-proof-comparing .set-proof-row>.bk-btn{grid-column:3;grid-row:1}
 .set-proof-comparing .set-proof-formula{font-size:1.05em}
 @media(max-width:760px){.set-proof-comparing .set-proof-panels{grid-template-columns:minmax(0,1fr)}.set-proof-comparing .set-proof-panels>*{max-height:none;overflow:visible;scrollbar-gutter:auto}}
+
+.quantifier-negation-form{display:grid;gap:.5rem;margin:.6rem 0}
+.quantifier-negation-form label{display:grid;gap:.35rem}
+.quantifier-negation-form input{width:100%;min-width:0}
+.quantifier-negation-keys{display:flex;gap:.25rem;flex-wrap:wrap}
+.quantifier-negation-keys[hidden]{display:none}
+.quantifier-negation-keys button{direction:ltr;unicode-bidi:isolate}
+.quantifier-negation-form>button{justify-self:start}

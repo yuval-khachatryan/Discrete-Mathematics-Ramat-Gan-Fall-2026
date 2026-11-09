@@ -1,3 +1,4 @@
+import {initQuantifierNegation} from './quantifier-negation.js';
 import {initMethodProof} from './method-proof-editor.js';
 /* book.js — interactive exercises inside the chapters (not inside a game).
    ---------------------------------------------------------------------------
@@ -335,6 +336,7 @@ function initTF(quiz) {
 }
 
 function init() {
+  document.querySelectorAll("[data-quantifier-negation]").forEach(initQuantifierNegation);
   initNavigation();
   initReferences();
   document.querySelectorAll(".knight-activity").forEach(initKnightWorkshop);

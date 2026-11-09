@@ -22,7 +22,7 @@ export function checkCounterexample(kind,values,witness){
     }else if(kind==='two-witnesses'){
       if(!A.size||!B.size)return {ok:false,message:'שתי הקבוצות צריכות להיות לא ריקות כדי לקיים את הנתונים.'};
       if(intersect(A,B).size)return {ok:false,message:'החיתוך עדיין אינו ריק. בנו שתי קבוצות לא ריקות שאין להן איבר משותף.'};
-      return {ok:true,message:'נכון. לכל קבוצה יש איבר, אבל אין איבר משותף. שני עדים אינם חייבים להיות אותו עצם.'};
+      return {ok:true,message:'נכון. לכל קבוצה קיים איבר, אבל אין איבר משותף. שני עדים אינם חייבים להיות אותו עצם.'};
     }else if(kind==='strict-union-diff'){left=difference(union(A,B),C);right=union(A,difference(B,C));}
     else if(kind==='difference-brackets'){left=difference(A,difference(B,C));right=difference(difference(A,B),C);}
     else throw Error('תרגיל לא מוכר.');
@@ -52,12 +52,12 @@ function grid(box){
  const buttons=[];
  table.append(el('thead',{},[el('tr',{},[el('th',{text:'מי אוהב איזה שיר?'}),...songs.map(text=>el('th',{text}))])]));
  const body=el('tbody');people.forEach((name,i)=>{const row=el('tr',{},[el('th',{text:name,scope:'row'})]);songs.forEach((song,j)=>{const b=btn('לא',()=>{matrix[i][j]=!matrix[i][j];b.textContent=matrix[i][j]?'♥':'לא';b.setAttribute('aria-pressed',String(matrix[i][j]));feedback.textContent='';});b.setAttribute('aria-pressed','false');b.setAttribute('aria-label',`${name} אוהב/ת את ${song}`);buttons.push(b);row.append(el('td',{},[b]));});body.append(row);});table.append(body);
- function update(){task.textContent=stage===0?'בנו מצב שבו לכל אדם יש שיר אהוב, אבל אין שיר שכולם אוהבים. לחצו על התאים כדי לקבוע מי אוהב מה.':'כעת שנו את הלוח כך שלכל אדם יהיה שיר אהוב, וגם יהיה שיר אחד שכולם אוהבים.';}
- box.append(el('p',{text:'הרובוט של המסיבה בטוח: ״אם לכל אחד יש שיר אהוב, בטח יש שיר שכולם אוהבים!״ בדקו את הביטחון שלו.'}),task,el('p',{text:'S היא קבוצת שלושת האנשים; M היא קבוצת שלושת השירים; L(x,y) אומר ש־x אוהב את y.'}),el('p',{dir:'ltr',class:'set-proof-formula',text:'∀x ∈ S: (∃y ∈ M: L(x,y))     /     ∃y ∈ M: (∀x ∈ S: L(x,y))'}),table,
+ function update(){task.textContent=stage===0?'בנו מצב שבו לכל אדם קיים שיר אהוב, אבל אין שיר שכולם אוהבים. לחצו על התאים כדי לקבוע מי אוהב מה.':'כעת שנו את הלוח כך שלכל אדם יהיה שיר אהוב, וגם יהיה שיר אחד שכולם אוהבים.';}
+ box.append(el('p',{text:'הרובוט של המסיבה בטוח: ״אם לכל אחד קיים שיר אהוב, בטח קיים שיר שכולם אוהבים!״ בדקו את הביטחון שלו.'}),task,el('p',{text:'S היא קבוצת שלושת האנשים; M היא קבוצת שלושת השירים; L(x,y) אומר ש־x אוהב את y.'}),el('p',{dir:'ltr',class:'set-proof-formula',text:'∀x ∈ S: (∃y ∈ M: L(x,y))     /     ∃y ∈ M: (∀x ∈ S: L(x,y))'}),table,
  btn('בדיקת הלוח',()=>{const bad=matrix.findIndex(row=>!row.some(Boolean)),common=songs.findIndex((_,j)=>matrix.every(row=>row[j]));
-   if(bad>=0){say(feedback,`ל־${people[bad]} עדיין אין שיר אהוב. הטענה ״לכל אדם יש שיר״ אינה מתקיימת.`);return;}
+   if(bad>=0){say(feedback,`ל־${people[bad]} עדיין אין שיר אהוב. הטענה ״לכל אדם קיים שיר״ אינה מתקיימת.`);return;}
    if(stage===0&&common>=0){say(feedback,`${songs[common]} אהוב על כולם. צריך לבנות מצב שבו אין שיר משותף לכולם.`);return;}
-   if(stage===1&&common<0){say(feedback,'לכל אדם יש שיר, אבל עדיין אין שיר שאהוב על כולם. חפשו עמודה שמתאימה לכולם.');return;}
+   if(stage===1&&common<0){say(feedback,'לכל אדם קיים שיר, אבל עדיין אין שיר שאהוב על כולם. חפשו עמודה שמתאימה לכולם.');return;}
    say(feedback,stage===0?'הצלחתם להפריך את טענת הרובוט. הבחירה בשיר יכולה להיות תלויה באדם.':'נכון. שתי הטענות יכולות להיות נכונות יחד, אף שאינן אומרות אותו דבר.',true);next.hidden=stage!==0;
  }),next,btn('איפוס',()=>{stage=0;matrix=people.map(()=>songs.map(()=>false));buttons.forEach(b=>{b.textContent='לא';b.setAttribute('aria-pressed','false');});next.hidden=true;feedback.textContent='';update();}),feedback);update();
 }
@@ -79,7 +79,7 @@ function counter(box,kind){
  const descriptions={
  'union-equal':'בנו קבוצות A ו־B שמפריכות את הטענה A ∪ B = A ∩ B. כתבו גם איבר שמבדיל בין שני הצדדים.',
  'inclusion-error':'נתון A ⊆ C וגם B ⊆ C. הטענה היא ש־A ⊆ B. בנו דוגמה שמקיימת את שני הנתונים, וכתבו איבר של A שאינו ב־B.',
- 'two-witnesses':'מישהו טוען: ״אם A ו־B אינן ריקות, אז יש להן איבר משותף״. כתבו שתי קבוצות לא ריקות שמפריכות את הטענה.',
+ 'two-witnesses':'מישהו טוען: ״אם A ו־B אינן ריקות, אז קיים איבר משותף לשתיהן״. כתבו שתי קבוצות לא ריקות שמפריכות את הטענה.',
  'strict-union-diff':'ההכלה (A ∪ B) ∖ C ⊆ A ∪ (B ∖ C) נכונה. בנו דוגמה שבה אין שוויון, וכתבו איבר שמבדיל בין הצדדים.',
  'difference-brackets':'בנו דוגמה שמראה כי A ∖ (B ∖ C) אינה בהכרח שווה ל־(A ∖ B) ∖ C. כתבו גם איבר שמבדיל בין הצדדים.',
  };

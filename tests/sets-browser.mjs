@@ -17,6 +17,27 @@ try{
  assert.equal(await page.locator('.sets-ready').count(),Object.keys(SET_TASKS).length);
  assert.equal(await page.locator('mjx-merror,[data-mml-node="merror"]').count(),0);
  assert.equal(await page.locator('main').innerText().then(t=>t.includes('TODO')),false);
+ const negations=page.locator('[data-quantifier-negation]');
+ assert.equal(await negations.count(),2);
+ for(const [i,answer]of ['exists x in D: not P(x)','forall x in D: not P(x)'].entries()){
+  const part=negations.nth(i),input=part.locator('input');
+  await part.getByRole('button',{name:'בדיקה',exact:true}).click();
+  assert.equal(await part.locator('.bk-bad').count(),1);
+  await input.fill(i===0?'∀x ∈ D: ¬P(x)':'∃x ∈ D: ¬P(x)');
+  await input.press('Enter');assert.match(await part.locator('.bk-bad').innerText(),/מחליפים את הכמת/);
+  await input.fill(answer);await input.press('Enter');
+  assert.equal(await part.locator('.bk-good').count(),1);
+  assert.equal(await input.getAttribute('aria-invalid'),'false');
+  assert.equal(await part.getByRole('button',{name:'הוספת ∃',exact:true}).evaluate(n=>getComputedStyle(n).direction),'ltr');
+ }
+ if(process.argv.includes('--quantifiers-only')){
+  await page.setViewportSize({width:390,height:844});
+  const question=page.locator('#box-q-negate-each-quantifier');
+  await question.screenshot({path:'/tmp/quantifier-negation-mobile.png'});
+  assert.ok(await question.evaluate(n=>n.scrollWidth<=n.clientWidth+2),'quantifier inputs overflow');
+  assert.deepEqual(errors,[]);console.log('Both written negations: input, correction feedback, keyboard symbols, math rendering and mobile layout passed.');
+  await browser.close();process.exit(0);
+ }
  for(const [id,data]of Object.entries(SET_TASKS)){
   const box=page.locator(`[data-sets="${id}"]`);
   const check=()=>box.getByRole('button',{name:'בדיקה',exact:true}).click();

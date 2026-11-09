@@ -233,7 +233,7 @@ export function judgeEvidence(level, markedIds, verdict) {
   if (verdict === true) {
     if (fits.length) {
       const x = fits[0];
-      let msg = `בדיוק! ${say(x)}: ${val(x)}. ${byG(x, "הוא <b>עד</b>", "היא <b>עדה</b>")}, ועד אחד מספיק כדי להוכיח ״יש״. הטענה נכונה.`;
+      let msg = `בדיוק! ${say(x)}: ${val(x)}. ${byG(x, "הוא <b>עד</b>", "היא <b>עדה</b>")}, ועד אחד מספיק כדי להוכיח ״קיים״. הטענה נכונה.`;
       if (fits.length > 1) msg += ` (מצאתם ${fits.length} עדים. גם אחד היה מספיק.)`;
       else if (fails.length)
         msg += ` (${names(fails)} ${fails.length === 1 ? byG(fails[0], "אינו עד", "אינה עדה") : "אינם עדים"}, אבל זה לא משנה: מספיק עד אחד.)`;
@@ -246,7 +246,7 @@ export function judgeEvidence(level, markedIds, verdict) {
       ? `בדקתם את ${M[0].name}, אבל ${say(M[0])}: ${val(M[0])}. לכן ${byG(M[0], "הוא לא עד", "היא לא עדה")}`
       : `בדקתם את ${names(M)}, ואצל כולם ${m(`${L}(x) = ${chip(false)}`)}, לכן אין ביניהם עד`;
     return result(false, "not-witness",
-      `${did}: עד ל״יש״ חייב לקיים את ${m(`${L}(x)`)}. בדקו כרטיס אחר. מספיק למצוא אחד שמתאים.`, "bad");
+      `${did}: עד ל״קיים״ חייב לקיים את ${m(`${L}(x)`)}. בדקו כרטיס אחר. מספיק למצוא אחד שמתאים.`, "bad");
   }
   if (fits.length) {
     const x = fits[0];
@@ -257,13 +257,13 @@ export function judgeEvidence(level, markedIds, verdict) {
     if (M.length === 1) {
       const x = M[0];
       return result(false, "one-example",
-        `בדקתם רק את ${x.name}: ${say(x)}. אבל זה לא מפריך ״יש״, כי אולי מישהו אחר כן. כדי להראות ש״אין אף אחד״ צריך לבדוק את כולם.`, "bad");
+        `בדקתם רק את ${x.name}: ${say(x)}. אבל זה לא מפריך ״קיים״, כי אולי מישהו אחר כן. כדי להראות ש״אין אף אחד״ צריך לבדוק את כולם.`, "bad");
     }
     return result(false, "not-all",
       `בדרך הנכונה: בדקתם ${M.length} מתוך ${D.length}, ואצל כולם ${m(`${L}(x) = ${chip(false)}`)}. אבל אולי דווקא ${names(rest, "או")}? כדי להראות ש״אין אף אחד״ צריך לבדוק את כולם.`, "info");
   }
   return result(true, "ok",
-    `נכון! בדקתם את ${everyCard(D.length)}, ואצל כולם ${m(`${L}(x) = ${chip(false)}`)}. על תחום סופי ״יש״ הוא ״או״ ארוך, וכל החלקים שלו שקריים. הטענה שגויה.`, null, D);
+    `נכון! בדקתם את ${everyCard(D.length)}, ואצל כולם ${m(`${L}(x) = ${chip(false)}`)}. על תחום סופי ״קיים״ הוא ״או״ ארוך, וכל החלקים שלו שקריים. הטענה שגויה.`, null, D);
 }
 
 /** A correct answer for levels 1–4: the fewest cards that settle the claim. */
@@ -313,7 +313,7 @@ export function judgeNegation(level, option, markedIds) {
   const x = refute[0];
   const missing = D.find(y => q(y));
   return result(true, "ok",
-    `בדיוק! ${say(x)}: ${val(x)}. זו דוגמה נגדית ל־${robotF}, ולכן ״אף אחד לא הגיש״ שקרי. ובכל זאת ״לא כולם הגישו״ נכון: ${missing ? say(missing) : ""}. השלילה של ״כולם״ היא ״יש מישהו שלא״, ולא ״אף אחד״.`,
+    `בדיוק! ${say(x)}: ${val(x)}. זו דוגמה נגדית ל־${robotF}, ולכן ״אף אחד לא הגיש״ שקרי. ובכל זאת ״לא כולם הגישו״ נכון: ${missing ? say(missing) : ""}. השלילה של ״כולם״ היא ״קיים סטודנט שלא״, ולא ״אף אחד״.`,
     null, refute);
 }
 
@@ -368,7 +368,7 @@ export function judgeOrder(level, part, picks) {
       `עוד חסרה דוגמה נגדית בעמודות של ${names(missing)}. כדי להראות ש״אין פריט שכולם אוהבים״, כל פריט צריך דוגמה נגדית משלו.`, "info");
   const list = Y.map(y => `${y.name} ← ${X(picks[y.id]).name}`).join(" · ");
   return result(true, "ok",
-    `חלק 2 נכון: לכל פריט יש מי שלא אוהב אותו (${list}). אז אין פריט שכולם אוהבים, ו־${m(formula(level, claim))} שקרי.`,
+    `חלק 2 נכון: לכל פריט קיים סטודנט שלא אוהב אותו (${list}). אז אין פריט שכולם אוהבים, ו־${m(formula(level, claim))} שקרי.`,
     null, Y);
 }
 
