@@ -35,8 +35,8 @@ export function parseStatement(src,{preserveDirection=false}={}){
   function atom(){
     if(peek()==='∀'){
       take();const variable=take();if(!/^[a-z][a-z0-9_]{0,7}$/.test(variable||''))throw Error('אחרי ∀ כתבו שם משתנה, למשל x.');
-      if(take()!=='∈')throw Error('ציינו את התחום: למשל ∀x ∈ A: (x ∈ B).');
-      const domain=setExpr();if(take()!==':')throw Error('הפרידו בנקודתיים בין התחום לבין התנאי.');
+      if(take()!=='∈')throw Error('ציינו את התחום: למשל ∀x ∈ A (x ∈ B).');
+      const domain=setExpr();if(peek()===':')take();
       return node('forall',{type:'name',name:variable},domain,iff());
     }
     if(peek()==='¬'){take();return node('not',atom());}
@@ -66,7 +66,7 @@ const symbols={intersection:'∩',union:'∪',difference:'∖',symmetric:'△',m
 export function show(n){
   if(typeof n==='string')n=parseStatement(n);
   if(n.type==='name')return n.name;
-  if(n.type==='forall')return `∀${show(n.args[0])} ∈ ${show(n.args[1])}: (${show(n.args[2])})`;
+  if(n.type==='forall')return `∀${show(n.args[0])} ∈ ${show(n.args[1])} (${show(n.args[2])})`;
   if(n.type==='empty')return '∅';if(n.type==='true')return 'T';if(n.type==='false')return 'F';
   if(n.type==='power')return `P(${show(n.args[0])})`;
   if(n.type==='singleton')return `{${show(n.args[0])}}`;

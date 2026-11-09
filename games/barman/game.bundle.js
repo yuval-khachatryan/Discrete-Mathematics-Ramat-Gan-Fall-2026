@@ -174,8 +174,9 @@
     const btnHint = el("button", { class: "g-btn", type: "button", text: "רמז" });
     const btnReset = el("button", { class: "g-btn", type: "button", text: "איפוס" });
     const btnSolve = el("button", { class: "g-btn g-quiet", type: "button", text: "פתרון" });
+    const btnPrev = el("button", { class: "g-btn g-prev", type: "button", text: "→ לשלב הקודם" });
     const btnNext = el("button", { class: "g-btn g-next", type: "button", text: "לשלב הבא ←" });
-    const controls = el("div", { class: "g-controls" }, [btnCheck, btnHint, btnReset, btnSolve, btnNext]);
+    const controls = el("div", { class: "g-controls" }, [btnCheck, btnHint, btnReset, btnSolve, btnPrev, btnNext]);
     const foot = el("footer", { class: "g-foot" });
     if (embed) {
       const full = new URL(window.location.href);
@@ -262,6 +263,8 @@
       btnHint.hidden = !(lvl.hints && lvl.hints.length);
       btnHint.disabled = false;
       btnHint.textContent = lvl.hints && lvl.hints.length ? `רמז (0/${lvl.hints.length})` : "רמז";
+      btnPrev.hidden = levels.length < 2;
+      btnPrev.disabled = index === 0;
       btnNext.hidden = true;
       btnNext.classList.remove("g-ready");
       drawNav();
@@ -308,6 +311,9 @@
       say(msg || "זה הפתרון. כדאי לעבור עליו שורה אחר שורה, ואז לנסות את השלב שוב בעצמכם (איפוס).", "info");
       showDebrief();
       btnNext.hidden = index >= levels.length - 1;
+    });
+    btnPrev.addEventListener("click", () => {
+      if (index > 0) go(index - 1);
     });
     btnNext.addEventListener("click", () => go(index + 1));
     const ui = { stage, say, win, el, embed, present, get level() {
@@ -738,7 +744,8 @@
     const said = kind === "design" ? level.target : explainAnswers(level.wants, mode).map((x) => x.answer);
     const known = explainKnowledge(said, mode);
     let picks = Array(n).fill(UNSET);
-    let shown = kind === "serve" ? 0 : n;
+    const initialShown = kind === "serve" && level.id === "classic" ? 0 : n;
+    let shown = initialShown;
     let done = false;
     let free = [];
     let flagged = -1;
@@ -803,11 +810,11 @@
         const thinkPrefix = `${p.name} ${p.f ? "חושבת" : "חושב"}: `;
         if (wish === "secret") bubble(c.think, "", "הרצון אינו ידוע לכם", { empty: true, srPrefix: thinkPrefix });
         else if (wish === "free") bubble(c.think, "", "לא משנה", { yours: true, srPrefix: thinkPrefix });
-        else if (wish === UNSET) bubble(c.think, "", "…", { yours: true, empty: true, srPrefix: thinkPrefix + "עוד לא נבחר" });
+        else if (wish === UNSET) bubble(c.think, "", "בחרו רצון", { yours: true, empty: true, srPrefix: thinkPrefix + "עוד לא נבחר" });
         else bubble(c.think, wish ? "falafel" : "nofalafel", wishWord(wish), { yours: kind === "design", srPrefix: thinkPrefix });
         const answer = kind === "predict" ? picks[i] : i < shown ? said[i] : UNSET;
         const sayPrefix = `${p.name} ${p.f ? "אומרת" : "אומר"}: `;
-        if (answer === UNSET) bubble(c.speech, "", "…", { yours: kind === "predict", empty: true, srPrefix: sayPrefix + "טרם נבחרה תשובה" });
+        if (answer === UNSET) bubble(c.speech, "", kind === "predict" ? "בחרו תשובה" : "התשובה טרם הוצגה", { yours: kind === "predict", empty: true, srPrefix: sayPrefix + "טרם נבחרה תשובה" });
         else bubble(c.speech, "", answer === "yes" ? "כן!" : answerText(answer, p), { yours: kind === "predict", srPrefix: sayPrefix });
         c.buttons.forEach((btn, k) => btn.setAttribute("aria-pressed", String(picks[i] !== UNSET && c.options[k].value === picks[i])));
         c.flag.hidden = flagged !== i;
@@ -892,7 +899,7 @@
     }
     function reset() {
       picks = Array(n).fill(UNSET);
-      shown = kind === "serve" ? 0 : n;
+      shown = initialShown;
       done = false;
       free = [];
       flagged = -1;

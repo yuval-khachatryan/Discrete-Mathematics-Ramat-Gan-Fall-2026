@@ -186,8 +186,8 @@ iframe.widget-frame {
 .thmbox > :first-child { margin-top: 0; }
 .thmbox > :last-child { margin-bottom: 0; }
 .thmbox-definition  { border-color: #4f46e5; background: #eef2ff; }
-.thmbox-terminology { border-color: #0369a1; background: #f0f9ff; }
-.thmbox-terminology > p:first-child > strong { color: #075985; }
+.thmbox-notation, .thmbox-terminology { border-color: #0369a1; background: #f0f9ff; }
+.thmbox-notation > p:first-child > strong, .thmbox-terminology > p:first-child > strong { color: #075985; }
 .thmbox-terminology > p:first-child > strong::before { content: "📖"; display: inline-block; margin-inline-end: .4em; }
 /* Summaries and component legends have their own labels and visual identity. */
 .thmbox-summary { border-color: #0f766e; background: #f0fdfa; }
@@ -313,17 +313,22 @@ main table.table th, main table.table td { padding: 0.3rem 1rem; text-align: cen
 .thmbox-warning > p:first-child > strong { font-weight: 700; color: #be123c; }
 .thmbox-key-point   { border-color: #0891b2; border-inline-start-width: 6px; background: #ecfeff; }
 .thmbox-key-point > p:first-child > strong { font-weight: 700; color: #0e7490; }
-/* Role badges (icon="..."), HTML only. */
-.thmbox[class*="thmicon-"] > p:first-child > strong::before {
-  margin-inline-end: 0.35em;
-  font-size: 1.45em;
-  vertical-align: -0.18em;
+/* Helper illustrations are part of the box body, not the title. */
+.thmbox.has-helper-art { display: flow-root; }
+.thmbox.has-helper-art > p:first-child > strong::before { content: none; }
+.helper-box-art {
+  float: inline-end;
+  width: 56px;
+  height: 56px;
+  margin: .1rem 0 .4rem 0;
+  margin-inline-start: .85rem;
+  object-fit: contain;
+  pointer-events: none;
 }
-.thmbox.thmicon-method     > p:first-child > strong::before { content: "🛠️"; }
-.thmbox.thmicon-calc       > p:first-child > strong::before { content: "🧮"; }
-.thmbox.thmicon-rule       > p:first-child > strong::before { content: "✅"; }
-.thmbox.thmicon-convention > p:first-child > strong::before { content: "🤝"; }
-.thmbox.thmicon-idea       > p:first-child > strong::before { content: "💡"; }
+@media (max-width: 480px) {
+  .helper-box-art { width: 40px; height: 40px; margin-inline-start: .5rem; }
+}
+@media print { .helper-box-art { display: none; } }
 /* ---------------------------------------------------------------------------
    Math must never inherit the page's RTL direction. <html dir="rtl"> makes the
    whole document a right-to-left bidi context, and two things go wrong inside it:
@@ -560,6 +565,11 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .argument-formula-bank, .choice-select { width: 100%; min-width: 0; min-height: 44px; padding: .35rem; font: inherit; border: 1px solid #7c3aed; border-radius: 6px; background: #faf5ff; }
 .argument-formula-bank { direction: ltr; }
 .choice-item { min-width: 0; margin: .8rem 0; padding: .65rem; border: 1px solid #c4b5fd; border-radius: 8px; }
+.answer-panel { margin: .4rem 0; min-width: 0; }
+.answer-panel > summary, .answer-reveal > summary { cursor: pointer; color: #075985; font-weight: 600; }
+.answer-panel[open] > summary { margin-bottom: .5rem; }
+.answer-reveal { margin-top: .5rem; }
+.answer-reveal > div { margin-top: .35rem; padding: .45rem .65rem; background: #f8fafc; border-inline-start: 3px solid #94a3b8; overflow-wrap: anywhere; }
 .choice-item legend { float: none; width: auto; max-width: 100%; font-size: 1em; font-weight: 700; color: #581c87; padding: 0 .25rem; }
 .choice-select[aria-invalid="true"] { border: 2px solid #b91c1c; }
 .substitution-entry label { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; margin: .5rem 0; }
@@ -569,6 +579,9 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .choice-ready .choice-offline { display: none; }
 .bk-keys { display: flex; flex-wrap: wrap; gap: 0.25rem; direction: ltr; }
 .bk-keys[hidden] { display:none !important; }
+.field-symbol-keyboard { display:flex; flex-wrap:wrap; gap:.25rem; direction:ltr; width:100%; min-width:0; flex-basis:100%; grid-column:1 / -1; margin:.3rem 0; }
+.field-symbol-keyboard[hidden] { display:none !important; }
+.field-symbol-keyboard .formula-autocomplete { flex-basis:100%; }
 .bk-key { min-width: 40px; min-height: 40px; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; font: 1.1rem "Cambria Math", "STIX Two Math", serif; cursor: pointer; }
 .bk-key:hover { background: #eef2ff; }
 .bk-fq .hint, .bk-fq .explain, .bk-ttq .after { margin: 0.4rem 0; padding: 0.4rem 0.7rem; border-radius: 8px; }
@@ -1107,7 +1120,7 @@ window.Quarto = {
 };
 </script>
 
-<script id="book-toc-data" type="application/json">[{"file":"01-logic.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#sec-about\" id=\"toc-sec-about\" class=\"nav-link active\" data-scroll-target=\"#sec-about\">\u003cspan class=\"header-section-number\">1.1\u003c/span> על מה הקורס הזה?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-consistency\" id=\"toc-sec-consistency\" class=\"nav-link\" data-scroll-target=\"#sec-consistency\">\u003cspan class=\"header-section-number\">1.2\u003c/span> האם המסקנה נובעת מההנחות?\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-argument-basics\" id=\"toc-sec-argument-basics\" class=\"nav-link\" data-scroll-target=\"#sec-argument-basics\">\u003cspan class=\"header-section-number\">1.2.1\u003c/span> הנחות, מסקנה וטיעון\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-הדוגמאות-מלמדות\" id=\"toc-מה-הדוגמאות-מלמדות\" class=\"nav-link\" data-scroll-target=\"#מה-הדוגמאות-מלמדות\">\u003cspan class=\"header-section-number\">1.2.2\u003c/span> מה הדוגמאות מלמדות?\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-propositions\" id=\"toc-sec-propositions\" class=\"nav-link\" data-scroll-target=\"#sec-propositions\">\u003cspan class=\"header-section-number\">1.3\u003c/span> פסוקים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-proposition-basics\" id=\"toc-sec-proposition-basics\" class=\"nav-link\" data-scroll-target=\"#sec-proposition-basics\">\u003cspan class=\"header-section-number\">1.3.1\u003c/span> מהו פסוק ומהו ערך אמת?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-naming-statements\" id=\"toc-sec-naming-statements\" class=\"nav-link\" data-scroll-target=\"#sec-naming-statements\">\u003cspan class=\"header-section-number\">1.3.2\u003c/span> איך נותנים לפסוק שם?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-open-propositions\" id=\"toc-sec-open-propositions\" class=\"nav-link\" data-scroll-target=\"#sec-open-propositions\">\u003cspan class=\"header-section-number\">1.3.3\u003c/span> משפט שתלוי בערך שנבחר: פסוק פתוח\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#sec-naming-open-statements\" id=\"toc-sec-naming-open-statements\" class=\"nav-link\" data-scroll-target=\"#sec-naming-open-statements\">\u003cspan class=\"header-section-number\">1.3.3.1\u003c/span> איך נותנים שם לפסוק פתוח?\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-proposition-check\" id=\"toc-sec-proposition-check\" class=\"nav-link\" data-scroll-target=\"#sec-proposition-check\">\u003cspan class=\"header-section-number\">1.3.4\u003c/span> בודקים שההבדל ברור\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-connectives\" id=\"toc-sec-connectives\" class=\"nav-link\" data-scroll-target=\"#sec-connectives\">\u003cspan class=\"header-section-number\">1.4\u003c/span> קשרים לוגיים: מפסוקים פשוטים לפסוק מורכב\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-combining-statements\" id=\"toc-sec-combining-statements\" class=\"nav-link\" data-scroll-target=\"#sec-combining-statements\">\u003cspan class=\"header-section-number\">1.4.1\u003c/span> מחברים פסוקים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-negation\" id=\"toc-sec-negation\" class=\"nav-link\" data-scroll-target=\"#sec-negation\">\u003cspan class=\"header-section-number\">1.4.2\u003c/span> שלילה: ״לא״\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#משחק-של-אור-ואמת\" id=\"toc-משחק-של-אור-ואמת\" class=\"nav-link\" data-scroll-target=\"#משחק-של-אור-ואמת\">\u003cspan class=\"header-section-number\">1.4.2.1\u003c/span> משחק של אור ואמת\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-and\" id=\"toc-sec-and\" class=\"nav-link\" data-scroll-target=\"#sec-and\">\u003cspan class=\"header-section-number\">1.4.3\u003c/span> וגם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-or\" id=\"toc-sec-or\" class=\"nav-link\" data-scroll-target=\"#sec-or\">\u003cspan class=\"header-section-number\">1.4.4\u003c/span> או\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-xor\" id=\"toc-sec-xor\" class=\"nav-link\" data-scroll-target=\"#sec-xor\">\u003cspan class=\"header-section-number\">1.4.5\u003c/span> או מפריד\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-parentheses\" id=\"toc-sec-parentheses\" class=\"nav-link\" data-scroll-target=\"#sec-parentheses\">\u003cspan class=\"header-section-number\">1.4.6\u003c/span> סוגריים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-complex-truth-tables\" id=\"toc-sec-complex-truth-tables\" class=\"nav-link\" data-scroll-target=\"#sec-complex-truth-tables\">\u003cspan class=\"header-section-number\">1.5\u003c/span> בונים טבלת אמת של פסוק מורכב\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-table-building\" id=\"toc-sec-table-building\" class=\"nav-link\" data-scroll-target=\"#sec-table-building\">\u003cspan class=\"header-section-number\">1.5.1\u003c/span> מחשבים חלק אחר חלק\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#כמה-שורות-יש-בטבלה\" id=\"toc-כמה-שורות-יש-בטבלה\" class=\"nav-link\" data-scroll-target=\"#כמה-שורות-יש-בטבלה\">\u003cspan class=\"header-section-number\">1.5.2\u003c/span> כמה שורות יש בטבלה?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#טבלה-של-פסוק-מורכב\" id=\"toc-טבלה-של-פסוק-מורכב\" class=\"nav-link\" data-scroll-target=\"#טבלה-של-פסוק-מורכב\">\u003cspan class=\"header-section-number\">1.5.3\u003c/span> טבלה של פסוק מורכב\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-taut\" id=\"toc-sec-taut\" class=\"nav-link\" data-scroll-target=\"#sec-taut\">\u003cspan class=\"header-section-number\">1.5.4\u003c/span> טאוטולוגיה וסתירה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-evaluate\" id=\"toc-sec-evaluate\" class=\"nav-link\" data-scroll-target=\"#sec-evaluate\">\u003cspan class=\"header-section-number\">1.5.5\u003c/span> מתרגלים: אמת או שקר?\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-demorgan\" id=\"toc-sec-demorgan\" class=\"nav-link\" data-scroll-target=\"#sec-demorgan\">\u003cspan class=\"header-section-number\">1.6\u003c/span> שקילות לוגית וחוקי דה מורגן\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-logical-equivalence\" id=\"toc-sec-logical-equivalence\" class=\"nav-link\" data-scroll-target=\"#sec-logical-equivalence\">\u003cspan class=\"header-section-number\">1.6.1\u003c/span> מהי שקילות לוגית?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#איך-שוללים-משפט-שיש-בו-וגם-או-או\" id=\"toc-איך-שוללים-משפט-שיש-בו-וגם-או-או\" class=\"nav-link\" data-scroll-target=\"#איך-שוללים-משפט-שיש-בו-וגם-או-או\">\u003cspan class=\"header-section-number\">1.6.2\u003c/span> איך שוללים משפט שיש בו ״וגם״ או ״או״?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-full-signal\" id=\"toc-sec-full-signal\" class=\"nav-link\" data-scroll-target=\"#sec-full-signal\">\u003cspan class=\"header-section-number\">1.6.3\u003c/span> הפסוק ושלילתו באותו מעגל\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#משווים-שני-ניסוחים-בעזרת-מנורות\" id=\"toc-משווים-שני-ניסוחים-בעזרת-מנורות\" class=\"nav-link\" data-scroll-target=\"#משווים-שני-ניסוחים-בעזרת-מנורות\">\u003cspan class=\"header-section-number\">1.6.4\u003c/span> משווים שני ניסוחים בעזרת מנורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-implication\" id=\"toc-sec-implication\" class=\"nav-link\" data-scroll-target=\"#sec-implication\">\u003cspan class=\"header-section-number\">1.7\u003c/span> אם… אז…: גרירה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-implication-meaning\" id=\"toc-sec-implication-meaning\" class=\"nav-link\" data-scroll-target=\"#sec-implication-meaning\">\u003cspan class=\"header-section-number\">1.7.1\u003c/span> משמעות הגרירה וטבלת האמת שלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-converse\" id=\"toc-sec-converse\" class=\"nav-link\" data-scroll-target=\"#sec-converse\">\u003cspan class=\"header-section-number\">1.7.2\u003c/span> היפוך וגרירה נגדית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-iff\" id=\"toc-sec-iff\" class=\"nav-link\" data-scroll-target=\"#sec-iff\">\u003cspan class=\"header-section-number\">1.7.3\u003c/span> אם ורק אם\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-calculus\" id=\"toc-sec-calculus\" class=\"nav-link\" data-scroll-target=\"#sec-calculus\">\u003cspan class=\"header-section-number\">1.8\u003c/span> תחשיב הפסוקים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-formalization\" id=\"toc-sec-formalization\" class=\"nav-link\" data-scroll-target=\"#sec-formalization\">\u003cspan class=\"header-section-number\">1.8.1\u003c/span> הצרנה: מן הניסוח במילים אל הסימנים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-equivalence-calculus\" id=\"toc-sec-equivalence-calculus\" class=\"nav-link\" data-scroll-target=\"#sec-equivalence-calculus\">\u003cspan class=\"header-section-number\">1.8.2\u003c/span> חוקי שקילות ופישוט נוסחאות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-deduction\" id=\"toc-sec-deduction\" class=\"nav-link\" data-scroll-target=\"#sec-deduction\">\u003cspan class=\"header-section-number\">1.8.3\u003c/span> כללי היסק\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#sec-rule-mp\" id=\"toc-sec-rule-mp\" class=\"nav-link\" data-scroll-target=\"#sec-rule-mp\">\u003cspan class=\"header-section-number\">1.8.3.1\u003c/span> כלל הניתוק (Modus Ponens)\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-rule-mt\" id=\"toc-sec-rule-mt\" class=\"nav-link\" data-scroll-target=\"#sec-rule-mt\">\u003cspan class=\"header-section-number\">1.8.3.2\u003c/span> כלל השלילה (Modus Tollens)\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-rule-hs\" id=\"toc-sec-rule-hs\" class=\"nav-link\" data-scroll-target=\"#sec-rule-hs\">\u003cspan class=\"header-section-number\">1.8.3.3\u003c/span> כלל השרשרת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-rule-and-out\" id=\"toc-sec-rule-and-out\" class=\"nav-link\" data-scroll-target=\"#sec-rule-and-out\">\u003cspan class=\"header-section-number\">1.8.3.4\u003c/span> הוצאת חלק מ״וגם״\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-rule-and-in\" id=\"toc-sec-rule-and-in\" class=\"nav-link\" data-scroll-target=\"#sec-rule-and-in\">\u003cspan class=\"header-section-number\">1.8.3.5\u003c/span> חיבור באמצעות ״וגם״\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-rule-iff\" id=\"toc-sec-rule-iff\" class=\"nav-link\" data-scroll-target=\"#sec-rule-iff\">\u003cspan class=\"header-section-number\">1.8.3.6\u003c/span> שימוש באם ורק אם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-inference-practice\" id=\"toc-sec-inference-practice\" class=\"nav-link\" data-scroll-target=\"#sec-inference-practice\">\u003cspan class=\"header-section-number\">1.8.3.7\u003c/span> תרגול משולב וזיהוי כשלים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-proof-methods\" id=\"toc-sec-proof-methods\" class=\"nav-link\" data-scroll-target=\"#sec-proof-methods\">\u003cspan class=\"header-section-number\">1.8.4\u003c/span> שתי דרכי הוכחה נוספות\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#sec-proof-contradiction\" id=\"toc-sec-proof-contradiction\" class=\"nav-link\" data-scroll-target=\"#sec-proof-contradiction\">\u003cspan class=\"header-section-number\">1.8.4.1\u003c/span> הוכחה בדרך השלילה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-proof-cases\" id=\"toc-sec-proof-cases\" class=\"nav-link\" data-scroll-target=\"#sec-proof-cases\">\u003cspan class=\"header-section-number\">1.8.4.2\u003c/span> הוכחה לפי מקרים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights\" id=\"toc-sec-knights\" class=\"nav-link\" data-scroll-target=\"#sec-knights\">\u003cspan class=\"header-section-number\">1.9\u003c/span> אבירים ונוכלים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-knights-first\" id=\"toc-sec-knights-first\" class=\"nav-link\" data-scroll-target=\"#sec-knights-first\">\u003cspan class=\"header-section-number\">1.9.1\u003c/span> מתחילים מחידה: בודקים את כל האפשרויות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-rule\" id=\"toc-sec-knights-rule\" class=\"nav-link\" data-scroll-target=\"#sec-knights-rule\">\u003cspan class=\"header-section-number\">1.9.2\u003c/span> מהטבלה לכלל\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-more\" id=\"toc-sec-knights-more\" class=\"nav-link\" data-scroll-target=\"#sec-knights-more\">\u003cspan class=\"header-section-number\">1.9.3\u003c/span> חידות נוספות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-direct\" id=\"toc-sec-knights-direct\" class=\"nav-link\" data-scroll-target=\"#sec-knights-direct\">\u003cspan class=\"header-section-number\">1.9.4\u003c/span> מוצאים את כל האפשרויות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-cases\" id=\"toc-sec-knights-cases\" class=\"nav-link\" data-scroll-target=\"#sec-knights-cases\">\u003cspan class=\"header-section-number\">1.9.5\u003c/span> לפעמים יש כמה פתרונות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-undetermined\" id=\"toc-sec-knights-undetermined\" class=\"nav-link\" data-scroll-target=\"#sec-knights-undetermined\">\u003cspan class=\"header-section-number\">1.9.6\u003c/span> כשסוגו של תושב אינו נקבע\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-impossible\" id=\"toc-sec-knights-impossible\" class=\"nav-link\" data-scroll-target=\"#sec-knights-impossible\">\u003cspan class=\"header-section-number\">1.9.7\u003c/span> לפעמים אין פתרון\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-practice\" id=\"toc-sec-knights-practice\" class=\"nav-link\" data-scroll-target=\"#sec-knights-practice\">\u003cspan class=\"header-section-number\">1.9.8\u003c/span> ממשיכים לתרגל\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-summary\" id=\"toc-sec-summary\" class=\"nav-link\" data-scroll-target=\"#sec-summary\">\u003cspan class=\"header-section-number\">1.10\u003c/span> סיכום\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#פסוקים-שמות-וטבלאות-אמת\" id=\"toc-פסוקים-שמות-וטבלאות-אמת\" class=\"nav-link\" data-scroll-target=\"#פסוקים-שמות-וטבלאות-אמת\">\u003cspan class=\"header-section-number\">1.10.1\u003c/span> פסוקים, שמות וטבלאות אמת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הקשרים-שלמדנו\" id=\"toc-הקשרים-שלמדנו\" class=\"nav-link\" data-scroll-target=\"#הקשרים-שלמדנו\">\u003cspan class=\"header-section-number\">1.10.2\u003c/span> הקשרים שלמדנו\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שקילות-וכתיבת-הוכחה\" id=\"toc-שקילות-וכתיבת-הוכחה\" class=\"nav-link\" data-scroll-target=\"#שקילות-וכתיבת-הוכחה\">\u003cspan class=\"header-section-number\">1.10.3\u003c/span> שקילות וכתיבת הוכחה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הצרנה-ודרכי-הוכחה\" id=\"toc-הצרנה-ודרכי-הוכחה\" class=\"nav-link\" data-scroll-target=\"#הצרנה-ודרכי-הוכחה\">\u003cspan class=\"header-section-number\">1.10.4\u003c/span> הצרנה ודרכי הוכחה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הסקת-מסקנות\" id=\"toc-הסקת-מסקנות\" class=\"nav-link\" data-scroll-target=\"#הסקת-מסקנות\">\u003cspan class=\"header-section-number\">1.10.5\u003c/span> הסקת מסקנות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-self-practice\" id=\"toc-sec-self-practice\" class=\"nav-link\" data-scroll-target=\"#sec-self-practice\">\u003cspan class=\"header-section-number\">1.11\u003c/span> תרגול עצמי לפי נושאים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#practice-statements\" id=\"toc-practice-statements\" class=\"nav-link\" data-scroll-target=\"#practice-statements\">\u003cspan class=\"header-section-number\">1.11.1\u003c/span> פסוקים ופסוקים פתוחים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-translation\" id=\"toc-practice-translation\" class=\"nav-link\" data-scroll-target=\"#practice-translation\">\u003cspan class=\"header-section-number\">1.11.2\u003c/span> ממילים לנוסחאות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-tables\" id=\"toc-practice-tables\" class=\"nav-link\" data-scroll-target=\"#practice-tables\">\u003cspan class=\"header-section-number\">1.11.3\u003c/span> טבלאות אמת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-implication\" id=\"toc-practice-implication\" class=\"nav-link\" data-scroll-target=\"#practice-implication\">\u003cspan class=\"header-section-number\">1.11.4\u003c/span> גרירה ואם ורק אם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-equivalence\" id=\"toc-practice-equivalence\" class=\"nav-link\" data-scroll-target=\"#practice-equivalence\">\u003cspan class=\"header-section-number\">1.11.5\u003c/span> שקילויות: מצדיקים כל שינוי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-proofs\" id=\"toc-practice-proofs\" class=\"nav-link\" data-scroll-target=\"#practice-proofs\">\u003cspan class=\"header-section-number\">1.11.6\u003c/span> הוכחות עם סיוע: מצדיקים כל צעד\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#מתחילים-הוכחה-בצעד-אחד\" id=\"toc-מתחילים-הוכחה-בצעד-אחד\" class=\"nav-link\" data-scroll-target=\"#מתחילים-הוכחה-בצעד-אחד\">\u003cspan class=\"header-section-number\">1.11.6.1\u003c/span> מתחילים: הוכחה בצעד אחד\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ממשיכים-מחברים-נתונים-ומסקנות-ביניים\" id=\"toc-ממשיכים-מחברים-נתונים-ומסקנות-ביניים\" class=\"nav-link\" data-scroll-target=\"#ממשיכים-מחברים-נתונים-ומסקנות-ביניים\">\u003cspan class=\"header-section-number\">1.11.6.2\u003c/span> ממשיכים: מחברים נתונים ומסקנות ביניים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#משלבים-שינוי-ניסוח-ואז-הסקה\" id=\"toc-משלבים-שינוי-ניסוח-ואז-הסקה\" class=\"nav-link\" data-scroll-target=\"#משלבים-שינוי-ניסוח-ואז-הסקה\">\u003cspan class=\"header-section-number\">1.11.6.3\u003c/span> משלבים: שינוי ניסוח ואז הסקה\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-knights\" id=\"toc-practice-knights\" class=\"nav-link\" data-scroll-target=\"#practice-knights\">\u003cspan class=\"header-section-number\">1.11.7\u003c/span> אבירים ונוכלים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"02-sets.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#sec-sets-membership\" id=\"toc-sec-sets-membership\" class=\"nav-link active\" data-scroll-target=\"#sec-sets-membership\">\u003cspan class=\"header-section-number\">2.1\u003c/span> קבוצות, איברים ושייכות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-set-basics\" id=\"toc-sec-set-basics\" class=\"nav-link\" data-scroll-target=\"#sec-set-basics\">\u003cspan class=\"header-section-number\">2.1.1\u003c/span> מהי קבוצה?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-order\" id=\"toc-sec-set-order\" class=\"nav-link\" data-scroll-target=\"#sec-set-order\">\u003cspan class=\"header-section-number\">2.1.2\u003c/span> סדר, חזרות ומספר האיברים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-cardinality\" id=\"toc-sec-set-cardinality\" class=\"nav-link\" data-scroll-target=\"#sec-set-cardinality\">\u003cspan class=\"header-section-number\">2.1.3\u003c/span> עצמה, הקבוצה הריקה וקבוצות אינסופיות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-builder\" id=\"toc-sec-set-builder\" class=\"nav-link\" data-scroll-target=\"#sec-set-builder\">\u003cspan class=\"header-section-number\">2.1.4\u003c/span> מתארים קבוצה באמצעות תנאי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-nested-sets\" id=\"toc-sec-nested-sets\" class=\"nav-link\" data-scroll-target=\"#sec-nested-sets\">\u003cspan class=\"header-section-number\">2.1.5\u003c/span> קבוצות בתוך קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-number-sets\" id=\"toc-sec-number-sets\" class=\"nav-link\" data-scroll-target=\"#sec-number-sets\">\u003cspan class=\"header-section-number\">2.1.6\u003c/span> כמה קבוצות מספרים שימושיות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-quantifiers\" id=\"toc-sec-quantifiers\" class=\"nav-link\" data-scroll-target=\"#sec-quantifiers\">\u003cspan class=\"header-section-number\">2.2\u003c/span> כמתים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-quantifier-basics\" id=\"toc-sec-quantifier-basics\" class=\"nav-link\" data-scroll-target=\"#sec-quantifier-basics\">\u003cspan class=\"header-section-number\">2.2.1\u003c/span> מן האיבר אל הקבוצה כולה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-bar-again\" id=\"toc-sec-bar-again\" class=\"nav-link\" data-scroll-target=\"#sec-bar-again\">\u003cspan class=\"header-section-number\">2.2.2\u003c/span> ״כולם״ ו״מישהו״ בשפת הכמתים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-evidence\" id=\"toc-sec-evidence\" class=\"nav-link\" data-scroll-target=\"#sec-evidence\">\u003cspan class=\"header-section-number\">2.2.3\u003c/span> איזו הוכחה צריך?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-arbitrary-element\" id=\"toc-sec-arbitrary-element\" class=\"nav-link\" data-scroll-target=\"#sec-arbitrary-element\">\u003cspan class=\"header-section-number\">2.2.4\u003c/span> מאיבר כלשהו להוכחה כללית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-domain\" id=\"toc-sec-domain\" class=\"nav-link\" data-scroll-target=\"#sec-domain\">\u003cspan class=\"header-section-number\">2.2.5\u003c/span> התחום חשוב\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-neg-quantifiers\" id=\"toc-sec-neg-quantifiers\" class=\"nav-link\" data-scroll-target=\"#sec-neg-quantifiers\">\u003cspan class=\"header-section-number\">2.2.6\u003c/span> שלילה של כמתים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-quantifier-order\" id=\"toc-sec-quantifier-order\" class=\"nav-link\" data-scroll-target=\"#sec-quantifier-order\">\u003cspan class=\"header-section-number\">2.2.7\u003c/span> סדר הכמתים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-equality-inclusion\" id=\"toc-sec-set-equality-inclusion\" class=\"nav-link\" data-scroll-target=\"#sec-set-equality-inclusion\">\u003cspan class=\"header-section-number\">2.3\u003c/span> הכלה ושוויון קבוצות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-set-subset\" id=\"toc-sec-set-subset\" class=\"nav-link\" data-scroll-target=\"#sec-set-subset\">\u003cspan class=\"header-section-number\">2.3.1\u003c/span> קבוצה בתוך קבוצה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-inclusion-writing\" id=\"toc-sec-inclusion-writing\" class=\"nav-link\" data-scroll-target=\"#sec-inclusion-writing\">\u003cspan class=\"header-section-number\">2.3.2\u003c/span> כותבים הוכחת הכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-double-inclusion\" id=\"toc-sec-double-inclusion\" class=\"nav-link\" data-scroll-target=\"#sec-double-inclusion\">\u003cspan class=\"header-section-number\">2.3.3\u003c/span> מוכיחים שוויון בשתי הכלות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-membership-vs-inclusion\" id=\"toc-sec-membership-vs-inclusion\" class=\"nav-link\" data-scroll-target=\"#sec-membership-vs-inclusion\">\u003cspan class=\"header-section-number\">2.3.4\u003c/span> שייכות אינה הכלה\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-union-intersection\" id=\"toc-sec-union-intersection\" class=\"nav-link\" data-scroll-target=\"#sec-union-intersection\">\u003cspan class=\"header-section-number\">2.4\u003c/span> איחוד וחיתוך\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-intersection\" id=\"toc-sec-intersection\" class=\"nav-link\" data-scroll-target=\"#sec-intersection\">\u003cspan class=\"header-section-number\">2.4.1\u003c/span> חיתוך: מי עומד בשתי הדרישות?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-union\" id=\"toc-sec-union\" class=\"nav-link\" data-scroll-target=\"#sec-union\">\u003cspan class=\"header-section-number\">2.4.2\u003c/span> איחוד: מי עומד לפחות באחת הדרישות?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-venn\" id=\"toc-sec-venn\" class=\"nav-link\" data-scroll-target=\"#sec-venn\">\u003cspan class=\"header-section-number\">2.4.3\u003c/span> רואים את האזורים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-inclusion-exclusion\" id=\"toc-sec-inclusion-exclusion\" class=\"nav-link\" data-scroll-target=\"#sec-inclusion-exclusion\">\u003cspan class=\"header-section-number\">2.4.4\u003c/span> סופרים איחוד: עקרון ההכלה וההפרדה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-inclusion-exclusion-three\" id=\"toc-sec-inclusion-exclusion-three\" class=\"nav-link\" data-scroll-target=\"#sec-inclusion-exclusion-three\">\u003cspan class=\"header-section-number\">2.4.5\u003c/span> ומה קורה עם שלוש קבוצות?\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-difference-complement\" id=\"toc-sec-set-difference-complement\" class=\"nav-link\" data-scroll-target=\"#sec-set-difference-complement\">\u003cspan class=\"header-section-number\">2.5\u003c/span> הפרש, משלים והפרש סימטרי\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-difference\" id=\"toc-sec-difference\" class=\"nav-link\" data-scroll-target=\"#sec-difference\">\u003cspan class=\"header-section-number\">2.5.1\u003c/span> הפרש: מתחילים מקבוצה ומוציאים איברים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-complement\" id=\"toc-sec-complement\" class=\"nav-link\" data-scroll-target=\"#sec-complement\">\u003cspan class=\"header-section-number\">2.5.2\u003c/span> משלים: מי נשאר מחוץ לקבוצה, בתוך העולם?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-symmetric-difference\" id=\"toc-sec-symmetric-difference\" class=\"nav-link\" data-scroll-target=\"#sec-symmetric-difference\">\u003cspan class=\"header-section-number\">2.5.3\u003c/span> הפרש סימטרי: בדיוק באחת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-laws\" id=\"toc-sec-set-laws\" class=\"nav-link\" data-scroll-target=\"#sec-set-laws\">\u003cspan class=\"header-section-number\">2.5.4\u003c/span> כמה חוקים שימושיים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-power-set\" id=\"toc-sec-power-set\" class=\"nav-link\" data-scroll-target=\"#sec-power-set\">\u003cspan class=\"header-section-number\">2.6\u003c/span> קבוצת החזקה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-all-subsets\" id=\"toc-sec-all-subsets\" class=\"nav-link\" data-scroll-target=\"#sec-all-subsets\">\u003cspan class=\"header-section-number\">2.6.1\u003c/span> אוסף של כל הבחירות האפשריות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-subset-builder\" id=\"toc-sec-subset-builder\" class=\"nav-link\" data-scroll-target=\"#sec-subset-builder\">\u003cspan class=\"header-section-number\">2.6.2\u003c/span> איך מוצאים את כולן בלי כפילויות?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-power-cardinality\" id=\"toc-sec-power-cardinality\" class=\"nav-link\" data-scroll-target=\"#sec-power-cardinality\">\u003cspan class=\"header-section-number\">2.6.3\u003c/span> העצמה של קבוצת החזקה\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-cartesian-product\" id=\"toc-sec-cartesian-product\" class=\"nav-link\" data-scroll-target=\"#sec-cartesian-product\">\u003cspan class=\"header-section-number\">2.7\u003c/span> זוגות סדורים ומכפלה קרטזית\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-ordered-pair\" id=\"toc-sec-ordered-pair\" class=\"nav-link\" data-scroll-target=\"#sec-ordered-pair\">\u003cspan class=\"header-section-number\">2.7.1\u003c/span> כאן הסדר דווקא חשוב\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-product-definition\" id=\"toc-sec-product-definition\" class=\"nav-link\" data-scroll-target=\"#sec-product-definition\">\u003cspan class=\"header-section-number\">2.7.2\u003c/span> כל הצירופים של שתי בחירות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-product-properties\" id=\"toc-sec-product-properties\" class=\"nav-link\" data-scroll-target=\"#sec-product-properties\">\u003cspan class=\"header-section-number\">2.7.3\u003c/span> הסדר, המספר והקבוצה הריקה\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-proofs\" id=\"toc-sec-set-proofs\" class=\"nav-link\" data-scroll-target=\"#sec-set-proofs\">\u003cspan class=\"header-section-number\">2.8\u003c/span> משלבים הגדרות וכללי הוכחה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-set-inclusion-proof\" id=\"toc-sec-set-inclusion-proof\" class=\"nav-link\" data-scroll-target=\"#sec-set-inclusion-proof\">\u003cspan class=\"header-section-number\">2.8.1\u003c/span> הכלה ומקרים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-proof-goals\" id=\"toc-sec-set-proof-goals\" class=\"nav-link\" data-scroll-target=\"#sec-set-proof-goals\">\u003cspan class=\"header-section-number\">2.8.2\u003c/span> מפריכים באמצעות איבר שמבדיל\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets\" id=\"toc-practice-sets\" class=\"nav-link\" data-scroll-target=\"#practice-sets\">\u003cspan class=\"header-section-number\">2.9\u003c/span> תרגול לפי נושאים: קבוצות וכמתים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#practice-sets-membership\" id=\"toc-practice-sets-membership\" class=\"nav-link\" data-scroll-target=\"#practice-sets-membership\">\u003cspan class=\"header-section-number\">2.9.1\u003c/span> קבוצות ואיברים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-quantifiers\" id=\"toc-practice-quantifiers\" class=\"nav-link\" data-scroll-target=\"#practice-quantifiers\">\u003cspan class=\"header-section-number\">2.9.2\u003c/span> כמתים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-set-inclusion\" id=\"toc-practice-set-inclusion\" class=\"nav-link\" data-scroll-target=\"#practice-set-inclusion\">\u003cspan class=\"header-section-number\">2.9.3\u003c/span> הכלה ודוגמאות נגדיות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets-operations\" id=\"toc-practice-sets-operations\" class=\"nav-link\" data-scroll-target=\"#practice-sets-operations\">\u003cspan class=\"header-section-number\">2.9.4\u003c/span> פעולות על קבוצות\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#practice-set-calculations\" id=\"toc-practice-set-calculations\" class=\"nav-link\" data-scroll-target=\"#practice-set-calculations\">\u003cspan class=\"header-section-number\">2.9.4.1\u003c/span> מחשבים ובודקים טענות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-set-direct-proofs\" id=\"toc-practice-set-direct-proofs\" class=\"nav-link\" data-scroll-target=\"#practice-set-direct-proofs\">\u003cspan class=\"header-section-number\">2.9.4.2\u003c/span> הוכחות קצרות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-set-equality-proofs\" id=\"toc-practice-set-equality-proofs\" class=\"nav-link\" data-scroll-target=\"#practice-set-equality-proofs\">\u003cspan class=\"header-section-number\">2.9.4.3\u003c/span> שוויון קבוצות ושילוב כללים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-set-counterexamples\" id=\"toc-practice-set-counterexamples\" class=\"nav-link\" data-scroll-target=\"#practice-set-counterexamples\">\u003cspan class=\"header-section-number\">2.9.4.4\u003c/span> מקרים ודוגמאות נגדיות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets-counting\" id=\"toc-practice-sets-counting\" class=\"nav-link\" data-scroll-target=\"#practice-sets-counting\">\u003cspan class=\"header-section-number\">2.9.5\u003c/span> עצמה וספירה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets-power-product\" id=\"toc-practice-sets-power-product\" class=\"nav-link\" data-scroll-target=\"#practice-sets-power-product\">\u003cspan class=\"header-section-number\">2.9.6\u003c/span> קבוצות של קבוצות וזוגות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"index.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#פתח-דבר\" id=\"toc-פתח-דבר\" class=\"nav-link active\" data-scroll-target=\"#פתח-דבר\">פתח דבר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#מקורות\" id=\"toc-מקורות\" class=\"nav-link\" data-scroll-target=\"#מקורות\">מקורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"}]</script>
+<script id="book-toc-data" type="application/json">[{"file":"01-logic.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#sec-about\" id=\"toc-sec-about\" class=\"nav-link active\" data-scroll-target=\"#sec-about\">\u003cspan class=\"header-section-number\">1.1\u003c/span> על מה הקורס הזה?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-consistency\" id=\"toc-sec-consistency\" class=\"nav-link\" data-scroll-target=\"#sec-consistency\">\u003cspan class=\"header-section-number\">1.2\u003c/span> האם המסקנה נובעת מההנחות?\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-argument-basics\" id=\"toc-sec-argument-basics\" class=\"nav-link\" data-scroll-target=\"#sec-argument-basics\">\u003cspan class=\"header-section-number\">1.2.1\u003c/span> הנחות, מסקנה וטיעון\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-הדוגמאות-מלמדות\" id=\"toc-מה-הדוגמאות-מלמדות\" class=\"nav-link\" data-scroll-target=\"#מה-הדוגמאות-מלמדות\">\u003cspan class=\"header-section-number\">1.2.2\u003c/span> מה הדוגמאות מלמדות?\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-propositions\" id=\"toc-sec-propositions\" class=\"nav-link\" data-scroll-target=\"#sec-propositions\">\u003cspan class=\"header-section-number\">1.3\u003c/span> פסוקים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-proposition-basics\" id=\"toc-sec-proposition-basics\" class=\"nav-link\" data-scroll-target=\"#sec-proposition-basics\">\u003cspan class=\"header-section-number\">1.3.1\u003c/span> מהו פסוק ומהו ערך אמת?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-naming-statements\" id=\"toc-sec-naming-statements\" class=\"nav-link\" data-scroll-target=\"#sec-naming-statements\">\u003cspan class=\"header-section-number\">1.3.2\u003c/span> איך נותנים לפסוק שם?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-open-propositions\" id=\"toc-sec-open-propositions\" class=\"nav-link\" data-scroll-target=\"#sec-open-propositions\">\u003cspan class=\"header-section-number\">1.3.3\u003c/span> משפט שתלוי בערך שנבחר: פסוק פתוח\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#sec-naming-open-statements\" id=\"toc-sec-naming-open-statements\" class=\"nav-link\" data-scroll-target=\"#sec-naming-open-statements\">\u003cspan class=\"header-section-number\">1.3.3.1\u003c/span> איך נותנים שם לפסוק פתוח?\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-proposition-check\" id=\"toc-sec-proposition-check\" class=\"nav-link\" data-scroll-target=\"#sec-proposition-check\">\u003cspan class=\"header-section-number\">1.3.4\u003c/span> בודקים שההבדל ברור\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-connectives\" id=\"toc-sec-connectives\" class=\"nav-link\" data-scroll-target=\"#sec-connectives\">\u003cspan class=\"header-section-number\">1.4\u003c/span> קשרים לוגיים: מפסוקים פשוטים לפסוק מורכב\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-combining-statements\" id=\"toc-sec-combining-statements\" class=\"nav-link\" data-scroll-target=\"#sec-combining-statements\">\u003cspan class=\"header-section-number\">1.4.1\u003c/span> מחברים פסוקים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-negation\" id=\"toc-sec-negation\" class=\"nav-link\" data-scroll-target=\"#sec-negation\">\u003cspan class=\"header-section-number\">1.4.2\u003c/span> שלילה: ״לא״\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#משחק-של-אור-ואמת\" id=\"toc-משחק-של-אור-ואמת\" class=\"nav-link\" data-scroll-target=\"#משחק-של-אור-ואמת\">\u003cspan class=\"header-section-number\">1.4.2.1\u003c/span> משחק של אור ואמת\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-and\" id=\"toc-sec-and\" class=\"nav-link\" data-scroll-target=\"#sec-and\">\u003cspan class=\"header-section-number\">1.4.3\u003c/span> וגם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-or\" id=\"toc-sec-or\" class=\"nav-link\" data-scroll-target=\"#sec-or\">\u003cspan class=\"header-section-number\">1.4.4\u003c/span> או\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-xor\" id=\"toc-sec-xor\" class=\"nav-link\" data-scroll-target=\"#sec-xor\">\u003cspan class=\"header-section-number\">1.4.5\u003c/span> או מפריד\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-parentheses\" id=\"toc-sec-parentheses\" class=\"nav-link\" data-scroll-target=\"#sec-parentheses\">\u003cspan class=\"header-section-number\">1.4.6\u003c/span> סוגריים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-complex-truth-tables\" id=\"toc-sec-complex-truth-tables\" class=\"nav-link\" data-scroll-target=\"#sec-complex-truth-tables\">\u003cspan class=\"header-section-number\">1.5\u003c/span> בונים טבלת אמת של פסוק מורכב\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-table-building\" id=\"toc-sec-table-building\" class=\"nav-link\" data-scroll-target=\"#sec-table-building\">\u003cspan class=\"header-section-number\">1.5.1\u003c/span> מחשבים חלק אחר חלק\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#כמה-שורות-יש-בטבלה\" id=\"toc-כמה-שורות-יש-בטבלה\" class=\"nav-link\" data-scroll-target=\"#כמה-שורות-יש-בטבלה\">\u003cspan class=\"header-section-number\">1.5.2\u003c/span> כמה שורות יש בטבלה?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#טבלה-של-פסוק-מורכב\" id=\"toc-טבלה-של-פסוק-מורכב\" class=\"nav-link\" data-scroll-target=\"#טבלה-של-פסוק-מורכב\">\u003cspan class=\"header-section-number\">1.5.3\u003c/span> טבלה של פסוק מורכב\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-taut\" id=\"toc-sec-taut\" class=\"nav-link\" data-scroll-target=\"#sec-taut\">\u003cspan class=\"header-section-number\">1.5.4\u003c/span> טאוטולוגיה וסתירה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-evaluate\" id=\"toc-sec-evaluate\" class=\"nav-link\" data-scroll-target=\"#sec-evaluate\">\u003cspan class=\"header-section-number\">1.5.5\u003c/span> מתרגלים: אמת או שקר?\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-demorgan\" id=\"toc-sec-demorgan\" class=\"nav-link\" data-scroll-target=\"#sec-demorgan\">\u003cspan class=\"header-section-number\">1.6\u003c/span> שקילות לוגית וחוקי דה מורגן\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-logical-equivalence\" id=\"toc-sec-logical-equivalence\" class=\"nav-link\" data-scroll-target=\"#sec-logical-equivalence\">\u003cspan class=\"header-section-number\">1.6.1\u003c/span> מהי שקילות לוגית?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#איך-שוללים-משפט-שיש-בו-וגם-או-או\" id=\"toc-איך-שוללים-משפט-שיש-בו-וגם-או-או\" class=\"nav-link\" data-scroll-target=\"#איך-שוללים-משפט-שיש-בו-וגם-או-או\">\u003cspan class=\"header-section-number\">1.6.2\u003c/span> איך שוללים משפט שיש בו ״וגם״ או ״או״?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-full-signal\" id=\"toc-sec-full-signal\" class=\"nav-link\" data-scroll-target=\"#sec-full-signal\">\u003cspan class=\"header-section-number\">1.6.3\u003c/span> הפסוק ושלילתו באותו מעגל\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#משווים-שני-ניסוחים-בעזרת-מנורות\" id=\"toc-משווים-שני-ניסוחים-בעזרת-מנורות\" class=\"nav-link\" data-scroll-target=\"#משווים-שני-ניסוחים-בעזרת-מנורות\">\u003cspan class=\"header-section-number\">1.6.4\u003c/span> משווים שני ניסוחים בעזרת מנורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-implication\" id=\"toc-sec-implication\" class=\"nav-link\" data-scroll-target=\"#sec-implication\">\u003cspan class=\"header-section-number\">1.7\u003c/span> אם… אז…: גרירה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-implication-meaning\" id=\"toc-sec-implication-meaning\" class=\"nav-link\" data-scroll-target=\"#sec-implication-meaning\">\u003cspan class=\"header-section-number\">1.7.1\u003c/span> משמעות הגרירה וטבלת האמת שלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-converse\" id=\"toc-sec-converse\" class=\"nav-link\" data-scroll-target=\"#sec-converse\">\u003cspan class=\"header-section-number\">1.7.2\u003c/span> היפוך וגרירה נגדית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-iff\" id=\"toc-sec-iff\" class=\"nav-link\" data-scroll-target=\"#sec-iff\">\u003cspan class=\"header-section-number\">1.7.3\u003c/span> אם ורק אם\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-calculus\" id=\"toc-sec-calculus\" class=\"nav-link\" data-scroll-target=\"#sec-calculus\">\u003cspan class=\"header-section-number\">1.8\u003c/span> תחשיב הפסוקים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-formalization\" id=\"toc-sec-formalization\" class=\"nav-link\" data-scroll-target=\"#sec-formalization\">\u003cspan class=\"header-section-number\">1.8.1\u003c/span> הצרנה: מן הניסוח במילים אל הסימנים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-equivalence-calculus\" id=\"toc-sec-equivalence-calculus\" class=\"nav-link\" data-scroll-target=\"#sec-equivalence-calculus\">\u003cspan class=\"header-section-number\">1.8.2\u003c/span> חוקי שקילות ופישוט נוסחאות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-deduction\" id=\"toc-sec-deduction\" class=\"nav-link\" data-scroll-target=\"#sec-deduction\">\u003cspan class=\"header-section-number\">1.8.3\u003c/span> כללי היסק\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#sec-rule-mp\" id=\"toc-sec-rule-mp\" class=\"nav-link\" data-scroll-target=\"#sec-rule-mp\">\u003cspan class=\"header-section-number\">1.8.3.1\u003c/span> כלל הניתוק (Modus Ponens)\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-rule-mt\" id=\"toc-sec-rule-mt\" class=\"nav-link\" data-scroll-target=\"#sec-rule-mt\">\u003cspan class=\"header-section-number\">1.8.3.2\u003c/span> כלל השלילה (Modus Tollens)\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-rule-hs\" id=\"toc-sec-rule-hs\" class=\"nav-link\" data-scroll-target=\"#sec-rule-hs\">\u003cspan class=\"header-section-number\">1.8.3.3\u003c/span> כלל השרשרת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-rule-and-out\" id=\"toc-sec-rule-and-out\" class=\"nav-link\" data-scroll-target=\"#sec-rule-and-out\">\u003cspan class=\"header-section-number\">1.8.3.4\u003c/span> הוצאת חלק מ״וגם״\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-rule-and-in\" id=\"toc-sec-rule-and-in\" class=\"nav-link\" data-scroll-target=\"#sec-rule-and-in\">\u003cspan class=\"header-section-number\">1.8.3.5\u003c/span> חיבור באמצעות ״וגם״\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-rule-iff\" id=\"toc-sec-rule-iff\" class=\"nav-link\" data-scroll-target=\"#sec-rule-iff\">\u003cspan class=\"header-section-number\">1.8.3.6\u003c/span> שימוש באם ורק אם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-inference-practice\" id=\"toc-sec-inference-practice\" class=\"nav-link\" data-scroll-target=\"#sec-inference-practice\">\u003cspan class=\"header-section-number\">1.8.3.7\u003c/span> תרגול משולב וזיהוי כשלים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-proof-methods\" id=\"toc-sec-proof-methods\" class=\"nav-link\" data-scroll-target=\"#sec-proof-methods\">\u003cspan class=\"header-section-number\">1.8.4\u003c/span> שתי דרכי הוכחה נוספות\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#sec-proof-contradiction\" id=\"toc-sec-proof-contradiction\" class=\"nav-link\" data-scroll-target=\"#sec-proof-contradiction\">\u003cspan class=\"header-section-number\">1.8.4.1\u003c/span> הוכחה בדרך השלילה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-proof-cases\" id=\"toc-sec-proof-cases\" class=\"nav-link\" data-scroll-target=\"#sec-proof-cases\">\u003cspan class=\"header-section-number\">1.8.4.2\u003c/span> הוכחה לפי מקרים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights\" id=\"toc-sec-knights\" class=\"nav-link\" data-scroll-target=\"#sec-knights\">\u003cspan class=\"header-section-number\">1.9\u003c/span> אבירים ונוכלים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-knights-first\" id=\"toc-sec-knights-first\" class=\"nav-link\" data-scroll-target=\"#sec-knights-first\">\u003cspan class=\"header-section-number\">1.9.1\u003c/span> מתחילים מחידה: בודקים את כל האפשרויות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-rule\" id=\"toc-sec-knights-rule\" class=\"nav-link\" data-scroll-target=\"#sec-knights-rule\">\u003cspan class=\"header-section-number\">1.9.2\u003c/span> מהטבלה לכלל\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-more\" id=\"toc-sec-knights-more\" class=\"nav-link\" data-scroll-target=\"#sec-knights-more\">\u003cspan class=\"header-section-number\">1.9.3\u003c/span> חידות נוספות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-direct\" id=\"toc-sec-knights-direct\" class=\"nav-link\" data-scroll-target=\"#sec-knights-direct\">\u003cspan class=\"header-section-number\">1.9.4\u003c/span> מוצאים את כל האפשרויות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-cases\" id=\"toc-sec-knights-cases\" class=\"nav-link\" data-scroll-target=\"#sec-knights-cases\">\u003cspan class=\"header-section-number\">1.9.5\u003c/span> לפעמים יש כמה פתרונות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-undetermined\" id=\"toc-sec-knights-undetermined\" class=\"nav-link\" data-scroll-target=\"#sec-knights-undetermined\">\u003cspan class=\"header-section-number\">1.9.6\u003c/span> כשסוגו של תושב אינו נקבע\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-impossible\" id=\"toc-sec-knights-impossible\" class=\"nav-link\" data-scroll-target=\"#sec-knights-impossible\">\u003cspan class=\"header-section-number\">1.9.7\u003c/span> לפעמים אין פתרון\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-practice\" id=\"toc-sec-knights-practice\" class=\"nav-link\" data-scroll-target=\"#sec-knights-practice\">\u003cspan class=\"header-section-number\">1.9.8\u003c/span> ממשיכים לתרגל\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-summary\" id=\"toc-sec-summary\" class=\"nav-link\" data-scroll-target=\"#sec-summary\">\u003cspan class=\"header-section-number\">1.10\u003c/span> סיכום\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#פסוקים-שמות-וטבלאות-אמת\" id=\"toc-פסוקים-שמות-וטבלאות-אמת\" class=\"nav-link\" data-scroll-target=\"#פסוקים-שמות-וטבלאות-אמת\">\u003cspan class=\"header-section-number\">1.10.1\u003c/span> פסוקים, שמות וטבלאות אמת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הקשרים-שלמדנו\" id=\"toc-הקשרים-שלמדנו\" class=\"nav-link\" data-scroll-target=\"#הקשרים-שלמדנו\">\u003cspan class=\"header-section-number\">1.10.2\u003c/span> הקשרים שלמדנו\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שקילות-וכתיבת-הוכחה\" id=\"toc-שקילות-וכתיבת-הוכחה\" class=\"nav-link\" data-scroll-target=\"#שקילות-וכתיבת-הוכחה\">\u003cspan class=\"header-section-number\">1.10.3\u003c/span> שקילות וכתיבת הוכחה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הצרנה-ודרכי-הוכחה\" id=\"toc-הצרנה-ודרכי-הוכחה\" class=\"nav-link\" data-scroll-target=\"#הצרנה-ודרכי-הוכחה\">\u003cspan class=\"header-section-number\">1.10.4\u003c/span> הצרנה ודרכי הוכחה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הסקת-מסקנות\" id=\"toc-הסקת-מסקנות\" class=\"nav-link\" data-scroll-target=\"#הסקת-מסקנות\">\u003cspan class=\"header-section-number\">1.10.5\u003c/span> הסקת מסקנות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-self-practice\" id=\"toc-sec-self-practice\" class=\"nav-link\" data-scroll-target=\"#sec-self-practice\">\u003cspan class=\"header-section-number\">1.11\u003c/span> תרגול עצמי לפי נושאים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#practice-statements\" id=\"toc-practice-statements\" class=\"nav-link\" data-scroll-target=\"#practice-statements\">\u003cspan class=\"header-section-number\">1.11.1\u003c/span> פסוקים ופסוקים פתוחים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-translation\" id=\"toc-practice-translation\" class=\"nav-link\" data-scroll-target=\"#practice-translation\">\u003cspan class=\"header-section-number\">1.11.2\u003c/span> ממילים לנוסחאות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-tables\" id=\"toc-practice-tables\" class=\"nav-link\" data-scroll-target=\"#practice-tables\">\u003cspan class=\"header-section-number\">1.11.3\u003c/span> טבלאות אמת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-implication\" id=\"toc-practice-implication\" class=\"nav-link\" data-scroll-target=\"#practice-implication\">\u003cspan class=\"header-section-number\">1.11.4\u003c/span> גרירה ואם ורק אם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-equivalence\" id=\"toc-practice-equivalence\" class=\"nav-link\" data-scroll-target=\"#practice-equivalence\">\u003cspan class=\"header-section-number\">1.11.5\u003c/span> שקילויות: מצדיקים כל שינוי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-proofs\" id=\"toc-practice-proofs\" class=\"nav-link\" data-scroll-target=\"#practice-proofs\">\u003cspan class=\"header-section-number\">1.11.6\u003c/span> הוכחות עם סיוע: מצדיקים כל צעד\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#מתחילים-הוכחה-בצעד-אחד\" id=\"toc-מתחילים-הוכחה-בצעד-אחד\" class=\"nav-link\" data-scroll-target=\"#מתחילים-הוכחה-בצעד-אחד\">\u003cspan class=\"header-section-number\">1.11.6.1\u003c/span> מתחילים: הוכחה בצעד אחד\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ממשיכים-מחברים-נתונים-ומסקנות-ביניים\" id=\"toc-ממשיכים-מחברים-נתונים-ומסקנות-ביניים\" class=\"nav-link\" data-scroll-target=\"#ממשיכים-מחברים-נתונים-ומסקנות-ביניים\">\u003cspan class=\"header-section-number\">1.11.6.2\u003c/span> ממשיכים: מחברים נתונים ומסקנות ביניים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#משלבים-שינוי-ניסוח-ואז-הסקה\" id=\"toc-משלבים-שינוי-ניסוח-ואז-הסקה\" class=\"nav-link\" data-scroll-target=\"#משלבים-שינוי-ניסוח-ואז-הסקה\">\u003cspan class=\"header-section-number\">1.11.6.3\u003c/span> משלבים: שינוי ניסוח ואז הסקה\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-knights\" id=\"toc-practice-knights\" class=\"nav-link\" data-scroll-target=\"#practice-knights\">\u003cspan class=\"header-section-number\">1.11.7\u003c/span> אבירים ונוכלים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"02-sets.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#sec-sets-membership\" id=\"toc-sec-sets-membership\" class=\"nav-link active\" data-scroll-target=\"#sec-sets-membership\">\u003cspan class=\"header-section-number\">2.1\u003c/span> קבוצות, איברים ושייכות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-set-basics\" id=\"toc-sec-set-basics\" class=\"nav-link\" data-scroll-target=\"#sec-set-basics\">\u003cspan class=\"header-section-number\">2.1.1\u003c/span> מהי קבוצה?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-cardinality\" id=\"toc-sec-set-cardinality\" class=\"nav-link\" data-scroll-target=\"#sec-set-cardinality\">\u003cspan class=\"header-section-number\">2.1.2\u003c/span> עצמה, הקבוצה הריקה וקבוצות אינסופיות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-number-sets\" id=\"toc-sec-number-sets\" class=\"nav-link\" data-scroll-target=\"#sec-number-sets\">\u003cspan class=\"header-section-number\">2.1.3\u003c/span> כמה קבוצות מספרים שימושיות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-builder\" id=\"toc-sec-set-builder\" class=\"nav-link\" data-scroll-target=\"#sec-set-builder\">\u003cspan class=\"header-section-number\">2.1.4\u003c/span> מתארים קבוצה באמצעות תנאי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-nested-sets\" id=\"toc-sec-nested-sets\" class=\"nav-link\" data-scroll-target=\"#sec-nested-sets\">\u003cspan class=\"header-section-number\">2.1.5\u003c/span> קבוצות בתוך קבוצות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-quantifiers\" id=\"toc-sec-quantifiers\" class=\"nav-link\" data-scroll-target=\"#sec-quantifiers\">\u003cspan class=\"header-section-number\">2.2\u003c/span> כמתים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-quantifier-basics\" id=\"toc-sec-quantifier-basics\" class=\"nav-link\" data-scroll-target=\"#sec-quantifier-basics\">\u003cspan class=\"header-section-number\">2.2.1\u003c/span> מן האיבר אל הקבוצה כולה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-bar\" id=\"toc-sec-bar\" class=\"nav-link\" data-scroll-target=\"#sec-bar\">\u003cspan class=\"header-section-number\">2.2.2\u003c/span> שלושה מתמטיקאים ניגשים לדוכן פלאפל\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-bar-again\" id=\"toc-sec-bar-again\" class=\"nav-link\" data-scroll-target=\"#sec-bar-again\">\u003cspan class=\"header-section-number\">2.2.3\u003c/span> ״כולם״ ו״מישהו״ בשפת הכמתים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-evidence\" id=\"toc-sec-evidence\" class=\"nav-link\" data-scroll-target=\"#sec-evidence\">\u003cspan class=\"header-section-number\">2.2.4\u003c/span> איזו הוכחה צריך?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-arbitrary-element\" id=\"toc-sec-arbitrary-element\" class=\"nav-link\" data-scroll-target=\"#sec-arbitrary-element\">\u003cspan class=\"header-section-number\">2.2.5\u003c/span> מאיבר כלשהו להוכחה כללית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-domain\" id=\"toc-sec-domain\" class=\"nav-link\" data-scroll-target=\"#sec-domain\">\u003cspan class=\"header-section-number\">2.2.6\u003c/span> התחום חשוב\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-neg-quantifiers\" id=\"toc-sec-neg-quantifiers\" class=\"nav-link\" data-scroll-target=\"#sec-neg-quantifiers\">\u003cspan class=\"header-section-number\">2.2.7\u003c/span> שלילה של כמתים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-quantifier-order\" id=\"toc-sec-quantifier-order\" class=\"nav-link\" data-scroll-target=\"#sec-quantifier-order\">\u003cspan class=\"header-section-number\">2.2.8\u003c/span> סדר הכמתים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-equality-inclusion\" id=\"toc-sec-set-equality-inclusion\" class=\"nav-link\" data-scroll-target=\"#sec-set-equality-inclusion\">\u003cspan class=\"header-section-number\">2.3\u003c/span> שוויון והכלה של קבוצות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-equality-basics\" id=\"toc-sec-equality-basics\" class=\"nav-link\" data-scroll-target=\"#sec-equality-basics\">\u003cspan class=\"header-section-number\">2.3.1\u003c/span> מתי שתי קבוצות שוות?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-order\" id=\"toc-sec-set-order\" class=\"nav-link\" data-scroll-target=\"#sec-set-order\">\u003cspan class=\"header-section-number\">2.3.2\u003c/span> סדר וחזרות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-subset\" id=\"toc-sec-set-subset\" class=\"nav-link\" data-scroll-target=\"#sec-set-subset\">\u003cspan class=\"header-section-number\">2.3.3\u003c/span> קבוצה בתוך קבוצה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-inclusion-writing\" id=\"toc-sec-inclusion-writing\" class=\"nav-link\" data-scroll-target=\"#sec-inclusion-writing\">\u003cspan class=\"header-section-number\">2.3.4\u003c/span> כותבים הוכחת הכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-double-inclusion\" id=\"toc-sec-double-inclusion\" class=\"nav-link\" data-scroll-target=\"#sec-double-inclusion\">\u003cspan class=\"header-section-number\">2.3.5\u003c/span> מוכיחים שוויון בשתי הכלות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-membership-vs-inclusion\" id=\"toc-sec-membership-vs-inclusion\" class=\"nav-link\" data-scroll-target=\"#sec-membership-vs-inclusion\">\u003cspan class=\"header-section-number\">2.3.6\u003c/span> שייכות אינה הכלה\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-union-intersection\" id=\"toc-sec-union-intersection\" class=\"nav-link\" data-scroll-target=\"#sec-union-intersection\">\u003cspan class=\"header-section-number\">2.4\u003c/span> איחוד וחיתוך\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-intersection\" id=\"toc-sec-intersection\" class=\"nav-link\" data-scroll-target=\"#sec-intersection\">\u003cspan class=\"header-section-number\">2.4.1\u003c/span> חיתוך: מי עומד בשתי הדרישות?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-union\" id=\"toc-sec-union\" class=\"nav-link\" data-scroll-target=\"#sec-union\">\u003cspan class=\"header-section-number\">2.4.2\u003c/span> איחוד: מי עומד לפחות באחת הדרישות?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-venn\" id=\"toc-sec-venn\" class=\"nav-link\" data-scroll-target=\"#sec-venn\">\u003cspan class=\"header-section-number\">2.4.3\u003c/span> רואים את האזורים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-inclusion-exclusion\" id=\"toc-sec-inclusion-exclusion\" class=\"nav-link\" data-scroll-target=\"#sec-inclusion-exclusion\">\u003cspan class=\"header-section-number\">2.4.4\u003c/span> סופרים איחוד: עקרון ההכלה וההפרדה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-inclusion-exclusion-three\" id=\"toc-sec-inclusion-exclusion-three\" class=\"nav-link\" data-scroll-target=\"#sec-inclusion-exclusion-three\">\u003cspan class=\"header-section-number\">2.4.5\u003c/span> ומה קורה עם שלוש קבוצות?\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-difference-complement\" id=\"toc-sec-set-difference-complement\" class=\"nav-link\" data-scroll-target=\"#sec-set-difference-complement\">\u003cspan class=\"header-section-number\">2.5\u003c/span> הפרש, משלים והפרש סימטרי\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-difference\" id=\"toc-sec-difference\" class=\"nav-link\" data-scroll-target=\"#sec-difference\">\u003cspan class=\"header-section-number\">2.5.1\u003c/span> הפרש: מתחילים מקבוצה ומוציאים איברים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-complement\" id=\"toc-sec-complement\" class=\"nav-link\" data-scroll-target=\"#sec-complement\">\u003cspan class=\"header-section-number\">2.5.2\u003c/span> משלים: מי נשאר מחוץ לקבוצה, בתוך העולם?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-symmetric-difference\" id=\"toc-sec-symmetric-difference\" class=\"nav-link\" data-scroll-target=\"#sec-symmetric-difference\">\u003cspan class=\"header-section-number\">2.5.3\u003c/span> הפרש סימטרי: בדיוק באחת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-laws\" id=\"toc-sec-set-laws\" class=\"nav-link\" data-scroll-target=\"#sec-set-laws\">\u003cspan class=\"header-section-number\">2.5.4\u003c/span> כמה חוקים שימושיים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-power-set\" id=\"toc-sec-power-set\" class=\"nav-link\" data-scroll-target=\"#sec-power-set\">\u003cspan class=\"header-section-number\">2.6\u003c/span> קבוצת החזקה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-all-subsets\" id=\"toc-sec-all-subsets\" class=\"nav-link\" data-scroll-target=\"#sec-all-subsets\">\u003cspan class=\"header-section-number\">2.6.1\u003c/span> אוסף של כל הבחירות האפשריות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-subset-builder\" id=\"toc-sec-subset-builder\" class=\"nav-link\" data-scroll-target=\"#sec-subset-builder\">\u003cspan class=\"header-section-number\">2.6.2\u003c/span> איך מוצאים את כולן בלי כפילויות?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-power-cardinality\" id=\"toc-sec-power-cardinality\" class=\"nav-link\" data-scroll-target=\"#sec-power-cardinality\">\u003cspan class=\"header-section-number\">2.6.3\u003c/span> העצמה של קבוצת החזקה\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-cartesian-product\" id=\"toc-sec-cartesian-product\" class=\"nav-link\" data-scroll-target=\"#sec-cartesian-product\">\u003cspan class=\"header-section-number\">2.7\u003c/span> זוגות סדורים ומכפלה קרטזית\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-ordered-pair\" id=\"toc-sec-ordered-pair\" class=\"nav-link\" data-scroll-target=\"#sec-ordered-pair\">\u003cspan class=\"header-section-number\">2.7.1\u003c/span> כאן הסדר דווקא חשוב\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-product-definition\" id=\"toc-sec-product-definition\" class=\"nav-link\" data-scroll-target=\"#sec-product-definition\">\u003cspan class=\"header-section-number\">2.7.2\u003c/span> כל הצירופים של שתי בחירות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-product-properties\" id=\"toc-sec-product-properties\" class=\"nav-link\" data-scroll-target=\"#sec-product-properties\">\u003cspan class=\"header-section-number\">2.7.3\u003c/span> הסדר, המספר והקבוצה הריקה\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-proofs\" id=\"toc-sec-set-proofs\" class=\"nav-link\" data-scroll-target=\"#sec-set-proofs\">\u003cspan class=\"header-section-number\">2.8\u003c/span> משלבים הגדרות וכללי הוכחה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-set-inclusion-proof\" id=\"toc-sec-set-inclusion-proof\" class=\"nav-link\" data-scroll-target=\"#sec-set-inclusion-proof\">\u003cspan class=\"header-section-number\">2.8.1\u003c/span> הכלה ומקרים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-proof-goals\" id=\"toc-sec-set-proof-goals\" class=\"nav-link\" data-scroll-target=\"#sec-set-proof-goals\">\u003cspan class=\"header-section-number\">2.8.2\u003c/span> מפריכים באמצעות איבר שמבדיל\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets\" id=\"toc-practice-sets\" class=\"nav-link\" data-scroll-target=\"#practice-sets\">\u003cspan class=\"header-section-number\">2.9\u003c/span> תרגול לפי נושאים: קבוצות וכמתים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#practice-sets-membership\" id=\"toc-practice-sets-membership\" class=\"nav-link\" data-scroll-target=\"#practice-sets-membership\">\u003cspan class=\"header-section-number\">2.9.1\u003c/span> קבוצות ואיברים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-quantifiers\" id=\"toc-practice-quantifiers\" class=\"nav-link\" data-scroll-target=\"#practice-quantifiers\">\u003cspan class=\"header-section-number\">2.9.2\u003c/span> כמתים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-set-inclusion\" id=\"toc-practice-set-inclusion\" class=\"nav-link\" data-scroll-target=\"#practice-set-inclusion\">\u003cspan class=\"header-section-number\">2.9.3\u003c/span> הכלה ודוגמאות נגדיות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets-operations\" id=\"toc-practice-sets-operations\" class=\"nav-link\" data-scroll-target=\"#practice-sets-operations\">\u003cspan class=\"header-section-number\">2.9.4\u003c/span> פעולות על קבוצות\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#practice-set-calculations\" id=\"toc-practice-set-calculations\" class=\"nav-link\" data-scroll-target=\"#practice-set-calculations\">\u003cspan class=\"header-section-number\">2.9.4.1\u003c/span> מחשבים ובודקים טענות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-set-direct-proofs\" id=\"toc-practice-set-direct-proofs\" class=\"nav-link\" data-scroll-target=\"#practice-set-direct-proofs\">\u003cspan class=\"header-section-number\">2.9.4.2\u003c/span> הוכחות קצרות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-set-equality-proofs\" id=\"toc-practice-set-equality-proofs\" class=\"nav-link\" data-scroll-target=\"#practice-set-equality-proofs\">\u003cspan class=\"header-section-number\">2.9.4.3\u003c/span> שוויון קבוצות ושילוב כללים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-set-counterexamples\" id=\"toc-practice-set-counterexamples\" class=\"nav-link\" data-scroll-target=\"#practice-set-counterexamples\">\u003cspan class=\"header-section-number\">2.9.4.4\u003c/span> מקרים ודוגמאות נגדיות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets-counting\" id=\"toc-practice-sets-counting\" class=\"nav-link\" data-scroll-target=\"#practice-sets-counting\">\u003cspan class=\"header-section-number\">2.9.5\u003c/span> עצמה וספירה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets-power-product\" id=\"toc-practice-sets-power-product\" class=\"nav-link\" data-scroll-target=\"#practice-sets-power-product\">\u003cspan class=\"header-section-number\">2.9.6\u003c/span> קבוצות של קבוצות וזוגות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"index.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#פתח-דבר\" id=\"toc-פתח-דבר\" class=\"nav-link active\" data-scroll-target=\"#פתח-דבר\">פתח דבר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#מקורות\" id=\"toc-מקורות\" class=\"nav-link\" data-scroll-target=\"#מקורות\">מקורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"}]</script>
 </head>
 
 <body class="nav-sidebar floating quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
@@ -1314,8 +1327,9 @@ window.Quarto = {
 <p>למתמטיקה יש שפה משלה. כדי להשתמש בשפה, צריך להכיר גם <span class="term"><strong>אוצר מילים</strong></span> וגם <span class="term"><strong>כללים</strong></span> לחיבור המילים למשפטים. היכרות עם מילים רבות היא התחלה טובה, אבל צריך גם לדעת איך לחבר אותן למשפטים ברורים.</p>
 <p>כך גם במתמטיקה. חלק מאוצר המילים כבר מוכר לנו: למשל ״מספר״, ״שווה״ ו״גדול מ־״. בקורס הזה נוסיף מושגים חדשים, כמו קבוצה, יחס ופונקציה; נלמד מה כל אחד מהם אומר כשנגיע אליו. בקורסים אחרים אוצר המילים ימשיך לגדול.</p>
 <p><strong>הלוגיקה עוסקת בכללים שבהם משתמשים עם אוצר המילים הזה.</strong> היא מלמדת איך לחבר משפטים, איך לשלול אותם, ואיך לבדוק אם המידע שקיבלנו מצדיק מסקנה חדשה. למשל, ״המספר גדול מ־5 <strong>וגם</strong> קטן מ־10״ דורש ששני הדברים יתקיימו. אם מחליפים את ״וגם״ ב״או״, מקבלים דרישה אחרת. המילים הקטנות האלה משנות את מה שהמשפט אומר.</p>
-<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="אוצר המילים גדל; בכל פעם משתמשים בכללי הלוגיקה">
+<div class="thmbox thmbox-key-point has-helper-art thmicon-idea" data-icon="idea" title="אוצר המילים גדל; בכל פעם משתמשים בכללי הלוגיקה">
 <p><strong>חשוב לזכור — אוצר המילים גדל; בכל פעם משתמשים בכללי הלוגיקה.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/key-point.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><span class="key-rule"><strong>המושגים אומרים על מה מדברים. כללי הלוגיקה עוזרים לחבר את הטענות ולבדוק מה נובע מהן.</strong></span></p>
 <p>לא צריך להכיר מראש את כל המושגים שנלמד בקורס. את כללי החיבור וההסקה אפשר להתחיל לתרגל עם משפטים פשוטים מחיי היומיום, ובהמשך להשתמש בהם גם כשמדברים על מושגים חדשים.</p>
 </div>
@@ -1326,8 +1340,9 @@ window.Quarto = {
 <li><strong>חיפוש במאגרי מידע.</strong> כל חיפוש ״מתקדם״ הוא צירוף של תנאים עם ״וגם״, ״או״ ו״לא״.</li>
 <li><strong>מעגלים לוגיים במחשבים.</strong> בפרק נשתמש במודל של מתגים ומנורות כדי להמחיש כיצד מחשבים ערך אמת מתוך כמה ערכי קלט.</li>
 </ul>
-<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea">
+<div class="thmbox thmbox-key-point has-helper-art thmicon-idea" data-icon="idea">
 <p><strong>חשוב לזכור.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/key-point.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>בקורס הזה לומדים <strong>לקרוא ולכתוב מתמטיקה</strong>. כמו בכל שפה, בהתחלה מתרגמים כל מילה בזהירות, ואחר כך זה נעשה טבעי.</p>
 </div>
 </section>
@@ -1377,8 +1392,9 @@ window.Quarto = {
 </div>
 </details>
 </div>
-<div class="thmbox thmbox-self-check">
+<div class="thmbox thmbox-self-check has-helper-art">
 <p><strong>בדיקה עצמית.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><strong>הנחות:</strong> כל הסטודנטים בקורס אוהבים פיצה. דנה סטודנטית בקורס. <strong>מסקנה:</strong> דנה אוהבת פיצה. האם המסקנה נובעת מההנחות?</p>
 <div class="tf-quiz" data-correct="true">
 <button class="tf-opt" data-val="true">כן, נובעת</button>
@@ -1391,8 +1407,9 @@ window.Quarto = {
 <section id="מה-הדוגמאות-מלמדות" class="level3" data-number="1.2.2">
 <h3 data-number="1.2.2" class="anchored" data-anchor-id="מה-הדוגמאות-מלמדות"><span class="header-section-number">1.2.2</span> מה הדוגמאות מלמדות?</h3>
 <p>בדוגמה הראשונה המסקנה נובעת מההנחות, אף שאחת ההנחות שגויה. בדוגמה השנייה אפשר ששתי ההנחות יהיו נכונות והמסקנה תהיה שגויה. זו בדיוק הסיבה לפסול את הטיעון השני.</p>
-<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea">
+<div class="thmbox thmbox-key-point has-helper-art thmicon-idea" data-icon="idea">
 <p><strong>חשוב לזכור.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/key-point.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><span class="key-rule"><strong>טיעון תקף שומר על האמת: כאשר כל הנחותיו נכונות, גם מסקנתו נכונה.</strong></span> אם אחת ההנחות שגויה, תקפות הטיעון אינה מבטיחה שהמסקנה נכונה — אבל גם אינה קובעת שהיא שגויה.</p>
 </div>
 <p>בהמשך נשתמש במתגים ובמנורות כדי לחשב ערכי אמת. המעגלים יעזרו לנו לראות כיצד הקשרים ״לא״, ״וגם״ ו״או״ פועלים על פסוקים.</p>
@@ -1415,8 +1432,9 @@ window.Quarto = {
 <p>בהמשך, כשנשאל ״מה ערך האמת של הפסוק?״, הכוונה תהיה פשוט: <strong>האם הוא נכון או שגוי?</strong></p>
 </div>
 <p>שימו לב: כששואלים <strong>״האם זה פסוק?״</strong>, לא שואלים <strong>״האם זה נכון?״</strong>. גם משפט שגוי יכול להיות פסוק. השאלה היא האם נאמר כאן משהו מוגדר שהוא נכון או שגוי. גם כשקובעים ״זה שגוי״, מדובר בפסוק.</p>
-<div class="thmbox thmbox-terminology" data-terms="plural" title="איך קוראים את הסימנים בדוגמאות?">
+<div class="thmbox thmbox-terminology has-helper-art" data-terms="plural" title="איך קוראים את הסימנים בדוגמאות?">
 <p><strong>מונחים חדשים 1.3.2 — איך קוראים את הסימנים בדוגמאות?</strong></p>
+<img class="helper-box-art" src="images/box-helpers/terminology.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>הסימן <span class="math inline">\(=\)</span> אומר <span class="term"><strong>שווה ל־</strong></span>: למשל, <span class="math inline">\(2+2=4\)</span> נקרא ״שתיים ועוד שתיים שווה לארבע״.</p>
 <p>הסימן <span class="math inline">\(&gt;\)</span> אומר <span class="term"><strong>גדול מ־</strong></span>: <span class="math inline">\(7&gt;5\)</span> נקרא ״שבע גדול מחמש״. הסימן <span class="math inline">\(&lt;\)</span> אומר <span class="term"><strong>קטן מ־</strong></span>: <span class="math inline">\(2&lt;5\)</span> נקרא ״שתיים קטן מחמש״. את הביטויים המתמטיים קוראים משמאל לימין, גם כאשר הטקסט שסביבם כתוב בעברית. הקצה הצר של הסימן פונה אל המספר הקטן.</p>
 <p>״גדול מ־״ אינו כולל שוויון: <span class="math inline">\(5&gt;5\)</span> הוא שקר, ואילו <span class="math inline">\(5=5\)</span> הוא אמת.</p>
@@ -1458,8 +1476,9 @@ window.Quarto = {
 </div>
 </details>
 </div>
-<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea">
+<div class="thmbox thmbox-key-point has-helper-art thmicon-idea" data-icon="idea">
 <p><strong>חשוב לזכור.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/key-point.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>כדאי להפריד בין <strong>מה שנכון</strong> לבין <strong>מה שאנחנו יודעים</strong>. ייתכן שפסוק מסוים נכון או שגוי, ובכל זאת אנחנו עדיין לא יודעים איזו משתי האפשרויות מתקיימת. ״אני לא יודע״ מתאר את הידע שלנו; הוא אינו ערך אמת שלישי.</p>
 </div>
 </section>
@@ -1499,12 +1518,14 @@ window.Quarto = {
 </div>
 </details>
 </div>
-<div class="thmbox thmbox-terminology" title="הפשטה">
+<div class="thmbox thmbox-terminology has-helper-art" title="הפשטה">
 <p><strong>מונח חדש — הפשטה.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/terminology.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>האותיות מאפשרות להניח בצד את הנושא שעליו הפסוקים מדברים. כללי הלוגיקה שנלמד כאן עוסקים ביחסים בין פסוקים על סמך ערכי האמת שלהם, ולא על סמך תוכנם. כך אותו כלל יכול להתאים לפסוקים על מספרים וגם לפסוקים על המקרן והמסך. ההתמקדות במבנה המשותף נקראת <span class="term"><strong>הפשטה</strong></span>.</p>
 </div>
-<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="בקצרה: שם הפסוק וערך האמת שלו">
+<div class="thmbox thmbox-key-point has-helper-art thmicon-idea" data-icon="idea" title="בקצרה: שם הפסוק וערך האמת שלו">
 <p><strong>חשוב לזכור — בקצרה: שם הפסוק וערך האמת שלו.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/key-point.svg" alt="" aria-hidden="true" width="56" height="56">
 <ul>
 <li><span class="math inline">\(A\)</span> הוא <strong>שם של פסוק</strong>; בחירת השם אינה קובעת אם הוא נכון.</li>
 <li><span class="math inline">\(T\)</span> ו־<span class="math inline">\(F\)</span> הם <strong>ערכי אמת</strong>: הם מציינים אם הפסוק נכון או שגוי.</li>
@@ -1533,8 +1554,9 @@ window.Quarto = {
 </div>
 </details>
 </div>
-<div class="thmbox thmbox-terminology" data-terms="plural" title="שלוש מילים שנשתמש בהן: משתנה, ערך והצבה">
+<div class="thmbox thmbox-terminology has-helper-art" data-terms="plural" title="שלוש מילים שנשתמש בהן: משתנה, ערך והצבה">
 <p><strong>מונחים חדשים 1.3.6 — שלוש מילים שנשתמש בהן: משתנה, ערך והצבה.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/terminology.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>במקום להשאיר קו ריק, מתמטיקאים כותבים אות, למשל <span class="math inline">\(.x\)</span> כך המשפט שלנו נעשה ״<span class="math inline">\(x&gt;5\)</span>״. קוראים אותו: ״איקס גדול מחמש״.</p>
 <ul>
 <li><span class="term"><strong>משתנה</strong></span> הוא אות שמשמשת מקום לערך שאפשר לבחור. כאן המשתנה הוא <span class="math inline">\(.x\)</span> האות אינה מכריחה אותנו לבחור מספר מסוים.</li>
@@ -1543,13 +1565,14 @@ window.Quarto = {
 </ul>
 <p>אם אותה אות מופיעה כמה פעמים באותו משפט, מחליפים <strong>את כל ההופעות שלה באותו ערך</strong>. למשל, בהצבת <span class="math inline">\(3\)</span> ב-״<span class="math inline">\(x+x=10\)</span>״ מקבלים ״<span class="math inline">\(3+3=10\)</span>״. אי אפשר להחליף את ה־<span class="math inline">\(x\)</span> הראשון ב־3 ואת השני ב־7: זו אותה אות, ולכן אותה בחירה.</p>
 </div>
-<div class="thmbox thmbox-definition" title="מאילו ערכים מותר לבחור? זהו התחום">
+<div id="box-def-domain" class="thmbox thmbox-definition" title="מאילו ערכים מותר לבחור? זהו התחום">
 <p><strong>הגדרה 1.3.7 — מאילו ערכים מותר לבחור? זהו התחום.</strong></p>
 <p>לאוסף הערכים שמותר להציב קוראים <span class="term"><strong>תחום</strong></span>. למשל, אפשר להחליט שבפעילות מסוימת מותר לבחור רק <span class="math inline">\(2\)</span>, <span class="math inline">\(5\)</span> או <span class="math inline">\(7\)</span>. אז שלושת המספרים האלה הם התחום של הפעילות. בבחירת ערך לצורך ההצבה משתמשים בערכים שבתחום שנקבע.</p>
 <p>משתנה אינו חייב לייצג מספר. במשפט ״___ הגיש את העבודה״ אפשר למלא שם של סטודנט, והתחום יכול להיות אוסף הסטודנטים בקורס. בכל דוגמה צריך לדעת איזה סוג של ערך מותר לשים במקום האות.</p>
 </div>
-<div class="thmbox thmbox-terminology" title="מספרים שלמים">
+<div class="thmbox thmbox-terminology has-helper-art" title="מספרים שלמים">
 <p><strong>מונח חדש — מספרים שלמים.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/terminology.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>בדוגמאות הכלליות הבאות נרשה לבחור כל <span class="term"><strong>מספר שלם</strong></span>: מספרים כמו <span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span>, <span class="math inline">\(2\)</span>, וגם <span class="math inline">\(-1\)</span>, <span class="math inline">\(-2\)</span>, וכן הלאה. מספרים כמו חצי אינם בתחום הזה.</p>
 </div>
 <div id="box-def-open-proposition" class="thmbox thmbox-definition" title="פסוק פתוח">
@@ -1557,15 +1580,17 @@ window.Quarto = {
 <p><span class="term"><strong>פסוק פתוח</strong></span> הוא ביטוי המתאר טענה באמצעות משתנה אחד או יותר שערכיהם ניתנים לבחירה. הצבת ערכים מן התחום במקום המשתנים האלה נותנת פסוק, שאפשר לקבוע אם הוא אמת או שקר.</p>
 </div>
 <p>המשפט שכבר בדקנו, ״המספר ___ גדול מ־5״, נכתב כ־<span class="math inline">\(x&gt;5\)</span> והוא <strong>פסוק פתוח</strong>. ההצבות 7 ו־2 שנתנו קודם משלימות אותו לשני פסוקים שונים.</p>
-<div class="thmbox thmbox-terminology" title="נוסחה">
+<div class="thmbox thmbox-terminology has-helper-art" title="נוסחה">
 <p><strong>מונח חדש — נוסחה.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/terminology.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><span class="term"><strong>נוסחה</strong></span> היא כתיבה מתמטית בעזרת אותיות וסימנים. למשל, <span class="math inline">\(x&gt;5\)</span> כותבת בסימנים את המשפט ״איקס גדול מחמש״. נוכל להתייחס לכתיבה הזאת גם במילה ״ביטוי״.</p>
 </div>
 <section id="sec-naming-open-statements" class="level4" data-number="1.3.3.1">
 <h4 data-number="1.3.3.1" class="anchored" data-anchor-id="sec-naming-open-statements"><span class="header-section-number">1.3.3.1</span> איך נותנים שם לפסוק פתוח?</h4>
 <p><a href="#sec-naming-statements">קודם נתנו שמות לפסוקים שלמים</a>: למשל, <span class="math inline">\(A\)</span> היה השם של ״המקרן עובד״. גם לפסוק פתוח אפשר לתת שם, אבל עכשיו נרצה להזכיר בשם שיש בו משתנה.</p>
-<div class="thmbox thmbox-method" title="קוראים את הסימון צעד אחר צעד">
+<div class="thmbox thmbox-method has-helper-art" title="קוראים את הסימון צעד אחר צעד">
 <p><strong>שיטה 1.3.9 — קוראים את הסימון צעד אחר צעד.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/method.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>נבחר את האות <span class="math inline">\(P\)</span> לשם של הפסוק הפתוח ״<span class="math inline">\(x&gt;5\)</span>״. נכתוב את השם בצורה <span class="math inline">\(P(x)\)</span> כדי להזכיר שהמשפט כולל את המשתנה <span class="math inline">\(.x\)</span> בדוגמה הזאת, <span class="math inline">\(P(x)\)</span> הוא קיצור של ״<span class="math inline">\(x&gt;5\)</span>״.</p>
 <p>קוראים את הסימון ״פי של איקס״:</p>
 <ul>
@@ -1677,8 +1702,9 @@ window.Quarto = {
 <p>נסו על הנייר: הציבו 7 ואחר כך 2 במשפט ״x גדול מ־5״. במשפט ״x + y = 10״ הציבו תחילה רק x = 3: איזו אות עדיין נשארה? לבסוף, הציבו x = 5 במשפט ״x + x = 10״. זכרו להחליף את שתי ההופעות של x.</p>
 </div>
 </div>
-<div class="thmbox thmbox-warning" title="ערך שלא בחרנו לעומת עובדה שעוד לא בדקנו">
+<div class="thmbox thmbox-warning has-helper-art" title="ערך שלא בחרנו לעומת עובדה שעוד לא בדקנו">
 <p><strong>טעות נפוצה — ערך שלא בחרנו לעומת עובדה שעוד לא בדקנו.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/warning.svg" alt="" aria-hidden="true" width="56" height="56">
 <ul>
 <li>במשפט על הכיסאות כבר נקבעו החדר והמועד. יש טענה מסוימת, גם אם איננו יודעים אם היא נכונה.</li>
 <li>ב־<span class="math inline">\(x&gt;5\)</span> עדיין צריך לבחור לאיזה מספר מתייחסים. זו בחירה שחסרה בביטוי, ולא עובדה שטרם ביררנו.</li>
@@ -1691,8 +1717,9 @@ window.Quarto = {
 <section id="sec-proposition-check" class="level3" data-number="1.3.4">
 <h3 data-number="1.3.4" class="anchored" data-anchor-id="sec-proposition-check"><span class="header-section-number">1.3.4</span> בודקים שההבדל ברור</h3>
 <p>עכשיו הכרנו פסוקים, שמות של פסוקים ופסוקים פתוחים. בדוגמאות הבאות נבדוק אם כבר נאמר משהו מוגדר שאפשר לומר עליו ״נכון״ או ״שגוי״, אם נשאר משתנה שצריך להציב בו ערך, או אם זו בכלל שאלה או בקשה. לפני הבדיקה נזכיר מה פירוש ״מספר זוגי״, כי נשתמש במושג הזה בדוגמה הראשונה.</p>
-<div id="box-rem-even" class="thmbox thmbox-terminology" data-terms="plural" title="מה פירוש מספר זוגי?">
+<div id="box-rem-even" class="thmbox thmbox-terminology has-helper-art" data-terms="plural" title="מה פירוש מספר זוגי?">
 <p><strong>מונחים חדשים 1.3.13 — מה פירוש מספר זוגי?</strong></p>
+<img class="helper-box-art" src="images/box-helpers/terminology.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>מספר שלם הוא <span class="term"><strong>זוגי</strong></span> אם הוא מתחלק ב־2 בלי שארית. למשל, אפשר לסדר 6 כיסאות בשלושה זוגות בלי להשאיר כיסא לבד. לכן 6 זוגי. ב־7 כיסאות יישאר כיסא אחד בלי בן זוג, ולכן 7 <span class="term"><strong>אי־זוגי</strong></span>.</p>
 <figure class="pair-figure figure">
 <div class="pair-row"><b>6 — שלושה זוגות</b><span class="pair-dots" role="img" aria-label="שש נקודות מסודרות בשלושה זוגות"><span>● ●</span><span>● ●</span><span>● ●</span></span></div>
@@ -1701,8 +1728,9 @@ window.Quarto = {
 </figure>
 <p>גם <span class="math inline">\(0\)</span> זוגי: <span class="math inline">\(0\)</span> חלקי <span class="math inline">\(2\)</span> הוא <span class="math inline">\(0\)</span>, בלי שארית. ההגדרה חלה גם על מספרים שליליים; למשל, <span class="math inline">\(-4\)</span> זוגי כי <span class="math inline">\(-4\)</span> חלקי <span class="math inline">\(2\)</span> הוא המספר השלם <span class="math inline">\(-2\)</span>.</p>
 </div>
-<div class="thmbox thmbox-self-check" title="האם זה פסוק?">
+<div class="thmbox thmbox-self-check has-helper-art" title="האם זה פסוק?">
 <p><strong>בדיקה עצמית — האם זה פסוק?</strong></p>
+<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>בכל דוגמה שאלו קודם אם המשפט הוא פסוק. רק אחר כך, אם הוא פסוק, שאלו אם הוא אמת או שקר. ההסברים מופיעים מתחת לתשובות כדי שאפשר יהיה לקרוא ולבדוק את דרך החשיבה.</p>
 <ol type="1">
 <li>״<span class="math inline">\(7\)</span> הוא מספר זוגי.״</li>
@@ -1753,12 +1781,14 @@ window.Quarto = {
 </div>
 </details>
 </div>
-<div class="thmbox thmbox-terminology" title="פרדוקס">
+<div class="thmbox thmbox-terminology has-helper-art" title="פרדוקס">
 <p><strong>מונח חדש — פרדוקס.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/terminology.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><span class="term"><strong>פרדוקס</strong></span> הוא מצב שבו חשיבה שנראית סבירה מובילה לקושי או לסתירה. הדוגמה האחרונה נקראת ״פרדוקס השקרן״.</p>
 </div>
-<div class="thmbox thmbox-summary" title="פסוקים, שמות והצבות">
+<div class="thmbox thmbox-summary has-helper-art" title="פסוקים, שמות והצבות">
 <p><strong>סיכום — פסוקים, שמות והצבות.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/summary.svg" alt="" aria-hidden="true" width="56" height="56">
 <ul>
 <li><strong>פסוק</strong> הוא טענה שהיא אמת (<span class="math inline">\(T\)</span>) או שקר (<span class="math inline">\(F\)</span>), גם אם איננו יודעים איזו מהאפשרויות נכונה. שאלה ובקשה אינן פסוקים.</li>
 <li><strong>שם כמו <span class="math inline">\(A\)</span></strong> מייצג פסוק שלם. האותיות מאפשרות להתמקד ביחסים בין ערכי האמת ולהניח בצד את תוכן הפסוקים — זו <strong>הפשטה</strong>.</li>
@@ -1774,8 +1804,9 @@ window.Quarto = {
 <h3 data-number="1.4.1" class="anchored" data-anchor-id="sec-combining-statements"><span class="header-section-number">1.4.1</span> מחברים פסוקים</h3>
 <p><span id="sec-truth-tables"></span></p>
 <p>בדרך כלל נרצה לעשות יותר מאשר לבדוק פסוק אחד: לחבר כמה פסוקים, לבדוק איך ערכי האמת שלהם קובעים את ערך האמת של המשפט כולו, ולהסיק מסקנות מן הנתונים. כך נוכל גם לבדוק אם מסקנה בטיעון אכן נובעת מן ההנחות שלו.</p>
-<div class="thmbox thmbox-terminology" data-terms="plural" title="פסוק מורכב וקשר לוגי">
+<div class="thmbox thmbox-terminology has-helper-art" data-terms="plural" title="פסוק מורכב וקשר לוגי">
 <p><strong>מונחים חדשים — פסוק מורכב וקשר לוגי.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/terminology.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>נניח ש־<span class="math inline">\(A\)</span> הוא הפסוק ״המחשב טעון״ ו־<span class="math inline">\(B\)</span> הוא הפסוק ״יש חיבור לרשת אלחוטית״. אפשר לשאול על כל אחד מהם בנפרד, ואפשר לחבר אותם: ״המחשב טעון <strong>וגם</strong> יש חיבור לרשת אלחוטית״. קיבלנו <span class="term"><strong>פסוק מורכב</strong></span>, שבנוי משני פסוקים בעזרת הקשר ״וגם״.</p>
 <p>המילים ״לא״, ״וגם״ ו״או״ נקראות <span class="term"><strong>קשרים לוגיים</strong></span>. לכל קשר יש כלל שקובע את ערך האמת של הפסוק המורכב מתוך ערכי האמת של החלקים. למשל, כדי שהמשפט עם ״וגם״ יהיה נכון, שני החלקים שלו צריכים להיות נכונים. בהמשך נכיר גם את הקשר ״אם… אז…״ ונשתמש בו כדי לנסח טיעונים.</p>
 </div>
@@ -1817,8 +1848,9 @@ window.Quarto = {
 <h4 data-number="1.4.2.1" class="anchored" data-anchor-id="משחק-של-אור-ואמת"><span class="header-section-number">1.4.2.1</span> משחק של אור ואמת</h4>
 <p>בלוגיקה חשוב לפעול בעקביות: אותם ערכי אמת ואותו קשר צריכים לתת תמיד אותה תוצאה. כשבודקים טיעון, השאלה היא אם המסקנה נובעת מן הנתונים לפי הכללים, ולא רק אם היא נשמעת סבירה.</p>
 <p>נמחיש את הכללים בעזרת מעגלים חשמליים ומנורות. כמו שבמעגל מצב המתגים והחיבורים קובע אם המנורה תידלק, כך בפסוק מורכב ערכי האמת והקשרים קובעים את התוצאה. <span class="key-rule"><strong>אור ייצג אמת; מנורה כבויה תייצג שקר.</strong></span></p>
-<div class="thmbox thmbox-components" title="איך קוראים את המעגל?">
+<div class="thmbox thmbox-components has-helper-art" title="איך קוראים את המעגל?">
 <p><strong>רכיבי המשחק — איך קוראים את המעגל?</strong></p>
+<img class="helper-box-art" src="images/box-helpers/components.svg" alt="" aria-hidden="true" width="56" height="56">
 <div class="component-figures">
 <figure class="figure">
 <svg viewbox="0 0 180 90" role="img" aria-label="מתג לבחירת אמת או שקר, כאן במצב אמת">
@@ -1849,8 +1881,9 @@ window.Quarto = {
 <p>במשחקי הניחוש, <strong>?</strong> מכסה את המנורה עד שתענו. הוא מציין שמצב המנורה מוסתר, ולא שהיא כבויה.</p>
 <p>אם אותה אות מופיעה בכמה מגעים, כולם פועלים לפי אותה בחירה.</p>
 </div>
-<div class="thmbox thmbox-components" title="רכיב השלילה — NOT">
+<div class="thmbox thmbox-components has-helper-art" title="רכיב השלילה — NOT">
 <p><strong>רכיבי המשחק — רכיב השלילה — NOT.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/components.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><span class="term"><strong>NOT</strong></span> פירושו ״לא״: הרכיב הופך את התוצאה שמקבל — אמת לשקר, ושקר לאמת.</p>
 <svg viewbox="0 0 440 125" role="img" aria-label="רכיב NOT הופך קלט T לפלט F, וקלט F לפלט T" style="display:block;width:100%;max-width:440px;margin:auto" dir="ltr">
 <g font-family="Arial,sans-serif" font-size="21" text-anchor="middle" direction="ltr">
@@ -1870,8 +1903,9 @@ window.Quarto = {
 <p><strong>בשלב הראשון:</strong> המתג והמנורה מייצגים את ״המקרן עובד״. <strong>בשלב השני:</strong> המתג מייצג את ״יש פקק בכביש״, והמנורה את ״אין פקק בכביש״.</p>
 <iframe class="widget-frame" src="games/circuit/index.html?levels=single,not&amp;embed=1" loading="lazy" title="משחק: הדליקו את המנורה, שלילה"></iframe>
 </div>
-<div id="box-rem-prime" class="thmbox thmbox-terminology" data-terms="plural" title="מה פירוש מספר ראשוני?">
+<div id="box-rem-prime" class="thmbox thmbox-terminology has-helper-art" data-terms="plural" title="מה פירוש מספר ראשוני?">
 <p><strong>מונחים חדשים 1.4.3 — מה פירוש מספר ראשוני?</strong></p>
+<img class="helper-box-art" src="images/box-helpers/terminology.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>ראשית, כשאומרים שמספר <span class="term"><strong>מתחלק</strong></span> במספר אחר, מתכוונים שהחלוקה נותנת מספר שלם, בלי שארית. למשל, 6 מתחלק ב־2 כי <span class="math inline">\(6=2\cdot3\)</span>. הנקודה <span class="math inline">\(\cdot\)</span> מסמנת כפל. לעומת זאת, 5 אינו מתחלק ב־2: אפשר ליצור שני זוגות, אבל נשאר אחד. כשמספר שלם נתון מתחלק במספר שלם אחר בלי שארית, למספר שבו חילקנו קוראים <span class="term"><strong>מחלק</strong></span> של המספר הנתון. למשל, 2 הוא מחלק של 6, כי החלוקה של 6 ב־2 נותנת 3 בלי שארית. כאן נעסוק במחלקים חיוביים.</p>
 <p><span class="term"><strong>מספר ראשוני</strong></span> הוא מספר שלם <strong>גדול מ־1</strong>, שמתחלק בלי שארית רק ב־1 ובעצמו, מבין המספרים השלמים החיוביים. <span class="term"><strong>חיובי</strong></span> פירושו גדול מאפס.</p>
 <ul>
@@ -2080,8 +2114,9 @@ window.Quarto = {
 <p><strong>משחק 1.4.12 — האם לפחות חלק אחד נכון?</strong></p>
 <iframe class="widget-frame" src="games/circuit/index.html?level=or-predict&amp;embed=1" loading="lazy" title="משחק: הדליקו את המנורה, או"></iframe>
 </div>
-<div class="thmbox thmbox-warning" title="ה״או״ של הלוגיקה כולל גם את האפשרות ששני החלקים אמת">
+<div class="thmbox thmbox-warning has-helper-art" title="ה״או״ של הלוגיקה כולל גם את האפשרות ששני החלקים אמת">
 <p><strong>שימו לב — ה״או״ של הלוגיקה כולל גם את האפשרות ששני החלקים אמת.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/warning.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>ביומיום המשמעות של ״או״ תלויה בהקשר. לפעמים הכוונה היא <strong>מפרידה</strong>: אחד מהשניים, אבל לא שניהם. ״תה או קפה?״ פירושו ״בחרו אחד״. ה״או״ של הלוגיקה נקרא <span class="term"><strong>או כולל</strong></span>: הוא אמת גם כששני החלקים מתקיימים. מכאן הבדיחה הידועה: שואלים לוגיקן בקפטריה ״תה או קפה?״, והוא עונה: ״כן.״ מבחינתו נשאלה שאלת כן/לא: האם הוא רוצה (תה) או (קפה)? והתשובה היא כן.</p>
 </div>
 <div id="box-q-translate-or" class="thmbox thmbox-question" title="מספיקה אחת משתי האפשרויות">
@@ -2196,8 +2231,9 @@ window.Quarto = {
 </div>
 </details>
 </div>
-<div class="thmbox thmbox-self-check">
+<div class="thmbox thmbox-self-check has-helper-art">
 <p><strong>בדיקה עצמית.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>״<span class="math inline">\(2\)</span> זוגי, <strong>או</strong> <span class="math inline">\(3\)</span> זוגי, אבל לא שניהם.״ אמת או שקר?</p>
 <div class="tf-quiz" data-correct="true">
 <button class="tf-opt" data-val="true">אמת</button>
@@ -2246,8 +2282,9 @@ window.Quarto = {
 <p><strong>משחק 1.4.19 — אין קפה. מתי המשפט עדיין נכון?</strong></p>
 <iframe class="widget-frame" src="games/circuit/index.html?level=locked&amp;embed=1" loading="lazy" title="משחק: פסוק מורכב וסוגריים"></iframe>
 </div>
-<div class="thmbox thmbox-warning" title="על מה פועל ה״לא״?">
+<div class="thmbox thmbox-warning has-helper-art" title="על מה פועל ה״לא״?">
 <p><strong>שימו לב — על מה פועל ה״לא״?</strong></p>
+<img class="helper-box-art" src="images/box-helpers/warning.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>השלילה פועלת רק על מה שבא <strong>מיד אחריה</strong>: <span class="math inline">\(\neg A \land B\)</span> פירושו <span class="math inline">\(,(\neg A) \land B\)</span> ולא <span class="math inline">\(.\neg(A \land B)\)</span> אלה שני פסוקים שונים (בדקו בטבלה, למשל עם <span class="math inline">\(A=T\)</span> ו־<span class="math inline">\(B=F\)</span>). ובין <span class="math inline">\(\land\)</span> ל־<span class="math inline">\(\lor\)</span> נכתוב <strong>תמיד</strong> סוגריים, כדי שלא יהיה ספק.</p>
 </div>
 <div id="box-q-translate-not-both" class="thmbox thmbox-question" title="לא שניהם — מה בדיוק שוללים?">
@@ -2308,8 +2345,9 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div class="thmbox thmbox-summary" title="קשרים לוגיים וסוגריים">
+<div class="thmbox thmbox-summary has-helper-art" title="קשרים לוגיים וסוגריים">
 <p><strong>סיכום — קשרים לוגיים וסוגריים.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/summary.svg" alt="" aria-hidden="true" width="56" height="56">
 <ul>
 <li><strong>שלילה</strong> <span class="math inline">\(\neg A\)</span> הופכת את ערך האמת של <span class="math inline">\(A\)</span>.</li>
 <li><strong>וגם</strong> <span class="math inline">\(A\land B\)</span> אמת כששני החלקים אמת; <strong>או</strong> <span class="math inline">\(A\lor B\)</span> אמת כשלפחות אחד מהם אמת, כולל שניהם.</li>
@@ -2341,8 +2379,9 @@ window.Quarto = {
 <section id="כמה-שורות-יש-בטבלה" class="level3" data-number="1.5.2">
 <h3 data-number="1.5.2" class="anchored" data-anchor-id="כמה-שורות-יש-בטבלה"><span class="header-section-number">1.5.2</span> כמה שורות יש בטבלה?</h3>
 <p>לפסוק פשוט אחד יש שני ערכי אמת אפשריים: <span class="math inline">\(T\)</span> או <span class="math inline">\(F\)</span>. לשני פסוקים פשוטים יש <span class="math inline">\(2 \cdot 2 = 4\)</span> צירופים: שניהם אמת, הראשון אמת והשני שקר, הראשון שקר והשני אמת, ושניהם שקר. כל פסוק פשוט חדש, שמסומן באות נוספת, <strong>מכפיל</strong> את מספר השורות, כי לכל שורה שכבר כתבנו צריך לבדוק גם את האפשרות שהפסוק הנוסף אמת וגם את האפשרות שהוא שקר. לשלושה פסוקים פשוטים יש <span class="math inline">\(2 \cdot 2 \cdot 2 = 8\)</span> צירופים. באופן כללי:</p>
-<div class="thmbox thmbox-terminology" title="מה פירוש הסימון של חזקה?">
+<div class="thmbox thmbox-terminology has-helper-art" title="מה פירוש הסימון של חזקה?">
 <p><strong>מונח חדש 1.5.2 — מה פירוש הסימון של חזקה?</strong></p>
+<img class="helper-box-art" src="images/box-helpers/terminology.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><span class="term"><strong>חזקה</strong></span> היא דרך קצרה לכתוב כפל חוזר. למשל, <span class="math inline">\(2^3\)</span> נקרא ״שתיים בחזקת שלוש״, ופירושו <span class="math inline">\(2\cdot2\cdot2=8\)</span>. המספר הקטן למעלה אומר כמה פעמים 2 מופיע במכפלה. הוא אינו אומר להכפיל 2 ב־3.</p>
 <p>כשכותבים <span class="math inline">\(2^n\)</span>, האות <span class="math inline">\(n\)</span> מציינת כמה פעמים מופיע הגורם 2. כאן <span class="math inline">\(n\)</span> הוא מספר הפסוקים הפשוטים השונים, המסומנים באותיות שונות: אם יש שלושה כאלה, מציבים <span class="math inline">\(n=3\)</span> ומקבלים שמונה שורות.</p>
 <p>כדאי להכיר את החזקות הראשונות של 2. בכל עלייה של 1 במעריך, התוצאה מוכפלת ב־2:</p>
@@ -2399,8 +2438,9 @@ window.Quarto = {
 <p>למשל, לחמישה פסוקים פשוטים שונים יש <span class="math inline">\(2^5=32\)</span> צירופי ערכי אמת, ולעשרה יש <span class="math inline">\(2^{10}=1024\)</span>. אין צורך להתחיל את החישוב מחדש בכל פעם: מכפילים שוב ב־2.</p>
 <p>בהמשך נראה גם <span class="math inline">\(x^2\)</span>, שנקרא ״איקס בריבוע״: זה <span class="math inline">\(x\cdot x\)</span>. למשל, <span class="math inline">\(3^2=3\cdot3=9\)</span>.</p>
 </div>
-<div class="thmbox thmbox-key-point thmicon-rule" data-icon="rule">
+<div class="thmbox thmbox-key-point has-helper-art thmicon-rule" data-icon="rule">
 <p><strong>כלל.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/key-point.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>אם הפסוק המורכב בנוי מ־<span class="math inline">\(n\)</span> פסוקים פשוטים שונים, המסומנים באותיות שונות, טבלת האמת שלו כוללת <span class="math inline">\(2^n\)</span> שורות. <span class="key-rule"><strong>סופרים אותיות שונות, ולא את מספר הפעמים שהן מופיעות.</strong></span> הופעה נוספת של אותה אות אינה מוסיפה אפשרות בחירה חדשה: בכל שורה משתמשים באותו ערך בכל המקומות שבהם היא מופיעה.</p>
 </div>
 <p>כדי שלא נשכח אף שורה, נכתוב תמיד את השורות <strong>באותו סדר</strong>: העמודה הראשונה מתחלפת הכי לאט, העמודה האחרונה הכי מהר, וכל עמודה מתחילה ב־<span class="math inline">\(.T\)</span> לשלושה פסוקים:</p>
@@ -2601,8 +2641,9 @@ window.Quarto = {
 <section id="sec-evaluate" class="level3" data-number="1.5.5">
 <h3 data-number="1.5.5" class="anchored" data-anchor-id="sec-evaluate"><span class="header-section-number">1.5.5</span> מתרגלים: אמת או שקר?</h3>
 <p>כדי לחשב ערך אמת של פסוק מורכב, מחשבים קודם את החלקים הפנימיים ביותר, ומתקדמים החוצה, בדיוק כמו בטבלה. נסו:</p>
-<div class="thmbox thmbox-self-check">
+<div class="thmbox thmbox-self-check has-helper-art">
 <p><strong>בדיקה עצמית.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
 <ol type="1">
 <li>״<span class="math inline">\(2\)</span> זוגי <strong>וגם</strong> <span class="math inline">\(2\)</span> ראשוני.״</li>
 </ol>
@@ -2652,8 +2693,9 @@ window.Quarto = {
 <div class="says robot">
 <p>״נתון <span class="math inline">\(A=T\)</span> ו־<span class="math inline">\(.B=F\)</span> ערך האמת של <span class="math inline">\(\neg A \land B\)</span> הוא <span class="math inline">\(,T\)</span> כי <span class="math inline">\(A \land B\)</span> שקר, והשלילה של שקר היא אמת.״</p>
 </div>
-<div class="thmbox thmbox-self-check" title="איפה הרובוט טעה?">
+<div class="thmbox thmbox-self-check has-helper-art" title="איפה הרובוט טעה?">
 <p><strong>בדיקה עצמית — איפה הרובוט טעה?</strong></p>
+<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>האם הרובוט צודק?</p>
 <div class="tf-quiz" data-correct="false">
 <button class="tf-opt" data-val="true">צודק</button>
@@ -2662,8 +2704,9 @@ window.Quarto = {
 <div class="tf-why"><b>הרובוט טועה.</b> השלילה ב-\(\neg A \land B\) פועלת רק על \(A\), ולכן \(\neg A \land B = F \land F = F\). הרובוט חישב בעצם את \(\neg(A \land B)\), שהוא פסוק אחר, וערכו באמת \(T\) כאן.</div>
 </div>
 </div>
-<div class="thmbox thmbox-self-check" title="עוצרים לחישוב: מציבים ערכי אמת">
+<div class="thmbox thmbox-self-check has-helper-art" title="עוצרים לחישוב: מציבים ערכי אמת">
 <p><strong>בדיקה עצמית — עוצרים לחישוב: מציבים ערכי אמת.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>נתון <span class="math inline">\(,A=T\)</span> <span class="math inline">\(B=F\)</span> ו־<span class="math inline">\(.C=T\)</span> מה ערך האמת?</p>
 <ol type="1">
 <li><span class="math inline">\(\neg A \lor B\)</span></li>
@@ -2693,8 +2736,9 @@ window.Quarto = {
 <div class="tf-why">\(\neg B = T\), ולכן בתוך הסוגריים \(T \land T = T\), והשלילה נותנת \(F\).</div>
 </div>
 </div>
-<div class="thmbox thmbox-summary" title="טבלאות אמת וחישוב ערכי אמת">
+<div class="thmbox thmbox-summary has-helper-art" title="טבלאות אמת וחישוב ערכי אמת">
 <p><strong>סיכום — טבלאות אמת וחישוב ערכי אמת.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/summary.svg" alt="" aria-hidden="true" width="56" height="56">
 <ul>
 <li>עבור <strong><span class="math inline">\(n\)</span> אותיות שונות</strong> יש <span class="math inline">\(2^n\)</span> שורות. אות שחוזרת בנוסחה אינה מוסיפה שורות.</li>
 <li>כותבים את <strong>כל צירופי ערכי האמת</strong>, בלי להשמיט צירוף ובלי לחזור עליו.</li>
@@ -2801,8 +2845,9 @@ window.Quarto = {
 <section id="sec-full-signal" class="level3" data-number="1.6.3">
 <h3 data-number="1.6.3" class="anchored" data-anchor-id="sec-full-signal"><span class="header-section-number">1.6.3</span> הפסוק ושלילתו באותו מעגל</h3>
 <p>נוסיף למעגל מסלול עבור <strong>שלילת הפסוק</strong>. כך נראה באותו ציור גם את הפסוק וגם את שלילתו. במקום מנורה אחת נשתמש ברמזור בעל שני אורות.</p>
-<div class="thmbox thmbox-components" title="איך קוראים את הרמזור?">
+<div class="thmbox thmbox-components has-helper-art" title="איך קוראים את הרמזור?">
 <p><strong>רכיבי המשחק — איך קוראים את הרמזור?</strong></p>
+<img class="helper-box-art" src="images/box-helpers/components.svg" alt="" aria-hidden="true" width="56" height="56">
 <figure class="signal-legend figure">
 <svg viewbox="0 0 220 105" role="img" aria-label="ירוק דולק: הפסוק אמת. אדום דולק: הפסוק שקר ושלילתו אמת." style="display:block;width:100%;max-width:300px;margin:auto">
 <rect x="38.5" y="9" width="33" height="66" rx="7.5" fill="#1f2937"></rect><circle cx="55" cy="26.25" r="12.600000000000001" fill="#3f1d1d"></circle><circle cx="55" cy="19.35" r="2.25" fill="#4b5563"></circle><path d="M55 22.35 V28.65 M54.85 28.65 L53.35 34.65 M55.15 28.65 L56.65 34.65 M55 23.25 L52.15 28.05 M55 23.25 L57.85 28.05" stroke="#4b5563" stroke-width="2.4000000000000004" stroke-linecap="round" fill="none"></path><circle cx="55" cy="57.75" r="17.400000000000002" fill="#bbf7d0" opacity=".85" class="sig-glow"></circle><circle cx="55" cy="57.75" r="12.600000000000001" fill="#22c55e"></circle><circle cx="56.05" cy="50.85" r="2.25" fill="#052e16"></circle><path d="M55.6 53.85 L54.4 59.85 L51.1 66.15 M54.4 59.85 L56.8 62.55 L57.4 66.45 M55.3 55.05 L58.6 58.35 M55.3 55.05 L52 57.45" stroke="#052e16" stroke-width="2.4000000000000004" stroke-linecap="round" fill="none"></path>
@@ -2853,8 +2898,9 @@ window.Quarto = {
 </div>
 </details>
 </div>
-<div class="thmbox thmbox-self-check">
+<div class="thmbox thmbox-self-check has-helper-art">
 <p><strong>בדיקה עצמית.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>מה השלילה של ״אני אוהב תה <strong>או</strong> קפה״?</p>
 <div class="tf-quiz" data-correct="false">
 <button class="tf-opt" data-val="true">״אני לא אוהב תה או לא אוהב קפה״</button>
@@ -2890,8 +2936,9 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div class="thmbox thmbox-summary" title="שקילות ושלילת משפט מורכב">
+<div class="thmbox thmbox-summary has-helper-art" title="שקילות ושלילת משפט מורכב">
 <p><strong>סיכום — שקילות ושלילת משפט מורכב.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/summary.svg" alt="" aria-hidden="true" width="56" height="56">
 <ul>
 <li><strong>שקילות לוגית</strong> פירושה אותו ערך אמת בכל הצבה. בטבלה משותפת, עמודות התוצאה זהות.</li>
 <li>כדי להראות שאין שקילות, מספיקה <strong>שורה אחת שבה התוצאות שונות</strong>. כדי להוכיח שקילות בטבלת אמת, צריך לבדוק את כל השורות.</li>
@@ -2944,8 +2991,9 @@ window.Quarto = {
 </table>
 </div>
 <p>בשורה השנייה יש כרטיס, אבל השומר אינו מכניס את בעל הכרטיס. זהו המצב היחיד שמפר את ההבטחה. בשתי השורות האחרונות אין כרטיס. ההבטחה אינה קובעת מה יעשה השומר במקרה הזה, ולכן אף אחת מהן אינה מפרה אותה. לפי הגדרת הגרירה, בשתיהן ערך האמת הוא <span class="math inline">\(T\)</span>.</p>
-<div id="box-key-implication-not-cause" class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="החץ הלוגי: ערך אמת, הסקה וסיבה">
+<div id="box-key-implication-not-cause" class="thmbox thmbox-key-point has-helper-art thmicon-idea" data-icon="idea" title="החץ הלוגי: ערך אמת, הסקה וסיבה">
 <p><strong>חשוב לזכור — החץ הלוגי: ערך אמת, הסקה וסיבה.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/key-point.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><span class="key-rule"><strong>הסימן <span class="math inline">\(\to\)</span> אינו אומר ״גורם ל־״.</strong></span> כשאנחנו יודעים שהכלל <span class="math inline">\(A \to B\)</span> נכון, ויודעים גם ש־<span class="math inline">\(A\)</span> נכון, אפשר להסיק ש־<span class="math inline">\(B\)</span> נכון. זהו <span class="term"><strong>היסק דדוקטיבי</strong></span>: מסקנה שמתחייבת מן הנתונים, ולא ניחוש לגבי מה גרם למה.</p>
 <p>למשל, לפעמים רואים תוצאה ומסיקים ממנה מה הייתה הסיבה. במקרה כזה כיוון ההסקה הפוך מכיוון הסיבה והתוצאה. החץ הלוגי אינו מתאר סדר זמנים, וגם אינו אומר שהדבר שמשמאל התרחש ראשון.</p>
 <p>צריך להבחין גם בין <strong>פסוק עם גרירה</strong>, שאת ערכו מחשבים בטבלה, לבין <strong>שימוש בגרירה כדי להסיק מסקנה</strong>: לשימוש הזה צריך גם את הכלל <span class="math inline">\(A \to B\)</span> וגם את הנתון <span class="math inline">\(A\)</span>. הסימן לבדו אינו הוכחה.</p>
@@ -2973,8 +3021,9 @@ window.Quarto = {
 </div>
 </details>
 </div>
-<div id="box-check-false-implies-true" class="thmbox thmbox-self-check" title="רגע, גם זה נחשב גרירה אמיתית?">
+<div id="box-check-false-implies-true" class="thmbox thmbox-self-check has-helper-art" title="רגע, גם זה נחשב גרירה אמיתית?">
 <p><strong>בדיקה עצמית — רגע, גם זה נחשב גרירה אמיתית?</strong></p>
+<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>האם <strong>״אם <span class="math inline">\(2 \ne 2\)</span>, אז <span class="math inline">\(5=5\)</span>״</strong> הוא פסוק נכון? הסימן <span class="math inline">\(\ne\)</span> נקרא ״אינו שווה״.</p>
 <p><span class="math display">\[ (2 \ne 2) \to (5=5) \]</span></p>
 <p>לפני שבוחרים, בדקו כל חלק בנפרד: האם <span class="math inline">\(2 \ne 2\)</span> נכון? האם <span class="math inline">\(5=5\)</span> נכון? עכשיו חפשו את השורה המתאימה בטבלת הגרירה.</p>
@@ -3086,12 +3135,14 @@ window.Quarto = {
 <p>אפשר לתאר את אותו כלל בעזרת ״לא״ ו״או״: ההבטחה אינה מופרת כאשר אין כרטיס, או כאשר השומר מכניס את האדם. לכן <span class="math inline">\(A\to B\)</span> שקול ל־<span class="math inline">\(\neg A\lor B\)</span>.</p>
 <p><a href="#box-game-implies">המנורה במשחק ״הבטחה של השומר״</a> ממחישה את הכלל: היא דולקת במצבים שבהם ההבטחה אינה מופרת, וכבויה במצב היחיד שבו היא מופרת.</p>
 <p>במעגל יש <strong>שני מסלולים במקביל</strong>: באחד מגע <span class="math inline">\(\neg A\)</span>, שנסגר כש־<span class="math inline">\(A\)</span> שקר; ובשני מגע <span class="math inline">\(B\)</span>, שנסגר כש־<span class="math inline">\(B\)</span> אמת. מספיק שאחד המסלולים סגור כדי שהמנורה תידלק. לכן החיבור במקביל מייצג בדיוק את <strong><span class="math inline">\(\neg A\lor B\)</span></strong> — ״לא <span class="math inline">\(A\)</span>, או <span class="math inline">\(B\)</span>״.</p>
-<div class="thmbox thmbox-key-point thmicon-rule" data-icon="rule">
+<div class="thmbox thmbox-key-point has-helper-art thmicon-rule" data-icon="rule">
 <p><strong>כלל.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/key-point.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><span class="math display">\[.A \to B \;\equiv\; \neg A \lor B\]</span> ״אם יש לאדם כרטיס, השומר מכניס אותו״ אומר בדיוק ״אין לאדם כרטיס, או שהשומר מכניס אותו״.</p>
 </div>
-<div class="thmbox thmbox-self-check" title="מחשבים ערך אמת של גרירה">
+<div class="thmbox thmbox-self-check has-helper-art" title="מחשבים ערך אמת של גרירה">
 <p><strong>בדיקה עצמית — מחשבים ערך אמת של גרירה.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>נתון <span class="math inline">\(,A=T\)</span> <span class="math inline">\(B=F\)</span> ו־<span class="math inline">\(.C=T\)</span> מה ערך האמת של <span class="math inline">\(B \to (A \land \neg C)\)</span>?</p>
 <div class="tf-quiz" data-correct="true">
 <button class="tf-opt" data-val="true">אמת</button>
@@ -3123,8 +3174,9 @@ window.Quarto = {
 <p><strong>משחק 1.7.8 — הפוך על הפוך.</strong></p>
 <iframe class="widget-frame" src="games/circuit/index.html?levels=converse,contrapositive&amp;embed=1" loading="lazy" title="משחק: היפוך וגרירה נגדית"></iframe>
 </div>
-<div class="thmbox thmbox-key-point thmicon-rule" data-icon="rule">
+<div class="thmbox thmbox-key-point has-helper-art thmicon-rule" data-icon="rule">
 <p><strong>כלל.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/key-point.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>הגרירה הנגדית <strong>שקולה</strong> לגרירה: <span class="math inline">\(.(A \to B) \equiv (\neg B \to \neg A)\)</span> ההיפוך <strong>אינו</strong> שקול לה: מ״אם יורד גשם אז הכביש רטוב״ לא נובע ״אם הכביש רטוב אז יורד גשם״.</p>
 </div>
 <div id="box-q-translate-implication" class="thmbox thmbox-question" title="מנסחים גרירה">
@@ -3167,8 +3219,9 @@ window.Quarto = {
 <section id="sec-iff" class="level3" data-number="1.7.3">
 <h3 data-number="1.7.3" class="anchored" data-anchor-id="sec-iff"><span class="header-section-number">1.7.3</span> אם ורק אם</h3>
 <p>הביטוי <span class="term"><strong>אם ורק אם</strong></span> אומר ששני כיווני הגרירה מתקיימים: גם ״אם <span class="math inline">\(A\)</span> אז <span class="math inline">\(B\)</span>״ וגם ״אם <span class="math inline">\(B\)</span> אז <span class="math inline">\(A\)</span>״. למשל, אם הכלל בקורס הוא ״עוברים אם ורק אם הציון הוא לפחות <span class="math inline">\(60\)</span>״, יש בו שתי דרישות: ציון של <span class="math inline">\(60\)</span> ומעלה מבטיח מעבר, ומעבר מחייב ציון של <span class="math inline">\(60\)</span> ומעלה. ״לפחות <span class="math inline">\(60\)</span>״ כולל גם את <span class="math inline">\(60\)</span> עצמו.</p>
-<div class="thmbox thmbox-terminology" title="אמ״מ">
+<div class="thmbox thmbox-terminology has-helper-art" title="אמ״מ">
 <p><strong>מונח חדש — אמ״מ.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/terminology.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><span class="term"><strong>אמ״מ</strong></span> הוא קיצור של <strong>״אם ורק אם״</strong>. למשל, ״<span class="math inline">\(A\)</span> אמ״מ <span class="math inline">\(B\)</span>״ הוא אותו פסוק כמו ״<span class="math inline">\(A\)</span> אם ורק אם <span class="math inline">\(B\)</span>״, ומסמנים אותו <span class="math inline">\(A\leftrightarrow B\)</span>.</p>
 </div>
 <div id="box-def-iff" class="thmbox thmbox-definition">
@@ -3212,8 +3265,9 @@ window.Quarto = {
 </tbody>
 </table>
 </div>
-<div class="thmbox thmbox-key-point" title="שני סימנים דומים — שתי שאלות שונות">
+<div class="thmbox thmbox-key-point has-helper-art" title="שני סימנים דומים — שתי שאלות שונות">
 <p><strong>חשוב לזכור — שני סימנים דומים — שתי שאלות שונות.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/key-point.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><span class="key-rule"><strong>הקשר <span class="math inline">\(\leftrightarrow\)</span> שייך לפסוק שאת ערכו מחשבים. הסימן <span class="math inline">\(\equiv\)</span> מציין שקילות בין נוסחאות בכל המצבים.</strong></span></p>
 <p>כשמחשבים את <span class="math inline">\(A\leftrightarrow B\)</span> בשורה מסוימת בטבלה, שואלים: האם <span class="math inline">\(A\)</span> ו־<span class="math inline">\(B\)</span> מקבלים אותו ערך <strong>בשורה הזאת</strong>? למשל, בשורה <span class="math inline">\(A=T\)</span>, <span class="math inline">\(B=T\)</span> התשובה היא כן.</p>
 <p>כשכותבים <span class="math inline">\(A\equiv B\)</span>, טוענים דבר חזק יותר: הערכים שלהם זהים <strong>בכל שורה</strong>. במקרה של שתי אותיות שונות, הטענה הזאת אינה נכונה: יש גם שורה שבה <span class="math inline">\(A=T\)</span> ו־<span class="math inline">\(B=F\)</span>. הסכמה בשורה אחת אינה מוכיחה שקילות.</p>
@@ -3243,8 +3297,9 @@ window.Quarto = {
 <div class="tf-why"><b>הפעם כן.</b> בכלל השני התנאי ״הילד סיים״ נכון, אבל התוצאה שהובטחה, ״אמא לא תאכל את הממתק״, שגויה. לכן הכלל השני הופר. אין להוסיף כלל שני כזה אוטומטית בכל פעם ששומעים ״אם… אז…״.</div>
 </div>
 </div>
-<div class="thmbox thmbox-self-check">
+<div class="thmbox thmbox-self-check has-helper-art">
 <p><strong>בדיקה עצמית.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
 <ol type="1">
 <li>״<strong>אם</strong> <span class="math inline">\(2&gt;3\)</span>, <strong>אז</strong> <span class="math inline">\(.5=6\)</span>״</li>
 </ol>
@@ -3300,8 +3355,9 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div class="thmbox thmbox-summary" title="גרירה ואם ורק אם">
+<div class="thmbox thmbox-summary has-helper-art" title="גרירה ואם ורק אם">
 <p><strong>סיכום — גרירה ואם ורק אם.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/summary.svg" alt="" aria-hidden="true" width="56" height="56">
 <ul>
 <li><strong><span class="math inline">\(A\to B\)</span> שקר רק כש־<span class="math inline">\(A\)</span> אמת ו־<span class="math inline">\(B\)</span> שקר.</strong> בכל שאר המצבים הגרירה אמת.</li>
 <li><strong>החץ אינו מציין סיבה ותוצאה</strong>, ואפשר לחבר בו גם פסוקים בנושאים לא קשורים. כאשר <span class="math inline">\(A\to B\)</span> ו־<span class="math inline">\(A\)</span> נכונים, אפשר להסיק שגם <span class="math inline">\(B\)</span> נכון.</li>
@@ -3321,13 +3377,15 @@ window.Quarto = {
 <section id="sec-formalization" class="level3" data-number="1.8.1">
 <h3 data-number="1.8.1" class="anchored" data-anchor-id="sec-formalization"><span class="header-section-number">1.8.1</span> הצרנה: מן הניסוח במילים אל הסימנים</h3>
 <p>כבר נתנו לפסוקים שמות וכתבנו משפטים בעזרת קשרים לוגיים. לתהליך הזה יש שם: <strong>הצרנה</strong>.</p>
-<div class="thmbox thmbox-terminology" title="הצרנה">
+<div class="thmbox thmbox-terminology has-helper-art" title="הצרנה">
 <p><strong>מונח חדש 1.8.1 — הצרנה.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/terminology.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><span class="term"><strong>הצרנה</strong></span> היא ייצוג של משפט או טיעון באמצעות סמלים לוגיים, כך שהמבנה שלו יהיה ברור. נותנים שמות לפסוקים ומשתמשים בקשרים כדי לתאר כיצד הם מתחברים.</p>
 <p>האותיות אינן מספרות מה תוכן הפסוקים; את משמעותן קובעים במפורש לפני שמשתמשים בהן.</p>
 </div>
-<div class="thmbox thmbox-method" title="איך מצרינים טיעון?">
+<div class="thmbox thmbox-method has-helper-art" title="איך מצרינים טיעון?">
 <p><strong>שיטה 1.8.2 — איך מצרינים טיעון?</strong></p>
+<img class="helper-box-art" src="images/box-helpers/method.svg" alt="" aria-hidden="true" width="56" height="56">
 <ol type="1">
 <li>מזהים את הפסוקים הבסיסיים ונותנים לכל אחד אות. כותבים מה כל אות מציינת.</li>
 <li>כותבים כל <strong>נתון</strong> בנפרד, בעזרת האותיות והקשרים המתאימים.</li>
@@ -4322,8 +4380,9 @@ window.Quarto = {
 <div class="law-derivation" data-rule="identity" data-variant="3"><p>כך גם כשה־<span class="law-formula" dir="ltr">\(T\)</span> מימין:</p><div class="law-summary-formula" dir="ltr"><span class="law-formula" dir="ltr">\(A \land  T\)</span> ≡ <span class="law-formula" dir="ltr">\(T \land  A\)</span> ≡ <span class="law-formula" dir="ltr">\(A\)</span></div></div></details></div>
 </div>
 <p><strong>בדה מורגן אפשר לקצר:</strong> אם נוצרת שלילה כפולה, מותר לכתוב מיד <span class="math inline">\(A\)</span> במקום <span class="math inline">\(\neg\neg A\)</span>, בלי להוסיף צעד נפרד. גם הכתיבה המלאה מתקבלת.</p>
-<div class="thmbox thmbox-terminology" data-terms="plural" title="מה אומרים שמות החוקים?">
+<div class="thmbox thmbox-terminology has-helper-art" data-terms="plural" title="מה אומרים שמות החוקים?">
 <p><strong>מונחים חדשים 1.8.4 — מה אומרים שמות החוקים?</strong></p>
+<img class="helper-box-art" src="images/box-helpers/terminology.svg" alt="" aria-hidden="true" width="56" height="56">
 <ul>
 <li><span class="term"><strong>שלילה כפולה</strong></span>: שוללים פעמיים וחוזרים לערך האמת המקורי. ״לא נכון שלא ירד גשם״ אומר שירד גשם.</li>
 <li><span class="term"><strong>חילוף</strong></span>: מחליפים את סדר החלקים. ״יש קפה וגם תה״ שקול ל״יש תה וגם קפה״.</li>
@@ -4449,8 +4508,9 @@ window.Quarto = {
 <section id="sec-deduction" class="level3" data-number="1.8.3">
 <h3 data-number="1.8.3" class="anchored" data-anchor-id="sec-deduction"><span class="header-section-number">1.8.3</span> כללי היסק</h3>
 <p>עד עכשיו החלפנו נוסחאות בנוסחאות שקולות. כעת נרצה להסיק מן הנתונים מסקנות חדשות, ולבדוק אם הן אכן נובעות מהם. לשם כך נשתמש בכללי היסק.</p>
-<div class="thmbox thmbox-terminology" data-terms="plural" title="היסק, הוכחה והפרכה">
+<div class="thmbox thmbox-terminology has-helper-art" data-terms="plural" title="היסק, הוכחה והפרכה">
 <p><strong>מונחים חדשים — היסק, הוכחה והפרכה.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/terminology.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><span class="term"><strong>היסק</strong></span> הוא מעבר מהנחות למסקנה. <span class="term"><strong>כלל היסק</strong></span> הוא דרך לבצע מעבר ששומר על האמת: אם ההנחות נכונות, גם המסקנה נכונה.</p>
 <p><span class="term"><strong>הוכחה</strong></span> היא מהלך מנומק שמראה שטענה מסוימת נובעת מההנחות ומהעובדות שעליהן מסתמכים. מציינים <strong>מה נתון ומה רוצים להוכיח</strong>, ומצדיקים כל צעד עד שמגיעים לטענה המבוקשת. ההוכחה מבטיחה שהטענה נכונה כאשר ההנחות מתקיימות.</p>
 <p><span class="term"><strong>הפרכה</strong></span> היא נימוק שמראה שטענה אינה נכונה. כדי להפריך טענה על <strong>כל</strong> המקרים, מספיק למצוא מקרה אחד שסותר אותה — <span class="term"><strong>דוגמה נגדית</strong></span>. למשל, הטענה ״כל מספר זוגי גדול מ־10״ מופרכת על ידי המספר <span class="math inline">\(2\)</span>: הוא זוגי, אבל אינו גדול מ־10.</p>
@@ -4539,8 +4599,9 @@ window.Quarto = {
 </details>
 </div>
 <p>נעבור מהדוגמה לשיטה כללית. נסמן את ההנחות ב־<span class="math inline">\(P_1,\dots,P_n\)</span>: ההנחה הראשונה, השנייה, וכן הלאה. את המסקנה נסמן ב־<span class="math inline">\(Q\)</span>. אלה שמות לנוסחאות, שיכולות לכלול אותיות משותפות. בדוגמת הגשם, <span class="math inline">\(P_1=(A\to B)\)</span>, <span class="math inline">\(P_2=A\)</span> ו־<span class="math inline">\(Q=B\)</span>. <strong>בכל שורה בטבלה, כל הופעה של אותה אות מקבלת אותו ערך.</strong></p>
-<div class="thmbox thmbox-method" title="בדיקת תקפות בטבלת אמת">
+<div class="thmbox thmbox-method has-helper-art" title="בדיקת תקפות בטבלת אמת">
 <p><strong>שיטה — בדיקת תקפות בטבלת אמת.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/method.svg" alt="" aria-hidden="true" width="56" height="56">
 <ol type="1">
 <li>בונים טבלת אמת לכל האותיות שמופיעות בהנחות ובמסקנה. בכל שורה בודקים תחילה את ההנחות.</li>
 <li>אם אחת ההנחות שקרית, <strong>מדלגים על בדיקת המסקנה בשורה הזאת</strong>.</li>
@@ -4551,8 +4612,9 @@ window.Quarto = {
 <p><span class="math display">\[(P_1\land\dots\land P_n)\to Q.\]</span></p>
 <p><strong>הסיבה לדילוג על השורות האחרות:</strong> אם אפילו אחת ההנחות שקרית, אז <span class="math inline">\(P_1\land\dots\land P_n\)</span> שקר. הגרירה כולה אמת אוטומטית, בלי לחשב את <span class="math inline">\(Q\)</span>: גם <span class="math inline">\(F\to T\)</span> וגם <span class="math inline">\(F\to F\)</span> הם אמת. רק כאשר כל ההנחות אמת צריך לוודא שגם המסקנה אמת.</p>
 <p>בדוגמת הגשם, הגרירה המתאימה היא <span class="math inline">\(((A\to B)\land A)\to B\)</span>. בשורה הראשונה מתקבל <span class="math inline">\(T\to T\)</span>; בשלוש האחרות תנאי הגרירה שקר. לכן היא אמת בכל ארבע השורות — טאוטולוגיה.</p>
-<div id="rule-valid-tautology" class="thmbox thmbox-method" title="תקפות של טיעון וטאוטולוגיה">
+<div id="rule-valid-tautology" class="thmbox thmbox-method has-helper-art" title="תקפות של טיעון וטאוטולוגיה">
 <p><strong>כלל — תקפות של טיעון וטאוטולוגיה.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/method.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>טיעון שהנחותיו <span class="math inline">\(P_1,\dots,P_n\)</span> ומסקנתו <span class="math inline">\(Q\)</span> הוא תקף <strong>אם ורק אם</strong> הפסוק הבא הוא טאוטולוגיה:</p>
 <p><span class="math display">\[(P_1\land\dots\land P_n)\to Q.\]</span></p>
 </div>
@@ -4648,8 +4710,9 @@ window.Quarto = {
 <section id="sec-rule-and-out" class="level4" data-number="1.8.3.4">
 <h4 data-number="1.8.3.4" class="anchored" data-anchor-id="sec-rule-and-out"><span class="header-section-number">1.8.3.4</span> הוצאת חלק מ״וגם״</h4>
 <p>גם הקשרים ״וגם״ ו״אם ורק אם״ מאפשרים צעדי היסק פשוטים. ננסח אותם במפורש, כדי שנוכל להשתמש בהם בהוכחות. האותיות בתבניות הבאות יכולות לייצג גם פסוקים מורכבים.</p>
-<div id="rule-and-parts" class="thmbox thmbox-method" title="הוצאת חלק מ״וגם״">
+<div id="rule-and-parts" class="thmbox thmbox-method has-helper-art" title="הוצאת חלק מ״וגם״">
 <p><strong>כלל — הוצאת חלק מ״וגם״.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/method.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>אם ידוע ש־<span class="math inline">\(A\land B\)</span> אמת, כל אחד מחלקיו אמת. לכן מותר להסיק כל אחד מהם בנפרד:</p>
 <p><span class="math display">\[\frac{A\land B}{A}
 \qquad
@@ -4673,8 +4736,9 @@ window.Quarto = {
 </section>
 <section id="sec-rule-and-in" class="level4" data-number="1.8.3.5">
 <h4 data-number="1.8.3.5" class="anchored" data-anchor-id="sec-rule-and-in"><span class="header-section-number">1.8.3.5</span> חיבור באמצעות ״וגם״</h4>
-<div id="rule-and-join" class="thmbox thmbox-method" title="חיבור באמצעות ״וגם״">
+<div id="rule-and-join" class="thmbox thmbox-method has-helper-art" title="חיבור באמצעות ״וגם״">
 <p><strong>כלל — חיבור באמצעות ״וגם״.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/method.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>אם כבר ידוע ש־<span class="math inline">\(A\)</span> אמת וש־<span class="math inline">\(B\)</span> אמת, מותר לחבר את שתי הטענות:</p>
 <p><span class="math display">\[\frac{\begin{gathered}A\\B\end{gathered}}{A\land B}\]</span></p>
 <p>למשל, אם הוכחנו בנפרד שהדלת סגורה ושהאור דולק, אפשר לסכם: ״הדלת סגורה וגם האור דולק״. צריך להצדיק <strong>את שני החלקים</strong> לפני שמחברים אותם.</p>
@@ -4697,8 +4761,9 @@ window.Quarto = {
 </section>
 <section id="sec-rule-iff" class="level4" data-number="1.8.3.6">
 <h4 data-number="1.8.3.6" class="anchored" data-anchor-id="sec-rule-iff"><span class="header-section-number">1.8.3.6</span> שימוש באם ורק אם</h4>
-<div id="rule-iff-use" class="thmbox thmbox-method" title="שימוש באם ורק אם">
+<div id="rule-iff-use" class="thmbox thmbox-method has-helper-art" title="שימוש באם ורק אם">
 <p><strong>כלל — שימוש באם ורק אם.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/method.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>נניח שנתון <span class="math inline">\(A\leftrightarrow B\)</span>. פירושו שלשני החלקים אותו ערך אמת: אם אחד מהם אמת, גם האחר אמת; ואם אחד מהם שקר, גם האחר שקר. לכן:</p>
 <p><span class="math display">\[\frac{\begin{gathered}A\leftrightarrow B\\A\end{gathered}}{B}
 \qquad
@@ -4724,8 +4789,9 @@ window.Quarto = {
 </section>
 <section id="sec-inference-practice" class="level4" data-number="1.8.3.7">
 <h4 data-number="1.8.3.7" class="anchored" data-anchor-id="sec-inference-practice"><span class="header-section-number">1.8.3.7</span> תרגול משולב וזיהוי כשלים</h4>
-<div class="thmbox thmbox-warning" title="שני כשלים מפורסמים">
+<div class="thmbox thmbox-warning has-helper-art" title="שני כשלים מפורסמים">
 <p><strong>שימו לב — שני כשלים מפורסמים.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/warning.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><span class="term"><strong>כשל לוגי</strong></span> הוא טעות במעבר מהנחות למסקנה: המסקנה אינה מובטחת על סמך ההנחות. שני הטיעונים הבאים נראים דומים לכללים התקפים, אבל הם כוללים טעות כזאת:</p>
 <ul>
 <li><strong>כשל אישור המסקנה:</strong> ״אם יורד גשם, אז הכביש רטוב. הכביש רטוב. לכן יורד גשם.״ זה שימוש בהיפוך, <span class="math inline">\(,B \to A\)</span> שאינו שקול לגרירה.</li>
@@ -4733,8 +4799,9 @@ window.Quarto = {
 </ul>
 <p>בשני המקרים יש שורה שבה כל ההנחות אמת והמסקנה שקר: <span class="math inline">\(,A = F\)</span> <span class="math inline">\(.B = T\)</span> אין גשם, והכביש רטוב, כי משאית שטיפה עברה ברחוב.</p>
 </div>
-<div class="thmbox thmbox-self-check">
+<div class="thmbox thmbox-self-check has-helper-art">
 <p><strong>בדיקה עצמית.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>״אם סטודנט למד לבחינה, הוא עבר אותה. דנה עברה את הבחינה. לכן דנה למדה.״ האם הטיעון תקף?</p>
 <div class="tf-quiz" data-correct="false">
 <button class="tf-opt" data-val="true">תקף</button>
@@ -4793,8 +4860,9 @@ window.Quarto = {
 <p>בתרגילים הקודמים התקדמנו מן הנתונים אל המסקנה. לפעמים נוח לבחור דרך אחרת. גם בדרכים הבאות כותבים תחילה <strong>מה נתון ומה רוצים להוכיח</strong>, ומצדיקים כל מעבר.</p>
 <section id="sec-proof-contradiction" class="level4" data-number="1.8.4.1">
 <h4 data-number="1.8.4.1" class="anchored" data-anchor-id="sec-proof-contradiction"><span class="header-section-number">1.8.4.1</span> הוכחה בדרך השלילה</h4>
-<div class="thmbox thmbox-method" title="הוכחה בדרך השלילה">
+<div class="thmbox thmbox-method has-helper-art" title="הוכחה בדרך השלילה">
 <p><strong>שיטה 1.8.23 — הוכחה בדרך השלילה.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/method.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>כדי להוכיח טענה, מניחים <strong>באופן זמני שהיא שקרית</strong> — כלומר, מניחים את שלילתה. אם מן ההנחה הזאת ומהנתונים מגיעים לסתירה, ההנחה הזמנית אינה יכולה להתקיים, ולכן הטענה המבוקשת נכונה.</p>
 <p><strong>סתירה</strong> מתקבלת, למשל, כשמסיקים גם פסוק וגם את שלילתו. צריך לציין אילו שתי טענות סותרות זו את זו.</p>
 </div>
@@ -4829,13 +4897,15 @@ window.Quarto = {
 </div>
 </details>
 </div>
-<div id="rule-contradiction-steps" class="thmbox thmbox-method" title="מסתירה למסקנה">
+<div id="rule-contradiction-steps" class="thmbox thmbox-method has-helper-art" title="מסתירה למסקנה">
 <p><strong>כלל — מסתירה למסקנה.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/method.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>אם תחת הנחה זמנית <span class="math inline">\(A\)</span> מסיקים גם <span class="math inline">\(B\)</span> וגם <span class="math inline">\(\neg B\)</span>, ההנחה <span class="math inline">\(A\)</span> מובילה לסתירה. לכן מסיקים <span class="math inline">\(\neg A\)</span> ומסיימים להשתמש בהנחה הזמנית. אם הנחנו <span class="math inline">\(\neg A\)</span> והגענו לסתירה, נסיק <span class="math inline">\(A\)</span>.</p>
 <p>מותר להמשיך להשתמש במסקנה שהוכחנו. אין להשתמש בהנחה שנדחתה, או בטענות שתלויות בה, כאילו היו נתונים.</p>
 </div>
-<div class="thmbox thmbox-terminology" title="סימון של סתירה">
+<div class="thmbox thmbox-terminology has-helper-art" title="סימון של סתירה">
 <p><strong>מונח חדש — סימון של סתירה.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/terminology.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>בעורך מסמנים סתירה ב־<span class="math inline">\(F\)</span>. אחרי שהוכחתם פסוק ואת שלילתו, בחרו ״קבלת סתירה״ וציינו את שתי השורות. כדי להסיק את המסקנה בחרו ״סגירת הנחה — דרך השלילה״: המקורות הם ההנחה הזמנית ושורת הסתירה.</p>
 </div>
 <div id="method-q-event" class="thmbox thmbox-question" title="האם אפשר לקיים את האירוע ביום שני?">
@@ -4867,8 +4937,9 @@ window.Quarto = {
 </section>
 <section id="sec-proof-cases" class="level4" data-number="1.8.4.2">
 <h4 data-number="1.8.4.2" class="anchored" data-anchor-id="sec-proof-cases"><span class="header-section-number">1.8.4.2</span> הוכחה לפי מקרים</h4>
-<div class="thmbox thmbox-method" title="הוכחה לפי מקרים">
+<div class="thmbox thmbox-method has-helper-art" title="הוכחה לפי מקרים">
 <p><strong>שיטה 1.8.27 — הוכחה לפי מקרים.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/method.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>מחלקים את האפשרויות למקרים שמכסים את כולן, ומוכיחים את <strong>אותה מסקנה בכל מקרה</strong>. מכיוון שאחד המקרים חייב להתקיים, המסקנה נכונה.</p>
 <p>למשל, אפשר לחלק לשני המקרים <span class="math inline">\(A\)</span> ו־<span class="math inline">\(\neg A\)</span>. לא צריך לדעת איזה מהם מתקיים בפועל.</p>
 </div>
@@ -4902,8 +4973,9 @@ window.Quarto = {
 </div>
 </details>
 </div>
-<div id="rule-cases-steps" class="thmbox thmbox-method" title="איחוד מקרים">
+<div id="rule-cases-steps" class="thmbox thmbox-method has-helper-art" title="איחוד מקרים">
 <p><strong>כלל — איחוד מקרים.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/method.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><span class="math display">\[\frac{\begin{gathered}A\to C\\\neg A\to C\end{gathered}}{C}\]</span></p>
 <p>בכל מקרה מותר להשתמש בנתונים המקוריים ובהנחה של אותו מקרה. אין להעביר אליו מסקנות שתלויות בהנחה של מקרה אחר. בסוף מציינים שהוכחנו אותה מסקנה בכל המקרים, ושהם מכסים את כל האפשרויות.</p>
 </div>
@@ -4975,8 +5047,9 @@ window.Quarto = {
 <p>כתבו את הנוסחה של ״שנינו נוכלים״. עבור כל הצבה של אמת ושקר ב־<span class="math inline">\(A,B\)</span>, חשבו את ערך הנוסחה ובדקו אם דברי אלון מתאימים לסוגו. להפעלת הבדיקה יש להפעיל JavaScript.</p>
 </div>
 </div>
-<div class="thmbox thmbox-method" title="בדיקת כל האפשרויות">
+<div class="thmbox thmbox-method has-helper-art" title="בדיקת כל האפשרויות">
 <p><strong>שיטה 1.9.2 — בדיקת כל האפשרויות.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/method.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>כדי לדעת מי אביר ומי נוכל, בודקים כל אפשרות ופוסלים אותה אם אחד התושבים אינו פועל לפי כללי האי.</p>
 <p>בחידה שלנו נשארה אפשרות אחת: <strong>אלון נוכל ובתיה אבירה</strong>. אם נשארות כמה אפשרויות, אפשר להסיק רק מה שנכון בכולן. לכן לא עוצרים אחרי האפשרות המתאימה הראשונה.</p>
 </div>
@@ -4984,8 +5057,9 @@ window.Quarto = {
 <section id="sec-knights-rule" class="level3" data-number="1.9.2">
 <h3 data-number="1.9.2" class="anchored" data-anchor-id="sec-knights-rule"><span class="header-section-number">1.9.2</span> מהטבלה לכלל</h3>
 <p>בטבלה השווינו בין סוגו של אלון לבין ערך האמת של דבריו. ראינו מה צריך להתקיים כדי ששורה תתאים:</p>
-<div class="thmbox thmbox-method" title="בודקים את הדובר ואת דבריו">
+<div class="thmbox thmbox-method has-helper-art" title="בודקים את הדובר ואת דבריו">
 <p><strong>כלל 1.9.3 — בודקים את הדובר ואת דבריו.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/method.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><span class="key-rule"><strong>ערך האמת של ״הדובר אביר״ צריך להיות שווה לערך האמת של האמירה שלו.</strong></span></p>
 </div>
 <details class="thmcollapse"><summary>הוכחה</summary>
@@ -5097,8 +5171,9 @@ window.Quarto = {
 <p><strong>משחק 1.9.9 — מי עובר בשער? — תרגול משולב.</strong></p>
 <iframe class="widget-frame" src="games/gate/index.html?levels=three,impossible,ambiguous,if-knight,if-batya,exactly-one&amp;embed=1" loading="lazy" title="משחק: אבירים ונוכלים — תרגול משולב"></iframe>
 </div>
-<div class="thmbox thmbox-summary" title="מה קובעים מן האמירות?">
+<div class="thmbox thmbox-summary has-helper-art" title="מה קובעים מן האמירות?">
 <p><strong>סיכום — מה קובעים מן האמירות?</strong></p>
+<img class="helper-box-art" src="images/box-helpers/summary.svg" alt="" aria-hidden="true" width="56" height="56">
 <ul>
 <li>בודקים אם האמירה של כל תושב מתאימה לסוגו: אביר אומר אמת, ונוכל אומר שקר.</li>
 <li>מחפשים <strong>את כל האפשרויות</strong> שמתאימות לכל האמירות יחד.</li>
@@ -5269,8 +5344,9 @@ window.Quarto = {
 </tbody>
 </table>
 <p><strong>באבירים ונוכלים</strong> מתרגמים גם את דברי התושב וגם את סוגו: ערך האמת של דבריו צריך להתאים לערך האמת של ״הוא אביר״. מחפשים את כל האפשרויות שמתאימות לתנאים, ולא מניחים מראש שיש פתרון יחיד.</p>
-<div class="thmbox thmbox-warning" title="טעויות שכדאי לזהות">
+<div class="thmbox thmbox-warning has-helper-art" title="טעויות שכדאי לזהות">
 <p><strong>שימו לב — טעויות שכדאי לזהות.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/warning.svg" alt="" aria-hidden="true" width="56" height="56">
 <ul>
 <li>הגרירה <span class="math inline">\(A\to B\)</span> <strong>אינה שקולה להיפוך</strong> <span class="math inline">\(B\to A\)</span>. מ־<span class="math inline">\(A\to B\)</span> ומ־<span class="math inline">\(B\)</span> אין להסיק <span class="math inline">\(A\)</span>; ומ־<span class="math inline">\(A\to B\)</span> ומ־<span class="math inline">\(\neg A\)</span> אין להסיק <span class="math inline">\(\neg B\)</span>.</li>
 <li><strong>סוגריים קובעים על מה השלילה חלה.</strong> <span class="math inline">\(\neg A\land B\)</span> שונה מ־<span class="math inline">\(\neg(A\land B)\)</span>; בדה מורגן שוללים את החלקים <strong>וגם</strong> מחליפים את הקשר.</li>
@@ -5283,8 +5359,9 @@ window.Quarto = {
 <section id="sec-self-practice" class="level2" data-number="1.11">
 <h2 data-number="1.11" class="anchored" data-anchor-id="sec-self-practice"><span class="header-section-number">1.11</span> תרגול עצמי לפי נושאים</h2>
 <p>תרגילים נוספים על החומר שבפרק, לפי נושאים, עם משוב ופתרונות בצעדים. <a href="./02-sets.html#practice-quantifiers">תרגילי הכמתים</a> מופיעים בסוף פרק 2.</p>
-<div class="thmbox thmbox-key-point" title="איך כדאי לתרגל?">
+<div class="thmbox thmbox-key-point has-helper-art" title="איך כדאי לתרגל?">
 <p><strong>חשוב לזכור — איך כדאי לתרגל?</strong></p>
+<img class="helper-box-art" src="images/box-helpers/key-point.svg" alt="" aria-hidden="true" width="56" height="56">
 <p><span class="key-rule"><strong>קודם מנסים, אחר כך בודקים, ואז מסבירים במילים למה.</strong></span></p>
 <p>נסו לענות לפני פתיחת הרמזים והפתרונות. הוראות מפורטות זמינות בעורכי ההוכחות.</p>
 <p>בכל תרגיל חדש הסימונים מתחילים מחדש. משתמשים ב־<span class="math inline">\(A\)</span>, אחר כך ב־<span class="math inline">\(B\)</span> וב־<span class="math inline">\(C\)</span> לפי הצורך. בתרגילי הוכחה אפשר לבחור אותיות אחרות. בפסוקים פתוחים נשתמש גם בשמות כמו <span class="math inline">\(P(x)\)</span>, ונאמר בכל פעם מה הם מייצגים ומה התחום.</p>

@@ -45,7 +45,8 @@ function mount(level, ui) {
 
   /* ---- state ---------------------------------------------------------- */
   let picks = Array(n).fill(UNSET);   // serve: a mark, predict: an answer, design: a wish
-  let shown = kind === "serve" ? 0 : n;   // serve levels reveal the answers one by one
+  const initialShown = kind === "serve" && level.id === "classic" ? 0 : n;
+  let shown = initialShown; // The introductory conversation unfolds; later given conversations start visible.
   let done = false;                   // solved (by the player or by the solve button)
   let free = [];                      // design: people marked "לא משנה" after solving
   let flagged = -1;                   // the card the last failed check points at
@@ -121,13 +122,13 @@ function mount(level, ui) {
       const thinkPrefix = `${p.name} ${p.f ? "חושבת" : "חושב"}: `;
       if (wish === "secret") bubble(c.think, "", "הרצון אינו ידוע לכם", { empty: true, srPrefix: thinkPrefix });
       else if (wish === "free") bubble(c.think, "", "לא משנה", { yours: true, srPrefix: thinkPrefix });
-      else if (wish === UNSET) bubble(c.think, "", "…", { yours: true, empty: true, srPrefix: thinkPrefix + "עוד לא נבחר" });
+      else if (wish === UNSET) bubble(c.think, "", "בחרו רצון", { yours: true, empty: true, srPrefix: thinkPrefix + "עוד לא נבחר" });
       else bubble(c.think, wish ? "falafel" : "nofalafel", wishWord(wish), { yours: kind === "design", srPrefix: thinkPrefix });
 
       // the speech bubble: what they say out loud
       const answer = kind === "predict" ? picks[i] : (i < shown ? said[i] : UNSET);
       const sayPrefix = `${p.name} ${p.f ? "אומרת" : "אומר"}: `;
-      if (answer === UNSET) bubble(c.speech, "", "…", { yours: kind === "predict", empty: true, srPrefix: sayPrefix + "טרם נבחרה תשובה" });
+      if (answer === UNSET) bubble(c.speech, "", kind === "predict" ? "בחרו תשובה" : "התשובה טרם הוצגה", { yours: kind === "predict", empty: true, srPrefix: sayPrefix + "טרם נבחרה תשובה" });
       else bubble(c.speech, "", answer === "yes" ? "כן!" : answerText(answer, p), { yours: kind === "predict", srPrefix: sayPrefix });
 
       // the player's buttons
@@ -215,7 +216,7 @@ function mount(level, ui) {
 
   function reset() {
     picks = Array(n).fill(UNSET);
-    shown = kind === "serve" ? 0 : n;
+    shown = initialShown;
     done = false; free = []; flagged = -1;
     draw();
   }

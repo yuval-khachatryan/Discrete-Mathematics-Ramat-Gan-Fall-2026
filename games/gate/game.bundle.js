@@ -174,8 +174,9 @@
     const btnHint = el("button", { class: "g-btn", type: "button", text: "רמז" });
     const btnReset = el("button", { class: "g-btn", type: "button", text: "איפוס" });
     const btnSolve = el("button", { class: "g-btn g-quiet", type: "button", text: "פתרון" });
+    const btnPrev = el("button", { class: "g-btn g-prev", type: "button", text: "→ לשלב הקודם" });
     const btnNext = el("button", { class: "g-btn g-next", type: "button", text: "לשלב הבא ←" });
-    const controls = el("div", { class: "g-controls" }, [btnCheck, btnHint, btnReset, btnSolve, btnNext]);
+    const controls = el("div", { class: "g-controls" }, [btnCheck, btnHint, btnReset, btnSolve, btnPrev, btnNext]);
     const foot = el("footer", { class: "g-foot" });
     if (embed) {
       const full = new URL(window.location.href);
@@ -262,6 +263,8 @@
       btnHint.hidden = !(lvl.hints && lvl.hints.length);
       btnHint.disabled = false;
       btnHint.textContent = lvl.hints && lvl.hints.length ? `רמז (0/${lvl.hints.length})` : "רמז";
+      btnPrev.hidden = levels.length < 2;
+      btnPrev.disabled = index === 0;
       btnNext.hidden = true;
       btnNext.classList.remove("g-ready");
       drawNav();
@@ -308,6 +311,9 @@
       say2(msg || "זה הפתרון. כדאי לעבור עליו שורה אחר שורה, ואז לנסות את השלב שוב בעצמכם (איפוס).", "info");
       showDebrief();
       btnNext.hidden = index >= levels.length - 1;
+    });
+    btnPrev.addEventListener("click", () => {
+      if (index > 0) go(index - 1);
     });
     btnNext.addEventListener("click", () => go(index + 1));
     const ui = { stage, say: say2, win, el, embed, present, get level() {

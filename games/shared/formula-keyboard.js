@@ -28,9 +28,18 @@ function finishPointer() {
 }
 if(typeof document!=='undefined')document.addEventListener('pointerup', finishPointer, true);
 if(typeof document!=='undefined')document.addEventListener('pointercancel', finishPointer, true);
-export function contextualKeyboard(input, panel) {
-  attachFormulaShortcuts(input,panel);
-  const show = () => { panel.hidden = false; };
+export function contextualKeyboard(input, panel, {shortcuts=true}={}) {
+  if(shortcuts)attachFormulaShortcuts(input,panel);
+  panel.classList.add('field-symbol-keyboard');
+  const show = () => {
+    if(input.readOnly||input.disabled){panel.hidden=true;return;}
+    // Put this field's keyboard directly below its input/label, including
+    // fields inserted dynamically by the proof and substitution editors.
+    const label=input.closest('label');
+    const anchor=label&&label.querySelectorAll('input,textarea').length===1?label:input;
+    if(anchor.nextElementSibling!==panel)anchor.after(panel);
+    panel.hidden = false;
+  };
   const hide = () => {
     panel.hidden = document.activeElement !== input && !panel.contains(document.activeElement);
   };
