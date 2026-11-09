@@ -1,0 +1,88 @@
+.set-proof-editor{border:1px solid #c6d6e0;border-radius:10px;padding:1rem;margin:.6rem 0;background:#fbfdff;direction:rtl}
+.set-proof-target{border-inline-start:4px solid #087f8c;padding:.5rem .7rem;background:#eaf7f6}
+.set-proof-formula{display:inline-block;direction:ltr;unicode-bidi:isolate;font-family:"STIX Two Math","Cambria Math","Times New Roman",serif;font-size:1.15em;overflow-wrap:anywhere}
+.set-proof-help,.set-proof-hint{font-size:.9em;margin:.4rem 0}.set-proof-help summary,.set-proof-hint summary{cursor:pointer;color:#27607b}
+.set-proof-toolbar,.set-proof-tabs,.set-proof-controls{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0}
+.set-proof-tabs [aria-pressed=true]{border-color:#176d8b;background:#e7f4fa}
+.set-proof-row{display:grid;grid-template-columns:2.8rem minmax(0,1fr) minmax(8rem,1fr) auto;gap:.6rem;align-items:baseline;padding:.5rem .25rem;border-bottom:1px solid #dae3ea;margin-inline-start:calc(var(--proof-depth,0)*.7rem)}
+.set-proof-row .set-proof-formula{justify-self:start}.set-proof-row-id{color:#28657a}.set-proof-reason{font-size:.86em;color:#435c6a}
+.set-proof-assumption{border-inline-start:3px solid #a96c16;background:#fff8e9}
+.set-proof-input{padding:.7rem 0;display:grid;gap:.5rem}.set-proof-input label{display:grid;gap:.2rem;font-size:.9em}
+.set-proof-editor select{max-width:100%;min-width:0;padding:.35rem;font:inherit}.set-proof-input input{width:100%;min-width:0}
+.set-proof-sources{display:flex;flex-wrap:wrap;gap:.6rem}.set-proof-sources label{flex:1 1 180px;min-width:0}
+.set-proof-input>.bk-btn{justify-self:start}.set-proof-keyboard{display:none;flex-wrap:wrap;gap:.15rem;margin:.3rem 0}
+.set-proof-input.keyboard-active .set-proof-keyboard{display:flex}.set-proof-keyboard button{padding:.15rem .45rem;font-size:1.05rem}
+.set-proof-qed{font-weight:bold;color:#186d4e}.set-proof-intro{font-size:.95em}
+.set-lab{border:1px solid #c6d6e0;border-radius:10px;padding:1rem;margin:.6rem 0;background:#fbfdff}.set-lab label{display:grid;gap:.25rem;margin:.5rem 0}.set-lab input{max-width:100%;width:100%}.set-lab-grid{width:100%;text-align:center}.set-lab-grid button[aria-pressed=true]{background:#e4f4ef;border-color:#287358;color:#136045}.set-lab-grid th{font-weight:600}.set-lab-roster{display:flex;flex-wrap:wrap;gap:.5rem}.set-lab-person{border:1px solid #c6d6e0;padding:.4rem;border-radius:6px}.set-lab .set-proof-formula{display:block;white-space:normal}
+@media(max-width:600px){.set-proof-editor{padding:.65rem}.set-proof-row{grid-template-columns:2rem minmax(0,1fr) auto}.set-proof-reason{grid-column:2 / -1;grid-row:2}.set-proof-row>.bk-btn{grid-column:3;grid-row:1}.set-proof-sources{display:grid}.set-proof-formula{font-size:1.05em}}
+@media print{.set-proof-input,.set-proof-controls,.set-proof-help,.set-proof-hint,.set-proof-row button{display:none}.set-proof-editor{break-inside:auto}}
+
+.set-proof-current-goal {padding:.5rem .7rem; margin:.6rem 0; border-inline-start:3px solid #337a8a; background:#f3f8fa; display:flex; align-items:center; gap:.6rem; flex-wrap:wrap}
+.set-proof-opening {display:flex; gap:.6rem; flex-wrap:wrap; align-items:end; margin:.7rem 0; padding:.6rem; border:1px solid #d3e0e6; border-radius:.4rem}
+.set-proof-opening label {display:flex; flex-direction:column; gap:.25rem; max-width:100%}
+.set-proof-opening input {width:5rem}
+.set-proof-opening select {max-width:100%; white-space:normal}
+
+/* Neutral mathematical symbols must not inherit Hebrew glyph mirroring. */
+.set-proof-keyboard button,.set-proof-hint button[dir="ltr"]{direction:ltr;unicode-bidi:isolate}
+
+.set-proof-rule-picker{display:grid;grid-template-columns:minmax(0,1fr);gap:.6rem}
+.set-proof-rule-picker label{min-width:0}
+.set-proof-rule-picker select{width:100%}
+
+.set-proof-goal-row{background:#edf5fa;border-inline-start:3px solid #337a8a}
+.set-proof-arbitrary{unicode-bidi:isolate}
+
+
+.set-proof-question p:last-child{margin-bottom:.6rem}
+.set-proof-workspace>summary{cursor:pointer;color:#27607b;font-weight:600;padding:.35rem 0}
+.set-proof-block{border-inline-start:3px solid #b1803e;margin:.45rem 0;padding-inline-start:.45rem;min-width:0}
+.set-proof-block[data-state="closed"]{border-color:#91a5b0}
+.set-proof-block-body{min-width:0}
+.set-proof-block .set-proof-assumption{border:0}
+.set-proof-local-goal{display:flex;flex-wrap:wrap;gap:.35rem;padding:.35rem .25rem;color:#36596a;font-size:.93em}
+.set-proof-close{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;padding:.45rem .25rem;font-size:.9em}
+.set-proof-close button:disabled{opacity:.55;cursor:not-allowed}
+@media(max-width:600px){.set-proof-block{padding-inline-start:.25rem}}
+
+.set-counting-table{width:100%;margin:.5rem 0}
+.set-counting-table th,.set-counting-table td{padding:.35rem .5rem;border-bottom:1px solid #dce5eb;vertical-align:top}
+.set-counting-table input{max-width:4rem!important}
+.set-counting-error{display:block;font-size:.87em;color:#9d2626;margin-top:.25rem}
+.set-counting-error[hidden]{display:none}
+.set-counting-table input[aria-invalid="true"]{border-color:#b32626;background:#fff5f5}
+.set-counting-conclusion:not(:empty){border-inline-start:3px solid #27856d;padding-inline-start:.7rem;margin-top:.7rem}
+
+.set-lab[data-set-lab^="count-contributions"] input{max-width:4rem}
+
+.set-counting-table th:first-child{width:48%}
+.set-counting-table .set-proof-formula{white-space:nowrap;font-size:1em}
+
+.set-proof-assume-word{font-weight:600;color:#89601f}
+.set-proof-prove-word{font-weight:600;color:#236c7b}
+
+.set-proof-input [hidden]{display:none!important}
+
+.sets-binary {display:flex;gap:.5rem;}
+.sets-binary button[aria-pressed="true"] {background:#dceffc;border-color:#21618c;color:#163d57;}
+
+
+.set-proof-view-controls{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0}
+.set-proof-view-controls [aria-pressed="true"]{background:#e7f4fa;border-color:#176d8b;color:#17566e}
+.set-proof-panels{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;align-items:start}
+.set-proof-panels>[hidden]{display:none!important}
+.set-proof-panels>*{min-width:0}
+.set-model-panel{padding:.65rem;border:1px solid #cadde4;border-radius:8px;background:#fff}
+.set-model-heading{font-size:1.05rem;margin:0 0 .5rem}
+.set-model-intro{font-size:.9em;color:#435c6a}
+.set-model-target{border-inline-start:3px solid #087f8c;padding:.4rem .6rem;background:#eaf7f6}
+.set-model-row{display:grid;grid-template-columns:2.2rem minmax(0,1fr);gap:.15rem .4rem;padding:.4rem 0;border-bottom:1px solid #e0e8ec}
+.set-model-reason{grid-column:2;font-size:.85em;color:#435c6a}
+.set-model-block{border-inline-start:2px solid #bca076;padding-inline-start:.4rem;margin:.3rem 0}
+.set-proof-comparing .set-proof-panels{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.set-proof-comparing .set-proof-panels>*{max-height:75vh;overflow:auto;scrollbar-gutter:stable;padding:.5rem;overscroll-behavior:contain}
+.set-proof-comparing .set-proof-row{grid-template-columns:2rem minmax(0,1fr) auto;gap:.3rem}
+.set-proof-comparing .set-proof-row .set-proof-reason{grid-column:2 / -1;grid-row:2}
+.set-proof-comparing .set-proof-row>.bk-btn{grid-column:3;grid-row:1}
+.set-proof-comparing .set-proof-formula{font-size:1.05em}
+@media(max-width:760px){.set-proof-comparing .set-proof-panels{grid-template-columns:minmax(0,1fr)}.set-proof-comparing .set-proof-panels>*{max-height:none;overflow:visible;scrollbar-gutter:auto}}

@@ -31,15 +31,16 @@ try{
     await roster.fill(q.answer);await roster.press('Enter');assert.match(await form.locator(':scope > .bk-msg').last().innerText(),/גם מספר האיברים/);
     await form.getByRole('button',{name:'איפוס',exact:true}).click();assert.equal(await count.inputValue(),'');assert.equal(await roster.inputValue(),'');
    }
-   await box.locator('select').selectOption(String(data.comparison[0].answer));await box.getByRole('button',{name:'בדיקת התשובות',exact:true}).click();
+   await box.locator('.sets-binary').getByRole('button',{name:data.comparison[0].options[data.comparison[0].answer],exact:true}).click();await box.getByRole('button',{name:'בדיקת התשובות',exact:true}).click();
    assert.match(await box.locator('form').last().innerText(),/התשובה להשוואת הקבוצות נכונה/);
   }
   if(data.type==='choice'){
-   for(const [i,q]of data.items.entries())await box.locator('select').nth(i).selectOption({value:String(q.answer)});
+   const choose=async(i,value)=>{const row=box.locator('.sets-item').nth(i);if(await row.locator('.sets-binary').count())await row.getByRole('button',{name:data.items[i].options[value],exact:true}).click();else await row.locator('select').selectOption({value:String(value)});};
+   for(const [i,q]of data.items.entries())await choose(i,q.answer);
    await box.getByRole('button',{name:'בדיקת התשובות',exact:true}).click();assert.match(await box.locator('form > .bk-msg').innerText(),/כל התשובות נכונות/,id+' '+JSON.stringify(await box.locator('select').evaluateAll(ns=>ns.map(n=>n.value)))+' '+await box.innerText());
-   await box.locator('select').first().selectOption({value:String((data.items[0].answer+1)%data.items[0].options.length)});
+   await choose(0,(data.items[0].answer+1)%data.items[0].options.length);
    await box.getByRole('button',{name:'בדיקת התשובות',exact:true}).click();assert.ok(await box.locator('.bk-bad').count());
-   await box.getByRole('button',{name:'איפוס',exact:true}).click();assert.equal(await box.locator('select').first().inputValue(),'');
+   await box.getByRole('button',{name:'איפוס',exact:true}).click();assert.ok((await box.locator('select').evaluateAll(ns=>ns.map(n=>n.value))).every(v=>v===''));assert.equal(await box.locator('.sets-binary [aria-pressed="true"]').count(),0);
   }
   if(data.type==='write'){
    for(const [i,q]of data.items.entries()){
@@ -76,25 +77,14 @@ try{
    await box.getByRole('button',{name:'הוספת הקבוצה',exact:true}).click();assert.equal(await box.locator('.sets-saved button').count(),8);assert.equal(await box.locator('.bk-bad').count(),1);
    await box.getByRole('button',{name:'איפוס',exact:true}).click();assert.equal(await box.locator('.sets-saved button').count(),0);
   }
-  if(data.type==='proof'){
-   const rules=[...new Set(data.steps.map(s=>s.rule)),'משפט נכון בדוגמה אחת'];
-   for(const [i,step]of data.steps.entries()){
-    await box.locator('select').first().selectOption({value:String((step.answer+1)%step.options.length)});await box.locator('select').last().selectOption({value:String(rules.indexOf(step.rule))});
-    await box.getByRole('button',{name:'בדיקת הצעד',exact:true}).click();assert.equal(await box.locator('.sets-proof-preview li').count(),i+1);
-    await box.locator('select').first().selectOption({value:String(step.answer)});await box.locator('select').last().selectOption({value:String(rules.length-1)});
-    await box.getByRole('button',{name:'בדיקת הצעד',exact:true}).click();assert.equal(await box.locator('.sets-proof-preview li').count(),i+1);
-    await box.locator('select').last().selectOption({value:String(rules.indexOf(step.rule))});await box.getByRole('button',{name:'בדיקת הצעד',exact:true}).click();assert.equal(await box.locator('.sets-proof-preview li').count(),i+2);
-   }
-   assert.match(await box.locator('.bk-good').innerText(),/ההוכחה הושלמה/);
-   await box.getByRole('button',{name:'התחלה מחדש',exact:true}).click();assert.equal(await box.locator('.sets-proof-preview li').count(),1);
-  }
+
  }
  for(const width of [1200,390,320]){
   await page.setViewportSize({width,height:900});
   const overflow=await page.evaluate(()=>[...document.querySelectorAll('.sets-ready')].filter(n=>n.getBoundingClientRect().right>innerWidth+2||n.getBoundingClientRect().left<-2).map(n=>n.dataset.sets));
   assert.deepEqual(overflow,[],`activity overflow at ${width}`);
-  for(const id of ['cardinality','membership','venn-basic','powers','proof-union'])await page.locator(`[data-sets="${id}"]`).screenshot({path:`/tmp/sets-${id}-${width}.png`});
+  for(const id of ['cardinality','membership','venn-basic','powers'])await page.locator(`[data-sets="${id}"]`).screenshot({path:`/tmp/sets-${id}-${width}.png`});
  }
  assert.deepEqual(errors,[]);
- console.log(`Passed: all ${Object.keys(SET_TASKS).length} set activities, wrong/correct answers, proof justifications, keyboard Venn controls, written sets, nested sets, reset, offline math, desktop and mobile.`);
+ console.log(`Passed: all ${Object.keys(SET_TASKS).length} set activities, wrong/correct answers, keyboard Venn controls, written sets, nested sets, reset, offline math, desktop and mobile.`);
 }finally{await browser.close();}
