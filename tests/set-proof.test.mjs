@@ -188,7 +188,7 @@ test('reformulation hints are valid in both directions, including inside quantif
  const c=SET_PROOFS['intersection-target'].parts[0];
  const original=parseStatement('A ⊆ B ∩ C');
  const hints=setEquivalenceHints(original,'subset-definition',c);
- assert.ok(hints.includes('∀x ∈ A: (x ∈ B ∩ C)'));
+ assert.ok(hints.includes('∀x ∈ A (x ∈ B ∩ C)'));
  const quantified=parseStatement(hints[0]);
  assert.equal(checkSetEquivalence('intersection',quantified,parseStatement('∀y ∈ A: ((y ∈ B) ∧ (y ∈ C))'),c),true);
  const logic=parseStatement('¬((x ∈ A) ∧ (x ∈ B))');
@@ -241,4 +241,10 @@ test('contradictions use either two facts or one conjunction, including compleme
  assert.equal(checkSetProof(atomic,[step('false','F','G1','G2')]).reached,true);
  const conjunct={...atomic,givens:['(x ∈ B) ∧ (x ∉ B)']};
  assert.equal(checkSetProof(conjunct,[step('false','F','G1')]).reached,true);
+});
+
+test('quantifiers accept new notation and legacy colons, but display without colons',()=>{
+ const a=parseStatement('∀x ∈ A (x ∈ B)'),b=parseStatement('∀x ∈ A: (x ∈ B)');
+ assert.deepEqual(a,b);assert.equal(show(a),'∀x ∈ A (x ∈ B)');
+ assert.deepEqual(parseStatement('∀x ∈ A (∀y ∈ B ((x ∈ C) → (y ∈ C)))'),parseStatement('∀x ∈ A: (∀y ∈ B: ((x ∈ C) → (y ∈ C)))'));
 });

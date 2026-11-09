@@ -174,8 +174,9 @@
     const btnHint = el("button", { class: "g-btn", type: "button", text: "רמז" });
     const btnReset = el("button", { class: "g-btn", type: "button", text: "איפוס" });
     const btnSolve = el("button", { class: "g-btn g-quiet", type: "button", text: "פתרון" });
+    const btnPrev = el("button", { class: "g-btn g-prev", type: "button", text: "→ לשלב הקודם" });
     const btnNext = el("button", { class: "g-btn g-next", type: "button", text: "לשלב הבא ←" });
-    const controls = el("div", { class: "g-controls" }, [btnCheck, btnHint, btnReset, btnSolve, btnNext]);
+    const controls = el("div", { class: "g-controls" }, [btnCheck, btnHint, btnReset, btnSolve, btnPrev, btnNext]);
     const foot = el("footer", { class: "g-foot" });
     if (embed) {
       const full = new URL(window.location.href);
@@ -262,6 +263,8 @@
       btnHint.hidden = !(lvl.hints && lvl.hints.length);
       btnHint.disabled = false;
       btnHint.textContent = lvl.hints && lvl.hints.length ? `רמז (0/${lvl.hints.length})` : "רמז";
+      btnPrev.hidden = levels.length < 2;
+      btnPrev.disabled = index === 0;
       btnNext.hidden = true;
       btnNext.classList.remove("g-ready");
       drawNav();
@@ -308,6 +311,9 @@
       say(msg || "זה הפתרון. כדאי לעבור עליו שורה אחר שורה, ואז לנסות את השלב שוב בעצמכם (איפוס).", "info");
       showDebrief();
       btnNext.hidden = index >= levels.length - 1;
+    });
+    btnPrev.addEventListener("click", () => {
+      if (index > 0) go(index - 1);
     });
     btnNext.addEventListener("click", () => go(index + 1));
     const ui = { stage, say, win, el, embed, present, get level() {
@@ -628,7 +634,7 @@
         "בתיה הגישה את העבודה. היא יכולה להיות העדה.",
         'לחצו על הכרטיס של בתיה. יופיע עליו <span class="m">P(בתיה) = <span class="tv-T">T</span></span>, וה״או״ הארוך שמתחת לכרטיסים יהיה מיד <span class="tv-T">T</span>. סמנו <b>הטענה נכונה</b> ולחצו <b>בדיקה</b>.'
       ],
-      debrief: '<p>טענת ״קיים״ מוכיחים עם <b>עד</b> אחד: איבר אחד בתחום שמקיים את <span class="m">P(x)</span>, ואת השאר לא צריך לבדוק. על תחום סופי <span class="m">∃x∈D: P(x)</span> הוא ״או״ ארוך, <span class="m">P(אלון) ∨ P(בתיה) ∨ … ∨ P(רמי)</span>, ו״או״ נכון ברגע שחלק אחד בו נכון.</p>'
+      debrief: '<p>טענת ״קיים״ מוכיחים עם <b>עד</b> אחד: איבר אחד בתחום שמקיים את <span class="m">P(x)</span>, ואת השאר לא צריך לבדוק. על תחום סופי <span class="m">∃x∈D (P(x))</span> הוא ״או״ ארוך, <span class="m">P(אלון) ∨ P(בתיה) ∨ … ∨ P(רמי)</span>, ו״או״ נכון ברגע שחלק אחד בו נכון.</p>'
     },
     {
       id: "counter",
@@ -651,7 +657,7 @@
         "הסתכלו על הכרטיס של כרמל.",
         'כרמל לא הגיש: <span class="m">P(כרמל) = <span class="tv-F">F</span></span>. לחצו על הכרטיס שלו (ה״וגם״ הארוך יהיה מיד <span class="tv-F">F</span>), סמנו <b>הטענה שגויה</b> ולחצו <b>בדיקה</b>.'
       ],
-      debrief: '<p>טענת ״לכל״ מפריכים עם <b>דוגמה נגדית</b> אחת: איבר אחד בתחום שלא מקיים את <span class="m">P(x)</span>. על תחום סופי <span class="m">∀x∈D: P(x)</span> הוא ״וגם״ ארוך, ו״וגם״ שקרי ברגע שחלק אחד בו שקרי: <span class="m">P(כרמל) = <span class="tv-F">F</span></span> מספיק.</p>'
+      debrief: '<p>טענת ״לכל״ מפריכים עם <b>דוגמה נגדית</b> אחת: איבר אחד בתחום שלא מקיים את <span class="m">P(x)</span>. על תחום סופי <span class="m">∀x∈D (P(x))</span> הוא ״וגם״ ארוך, ו״וגם״ שקרי ברגע שחלק אחד בו שקרי: <span class="m">P(כרמל) = <span class="tv-F">F</span></span> מספיק.</p>'
     },
     {
       id: "check-all",
@@ -697,7 +703,7 @@
         "כרטיס אחד בלי אננס לא מפריך ״קיים״, כי אולי האננס אצל מישהו אחר. גם הכרטיס של רמי, האחרון, צריך בדיקה.",
         'לחצו על ששת הכרטיסים. אם אצל כולם <span class="m">P(x) = <span class="tv-F">F</span></span>, ה״או״ הארוך הוא <span class="tv-F">F</span>: סמנו <b>הטענה שגויה</b> ולחצו <b>בדיקה</b>.'
       ],
-      debrief: '<p>כדי להפריך <span class="m">∃x∈D: P(x)</span> לא מספיק איבר אחד שלא מתאים: צריך להראות ש<b>אף</b> איבר לא מתאים, כלומר <span class="m">∀x∈D: ¬P(x)</span>, ולכן בודקים את כולם. הנה כל הכלל של המשחק:</p><table class="w-rule"><thead><tr><th scope="col">הטענה</th><th scope="col">כשהיא נכונה</th><th scope="col">כשהיא שקרית</th></tr></thead><tbody><tr><th scope="row"><span class="m">∀x∈D: P(x)</span></th><td>בודקים את כולם</td><td>דוגמה נגדית אחת</td></tr><tr><th scope="row"><span class="m">∃x∈D: P(x)</span></th><td>עד אחד</td><td>בודקים את כולם</td></tr></tbody></table>'
+      debrief: '<p>כדי להפריך <span class="m">∃x∈D (P(x))</span> לא מספיק איבר אחד שלא מתאים: צריך להראות ש<b>אף</b> איבר לא מתאים, כלומר <span class="m">∀x∈D (¬P(x))</span>, ולכן בודקים את כולם. הנה כל הכלל של המשחק:</p><table class="w-rule"><thead><tr><th scope="col">הטענה</th><th scope="col">כשהיא נכונה</th><th scope="col">כשהיא שקרית</th></tr></thead><tbody><tr><th scope="row"><span class="m">∀x∈D (P(x))</span></th><td>בודקים את כולם</td><td>דוגמה נגדית אחת</td></tr><tr><th scope="row"><span class="m">∃x∈D (P(x))</span></th><td>עד אחד</td><td>בודקים את כולם</td></tr></tbody></table>'
     },
     {
       id: "negation",
@@ -742,10 +748,10 @@
       goal: '<p>המרצה כתבה ״לא כולם הגישו את העבודה״. הרובוט פירש זאת כ״אף אחד לא הגיש את העבודה״. התחום הוא ששת הסטודנטים בכיתה; נתוני ההגשה של כולם מופיעים בכרטיסים.</p><p><b>משימה 1 — תרגום:</b> בחרו את המשפט והנוסחה שפירושם בדיוק ״לא כולם הגישו״. הסימון <span class="m">P(x)</span> פירושו ״x הגיש את העבודה״.</p><p><b>משימה 2 — בדיקת הפירוש של הרובוט:</b> בחרו כרטיס שמפריך את הטענה ״אף אחד לא הגיש״. כאן מחפשים מי שכן הגיש, ולא מי שלא הגיש. לאחר שתי הבחירות לחצו ״בדיקה״.</p>',
       hints: [
         "״לא כולם הגישו״ נכון ברגע שחסר/ה <b>אחד/ת</b>. איזו נוסחה אומרת ״קיים סטודנט שלא הגיש״?",
-        'הנוסחה היא <span class="m">∃x∈D: ¬P(x)</span>. עכשיו, כדי להפריך את הפירוש של הרובוט, <span class="m">∀x∈D: ¬P(x)</span>, הסתכלו על אלון.',
-        'אלון הגיש: <span class="m">P(אלון) = <span class="tv-T">T</span></span>, וזו דוגמה נגדית ל״אף אחד לא הגיש״. בחרו <span class="m">∃x∈D: ¬P(x)</span>, לחצו על הכרטיס של אלון ולחצו <b>בדיקה</b>.'
+        'הנוסחה היא <span class="m">∃x∈D (¬P(x))</span>. עכשיו, כדי להפריך את הפירוש של הרובוט, <span class="m">∀x∈D (¬P(x))</span>, הסתכלו על אלון.',
+        'אלון הגיש: <span class="m">P(אלון) = <span class="tv-T">T</span></span>, וזו דוגמה נגדית ל״אף אחד לא הגיש״. בחרו <span class="m">∃x∈D (¬P(x))</span>, לחצו על הכרטיס של אלון ולחצו <b>בדיקה</b>.'
       ],
-      debrief: '<p>״לא כולם הגישו״ הוא <span class="m">¬∀x∈D: P(x)</span>, וזה שקול ל־<span class="m">∃x∈D: ¬P(x)</span>, ״קיים סטודנט שלא הגיש״. הוא לא שקול ל־<span class="m">∀x∈D: ¬P(x)</span>, ״אף אחד לא הגיש״. זה כלל דה מורגן המוכלל: <span class="m">¬∀x∈D: P(x) ≡ ∃x∈D: ¬P(x)</span> וגם <span class="m">¬∃x∈D: P(x) ≡ ∀x∈D: ¬P(x)</span>. השלילה נכנסת פנימה, ו־<span class="m">∀</span> ו־<span class="m">∃</span> מתחלפים.</p>'
+      debrief: '<p>״לא כולם הגישו״ הוא <span class="m">¬∀x∈D (P(x))</span>, וזה שקול ל־<span class="m">∃x∈D (¬P(x))</span>, ״קיים סטודנט שלא הגיש״. הוא לא שקול ל־<span class="m">∀x∈D (¬P(x))</span>, ״אף אחד לא הגיש״. זה כלל דה מורגן המוכלל: <span class="m">¬∀x∈D (P(x)) ≡ ∃x∈D (¬P(x))</span> וגם <span class="m">¬∃x∈D (P(x)) ≡ ∀x∈D (¬P(x))</span>. השלילה נכנסת פנימה, ו־<span class="m">∀</span> ו־<span class="m">∃</span> מתחלפים.</p>'
     },
     {
       id: "order",
@@ -789,7 +795,7 @@
         "בחלק 1 שימו לב לרמי: הוא אוהב רק קפה. בחלק 2 החשוד העיקרי הוא הקפה, כי כמעט כולם אוהבים אותו. כמעט. בדקו את נועה.",
         "חלק 1, למשל: אלון ← פיצה, בתיה ← פלאפל, כרמל ← פיצה, דנה ← תפוחים, נועה ← פיצה, רמי ← קפה. חלק 2, למשל: פיצה ← בתיה, פלאפל ← אלון, תפוחים ← כרמל, קפה ← נועה."
       ],
-      debrief: '<p>שתי הטענות מתייחסות לאותה טבלה, אך משמעותן שונה. בטענה <span class="m">∀x∈D: ∃y∈M: L(x, y)</span> מותר לבחור פריט אחר לכל סטודנט; למשל, קפה לרמי ופיצה לנועה. בטענה <span class="m">∃y∈M: ∀x∈D: L(x, y)</span> צריך למצוא פריט מסוים שכולם אוהבים. כאן אין פריט כזה, כפי שמראות הבחירות בחלק 2. הטענה השנייה גוררת את הראשונה, אך הראשונה אינה גוררת את השנייה.</p>'
+      debrief: '<p>שתי הטענות מתייחסות לאותה טבלה, אך משמעותן שונה. בטענה <span class="m">∀x∈D ∃y∈M (L(x, y))</span> מותר לבחור פריט אחר לכל סטודנט; למשל, קפה לרמי ופיצה לנועה. בטענה <span class="m">∃y∈M ∀x∈D (L(x, y))</span> צריך למצוא פריט מסוים שכולם אוהבים. כאן אין פריט כזה, כפי שמראות הבחירות בחלק 2. הטענה השנייה גוררת את הראשונה, אך הראשונה אינה גוררת את השנייה.</p>'
     }
   ];
 
@@ -875,13 +881,13 @@
     switch (claim.type) {
       case "forall":
       case "exists":
-        return `${claim.type === "forall" ? "∀" : "∃"}x∈D: ${claim.neg ? "¬" : ""}${level.preds[claim.pred].letter}(x)`;
+        return `${claim.type === "forall" ? "∀" : "∃"}x∈D (${claim.neg ? "¬" : ""}${level.preds[claim.pred].letter}(x))`;
       case "not":
         return "¬" + formula(level, claim.of);
       case "forall-exists":
-        return `∀x∈D: ∃y∈M: ${level.rels[claim.rel].letter}(x, y)`;
+        return `∀x∈D ∃y∈M (${level.rels[claim.rel].letter}(x, y))`;
       case "exists-forall":
-        return `∃y∈M: ∀x∈D: ${level.rels[claim.rel].letter}(x, y)`;
+        return `∃y∈M ∀x∈D (${level.rels[claim.rel].letter}(x, y))`;
     }
     throw new Error(`unknown claim type: ${claim.type}`);
   }
@@ -1541,7 +1547,7 @@
         b.setAttribute("aria-pressed", String(part === i));
         partStatus[i].textContent = done[i] ? " ✓ הושלם" : "";
       });
-      task.innerHTML = part === 0 ? "<b>חלק 1:</b> בכל <b>שורה</b> בחרו פריט שהסטודנט אוהב. כך מראים ש־" + m2("∀x∈D: ∃y∈M: L(x, y)") + " נכון." : "<b>חלק 2:</b> בכל <b>עמודה</b> בחרו סטודנט שלא אוהב את הפריט. כך מראים ש־" + m2("∃y∈M: ∀x∈D: L(x, y)") + " שקרי.";
+      task.innerHTML = part === 0 ? "<b>חלק 1:</b> בכל <b>שורה</b> בחרו פריט שהסטודנט אוהב. כך מראים ש־" + m2("∀x∈D ∃y∈M (L(x, y))") + " נכון." : "<b>חלק 2:</b> בכל <b>עמודה</b> בחרו סטודנט שלא אוהב את הפריט. כך מראים ש־" + m2("∃y∈M ∀x∈D (L(x, y))") + " שקרי.";
       for (const x of D) for (const y of Y2) {
         const { b, mark } = cells[x.id][y.id];
         const on = part === 0 ? picks[0][x.id] === y.id : picks[1][y.id] === x.id;

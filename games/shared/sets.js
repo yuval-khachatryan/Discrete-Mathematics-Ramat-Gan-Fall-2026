@@ -1,3 +1,4 @@
+import {answerPanel,answerReveal} from './answer-panel.js';
 import { SET_TASKS } from './sets-data.js';
 
 // Finite sets and ordered pairs are different objects. No JavaScript evaluation.
@@ -82,19 +83,23 @@ export function initSets(box){
   if(data.type==='power')return power(box,data);
 }
 function choices(box,data,offset=0){
-  const form=el('form');box.append(form);
-  const rows=data.items.map((q,i)=>{
-    const binary=q.options.length===2&&q.options.includes('כן')&&q.options.includes('לא');
-    const s=binary?el('div',{class:'sets-binary',role:'group'}):selectOptions(q.options,i+box.dataset.sets.length),feedback=msg();
+  data.items.forEach((q,i)=>{
+    const numeric=q.input==='number',binary=q.input==='buttons'||(q.options.length===2&&q.options.includes('כן')&&q.options.includes('לא'));
+    const s=numeric?el('input',{type:'text',inputmode:'numeric',dir:'ltr',class:'bk-input sets-count-input',maxlength:'10',autocomplete:'off',placeholder:'מספר'}):binary?el('div',{class:'sets-binary',role:'group'}):selectOptions(q.options,i+offset+box.dataset.sets.length),feedback=msg();
     s.setAttribute('aria-label',q.prompt);
     if(binary){
-      s.value='';q.options.forEach((text,j)=>{const b=button(text,()=>{s.value=String(j);[...s.children].forEach((n,k)=>n.setAttribute('aria-pressed',String(j===k)));s.dispatchEvent(new Event('change'));});b.setAttribute('aria-pressed','false');s.append(b);});
+      s.value='';q.options.forEach((text,j)=>{const b=button(text,()=>{s.value=String(j);[...s.children].forEach((n,k)=>n.setAttribute('aria-pressed',String(j===k)));s.dispatchEvent(new Event('change'));});b.setAttribute('aria-pressed','false');if(!/[א-ת]/.test(text))b.dir='ltr';s.append(b);});
     }
-    const row=el('fieldset',{class:'sets-item'},[el('legend',{class:'sets-item-number',text:`סעיף ${i+1+offset}`}),mixedText(q.prompt),s,feedback]);
-    s.addEventListener('change',()=>{say(feedback,'');s.removeAttribute('aria-invalid');});form.append(row);return {q,s,feedback,binary};
+    const row=el('fieldset',{class:'sets-item'},[el('legend',{class:'sets-item-number',text:`סעיף ${i+1+offset}`}),mixedText(q.prompt)]),form=el('form',{},[s]);
+    const solution=answerReveal(readable(q.options[q.answer]+'. '+q.why));
+    const check=()=>{
+      const ok=numeric?(/^\d+$/.test(s.value.trim())&&Number(s.value)===Number(q.options[q.answer])):s.value!==''&&Number(s.value)===q.answer;
+      s.setAttribute('aria-invalid',String(!ok));say(feedback,s.value.trim()===''?(numeric?'כתבו את מספר האיברים.':'בחרו תשובה.'):numeric&&!/^\d+$/.test(s.value.trim())?'כתבו מספר שלם שאינו שלילי.':(ok?'נכון. ':'כדאי לבדוק שוב. ')+q.why,ok);
+    };
+    s.addEventListener(numeric?'input':'change',()=>{say(feedback,'');s.removeAttribute('aria-invalid');});
+    form.append(button('בדיקה',check),button('איפוס',()=>{form.reset();if(binary){s.value='';[...s.children].forEach(n=>n.setAttribute('aria-pressed','false'));}s.removeAttribute('aria-invalid');say(feedback,'');solution.open=false;}),feedback,solution);
+    form.addEventListener('submit',e=>{e.preventDefault();check();});row.append(answerPanel(form));box.append(row);
   });
-  const result=msg();form.append(button('בדיקת התשובות',()=>{let all=true;for(const {q,s,feedback}of rows){const ok=s.value!==''&&Number(s.value)===q.answer;all&&=ok;s.setAttribute('aria-invalid',String(!ok));say(feedback,s.value===''?'בחרו תשובה.':(ok?'נכון. ':'כדאי לבדוק שוב. ')+q.why,ok);}say(result,all?(data.success||'כל התשובות נכונות.'):'בדקו את המשוב ונסו שוב.',all);}),button('איפוס',()=>{form.reset();rows.forEach(({s,feedback,binary})=>{if(binary){s.value='';[...s.children].forEach(n=>n.setAttribute('aria-pressed','false'));}s.removeAttribute('aria-invalid');say(feedback,'');});say(result,'');}),result);
-  form.addEventListener('submit',e=>e.preventDefault());
 }
 function cardinality(box,data){
   data.items.forEach((q,i)=>{
@@ -113,7 +118,8 @@ function cardinality(box,data){
       say(summary,result.ok?'נכון — גם מספר האיברים וגם רשימת האיברים מתאימים.':'תקנו את השדות המסומנים ונסו שוב.',result.ok);
     };
     [count,roster].forEach(n=>n.addEventListener('input',clear));form.addEventListener('submit',e=>{e.preventDefault();check();});
-    form.append(el('button',{type:'submit',class:'bk-btn',text:'בדיקה'}),button('רמז',()=>say(summary,q.hint)),button('איפוס',()=>{count.value='';roster.value='';clear();}),summary);box.append(form);
+    form.append(el('button',{type:'submit',class:'bk-btn',text:'בדיקה'}),button('רמז',()=>say(summary,q.hint)),button('איפוס',()=>{count.value='';roster.value='';clear();}),summary,answerReveal(readable('מספר האיברים: '+new Set(parseObject(q.answer).items.map(key)).size+'. האיברים: '+q.answer)));
+    const controls=[...form.children].slice(2);form.append(answerPanel(...controls));box.append(form);
   });
   if(data.comparison?.length)choices(box,{items:data.comparison,success:'התשובה להשוואת הקבוצות נכונה.'},data.items.length);
 }
@@ -123,13 +129,14 @@ function writes(box,data){
     const form=el('form',{class:'sets-item'},[el('label',{},[el('span',{class:'sets-item-number',text:`סעיף ${i+1}`}),mixedText(q.prompt),input])]);
     const check=()=>{const r=checkSetAnswer(input.value,q.answer);input.setAttribute('aria-invalid',String(!r.ok));say(feedback,r.message,r.ok);};
     form.addEventListener('submit',e=>{e.preventDefault();check();});input.addEventListener('input',()=>{say(feedback,'');input.removeAttribute('aria-invalid');});
-    form.append(button('בדיקה',check),button('רמז',()=>say(feedback,q.hint)),button('איפוס',()=>{input.value='';input.removeAttribute('aria-invalid');say(feedback,'');}),feedback);box.append(form);
+    input.remove();
+    form.append(answerPanel(input,button('בדיקה',check),button('רמז',()=>say(feedback,q.hint)),button('איפוס',()=>{input.value='';input.removeAttribute('aria-invalid');say(feedback,'');}),feedback,answerReveal(readable(q.answer))));box.append(form);
   });
 }
 function selection(box,data){
   box.append(math(data.given),mixedText(data.prompt));const selected=new Set(),cards=el('div',{class:'sets-cards'}),feedback=msg();
   const buttons=data.candidates.map(c=>{const b=button(c,()=>{selected.has(c)?selected.delete(c):selected.add(c);b.setAttribute('aria-pressed',String(selected.has(c)));say(feedback,'');});b.dir='ltr';b.setAttribute('aria-pressed','false');cards.append(b);return b;});
-  box.append(cards,button('בדיקה',()=>{const extra=[...selected].find(x=>!data.answer.includes(x));const missing=data.answer.some(x=>!selected.has(x));say(feedback,extra?`⁦${extra}⁩ אינו מתאים לתנאי. ${data.hint}`:missing?'עדיין חסרה בחירה. '+data.hint:'נכון! נבחרו בדיוק כל האפשרויות המתאימות.',!extra&&!missing);}),button('רמז',()=>say(feedback,data.hint)),button('איפוס',()=>{selected.clear();buttons.forEach(b=>b.setAttribute('aria-pressed','false'));say(feedback,'');}),feedback);
+  box.append(answerPanel(cards,button('בדיקה',()=>{const extra=[...selected].find(x=>!data.answer.includes(x));const missing=data.answer.some(x=>!selected.has(x));say(feedback,extra?`⁦${extra}⁩ אינו מתאים לתנאי. ${data.hint}`:missing?'עדיין חסרה בחירה. '+data.hint:'נכון! נבחרו בדיוק כל האפשרויות המתאימות.',!extra&&!missing);}),button('רמז',()=>say(feedback,data.hint)),button('איפוס',()=>{selected.clear();buttons.forEach(b=>b.setAttribute('aria-pressed','false'));say(feedback,'');}),feedback,answerReveal(readable(data.answer.join(', ')))));
 }
 const REGIONS=['רק ב־A','גם ב־A וגם ב־B','רק ב־B','מחוץ לשתיהן, בתוך U'];
 function venn(box,data){

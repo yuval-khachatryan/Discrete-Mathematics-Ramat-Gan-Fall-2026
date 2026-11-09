@@ -24,7 +24,7 @@ export const SET_PROOF_RULES=[
   ['goal-chain','הניסוחים השקולים שכבר נבדקו למטרה',1,1],
   ['open-forall','פתיחת הנחה — יהי איבר כלשהו',0,0],
   ['close-forall','סגירת הנחה לאיבר כלשהו — הכללה לכל איברי התחום',2,2],
-  ['subset-definition','הגדרת ההכלה — X⊆Y ⇔ ∀x∈X: (x∈Y)',1,1],
+  ['subset-definition','הגדרת ההכלה — X⊆Y ⇔ ∀x∈X (x∈Y)',1,1],
   ['forall-use','שימוש בטענה לכל איבר — הצבה של איבר מן התחום',2,2],
   ['universe-member','התחום U — איבר בקבוצה הנדונה שייך גם ל־U',1,1],
   ['intersection','הגדרת החיתוך — שייכות לשתי הקבוצות',1,2],
@@ -287,7 +287,7 @@ export function checkSetProof(config,steps){
         }else if(!checkSetEquivalence(step.rule,sources[0].formula,owner.original,config))throw Error('הצעד שנבחר אינו שקול למטרה לפי הכלל הזה. בחרו כלל מתאים או הוסיפו מעבר ביניים.');
       }
       else if(step.rule==='open-forall'){
-        if(target.type!=='forall')throw Error('לפתיחת הוכחה לכל איבר, כתבו טענה מהצורה ∀x ∈ A: (x ∈ B).');
+        if(target.type!=='forall')throw Error('לפתיחת הוכחה לכל איבר, כתבו טענה מהצורה ∀x ∈ A (x ∈ B).');
         const variable=step.variable||target.args[0].name;
         if(!/^[a-z][a-z0-9_]{0,7}$/.test(variable)||config.sets?.includes(variable))throw Error('בחרו שם קצר לאיבר, למשל x או y.');
         const forbidden=[goal,target,...rows.filter(r=>visible(r.scope,stack)&&!r.declaration&&!r.goalOnly).map(r=>r.formula)];

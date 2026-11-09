@@ -166,7 +166,7 @@ try{
  assert.equal(await first.locator('.set-proof-input .bk-bad').count(),1);
  assert.equal(await first.locator('.set-proof-goal-row').count(),0);
  await first.locator('.set-proof-hint > summary').click();
- await first.locator('.set-proof-hint button').filter({hasText:'∀x ∈ A: (x ∈ C)'}).click();
+ await first.locator('.set-proof-hint button').filter({hasText:'∀x ∈ A (x ∈ C)'}).click();
  assert.equal(await first.locator('.set-proof-goal-row').count(),0,'hint fills the field without proving anything');
  await first.getByRole('button',{name:'בדיקת הניסוח',exact:true}).click();
  assert.equal(await first.locator('.set-proof-goal-row').count(),1);

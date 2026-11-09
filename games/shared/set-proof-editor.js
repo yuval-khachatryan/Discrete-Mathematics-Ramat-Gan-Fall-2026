@@ -1,3 +1,4 @@
+import {contextualKeyboard} from './formula-keyboard.js';
 import {createSetModelView} from './set-proof-model-view.js';
 import {attachSetFormulaInput} from './set-formula-input.js';
 import {SET_PROOFS} from './set-proof-exercises.js';
@@ -162,20 +163,24 @@ export function initSetProof(box){
       const note=el('input',{type:'text',class:'bk-input','aria-label':'הערה מילולית לא חובה',placeholder:'הערה במילים — לא חובה',maxlength:'250'});
       const assumption=el('input',{type:'text',class:'bk-input',dir:'ltr',maxlength:'200',autocomplete:'off','aria-label':'יהי',placeholder:'x ∈ A'});
       const assumptionField=label('יהי',assumption);
-      const fields=el('div',{class:'set-proof-writing'}),keys=el('div',{class:'set-proof-keyboard'});
-      let activeInput=input;
-      for(const field of [input,assumption])field.addEventListener('focus',()=>{activeInput=field;form.classList.add('keyboard-active');});
-      for(const k of ['∀',':','∈','∉','⊆','⊇','∩','∪','∖','ᶜ','∅','¬','∧','∨','→','↔','(',')']){
-        const b=button(k,()=>{const field=activeInput;const a=field.selectionStart,z=field.selectionEnd;field.setRangeText(k,a,z,'end');field.focus();});b.addEventListener('mousedown',e=>e.preventDefault());b.dir='ltr';b.setAttribute('aria-label','הוספת '+k);keys.append(b);
-      }
+      const fields=el('div',{class:'set-proof-writing'});
+      const fieldKeys=field=>{
+        const panel=el('div',{class:'set-proof-keyboard',role:'group','aria-label':'סמלים לשדה הזה'});
+        for(const k of ['∀','∈','∉','⊆','⊇','∩','∪','∖','ᶜ','∅','¬','∧','∨','→','↔','(',')']){
+          const b=button(k,()=>{
+            const a=field.selectionStart,z=field.selectionEnd;
+            if(field.value.length-(z-a)+k.length>field.maxLength)return;
+            field.setRangeText(k,a,z,'end');field.focus();field.dispatchEvent(new Event('input',{bubbles:true}));
+          });
+          b.dir='ltr';b.setAttribute('aria-label','הוספת '+k);panel.append(b);
+        }
+        contextualKeyboard(field,panel,{shortcuts:false});
+        attachSetFormulaInput(field,panel);return panel;
+      };
+      const assumptionKeys=fieldKeys(assumption),keys=fieldKeys(input);
       input.addEventListener('blur',()=>{input.value=normalizeInput(input.value);});
-      // Keep the keyboard in place until this step is submitted. Hiding it on
-      // blur moves the submit button between mousedown and mouseup.
-      input.addEventListener('focus',()=>form.classList.add('keyboard-active'));
       const inputLabel=el('span');
-      fields.append(assumptionField,el('label',{},[inputLabel,input]),keys,note);
-      attachSetFormulaInput(assumption,fields);
-      attachSetFormulaInput(input,fields);
+      fields.append(assumptionField,assumptionKeys,el('label',{},[inputLabel,input]),keys,note);
       const stepTitle=el('strong');
       const targetField=label('המטרה',targetChoice);
       const rulePicker=el('div',{class:'set-proof-rule-picker'},[label('תחום',category),label('כלל',rule)]);
@@ -192,13 +197,13 @@ export function initSetProof(box){
       category.addEventListener('change',()=>{state.category=category.value;drawRules();drawSources();report(feedback,'');hint.open=false;hintList.replaceChildren();});
       rule.addEventListener('change',()=>{drawSources();report(feedback,'');hint.open=false;hintList.replaceChildren();});
       function syncAction(){
-        assumptionField.hidden=action.value!=='let';rulePicker.hidden=action.value==='let';
+        assumptionField.hidden=action.value!=='let';if(assumptionField.hidden)assumptionKeys.hidden=true;rulePicker.hidden=action.value==='let';
         if(action.value==='let'){category.value='methods';drawRules();rule.value='open-forall';drawSources();}
         targetField.hidden=action.value!=='match-goal';input.readOnly=action.value==='match-goal';
         stepTitle.textContent=action.value==='restate-goal'?'ניסוח חדש של המטרה':`צעד S${stepNo}`;
         inputLabel.textContent=action.value==='let'?'נוכיח ש־':action.value==='restate-goal'?'הניסוח החדש':action.value==='match-goal'?'המטרה שרוצים להסיק':'הטענה שמסיקים';
         if(input.readOnly)input.value=targetChoice.value==='R'?showWritten(config.goal):show(checked.currentGoal.original);
-        keys.hidden=input.readOnly;
+        keys.hidden=input.readOnly||document.activeElement!==input;
         submit.textContent=action.value==='restate-goal'?'בדיקת הניסוח':'בדיקת הצעד';
       }
       action.addEventListener('change',()=>{state.action=action.value;drawCategories();drawRules();drawSources();syncAction();hint.open=false;hintList.replaceChildren();report(feedback,'');});

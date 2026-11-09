@@ -8,7 +8,7 @@ import { PRACTICE_CHOICES } from "../games/shared/practice-choices.js";
 
 const qmd = readFileSync(new URL("../02-sets.qmd", import.meta.url), "utf8");
 const logic = readFileSync(new URL("../01-logic.qmd", import.meta.url), "utf8");
-const practice = logic.slice(logic.indexOf("## תרגול עצמי לפי נושאים")) + "\n" + qmd.slice(qmd.indexOf("## תרגול עצמי: כמתים"));
+const practice = logic.slice(logic.indexOf("## תרגול עצמי לפי נושאים")) + "\n" + qmd.slice(qmd.indexOf("### כמתים {#practice-quantifiers}"),qmd.indexOf("### הכלה",qmd.indexOf("### כמתים {#practice-quantifiers}")));
 test("practice bank has eight topics, 48 exercises and 20 assisted proofs", () => {
   assert.equal((practice.match(/^### |^## תרגול עצמי: כמתים/gm) || []).length, 8);
   assert.equal((practice.match(/#practice-q-/g) || []).length, 48);
@@ -84,12 +84,13 @@ test("quantifier answers respect domains, order and negation", () => {
   assert.equal(books.some(row => row.every(read => !read)), false);
 });
 
-test("quantifiers name their worlds; the only omitted domain is an explicitly explained abbreviation",()=>{
-  const body=qmd.replace(/::: \{\.thmmethod title="לפעמים מקצרים את הכתיבה"\}[\s\S]*?\n:::/,'');
-  assert.doesNotMatch(body,/\\(?:forall|exists) [xy](?!\\in)/);
-  assert.ok(qmd.includes('D=\\{1,2,3,4\\}'));
+test("quantifiers introduce context before restrictions and keep numerical restrictions explicit",()=>{
+  const intro=qmd.slice(qmd.indexOf('### מן האיבר'),qmd.indexOf('### שלושה מתמטיקאים'));
+  assert.ok(intro.includes('נדון במספרים ממשיים'));
+  assert.ok(intro.indexOf('\\forall x\\,(P(x))')<intro.indexOf('כמת המוגבל לקבוצה'));
+  assert.ok(intro.includes('\\forall x\\,\\bigl((x\\in\\mathbb N)\\to(x\\ge0)\\bigr)'));
+  assert.ok(intro.includes('\\exists x\\,\\bigl((x\\in\\mathbb N)\\land(x+1=0)\\bigr)'));
   assert.ok(qmd.indexOf('## קבוצות, איברים ושייכות') < qmd.indexOf('## כמתים'));
-  assert.ok(qmd.includes('כאן משתמשים בשייכות לקבוצה'));
   for(const items of Object.values(PRACTICE_CHOICES))for(const item of items)for(const option of item.options) {
     assert.doesNotMatch(option.text,/[∀∃][xy](?!∈)/);
   }

@@ -108,8 +108,8 @@ iframe.widget-frame {
 .thmbox > :first-child { margin-top: 0; }
 .thmbox > :last-child { margin-bottom: 0; }
 .thmbox-definition  { border-color: #4f46e5; background: #eef2ff; }
-.thmbox-terminology { border-color: #0369a1; background: #f0f9ff; }
-.thmbox-terminology > p:first-child > strong { color: #075985; }
+.thmbox-notation, .thmbox-terminology { border-color: #0369a1; background: #f0f9ff; }
+.thmbox-notation > p:first-child > strong, .thmbox-terminology > p:first-child > strong { color: #075985; }
 .thmbox-terminology > p:first-child > strong::before { content: "📖"; display: inline-block; margin-inline-end: .4em; }
 /* Summaries and component legends have their own labels and visual identity. */
 .thmbox-summary { border-color: #0f766e; background: #f0fdfa; }
@@ -235,17 +235,22 @@ main table.table th, main table.table td { padding: 0.3rem 1rem; text-align: cen
 .thmbox-warning > p:first-child > strong { font-weight: 700; color: #be123c; }
 .thmbox-key-point   { border-color: #0891b2; border-inline-start-width: 6px; background: #ecfeff; }
 .thmbox-key-point > p:first-child > strong { font-weight: 700; color: #0e7490; }
-/* Role badges (icon="..."), HTML only. */
-.thmbox[class*="thmicon-"] > p:first-child > strong::before {
-  margin-inline-end: 0.35em;
-  font-size: 1.45em;
-  vertical-align: -0.18em;
+/* Helper illustrations are part of the box body, not the title. */
+.thmbox.has-helper-art { display: flow-root; }
+.thmbox.has-helper-art > p:first-child > strong::before { content: none; }
+.helper-box-art {
+  float: inline-end;
+  width: 56px;
+  height: 56px;
+  margin: .1rem 0 .4rem 0;
+  margin-inline-start: .85rem;
+  object-fit: contain;
+  pointer-events: none;
 }
-.thmbox.thmicon-method     > p:first-child > strong::before { content: "🛠️"; }
-.thmbox.thmicon-calc       > p:first-child > strong::before { content: "🧮"; }
-.thmbox.thmicon-rule       > p:first-child > strong::before { content: "✅"; }
-.thmbox.thmicon-convention > p:first-child > strong::before { content: "🤝"; }
-.thmbox.thmicon-idea       > p:first-child > strong::before { content: "💡"; }
+@media (max-width: 480px) {
+  .helper-box-art { width: 40px; height: 40px; margin-inline-start: .5rem; }
+}
+@media print { .helper-box-art { display: none; } }
 /* ---------------------------------------------------------------------------
    Math must never inherit the page's RTL direction. <html dir="rtl"> makes the
    whole document a right-to-left bidi context, and two things go wrong inside it:
@@ -482,6 +487,11 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .argument-formula-bank, .choice-select { width: 100%; min-width: 0; min-height: 44px; padding: .35rem; font: inherit; border: 1px solid #7c3aed; border-radius: 6px; background: #faf5ff; }
 .argument-formula-bank { direction: ltr; }
 .choice-item { min-width: 0; margin: .8rem 0; padding: .65rem; border: 1px solid #c4b5fd; border-radius: 8px; }
+.answer-panel { margin: .4rem 0; min-width: 0; }
+.answer-panel > summary, .answer-reveal > summary { cursor: pointer; color: #075985; font-weight: 600; }
+.answer-panel[open] > summary { margin-bottom: .5rem; }
+.answer-reveal { margin-top: .5rem; }
+.answer-reveal > div { margin-top: .35rem; padding: .45rem .65rem; background: #f8fafc; border-inline-start: 3px solid #94a3b8; overflow-wrap: anywhere; }
 .choice-item legend { float: none; width: auto; max-width: 100%; font-size: 1em; font-weight: 700; color: #581c87; padding: 0 .25rem; }
 .choice-select[aria-invalid="true"] { border: 2px solid #b91c1c; }
 .substitution-entry label { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; margin: .5rem 0; }
@@ -491,6 +501,9 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .choice-ready .choice-offline { display: none; }
 .bk-keys { display: flex; flex-wrap: wrap; gap: 0.25rem; direction: ltr; }
 .bk-keys[hidden] { display:none !important; }
+.field-symbol-keyboard { display:flex; flex-wrap:wrap; gap:.25rem; direction:ltr; width:100%; min-width:0; flex-basis:100%; grid-column:1 / -1; margin:.3rem 0; }
+.field-symbol-keyboard[hidden] { display:none !important; }
+.field-symbol-keyboard .formula-autocomplete { flex-basis:100%; }
 .bk-key { min-width: 40px; min-height: 40px; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; font: 1.1rem "Cambria Math", "STIX Two Math", serif; cursor: pointer; }
 .bk-key:hover { background: #eef2ff; }
 .bk-fq .hint, .bk-fq .explain, .bk-ttq .after { margin: 0.4rem 0; padding: 0.4rem 0.7rem; border-radius: 8px; }

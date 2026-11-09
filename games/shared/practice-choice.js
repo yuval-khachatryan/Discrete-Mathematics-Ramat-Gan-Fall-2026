@@ -1,3 +1,4 @@
+import {answerPanel,answerReveal} from './answer-panel.js';
 import { PRACTICE_CHOICES } from "./practice-choices.js";
 
 export function checkSubstitution(input, spec) {
@@ -23,7 +24,7 @@ function el(tag, attrs = {}, children = []) {
 export function initPracticeChoice(box) {
   const exercise = PRACTICE_CHOICES[box.dataset.choice];
   if (!exercise) return;
-  const summary = el("div", { class: "bk-msg", "aria-live": "polite" });
+  if(box.classList.contains("choice-ready"))return;
   const rows = exercise.map((question, index) => {
     const feedbackId = `practice-choice-feedback-${++serial}`;
     const select = el("select", { class: "choice-select", "aria-label": question.prompt, "aria-describedby": feedbackId }, [
@@ -33,11 +34,10 @@ export function initPracticeChoice(box) {
     const feedback = el("div", { id: feedbackId, class: "bk-msg", "aria-live": "polite" });
     select.addEventListener("change", () => {
       feedback.textContent = ""; feedback.className = "bk-msg";
-      select.removeAttribute("aria-invalid"); summary.textContent = ""; summary.className = "bk-msg";
+      select.removeAttribute("aria-invalid");
     });
-    const fieldset = el("fieldset", { class: "choice-item" }, [
-      el("legend", { text: `${index + 1}. ${question.prompt}` }), select, feedback,
-    ]);
+    const fieldset = el("fieldset", { class: "choice-item" }, [el("legend", { text: `${index + 1}. ${question.prompt}` })]);
+    const form=el("form",{},[select,feedback]);
     let input = null, substitutionFeedback = null, checkWritten = null;
     if (question.substitution) {
       input = el("input", { type: "text", class: "bk-input substitution-input", dir: "ltr", maxlength: "80", autocomplete: "off", spellcheck: "false", placeholder: "כתבו את הפסוק לאחר ההצבה", "aria-describedby": `${feedbackId}-substitution` });
@@ -61,46 +61,30 @@ export function initPracticeChoice(box) {
       checkInput.addEventListener("click", checkWritten);
       input.addEventListener("input", () => {
         select.disabled = true; select.value = ""; select.removeAttribute("aria-invalid"); input.removeAttribute("aria-invalid");
-        [feedback, substitutionFeedback, summary].forEach(n => { n.textContent = ""; n.className = "bk-msg"; });
+        [feedback, substitutionFeedback].forEach(n => { n.textContent = ""; n.className = "bk-msg"; });
       });
-      fieldset.insertBefore(el("div", { class: "substitution-entry" }, [label, checkInput, substitutionFeedback]), select);
+      form.insertBefore(el("div", { class: "substitution-entry" }, [label, checkInput, substitutionFeedback]), select);
       select.setAttribute("aria-label", `ערך האמת של P(${question.substitution.value})`);
     }
-    return { question, select, feedback, fieldset, input, substitutionFeedback, checkWritten };
-  });
-  const check = el("button", { type: "submit", class: "bk-btn bk-main", text: "בדיקת התשובות" });
-  const reset = el("button", { type: "button", class: "bk-btn bk-quiet", text: "ניסיון חדש" });
-  const form = el("form", {}, [
-    el("p", { text: "בחרו תשובה לכל סעיף ולחצו ״בדיקת התשובות״. אפשר לתקן ולבדוק שוב. הרמזים והפתרון המודרך נמצאים בהמשך." }),
-    ...rows.map(r => r.fieldset), el("div", { class: "bk-bar" }, [check, reset]), summary,
-  ]);
-  form.addEventListener("submit", event => {
-    event.preventDefault();
-    let empty = 0, wrong = 0;
-    rows.forEach(({ question, select, feedback, checkWritten }) => {
-      if (checkWritten) {
-        const result = checkWritten();
-        if (result !== "correct") { if (result === "empty") empty++; else wrong++; return; }
-      }
-      const choice = select.value === "" ? null : question.options[Number(select.value)];
-      if (!choice) empty++;
-      else if (!choice.correct) wrong++;
-      const correct = !!choice?.correct;
-      feedback.className = `bk-msg ${!choice ? "bk-info" : correct ? "bk-good" : "bk-bad"}`;
-      feedback.textContent = choice ? `${correct ? "נכון. " : "כדאי לבדוק שוב. "}${choice.feedback}` : "בחרו תשובה לסעיף הזה.";
-      select.setAttribute("aria-invalid", correct ? "false" : "true");
+    const check=()=>{
+      if(checkWritten&&checkWritten()!=="correct")return;
+      const choice=select.value===""?null:question.options[Number(select.value)];
+      const correct=!!choice?.correct;
+      feedback.className=`bk-msg ${!choice?"bk-info":correct?"bk-good":"bk-bad"}`;
+      feedback.textContent=choice?`${correct?"נכון. ":"כדאי לבדוק שוב. "}${choice.feedback}`:"בחרו תשובה לסעיף הזה.";
+      select.setAttribute("aria-invalid",String(!correct));
+    };
+    const checkButton=el("button",{type:"submit",class:"bk-btn bk-main",text:"בדיקה"});
+    const correct=question.options.find(o=>o.correct);
+    const solution=answerReveal((question.substitution?`P(${question.substitution.value}): ${question.substitution.expected}. `:"")+correct.text+". "+correct.feedback);
+    const reset=el("button",{type:"button",class:"bk-btn bk-quiet",text:"ניסיון חדש"});
+    reset.addEventListener("click",()=>{
+      form.reset();select.removeAttribute("aria-invalid");feedback.textContent="";feedback.className="bk-msg";solution.open=false;
+      if(input){input.removeAttribute("aria-invalid");select.disabled=true;substitutionFeedback.textContent="";substitutionFeedback.className="bk-msg";}
     });
-    summary.className = `bk-msg ${wrong ? "bk-bad" : empty ? "bk-info" : "bk-good"}`;
-    summary.textContent = wrong || empty
-      ? `תשובות נכונות: ${rows.length - wrong - empty} מתוך ${rows.length}. ${empty ? `נשארו ${empty} סעיפים ללא תשובה. ` : ""}${wrong ? "קראו את ההסברים ליד התשובות המסומנות ונסו שוב." : ""}`
-      : "כל התשובות נכונות! קראו את ההסברים, ונסו לנסח גם במילים שלכם מדוע.";
+    form.addEventListener("submit",event=>{event.preventDefault();check();});
+    form.insertBefore(el("div",{class:"bk-bar"},[checkButton,reset]),feedback);form.append(solution);
+    fieldset.append(answerPanel(form));return fieldset;
   });
-  reset.addEventListener("click", () => {
-    rows.forEach(({ select, feedback, input, substitutionFeedback }) => {
-      select.value = ""; select.removeAttribute("aria-invalid"); feedback.textContent = ""; feedback.className = "bk-msg";
-      if (input) { input.value = ""; input.removeAttribute("aria-invalid"); select.disabled = true; substitutionFeedback.textContent = ""; substitutionFeedback.className = "bk-msg"; }
-    });
-    summary.textContent = ""; summary.className = "bk-msg"; (rows[0].input || rows[0].select).focus();
-  });
-  box.append(form); box.classList.add("choice-ready");
+  box.append(...rows);box.classList.add("choice-ready");
 }

@@ -22,7 +22,10 @@ test('chapters keep sets before quantifiers and retain the complete exercise ban
   assert.ok(sets.indexOf('{#practice-quantifiers}') > sets.indexOf('{#sec-set-proofs}'));
   assert.ok((sets.match(/\.thmexm/g)||[]).length >= 12);
   assert.equal((logic.match(/<iframe/g)||[]).length,15);
-  assert.equal((sets.match(/<iframe/g)||[]).length,3);
+  assert.equal((sets.match(/<iframe/g)||[]).length,5);
+  assert.match(sets,/levels=witness,counter,check-all,nobody&embed=1/);
+  assert.ok(sets.indexOf('level=negation&embed=1') > sets.indexOf('### שלילה של כמתים'));
+  assert.ok(sets.indexOf('level=order&embed=1') > sets.indexOf('### סדר הכמתים'));
   const summary=logic.slice(logic.indexOf('## סיכום {#sec-summary}'),logic.indexOf('## תרגול עצמי לפי נושאים'));
   assert.doesNotMatch(summary,/\\forall|\\exists/);
   assert.match(summary,/אבירים ונוכלים/);

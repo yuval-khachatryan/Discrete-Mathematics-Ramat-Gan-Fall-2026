@@ -1,3 +1,4 @@
+import {contextualKeyboard} from './formula-keyboard.js';
 import {initCountingLab} from './set-counting-lab.js';
 import {parseObject,key,display} from './sets.js';
 import {parseStatement} from './set-proof-syntax.js';
@@ -53,7 +54,7 @@ function grid(box){
  table.append(el('thead',{},[el('tr',{},[el('th',{text:'מי אוהב איזה שיר?'}),...songs.map(text=>el('th',{text}))])]));
  const body=el('tbody');people.forEach((name,i)=>{const row=el('tr',{},[el('th',{text:name,scope:'row'})]);songs.forEach((song,j)=>{const b=btn('לא',()=>{matrix[i][j]=!matrix[i][j];b.textContent=matrix[i][j]?'♥':'לא';b.setAttribute('aria-pressed',String(matrix[i][j]));feedback.textContent='';});b.setAttribute('aria-pressed','false');b.setAttribute('aria-label',`${name} אוהב/ת את ${song}`);buttons.push(b);row.append(el('td',{},[b]));});body.append(row);});table.append(body);
  function update(){task.textContent=stage===0?'בנו מצב שבו לכל אדם קיים שיר אהוב, אבל אין שיר שכולם אוהבים. לחצו על התאים כדי לקבוע מי אוהב מה.':'כעת שנו את הלוח כך שלכל אדם יהיה שיר אהוב, וגם יהיה שיר אחד שכולם אוהבים.';}
- box.append(el('p',{text:'הרובוט של המסיבה בטוח: ״אם לכל אחד קיים שיר אהוב, בטח קיים שיר שכולם אוהבים!״ בדקו את הביטחון שלו.'}),task,el('p',{text:'S היא קבוצת שלושת האנשים; M היא קבוצת שלושת השירים; L(x,y) אומר ש־x אוהב את y.'}),el('p',{dir:'ltr',class:'set-proof-formula',text:'∀x ∈ S: (∃y ∈ M: L(x,y))     /     ∃y ∈ M: (∀x ∈ S: L(x,y))'}),table,
+ box.append(el('p',{text:'הרובוט של המסיבה בטוח: ״אם לכל אחד קיים שיר אהוב, בטח קיים שיר שכולם אוהבים!״ בדקו את הביטחון שלו.'}),task,el('p',{text:'S היא קבוצת שלושת האנשים; M היא קבוצת שלושת השירים; L(x,y) אומר ש־x אוהב את y.'}),el('p',{dir:'ltr',class:'set-proof-formula',text:'∀x ∈ S (∃y ∈ M (L(x,y)))     /     ∃y ∈ M (∀x ∈ S (L(x,y)))'}),table,
  btn('בדיקת הלוח',()=>{const bad=matrix.findIndex(row=>!row.some(Boolean)),common=songs.findIndex((_,j)=>matrix.every(row=>row[j]));
    if(bad>=0){say(feedback,`ל־${people[bad]} עדיין אין שיר אהוב. הטענה ״לכל אדם קיים שיר״ אינה מתקיימת.`);return;}
    if(stage===0&&common>=0){say(feedback,`${songs[common]} אהוב על כולם. צריך לבנות מצב שבו אין שיר משותף לכולם.`);return;}
@@ -67,6 +68,7 @@ function mailing(box){
  const title=el('p'),field=input('ביטוי של קבוצת הנמענים','A ∩ B'),feedback=message(),next=btn('למשימה הבאה',()=>{stage++;field.value='';feedback.textContent='';update();});next.hidden=true;
  const roster=el('div',{class:'set-lab-roster'});names.forEach((name,i)=>roster.append(el('span',{class:'set-lab-person',text:`${name}: ${[A.has(i)?'ציור':'',B.has(i)?'מוזיקה':''].filter(Boolean).join(' וגם ')||'לא נרשם/ה'}`})));
  const keys=el('div');for(const symbol of ['A','B','∩','∪','∖','(',')'])keys.append(btn(symbol,()=>{field.setRangeText(symbol,field.selectionStart,field.selectionEnd,'end');field.focus();}));
+ contextualKeyboard(field,keys,{shortcuts:false});
  function update(){title.textContent=tasks[stage].text;next.hidden=true;}
  box.append(el('p',{text:'A — נרשמו לציור; B — נרשמו למוזיקה. לרובוט יש רשימות, אבל הוא צריך מכם את הביטוי שקובע למי לשלוח הודעה.'}),roster,title,lab('כתבו את קבוצת הנמענים',field),keys,btn('בדיקת הרשימה',()=>{try{
   const n=parseStatement('x ∈ ('+field.value+')');const chosen=evaluateSet(n.args[1],env),correct=tasks[stage].answer,extra=[...chosen].find(x=>!correct.has(x)),missing=[...correct].find(x=>!chosen.has(x));

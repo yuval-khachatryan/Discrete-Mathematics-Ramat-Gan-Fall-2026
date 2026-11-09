@@ -1,3 +1,5 @@
+import {answerPanel,answerReveal} from './answer-panel.js';
+import {initQuantifierEvidence} from './quantifier-evidence.js';
 import {initQuantifierNegation} from './quantifier-negation.js';
 import {initMethodProof} from './method-proof-editor.js';
 /* book.js — interactive exercises inside the chapters (not inside a game).
@@ -328,6 +330,14 @@ function initFQ(box) {
 /* ---- 4. T/F quizzes: explanation after answering ------------------------- */
 function initTF(quiz) {
   if (!quiz.querySelector(".tf-why")) return;
+  const solution=answerReveal('');
+  const body=solution.lastElementChild;
+  const correct=quiz.querySelector(`.tf-opt[data-val="${quiz.dataset.correct}"]`);
+  if(correct)body.append(el('p',{text:correct.textContent.trim()}));
+  body.append(...[...quiz.querySelector('.tf-why').childNodes].map(n=>n.cloneNode(true)));
+  solution.addEventListener('toggle',()=>{if(solution.open)typeset(body);});
+  quiz.append(solution);
+  quiz.append(answerPanel(...quiz.childNodes));
   quiz.addEventListener("click", e => {
     if (!e.target.closest(".tf-opt")) return;
     quiz.classList.add("tf-answered");
@@ -336,7 +346,8 @@ function initTF(quiz) {
 }
 
 function init() {
-  document.querySelectorAll("[data-quantifier-negation]").forEach(initQuantifierNegation);
+  document.querySelectorAll("[data-quantifier-evidence]").forEach(initQuantifierEvidence);
+  document.querySelectorAll("[data-quantifier-negation], [data-quantifier-writing]").forEach(initQuantifierNegation);
   initNavigation();
   initReferences();
   document.querySelectorAll(".knight-activity").forEach(initKnightWorkshop);
@@ -354,6 +365,14 @@ function init() {
   document.querySelectorAll(".tf-quiz").forEach(initTF);
   document.querySelectorAll(".lecture-table").forEach(initLectureTable);
   initLectureAnswers();
+  document.querySelectorAll('.fq').forEach(box=>{
+    const controls=[...box.children].filter(n=>n.matches('.bk-fq-row,.bk-bar,.bk-msg,.hint,.explain'));
+    if(controls.length)box.append(answerPanel(...controls));
+  });
+  document.querySelectorAll('.ttq,.proof-editor,.argument-editor,.method-proof').forEach(box=>{
+    if(box.closest('details'))return;
+    const panel=answerPanel();box.before(panel);panel.append(box);
+  });
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
 else init();

@@ -48,6 +48,7 @@ are still labelled. Top-level boxes are numbered; boxes inside .optional are not
 
 local BOX = {
   thmdef = { word = "הגדרה", css = "definition"  },
+  thmconvention = { word = "מוסכמה", css = "notation" },
   thmterm = { word = "מונח חדש", css = "terminology" },
   thmmethod = { word = "שיטה", css = "method" },
   thmrule = { word = "כלל", css = "method" },
@@ -63,6 +64,7 @@ local BOX = {
 
 -- Labelled but UNNUMBERED (see the header).
 local UNNUMBERED = {
+  thmnotation = { word = "כתיב חלופי", css = "notation" },
   thmsummary = { word = "סיכום", css = "summary" },
   thmcomponents = { word = "רכיבי המשחק", css = "components" },
   thmerror = { word = "טעות נפוצה", css = "warning" },
@@ -157,6 +159,19 @@ local function icon_class(b)
   return nil
 end
 
+-- Small decorative illustrations live in the body, below the label.
+local HELPER_ART = {
+  warning = true, ["key-point"] = true, terminology = true,
+  summary = true, notation = true, method = true, ["self-check"] = true, components = true,
+}
+local function add_helper_art(b, css)
+  if HELPER_ART[css] then
+    table.insert(b.content, 2, pandoc.RawBlock("html",
+      '<img class="helper-box-art" src="images/box-helpers/' .. css .. '.svg" alt="" aria-hidden="true" width="56" height="56">'))
+    b.classes[#b.classes + 1] = "has-helper-art"
+  end
+end
+
 local chap, section, item, is_html
 local process
 
@@ -237,6 +252,7 @@ process = function(blocks, in_optional)
         table.insert(b.content, 1, label_para(text, t))
         b.content = process(b.content, in_optional)
         b.classes = { "thmbox", "thmbox-" .. u.css }
+        if is_html then add_helper_art(b, u.css) end
       else
         local box = box_for(orig)
         if box then
@@ -256,6 +272,7 @@ process = function(blocks, in_optional)
           table.insert(b.content, 1, label_para(text, t))
           b.content = process(b.content, in_optional)
           b.classes = { "thmbox", "thmbox-" .. box.css }
+          if is_html then add_helper_art(b, box.css) end
         else
           b.content = process(b.content, in_optional)   -- generic wrapper: recurse
         end

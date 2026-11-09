@@ -8,6 +8,7 @@ try{
  await page.route(/^https?:/,async r=>{if(r.request().url().includes('mathjax'))await r.fulfill({path:fileURLToPath(new URL('../../Alternative Versions/source/node_modules/mathjax/es5/tex-svg.js',import.meta.url)),contentType:'application/javascript'});else await r.abort();});
  await page.goto(new URL('../_book/02-sets.html',import.meta.url).href);
  await page.waitForFunction(()=>window.MathJax?.startup?.promise);await page.evaluate(()=>window.MathJax.startup.promise);
+ await page.locator('.answer-panel').evaluateAll(ns=>ns.forEach(n=>n.open=true));
  const quizzes=page.locator('.example-choice');assert.equal(await quizzes.count(),36);
  for(let i=0;i<await quizzes.count();i++){
   const quiz=quizzes.nth(i),why=quiz.locator('.tf-why');assert.equal(await why.isVisible(),false,`unanswered part ${i}`);

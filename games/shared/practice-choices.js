@@ -696,17 +696,17 @@ export const PRACTICE_CHOICES = {
       "prompt": "איזו נוסחה מבטאת את השלילה?",
       "options": [
         {
-          "text": "⁦∃x∈D: ¬P(x)⁩",
+          "text": "⁦∃x∈D (¬P(x))⁩",
           "correct": true,
           "feedback": "שלילת ״לכל x מתקיים ⁦P(x)⁩״ היא ״קיים x שעבורו ⁦P(x)⁩ אינו מתקיים״."
         },
         {
-          "text": "⁦∀x∈D: ¬P(x)⁩",
+          "text": "⁦∀x∈D (¬P(x))⁩",
           "correct": false,
           "feedback": "שלילת ״לכל x מתקיים ⁦P(x)⁩״ היא ״קיים x שעבורו ⁦P(x)⁩ אינו מתקיים״."
         },
         {
-          "text": "¬∃x∈D: ⁦P(x)⁩",
+          "text": "¬∃x∈D ⁦(P(x))⁩",
           "correct": false,
           "feedback": "שלילת ״לכל x מתקיים ⁦P(x)⁩״ היא ״קיים x שעבורו ⁦P(x)⁩ אינו מתקיים״."
         }
@@ -738,17 +738,17 @@ export const PRACTICE_CHOICES = {
       "prompt": "איזו נוסחה מבטאת זאת?",
       "options": [
         {
-          "text": "⁦∃x∈D: ¬P(x)⁩",
+          "text": "⁦∃x∈D (¬P(x))⁩",
           "correct": false,
           "feedback": "לכל כיסא, התיאור ״פנוי״ אינו מתקיים: לכל x, לא ⁦P(x)⁩."
         },
         {
-          "text": "⁦∀x∈D: ¬P(x)⁩",
+          "text": "⁦∀x∈D (¬P(x))⁩",
           "correct": true,
           "feedback": "לכל כיסא, התיאור ״פנוי״ אינו מתקיים: לכל x, לא ⁦P(x)⁩."
         },
         {
-          "text": "⁦∀x∈D: P(x)⁩",
+          "text": "⁦∀x∈D (P(x))⁩",
           "correct": false,
           "feedback": "לכל כיסא, התיאור ״פנוי״ אינו מתקיים: לכל x, לא ⁦P(x)⁩."
         }
@@ -844,17 +844,17 @@ export const PRACTICE_CHOICES = {
       "prompt": "איך כותבים ״קיים ספר שכל הסטודנטים קראו״?",
       "options": [
         {
-          "text": "⁦∃y∈B: ∀x∈S: R(x,y)⁩",
+          "text": "⁦∃y∈B ∀x∈S (R(x,y))⁩",
           "correct": true,
           "feedback": "תחילה בוחרים ספר אחד y. אותו ספר צריך להתאים לכל סטודנט x."
         },
         {
-          "text": "⁦∀x∈S: ∃y∈B: R(x,y)⁩",
+          "text": "⁦∀x∈S ∃y∈B (R(x,y))⁩",
           "correct": false,
           "feedback": "תחילה בוחרים ספר אחד y. אותו ספר צריך להתאים לכל סטודנט x."
         },
         {
-          "text": "⁦∃x∈S: ∀y∈B: R(x,y)⁩",
+          "text": "⁦∃x∈S ∀y∈B (R(x,y))⁩",
           "correct": false,
           "feedback": "תחילה בוחרים ספר אחד y. אותו ספר צריך להתאים לכל סטודנט x."
         }
@@ -864,17 +864,17 @@ export const PRACTICE_CHOICES = {
       "prompt": "מה מתקבל אחרי שלילה והעברת השלילה פנימה?",
       "options": [
         {
-          "text": "⁦∀y∈B: ∃x∈S: ¬R(x,y)⁩",
+          "text": "⁦∀y∈B ∃x∈S (¬R(x,y))⁩",
           "correct": true,
           "feedback": "כל כמת מתחלף, אבל סדר המשתנים נשמר: לכל ספר קיים לפחות סטודנט שלא קרא אותו."
         },
         {
-          "text": "⁦∃x∈S: ∀y∈B: ¬R(x,y)⁩",
+          "text": "⁦∃x∈S ∀y∈B (¬R(x,y))⁩",
           "correct": false,
           "feedback": "כל כמת מתחלף, אבל סדר המשתנים נשמר: לכל ספר קיים לפחות סטודנט שלא קרא אותו."
         },
         {
-          "text": "⁦∀x∈S: ∃y∈B: ¬R(x,y)⁩",
+          "text": "⁦∀x∈S ∃y∈B (¬R(x,y))⁩",
           "correct": false,
           "feedback": "כל כמת מתחלף, אבל סדר המשתנים נשמר: לכל ספר קיים לפחות סטודנט שלא קרא אותו."
         }
