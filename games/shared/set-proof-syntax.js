@@ -90,7 +90,7 @@ export function validateTypes(n,config){
     if(t.type==='empty')return;
     if(t.type==='singleton'){object(t.args[0]);return;}
     if(!['union','intersection','difference','symmetric','power','complement'].includes(t.type))throw Error('במקום הזה נדרש ביטוי של קבוצה.');
-    if(t.type==='complement'&&!config.universe)throw Error('משלים דורש קבוצה אוניברסלית שהוגדרה בתרגיל.');
+    if(t.type==='complement'&&config.explicitComplement&&!config.universe)throw Error('בתרגיל הזה יש לציין את הקבוצה האוניברסלית של המשלים.');
     t.args.forEach(set);
   };
   const object=t=>{if(t.type==='name'&&objects.has(t.name))return;set(t);};
@@ -98,7 +98,7 @@ export function validateTypes(n,config){
   formula(n);return n;
 }
 export function mapTree(n,f){const rebuilt=n.args?{...n,args:n.args.map(a=>mapTree(a,f))}:n;return f(rebuilt);}
-export function unfold(n,kind,universe='U'){
+export function unfold(n,kind,universe='U',explicitComplement=false){
   return mapTree(n,t=>{
     if(t.type!=='member')return t;const [x,a]=t.args,m=s=>node('member',x,s);
     if(a.type!==kind)return t;
@@ -106,7 +106,7 @@ export function unfold(n,kind,universe='U'){
     if(kind==='union')return node('or',m(a.args[0]),m(a.args[1]));
     if(kind==='difference')return node('and',m(a.args[0]),node('not',m(a.args[1])));
     if(kind==='symmetric')return node('or',node('and',m(a.args[0]),node('not',m(a.args[1]))),node('and',node('not',m(a.args[0])),m(a.args[1])));
-    if(kind==='complement')return node('and',m({type:'name',name:universe}),node('not',m(a.args[0])));
+    if(kind==='complement')return explicitComplement?node('and',m({type:'name',name:universe}),node('not',m(a.args[0]))):node('not',m(a.args[0]));
     if(kind==='empty')return node('false');
     if(kind==='power')return node('subset',x,a.args[0]);
     return t;

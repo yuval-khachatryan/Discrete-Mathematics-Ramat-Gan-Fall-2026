@@ -6788,7 +6788,7 @@
         return;
       }
       if (!["union", "intersection", "difference", "symmetric", "power", "complement"].includes(t.type)) throw Error("במקום הזה נדרש ביטוי של קבוצה.");
-      if (t.type === "complement" && !config.universe) throw Error("משלים דורש קבוצה אוניברסלית שהוגדרה בתרגיל.");
+      if (t.type === "complement" && config.explicitComplement && !config.universe) throw Error("בתרגיל הזה יש לציין את הקבוצה האוניברסלית של המשלים.");
       t.args.forEach(set);
     };
     const object = (t) => {
@@ -6816,7 +6816,7 @@
     const rebuilt = n.args ? { ...n, args: n.args.map((a) => mapTree(a, f)) } : n;
     return f(rebuilt);
   }
-  function unfold(n, kind, universe = "U") {
+  function unfold(n, kind, universe = "U", explicitComplement = false) {
     return mapTree(n, (t) => {
       if (t.type !== "member") return t;
       const [x, a] = t.args, m2 = (s) => node("member", x, s);
@@ -6825,7 +6825,7 @@
       if (kind === "union") return node("or", m2(a.args[0]), m2(a.args[1]));
       if (kind === "difference") return node("and", m2(a.args[0]), node("not", m2(a.args[1])));
       if (kind === "symmetric") return node("or", node("and", m2(a.args[0]), node("not", m2(a.args[1]))), node("and", node("not", m2(a.args[0])), m2(a.args[1])));
-      if (kind === "complement") return node("and", m2({ type: "name", name: universe }), node("not", m2(a.args[0])));
+      if (kind === "complement") return explicitComplement ? node("and", m2({ type: "name", name: universe }), node("not", m2(a.args[0]))) : node("not", m2(a.args[0]));
       if (kind === "empty") return node("false");
       if (kind === "power") return node("subset", x, a.args[0]);
       return t;
@@ -6909,15 +6909,15 @@
   }
   var SET_PROOF_RULES = [
     ["goal-chain", "הניסוחים השקולים שכבר נבדקו למטרה", 1, 1],
-    ["open-forall", "פתיחת הנחה — יהי איבר כלשהו", 0, 0],
-    ["close-forall", "סגירת הנחה לאיבר כלשהו — הכללה לכל איברי התחום", 2, 2],
+    ["open-forall", "פתיחת הנחה — יהי", 0, 0],
+    ["close-forall", "סגירת הנחה — הכללה לכל איברי התחום", 2, 2],
     ["subset-definition", "הגדרת ההכלה — X⊆Y ⇔ ∀x∈X (x∈Y)", 1, 1],
     ["forall-use", "שימוש בטענה לכל איבר — הצבה של איבר מן התחום", 2, 2],
     ["universe-member", "התחום U — איבר בקבוצה הנדונה שייך גם ל־U", 1, 1],
     ["intersection", "הגדרת החיתוך — שייכות לשתי הקבוצות", 1, 2],
     ["union", "הגדרת האיחוד — שייכות לפחות לאחת הקבוצות", 1, 1],
     ["difference", "הגדרת ההפרש — שייך לראשונה ולא לשנייה", 1, 2],
-    ["complement", "הגדרת המשלים — בתוך U ומחוץ לקבוצה", 1, 2],
+    ["complement", "הגדרת המשלים — x ∈ Xᶜ ⇔ x ∉ X", 1, 2],
     ["empty", "הקבוצה הריקה — אין בה איברים", 1, 1],
     ["power", "קבוצת החזקה — X ∈ P(Y) אם ורק אם X ⊆ Y", 1, 1],
     ["symmetric", "הפרש סימטרי — שייך בדיוק לאחת", 1, 1],
@@ -6996,9 +6996,10 @@
     return format(parse2(a)) === format(parse2(b));
   }
   function definitionCheck(kind, sources, target, config) {
+    if (kind === "complement" && !config.explicitComplement && config.universe && definitionCheck(kind, sources, target, { ...config, explicitComplement: true })) return true;
     const expand = (s) => {
       for (let i = 0; i < 24; i++) {
-        const next = unfold(s, kind, config.universe);
+        const next = unfold(s, kind, config.universe, config.explicitComplement);
         if (same5(s, next)) return s;
         if (JSON.stringify(next).length > 4e4) throw Error("פצלו את הפעלת ההגדרה לצעדים קצרים יותר.");
         s = next;
@@ -7037,14 +7038,14 @@
       if (target.type !== "false") return false;
       const facts = sources.flatMap((s) => {
         var _a;
-        return parts(config.universe && ((_a = config.rules) == null ? void 0 : _a.includes("complement")) ? unfold(s, "complement", config.universe) : s);
+        return parts(((_a = config.rules) == null ? void 0 : _a.includes("complement")) ? unfold(s, "complement", config.universe, config.explicitComplement) : s);
       });
       return facts.some((a, i) => facts.slice(i + 1).some((b) => opposite3(a, b)));
     }
     if (rule === "subset-definition") return permutations([sources[0], target]).some(([a, b]) => a.type === "subset" && b.type === "forall" && !freeNames(a).includes(b.args[0].name) && equivalentShape(expandSubset(a, b.args[0].name), b));
     if (rule === "forall-use") return permutations(sources).some(([a, b]) => a.type === "forall" && b.type === "member" && same5(a.args[1], b.args[1]) && equivalentShape(substituteName(a.args[2], a.args[0].name, b.args[0]), target));
     if (rule === "universe-member") return !!config.universe && sources[0].type === "member" && equivalentShape(target, node("member", sources[0].args[0], { type: "name", name: config.universe }));
-    if (laws[rule]) return (rule !== "set-double-complement" || !!config.universe) && setLawApplies(rule, sources[0], target);
+    if (laws[rule]) return setLawApplies(rule, sources[0], target);
     if (definitions.includes(rule)) {
       if (!definitionCheck(rule, sources, target, config)) return false;
       if (config.mode !== "equivalence") return true;
@@ -7084,9 +7085,10 @@
       return !same5(before, after) && walk(before, after);
     }
     if (definitions.includes(rule)) {
+      if (rule === "complement" && !config.explicitComplement && config.universe && checkSetEquivalence(rule, before, after, { ...config, explicitComplement: true })) return true;
       const expand = (s) => {
         for (let i = 0; i < 24; i++) {
-          const next = unfold(s, rule, config.universe);
+          const next = unfold(s, rule, config.universe, config.explicitComplement);
           if (same5(s, next)) return s;
           if (JSON.stringify(next).length > 4e4) throw Error("פצלו את השינוי לכמה צעדים.");
           s = next;
@@ -7106,6 +7108,10 @@
     const candidates = [...extras];
     const root = (n) => {
       const out = [];
+      if (rule === "complement" && n.type === "not" && n.args[0].type === "member") {
+        const [x, set] = n.args[0].args;
+        out.push(node("member", x, node("complement", set)));
+      }
       if (rule === "subset-definition") {
         if (n.type === "subset") {
           const variable = ["x", "y", "z", "x1"].find((v) => !freeNames(n).includes(v));
@@ -7147,7 +7153,7 @@
       });
       return out.slice(0, 64);
     };
-    if (definitions.includes(rule)) candidates.push(unfold(before, rule, config.universe));
+    if (definitions.includes(rule)) candidates.push(unfold(before, rule, config.universe, config.explicitComplement));
     candidates.push(...variants(before));
     return [...new Set(candidates.map(show2))].filter((text) => {
       try {
@@ -7178,7 +7184,7 @@
       try {
         if (!rule || !config.rules.includes(step2.rule) && !(step2.kind === "match-goal" && step2.rule === "goal-chain")) throw Error("בחרו כלל שנלמד וזמין בתרגיל הזה.");
         if (step2.kind === "let") {
-          if (step2.rule !== "open-forall") throw Error("לפתיחת ״יהי״ משתמשים בכלל הפתיחה לאיבר כלשהו.");
+          if (step2.rule !== "open-forall") throw Error("לפתיחת ״יהי״ בחרו בכלל פתיחת ההנחה.");
           const owner = goalOwner().current;
           const text = (step2.assumption || "").trim().replace(/^יהי\s+/, "").trim();
           const bare = /^[a-z][a-z0-9_]{0,7}$/.test(text);
@@ -7217,7 +7223,7 @@
           if (ref === "R" && !r) throw Error("R היא עדיין המטרה בלבד. אפשר לצטט אותה רק אחרי שהוכחה בלי הנחות זמניות פתוחות.");
           if (!r) throw Error(`המקור ${ref} עדיין אינו קיים בהוכחה.`);
           if (r.goalOnly) throw Error("זהו ניסוח של המטרה, לא טענה שהוכחה. אי אפשר לצטט אותו כנתון.");
-          if (r.declaration && step2.rule !== "close-forall") throw Error("בחירת איבר כלשהו אינה טענה שאפשר להשתמש בה כנתון.");
+          if (r.declaration && step2.rule !== "close-forall") throw Error("מתן שם לאיבר אינו טענה שאפשר להשתמש בה כנתון.");
           if (!visible(r.scope, stack)) throw Error(`המקור ${ref} שייך לענף שנסגר. השתמשו במסקנה שהתקבלה בסגירתו.`);
           return r;
         });
@@ -7312,10 +7318,11 @@
       }
       if (rule === "universe-member" && s.type === "member" && config.universe) add(node("member", s.args[0], { type: "name", name: config.universe }));
       if (definitions.includes(rule)) {
-        const n = unfold(s, rule, config.universe);
+        const n = unfold(s, rule, config.universe, config.explicitComplement);
         add(n);
         parts(n).forEach(add);
       }
+      if (rule === "complement") setEquivalenceHints(s, rule, config).map(parseStatement).forEach(add);
       if (rule === "and-out") parts(s).forEach(add);
     }
     if (sources.length === 2) {
@@ -7362,7 +7369,7 @@
       target: `${left} = ${right}`,
       hint,
       parts: [inc(givens, left, right, { ...extra, title: "ההכלה הראשונה" }), inc(givens, right, left, { ...extra, title: "ההכלה השנייה", goal: `(${left}) ⊇ (${right})`, conclusion: `${left} ⊇ ${right}` })],
-      equivalence: [part(givens, `x ∈ (${left})`, `x ∈ (${right})`, { ...extra, mode: "equivalence", intro: "יהי x איבר כלשהו. נראה שתנאי השייכות לשתי הקבוצות שקולים.", conclusion: `${left} = ${right}`, rules: rules.filter((r) => r.startsWith("eq:") || ["equal-use", "intersection", "union", "difference", "complement", "empty", "symmetric", "power"].includes(r)) })]
+      equivalence: [part(givens, `x ∈ (${left})`, `x ∈ (${right})`, { ...extra, mode: "equivalence", intro: "יהי x. נראה שתנאי השייכות לשתי הקבוצות שקולים.", conclusion: `${left} = ${right}`, rules: rules.filter((r) => r.startsWith("eq:") || ["equal-use", "intersection", "union", "difference", "complement", "empty", "symmetric", "power"].includes(r)) })]
     };
   }
   var withComplement = { universe: "U", rules: [...defaults.rules, "complement", "universe-member"] };
@@ -7374,7 +7381,7 @@
     "double-difference": equality("הפרש בתוך הפרש", [], "A ∖ (A ∖ B)", "A ∩ B", "פתחו את הגדרת ההפרש, תחילה בחוץ ואחר כך בפנים. אפשר להשתמש בדה מורגן ובפילוג."),
     "proof-union": inclusion("מהאיחוד אל איחוד גדול יותר", ["A ⊆ B"], "A ∪ C", "B ∪ C", "בשני המקרים אפשר להגיע לאיחוד המבוקש, אך לאותו מקור אין תפקיד בשניהם."),
     "proof-demorgan": equality("דה מורגן בקבוצות", ["x ∈ U"], "(A ∪ B)ᶜ", "Aᶜ ∩ Bᶜ", "פענחו את המשלים ואת האיחוד; שלילת ״או״ נותנת ״וגם״ של שתי השלילות.", withComplement),
-    "complement-inclusion": inclusion("הכיוון מתהפך במשלים", ["A ⊆ B", "x ∈ U"], "Bᶜ", "Aᶜ", "מאיבר שאינו ב־B אפשר להסיק שאינו ב־A. אל תשכחו שהמשלים נלקח בתוך U.", withComplement),
+    "complement-inclusion": inclusion("הכיוון מתהפך במשלים", ["A ⊆ B", "x ∈ U"], "Bᶜ", "Aᶜ", "מאיבר שאינו ב־B אפשר להסיק שאינו ב־A. בעזרת הגדרת המשלים אפשר לעבור ישירות מאי־שייכות לקבוצה לשייכות למשלים שלה.", withComplement),
     "hw-intersection": { title: "משתמשים בשני הנתונים", target: "x ∈ A ∩ C", hint: "הוציאו משייכות לחיתוך את שתי השייכויות. איזו מהן מאפשרת להשתמש בהכלה?", parts: [part(["x ∈ A ∩ B", "B ⊆ C"], null, "x ∈ A ∩ C")] },
     "hw-union": inclusion("די באחד הצדדים", [], "A ∩ B", "A ∪ C", "לא נדרש להוכיח שייכות ל־C. איזה חלק מהנתון מספיק?"),
     "hw-absorption": { title: "שוויון והכלה — שני הכיוונים", target: "(A ∩ B = A) ↔ (A ⊆ B)", hint: "בכיוון הראשון משתמשים בשוויון הנתון. בכיוון השני מוכיחים שתי הכלות.", parts: [
@@ -7756,7 +7763,7 @@
         });
         host.append(tabs);
       }
-      if (config.universe) host.append(el13("p", { class: "set-proof-intro", text: "המשלים נלקח ביחס ל־U. כל הקבוצות הנדונות מוכלות ב־U." }));
+      if (config.universe) host.append(el13("p", { class: "set-proof-intro", text: config.explicitComplement ? "המשלים נלקח ביחס ל־U. בתרגיל הזה מציינים במפורש גם שייכות ל־U." : "המשלים נלקח ביחס לעולם הדיון. אפשר לעבור ישירות בין שייכות למשלים לאי־שייכות לקבוצה, בלי צעד נפרד של שייכות ל־U." }));
       if (config.intro) host.append(el13("p", { class: "set-proof-intro", text: config.intro }));
       if (config.start) host.append(el13("p", {}, [el13("span", { text: "בחלק הזה נוכיח: " }), formula3(config.goal)]));
       const currentFrame = checked.frames.filter((f) => f.kind === "forall").at(-1);
@@ -7776,7 +7783,7 @@
         var _a2, _b2, _c, _d;
         const row = el13("div", { class: "set-proof-row" + (r.assumption ? " set-proof-assumption" : "") + (r.goalOnly ? " set-proof-goal-row" : ""), "data-row": r.id });
         row.style.setProperty("--proof-depth", 0);
-        let reason = r.given ? "נתון" : r.fixed ? "איבר כלשהו — הנחת השייכות לתחילת ההוכחה" : ((_a2 = ruleById(r.rule)) == null ? void 0 : _a2.label.split(" — ")[0]) || "";
+        let reason = r.given ? "נתון" : r.fixed ? "הנחת השייכות לתחילת ההוכחה" : ((_a2 = ruleById(r.rule)) == null ? void 0 : _a2.label.split(" — ")[0]) || "";
         const reasonNode = el13("span", { class: "set-proof-reason", text: reason });
         if (r.kind === "match-goal") reasonNode.prepend(el13("span", { text: "קישור למטרה — " }));
         if (r.goalOnly) reasonNode.prepend(el13("span", { text: "ניסוח שקול למטרה — " }));
@@ -7792,7 +7799,7 @@
         row.append(el13("b", { class: "set-proof-row-id", dir: "ltr", text: finalRow ? `R (${r.id})` : r.id }), r.rule === "open-forall" ? el13("span", { class: "set-proof-arbitrary" }, [
           el13("span", { text: "יהי " }),
           formula3(r.declaration ? r.opens.variable : rowText(r)),
-          ...r.declaration ? [el13("span", { text: " איבר כלשהו." })] : []
+          ...r.declaration ? [el13("span", { text: "." })] : []
         ]) : r.rule === "assume" ? el13("span", {}, [el13("span", { class: "set-proof-assume-word", text: "נניח ש־" }), formula3(rowText(r))]) : formula3(rowText(r)), reasonNode);
         if (r.note) reasonNode.append(el13("span", { text: " — " + r.note }));
         if (!r.given && !r.fixed) {
@@ -7857,7 +7864,7 @@
       });
       if (state.complete) {
         host.append(el13("p", { class: "set-proof-qed" }, [...config.flow === "goals" ? [formula3(showWritten(config.goal))] : [el13("span", { text: config.conclusion || "המטרה הוכחה" })], el13("span", { text: " — מש״ל" })]));
-        if (states.every((s) => s.complete) && (parts2.length > 1 || config.start)) host.append(el13("div", { class: "set-proof-row set-proof-final" }, [el13("b", { dir: "ltr", text: "R" }), formula3(exercise.target), el13("span", { class: "set-proof-reason", text: config.mode === "equivalence" ? "שקילות תנאי השייכות לכל איבר — מש״ל" : parts2.length > 1 ? "כל הכיוונים הוכחו — מש״ל" : "האיבר היה כלשהו, ולכן ההכלה נכונה — מש״ל" })]));
+        if (states.every((s) => s.complete) && (parts2.length > 1 || config.start)) host.append(el13("div", { class: "set-proof-row set-proof-final" }, [el13("b", { dir: "ltr", text: "R" }), formula3(exercise.target), el13("span", { class: "set-proof-reason", text: config.mode === "equivalence" ? "שקילות תנאי השייכות לכל איבר — מש״ל" : parts2.length > 1 ? "כל הכיוונים הוכחו — מש״ל" : "ההוכחה תקפה לכל איברי הקבוצה — מש״ל" })]));
         if (states.some((s) => !s.complete)) host.append(button5("לחלק שטרם הושלם", () => {
           active = states.findIndex((s) => !s.complete);
           render();
@@ -7928,7 +7935,7 @@
         if (currentFrame) {
           const result = checked.available.find((r) => !r.declaration && (equivalentShape(r.formula, currentFrame.innerGoal) || equivalentShape(r.formula, currentFrame.goalState.current)));
           const innerOpen = checked.frames.at(-1) !== currentFrame;
-          const close = button5("סגירת ההנחה — האיבר היה כלשהו", () => commit({ rule: "close-forall", formula: show2(currentFrame.quantified), sources: [currentFrame.id, result.id] }));
+          const close = button5("סגירת ההנחה — הכללה", () => commit({ rule: "close-forall", formula: show2(currentFrame.quantified), sources: [currentFrame.id, result.id] }));
           close.disabled = !result || innerOpen;
           const closing = el13("div", { class: "set-proof-close" }, [close]);
           if (close.disabled) closing.append(el13("span", { text: innerOpen ? "סגרו תחילה את ההנחה הפנימית." : "אפשר לסגור לאחר הוכחת המטרה שבהנחה." }));
@@ -7937,7 +7944,7 @@
         const form = el13("form", { class: "set-proof-input" }), stepNo = checked.nextStep;
         const action = el13("select", { "aria-label": "סוג הפעולה" }, [
           el13("option", { value: "step", text: "הסקת צעד" }),
-          el13("option", { value: "let", text: "יהי — פתיחת הנחה לאיבר כלשהו" }),
+          el13("option", { value: "let", text: "יהי — פתיחת הנחה" }),
           ...((_a = checked.frames.at(-1)) == null ? void 0 : _a.kind) === "assume" ? [] : [el13("option", { value: "restate-goal", text: "ניסוח שקול של המטרה" })],
           el13("option", { value: "match-goal", text: "קישור צעד מוכח למטרה" })
         ]);

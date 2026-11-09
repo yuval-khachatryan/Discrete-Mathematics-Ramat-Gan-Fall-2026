@@ -573,6 +573,17 @@
     const sols = solutions(target, mode);
     return target.map((_, i) => i).filter((i) => sols.some((w) => w[i]) && sols.some((w) => !w[i]));
   }
+  function checkDesignPicks(target, mode, picks) {
+    const missing = target.findIndex((_, i) => picks[i] === void 0);
+    if (missing >= 0) return { ok: false, kind: "missing", index: missing };
+    const candidates = patterns(target.length).filter((w) => picks.every((v, i) => v === null || v === w[i]));
+    if (!candidates.length) return { ok: false, kind: "invalid", index: 0 };
+    for (const wants of candidates) {
+      const said = explainAnswers(wants, mode), index = said.findIndex((a, i) => a.answer !== target[i]);
+      if (index >= 0) return { ok: false, kind: "mismatch", index, answer: said[index].answer, rule: said[index].rule, uncertain: picks.some((v) => v === null) };
+    }
+    return { ok: true };
+  }
   var REASONS = {
     // why a person answers what they answer
     "all-after-no": "מישהו {לפניו|לפניה} כבר ענה ״לא״, כך שכבר ברור שלא כולם רוצים. {הוא|היא} עונה ״לא״, בלי קשר למה {שהוא|שהיא} רוצה.",
@@ -613,7 +624,7 @@
       n: 3,
       wants: [true, true, true],
       expect: { answers: ["dunno", "dunno", "yes"], knowledge: [true, true, true] },
-      goal: "<p>המוכר שואל ״כולם רוצים פלאפל?״. אוילר: ״לא יודע״, עדה: ״לא יודעת״, וגאוס: ״כן״.</p><p><b>כללי השיחה:</b> עונים לפי סדר הכרטיסים. כל דמות יודעת רק אם היא עצמה רוצה פלאפל, ושומעת את התשובות שלפניה. כולם מסיקים נכון ועונים בכנות על שאלת המוכר על הקבוצה כולה. אם המידע שבידיהם אינו מספיק ל״כן״ או ל״לא״, הם עונים ״לא יודע/ת״.</p><p><b>המשימה:</b> אפשר להציג את השיחה בהדרגה בכפתור ״התשובה הבאה״. לפי השיחה המלאה, מה אפשר לדעת על כל דמות? בחרו מתחת לכל כרטיס ״רוצה פלאפל״, ״לא רוצה פלאפל״ או ״אי אפשר לדעת״. לאחר שבחרתם לכולם, לחצו ״בדיקה״. אל תנחשו רצון שאינו נובע מהתשובות.</p>",
+      goal: "<p>המוכר שואל ״כולם רוצים פלאפל?״. אוילר: ״לא יודע״, עדה: ״לא יודעת״, וגאוס: ״כן״.</p><p><b>כללי השיחה:</b> עונים לפי סדר הכרטיסים. כל דמות יודעת רק אם היא עצמה רוצה פלאפל, ושומעת את התשובות שלפניה. כולם מסיקים נכון ועונים בכנות על שאלת המוכר על הקבוצה כולה. אם המידע שבידיהם אינו מספיק ל״כן״ או ל״לא״, הם עונים ״לא יודע/ת״.</p><p><b>המשימה:</b> לפי התשובות שבבועות הדיבור, מה אפשר לדעת על כל דמות? בחרו מתחת לכל כרטיס ״רוצה פלאפל״, ״לא רוצה פלאפל״ או ״אי אפשר לדעת״. לאחר שבחרתם לכולם, לחצו ״בדיקה״. אל תנחשו רצון שאינו נובע מהתשובות.</p>",
       hints: [
         "התחילו מאוילר. אילו הוא <em>לא</em> היה רוצה פלאפל, מה הוא היה עונה על ״כולם רוצים פלאפל?״",
         "אוילר לא ענה ״לא״, ולכן הוא רוצה. אצל עדה זה בדיוק אותו דבר. עכשיו חשבו על גאוס: מה הוא כבר יודע על שני הקודמים כשמגיע תורו?",
@@ -647,7 +658,7 @@
       n: 4,
       wants: [true, false, true, false],
       expect: { answers: ["dunno", "no", "no", "no"], knowledge: [true, false, null, null] },
-      goal: "<p>המוכר שואל ארבע דמויות ״כולם רוצים פלאפל?״. לפי הסדר: אוילר: ״לא יודע״, עדה: ״לא״, גאוס: ״לא״, ואמי: ״לא״.</p><p><b>כללי השיחה:</b> עונים לפי סדר הכרטיסים. כל דמות יודעת רק אם היא עצמה רוצה פלאפל, ושומעת את התשובות שלפניה. כולם מסיקים נכון ועונים בכנות על שאלת המוכר על הקבוצה כולה. אם המידע שבידיהם אינו מספיק ל״כן״ או ל״לא״, הם עונים ״לא יודע/ת״.</p><p><b>המשימה:</b> אפשר להציג את השיחה בהדרגה בכפתור ״התשובה הבאה״. לפי השיחה המלאה, מה אפשר לדעת על כל דמות? בחרו מתחת לכל כרטיס ״רוצה פלאפל״, ״לא רוצה פלאפל״ או ״אי אפשר לדעת״. לאחר שבחרתם לכולם, לחצו ״בדיקה״. אל תנחשו רצון שאינו נובע מהתשובות.</p>",
+      goal: "<p>המוכר שואל ארבע דמויות ״כולם רוצים פלאפל?״. לפי הסדר: אוילר: ״לא יודע״, עדה: ״לא״, גאוס: ״לא״, ואמי: ״לא״.</p><p><b>כללי השיחה:</b> עונים לפי סדר הכרטיסים. כל דמות יודעת רק אם היא עצמה רוצה פלאפל, ושומעת את התשובות שלפניה. כולם מסיקים נכון ועונים בכנות על שאלת המוכר על הקבוצה כולה. אם המידע שבידיהם אינו מספיק ל״כן״ או ל״לא״, הם עונים ״לא יודע/ת״.</p><p><b>המשימה:</b> לפי התשובות שבבועות הדיבור, מה אפשר לדעת על כל דמות? בחרו מתחת לכל כרטיס ״רוצה פלאפל״, ״לא רוצה פלאפל״ או ״אי אפשר לדעת״. לאחר שבחרתם לכולם, לחצו ״בדיקה״. אל תנחשו רצון שאינו נובע מהתשובות.</p>",
       hints: [
         "לכו לפי הסדר. מה אומר ה״לא יודע״ של אוילר? ואיך עדה ידעה לענות ״לא״?",
         "עדה הראשונה שאמרה ״לא״. עכשיו חשבו על גאוס: הוא שמע את ה״לא״ של עדה. האם הוא היה עונה אחרת אילו רצה פלאפל?",
@@ -681,7 +692,7 @@
       n: 4,
       wants: [false, false, false, false],
       expect: { answers: ["dunno", "dunno", "dunno", "no"], knowledge: [false, false, false, false] },
-      goal: "<p>המוכר שואל ״מישהו רוצה פלאפל?״. אוילר: ״לא יודע״, עדה: ״לא יודעת״, גאוס: ״לא יודע״, ואמי: ״לא״.</p><p><b>כללי השיחה:</b> עונים לפי סדר הכרטיסים. כל דמות יודעת רק אם היא עצמה רוצה פלאפל, ושומעת את התשובות שלפניה. כולם מסיקים נכון ועונים בכנות על שאלת המוכר על הקבוצה כולה. אם המידע שבידיהם אינו מספיק ל״כן״ או ל״לא״, הם עונים ״לא יודע/ת״.</p><p><b>המשימה:</b> אפשר להציג את השיחה בהדרגה בכפתור ״התשובה הבאה״. לפי השיחה המלאה, מה אפשר לדעת על כל דמות? בחרו מתחת לכל כרטיס ״רוצה פלאפל״, ״לא רוצה פלאפל״ או ״אי אפשר לדעת״. לאחר שבחרתם לכולם, לחצו ״בדיקה״. אל תנחשו רצון שאינו נובע מהתשובות.</p>",
+      goal: "<p>המוכר שואל ״מישהו רוצה פלאפל?״. אוילר: ״לא יודע״, עדה: ״לא יודעת״, גאוס: ״לא יודע״, ואמי: ״לא״.</p><p><b>כללי השיחה:</b> עונים לפי סדר הכרטיסים. כל דמות יודעת רק אם היא עצמה רוצה פלאפל, ושומעת את התשובות שלפניה. כולם מסיקים נכון ועונים בכנות על שאלת המוכר על הקבוצה כולה. אם המידע שבידיהם אינו מספיק ל״כן״ או ל״לא״, הם עונים ״לא יודע/ת״.</p><p><b>המשימה:</b> לפי התשובות שבבועות הדיבור, מה אפשר לדעת על כל דמות? בחרו מתחת לכל כרטיס ״רוצה פלאפל״, ״לא רוצה פלאפל״ או ״אי אפשר לדעת״. לאחר שבחרתם לכולם, לחצו ״בדיקה״. אל תנחשו רצון שאינו נובע מהתשובות.</p>",
       hints: [
         "בשאלה ״מישהו?״, מי שרוצה פלאפל יודע מיד שהתשובה ״כן״. אז מה אומר ״לא יודע״?",
         "אילו אוילר רצה פלאפל, הוא היה עונה ״כן״. אותו דבר אצל עדה ואצל גאוס. ומה אמי, האחרונה, יודעת כשמגיע תורה?",
@@ -701,13 +712,13 @@
         solutions: [[true, true, true, false, true], [true, true, true, false, false]],
         free: [4]
       },
-      goal: "<p>המוכר שואל ״כולם רוצים פלאפל?״. השיחה המבוקשת היא: אוילר: ״לא יודע״; עדה: ״לא יודעת״; גאוס: ״לא יודע״; אמי: ״לא״; רמנוג׳ן: ״לא״.</p><p><b>כללי השיחה:</b> עונים לפי סדר הכרטיסים. כל דמות יודעת רק אם היא עצמה רוצה פלאפל, ושומעת את התשובות שלפניה. כולם מסיקים נכון ועונים בכנות על שאלת המוכר על הקבוצה כולה. אם המידע שבידיהם אינו מספיק ל״כן״ או ל״לא״, הם עונים ״לא יודע/ת״.</p><p><b>המשימה:</b> הפעם אתם בוחרים מי רוצה פלאפל ומי אינו רוצה. בחרו לכל דמות רצון כך שעל פי כללי השיחה יתקבלו בדיוק התשובות המוצגות. לחצו ״בדיקה״. ייתכן שיש יותר מפתרון אחד.</p>",
+      goal: "<p>המוכר שואל ״כולם רוצים פלאפל?״. השיחה המבוקשת היא: אוילר: ״לא יודע״; עדה: ״לא יודעת״; גאוס: ״לא יודע״; אמי: ״לא״; רמנוג׳ן: ״לא״.</p><p><b>כללי השיחה:</b> עונים לפי סדר הכרטיסים. כל דמות יודעת רק אם היא עצמה רוצה פלאפל, ושומעת את התשובות שלפניה. כולם מסיקים נכון ועונים בכנות על שאלת המוכר על הקבוצה כולה. אם המידע שבידיהם אינו מספיק ל״כן״ או ל״לא״, הם עונים ״לא יודע/ת״.</p><p><b>המשימה:</b> בחרו לכל דמות רצון שמתאים לשיחה המוצגת. אם גם ״רוצה״ וגם ״לא רוצה״ מתאימים, אפשר לבחור ״אי אפשר לדעת״: השיחה אינה מגלה לנו את רצונה. זו אינה התשובה שהדמות אומרת בקול; היא כבר מופיעה בבועת הדיבור. לאחר הבחירה לחצו ״בדיקה״. ייתכן שיש יותר מפתרון אחד.</p>",
       hints: [
         "לכו לפי הסדר. לכל תשובה שאלו: מה הדובר היה צריך לרצות כדי לענות כך?",
         "״לא יודע/ת״ על ״כולם?״ פירושו ״אני רוצה״. ומה עם אמי, הראשונה שאומרת ״לא״? ומה עם רמנוג׳ן, שמדבר אחרי ה״לא״ שלה?",
         "אוילר, עדה וגאוס: 🥙. אמי: 🚫, כי לפניה איש לא אמר ״לא״. רמנוג׳ן שומע את ה״לא״ של אמי ועונה ״לא״ בכל מקרה, אז אצלו אפשר לבחור מה שרוצים."
       ],
-      win: "מצוין, התסריט עובד! ובונוס: הרצון של רמנוג׳ן לא משנה. הפכו אותה ובדקו שוב, והתשובות יישארו אותן תשובות.",
+      win: "מצוין, התסריט עובד! ובונוס: הרצון של רמנוג׳ן אינו נקבע מן השיחה. גם ״רוצה״ וגם ״לא רוצה״ מתאימים, ולכן אפשר לסמן אצלו ״אי אפשר לדעת״.",
       debrief: '<p>הפתרון: <span class="m">W₁ = W₂ = W₃ = T</span> ו־<span class="m">W₄ = F</span>. הרצון של רמנוג׳ן לא משנה דבר: אחרי ש־<span class="m">W₄ = F</span> ה״וגם״ כולו, <span class="m">W₁ ∧ W₂ ∧ W₃ ∧ W₄ ∧ W₅</span>, כבר שקר, יהיה <span class="m">W₅</span> אשר יהיה. לכן לתסריט יש שני פתרונות, ובשניהם המוכר לא יכול לדעת מה רמנוג׳ן רוצה.</p>'
     }
   ];
@@ -720,7 +731,8 @@
   ];
   var WISHES = [
     { value: true, icon: "falafel", label: "רוצה" },
-    { value: false, icon: "nofalafel", label: "לא רוצה" }
+    { value: false, icon: "nofalafel", label: "לא רוצה" },
+    { value: null, icon: "unknown", label: "אי אפשר לדעת" }
   ];
   var UNSET = void 0;
   var ICON_OF = { "🥙": "falafel", "🚫": "nofalafel", "❓": "unknown" };
@@ -744,29 +756,23 @@
     const said = kind === "design" ? level.target : explainAnswers(level.wants, mode).map((x) => x.answer);
     const known = explainKnowledge(said, mode);
     let picks = Array(n).fill(UNSET);
-    const initialShown = kind === "serve" && level.id === "classic" ? 0 : n;
-    let shown = initialShown;
     let done = false;
     let free = [];
     let flagged = -1;
-    const live = el2("div", { class: "bm-sr", "aria-live": "polite" });
     const formula = el2("div", { class: "bm-formula", hidden: true, html: formulaHtml() });
-    const nextBtn = kind === "serve" ? el2("button", { type: "button", class: "g-btn bm-next", onclick: revealNext }) : null;
     const barman = el2("div", { class: "bm-back" }, [
       el2("div", { class: "bm-barman", "aria-hidden": "true", html: sprite("barman") }),
       el2("div", { class: "bm-q-wrap" }, [
         el2("p", { class: "bm-q" }, [el2("span", { class: "bm-sr", text: "המוכר שואל: " }), QUESTION[mode]]),
         formula
-      ]),
-      nextBtn
+      ])
     ]);
     const cards = people.map((p, i) => drawCard(p, i));
     const row = el2("ol", { class: "bm-row", "aria-label": "המתמטיקאים, לפי סדר הדיבור" }, cards.map((c) => c.li));
     ui.stage.append(el2("div", { class: "bm-scene bm-" + kind }, [
       barman,
       el2("div", { class: "bm-counter", "aria-hidden": "true" }),
-      row,
-      live
+      row
     ]));
     function drawCard(p, i) {
       const think = el2("div", { class: "bm-think" });
@@ -804,15 +810,15 @@
       people.forEach((p, i) => {
         const c = cards[i];
         let wish;
-        if (kind === "design") wish = free.includes(i) ? "free" : picks[i];
+        if (kind === "design") wish = picks[i];
         else if (kind === "predict" || done) wish = level.wants[i];
         else wish = "secret";
         const thinkPrefix = `${p.name} ${p.f ? "חושבת" : "חושב"}: `;
         if (wish === "secret") bubble(c.think, "", "הרצון אינו ידוע לכם", { empty: true, srPrefix: thinkPrefix });
-        else if (wish === "free") bubble(c.think, "", "לא משנה", { yours: true, srPrefix: thinkPrefix });
+        else if (wish === null) bubble(c.think, "unknown", "שתי האפשרויות מתאימות", { yours: true, srPrefix: "לפי השיחה: " });
         else if (wish === UNSET) bubble(c.think, "", "בחרו רצון", { yours: true, empty: true, srPrefix: thinkPrefix + "עוד לא נבחר" });
         else bubble(c.think, wish ? "falafel" : "nofalafel", wishWord(wish), { yours: kind === "design", srPrefix: thinkPrefix });
-        const answer = kind === "predict" ? picks[i] : i < shown ? said[i] : UNSET;
+        const answer = kind === "predict" ? picks[i] : said[i];
         const sayPrefix = `${p.name} ${p.f ? "אומרת" : "אומר"}: `;
         if (answer === UNSET) bubble(c.speech, "", kind === "predict" ? "בחרו תשובה" : "התשובה טרם הוצגה", { yours: kind === "predict", empty: true, srPrefix: sayPrefix + "טרם נבחרה תשובה" });
         else bubble(c.speech, "", answer === "yes" ? "כן!" : answerText(answer, p), { yours: kind === "predict", srPrefix: sayPrefix });
@@ -820,9 +826,6 @@
         c.flag.hidden = flagged !== i;
         c.li.classList.toggle("bm-flagged", flagged === i);
       });
-      if (nextBtn) {
-        nextBtn.textContent = shown < n ? `התשובה הבאה (${shown + 1}/${n}) ←` : "שוב מההתחלה ↻";
-      }
       formula.hidden = !done;
     }
     function formulaHtml() {
@@ -836,22 +839,6 @@
       if (flagged === i) flagged = -1;
       draw();
     }
-    function revealNext() {
-      if (shown >= n) {
-        shown = 0;
-        draw();
-        live.textContent = "מתחילים מההתחלה. " + QUESTION[mode];
-        return;
-      }
-      shown++;
-      draw();
-      const i = shown - 1, node = cards[i].speech;
-      node.classList.remove("bm-pop");
-      void node.offsetWidth;
-      node.classList.add("bm-pop");
-      live.textContent = `${people[i].name}: ${quote(said[i], people[i])}`;
-      if (shown >= n) nextBtn.focus();
-    }
     function fail(i, html) {
       flagged = i;
       draw();
@@ -860,7 +847,6 @@
     function check() {
       flagged = -1;
       if (kind === "serve") {
-        shown = n;
         for (let i = 0; i < n; i++) {
           const p = people[i];
           if (picks[i] === UNSET) return fail(i, `עוד לא סימנתם מה אפשר לדעת על ${b(p)}. סמנו ״רוצה פלאפל״, ״לא רוצה פלאפל״ או ״אי אפשר לדעת״, ואז בדקו שוב.`);
@@ -885,13 +871,12 @@
         draw();
         return { ok: true, message: level.win };
       }
-      const sim = explainAnswers(picks.map((v) => v === true), mode);
-      for (let i = 0; i < n; i++) {
-        const p = people[i];
-        if (picks[i] === UNSET) return fail(i, `עוד לא בחרתם מה ${b(p)} רוצה. בחרו ״רוצה״ או ״לא רוצה״ לכל אחד, ואז בדקו שוב.`);
-        if (sim[i].answer !== level.target[i]) {
-          return fail(i, `לפי הרצונות שבחרתם, ${b(p)} עונה ${quote(sim[i].answer, p)} ולא ${quote(level.target[i], p)}: ${reason(sim[i].rule, p)} שנו את הרצון של ${p.name} ובדקו שוב.`);
-        }
+      const result = checkDesignPicks(level.target, mode, picks);
+      if (!result.ok) {
+        const i = result.index, p = people[i];
+        if (result.kind === "missing") return fail(i, `עוד לא בחרתם תשובה עבור ${b(p)}. בחרו ״רוצה״, ״לא רוצה״ או ״אי אפשר לדעת״.`);
+        if (result.kind === "invalid") return fail(i, "בחרו תשובה מתוך האפשרויות שבכרטיס.");
+        return fail(i, `${result.uncertain ? "לפחות אחת מהאפשרויות שסימנתם אינה מתאימה לשיחה. במקרה הזה" : "לפי הרצונות שבחרתם"}, ${b(p)} עונה ${quote(result.answer, p)} ולא ${quote(level.target[i], p)}: ${reason(result.rule, p)} ${result.uncertain ? "בחרו ״אי אפשר לדעת״ רק כאשר שני הרצונות מתאימים לשיחה." : "תקנו את הבחירה ובדקו שוב."}`);
       }
       done = true;
       draw();
@@ -899,7 +884,6 @@
     }
     function reset() {
       picks = Array(n).fill(UNSET);
-      shown = initialShown;
       done = false;
       free = [];
       flagged = -1;
@@ -909,18 +893,17 @@
       flagged = -1;
       done = true;
       if (kind === "serve") {
-        shown = n;
         picks = known.map((k) => k.know);
       } else if (kind === "predict") picks = explainAnswers(level.wants, mode).map((x) => x.answer);
       else {
         const sol = solutions(level.target, mode)[0];
         free = freePeople(level.target, mode);
-        picks = sol.map((v, i) => free.includes(i) ? UNSET : v);
+        picks = sol.map((v, i) => free.includes(i) ? null : v);
       }
       draw();
       if (kind === "design" && free.length) {
         const names = free.map((i) => people[i].name).join(" ו");
-        return `זה הפתרון. אצל ${names} כתוב ״לא משנה״: כל בחירה שם נותנת את אותן תשובות. כדאי לעבור על הפתרון שורה אחר שורה, ואז לנסות בעצמכם (איפוס).`;
+        return `אצל ${names} נבחרה ״אי אפשר לדעת״: גם ״רוצה״ וגם ״לא רוצה״ מתאימים לשיחה. הרצון שלו אינו ידוע לנו; הוא עצמו יודע מה הוא רוצה. שאר הבחירות נקבעות מן השיחה.`;
       }
       return null;
     }

@@ -48,7 +48,7 @@ export function initSetProof(box){
     const config=parts[active],state=states[active],checked=checkSetProof(config,state.steps);
     host.replaceChildren();
     if(parts.length>1){const tabs=el('div',{class:'set-proof-tabs'});parts.forEach((p,i)=>{const b=button((states[i].complete?'✓ ':'')+(p.title||`חלק ${i+1}`),()=>{cancelPendingEdit();active=i;draft=null;editing=null;render();});b.setAttribute('aria-pressed',String(i===active));tabs.append(b);});host.append(tabs);}
-    if(config.universe)host.append(el('p',{class:'set-proof-intro',text:'המשלים נלקח ביחס ל־U. כל הקבוצות הנדונות מוכלות ב־U.'}));
+    if(config.universe)host.append(el('p',{class:'set-proof-intro',text:config.explicitComplement?'המשלים נלקח ביחס ל־U. בתרגיל הזה מציינים במפורש גם שייכות ל־U.':'המשלים נלקח ביחס לעולם הדיון. אפשר לעבור ישירות בין שייכות למשלים לאי־שייכות לקבוצה, בלי צעד נפרד של שייכות ל־U.'}));
     if(config.intro)host.append(el('p',{class:'set-proof-intro',text:config.intro}));
     if(config.start)host.append(el('p',{},[el('span',{text:'בחלק הזה נוכיח: '}),formula(config.goal)]));
     const currentFrame=checked.frames.filter(f=>f.kind==='forall').at(-1);
@@ -63,7 +63,7 @@ export function initSetProof(box){
     checked.rows.forEach(r=>{
       const row=el('div',{class:'set-proof-row'+(r.assumption?' set-proof-assumption':'')+(r.goalOnly?' set-proof-goal-row':''),'data-row':r.id});
       row.style.setProperty('--proof-depth',0);
-      let reason=r.given?'נתון':r.fixed?'איבר כלשהו — הנחת השייכות לתחילת ההוכחה':ruleById(r.rule)?.label.split(' — ')[0]||'';
+      let reason=r.given?'נתון':r.fixed?'הנחת השייכות לתחילת ההוכחה':ruleById(r.rule)?.label.split(' — ')[0]||'';
       const reasonNode=el('span',{class:'set-proof-reason',text:reason});
       if(r.kind==='match-goal')reasonNode.prepend(el('span',{text:'קישור למטרה — '}));
       if(r.goalOnly)reasonNode.prepend(el('span',{text:'ניסוח שקול למטרה — '}));
@@ -71,7 +71,7 @@ export function initSetProof(box){
       if(r.sources?.length){reasonNode.append(el('span',{text:' · '+r.sources.join(', ')}));reasonNode.title=r.sources.map(id=>{const source=checked.rows.find(s=>s.id===id);return id+': '+rowText(source);}).join('\n');}
       const finalRow=state.complete&&parts.length===1&&!config.start&&!r.given&&!r.goalOnly&&!r.scope.length&&equivalentShape(r.formula,parseStatement(config.goal));
       row.append(el('b',{class:'set-proof-row-id',dir:'ltr',text:finalRow?`R (${r.id})`:r.id}),r.rule==='open-forall'?el('span',{class:'set-proof-arbitrary'},[
-        el('span',{text:'יהי '}),formula(r.declaration?r.opens.variable:rowText(r)),...(r.declaration?[el('span',{text:' איבר כלשהו.'})]:[])
+        el('span',{text:'יהי '}),formula(r.declaration?r.opens.variable:rowText(r)),...(r.declaration?[el('span',{text:'.'})]:[])
       ]):r.rule==='assume'?el('span',{},[el('span',{class:'set-proof-assume-word',text:'נניח ש־'}),formula(rowText(r))]):formula(rowText(r)),reasonNode);
       if(r.note)reasonNode.append(el('span',{text:' — '+r.note}));
       if(!r.given&&!r.fixed){const index=r.index;row.append(button('עריכה',()=>{
@@ -108,7 +108,7 @@ export function initSetProof(box){
     });
     if(state.complete){
       host.append(el('p',{class:'set-proof-qed'},[...(config.flow==='goals'?[formula(showWritten(config.goal))]:[el('span',{text:config.conclusion||'המטרה הוכחה'})]),el('span',{text:' — מש״ל'})]));
-      if(states.every(s=>s.complete)&&(parts.length>1||config.start))host.append(el('div',{class:'set-proof-row set-proof-final'},[el('b',{dir:'ltr',text:'R'}),formula(exercise.target),el('span',{class:'set-proof-reason',text:config.mode==='equivalence'?'שקילות תנאי השייכות לכל איבר — מש״ל':parts.length>1?'כל הכיוונים הוכחו — מש״ל':'האיבר היה כלשהו, ולכן ההכלה נכונה — מש״ל'})]));
+      if(states.every(s=>s.complete)&&(parts.length>1||config.start))host.append(el('div',{class:'set-proof-row set-proof-final'},[el('b',{dir:'ltr',text:'R'}),formula(exercise.target),el('span',{class:'set-proof-reason',text:config.mode==='equivalence'?'שקילות תנאי השייכות לכל איבר — מש״ל':parts.length>1?'כל הכיוונים הוכחו — מש״ל':'ההוכחה תקפה לכל איברי הקבוצה — מש״ל'})]));
       if(states.some(s=>!s.complete))host.append(button('לחלק שטרם הושלם',()=>{active=states.findIndex(s=>!s.complete);render();}));
     }else{
       const commit=step=>{
@@ -128,7 +128,7 @@ export function initSetProof(box){
       if(currentFrame){
         const result=checked.available.find(r=>!r.declaration&&(equivalentShape(r.formula,currentFrame.innerGoal)||equivalentShape(r.formula,currentFrame.goalState.current)));
         const innerOpen=checked.frames.at(-1)!==currentFrame;
-        const close=button('סגירת ההנחה — האיבר היה כלשהו',()=>commit({rule:'close-forall',formula:show(currentFrame.quantified),sources:[currentFrame.id,result.id]}));
+        const close=button('סגירת ההנחה — הכללה',()=>commit({rule:'close-forall',formula:show(currentFrame.quantified),sources:[currentFrame.id,result.id]}));
         close.disabled=!result||innerOpen;
         const closing=el('div',{class:'set-proof-close'},[close]);
         if(close.disabled)closing.append(el('span',{text:innerOpen?'סגרו תחילה את ההנחה הפנימית.':'אפשר לסגור לאחר הוכחת המטרה שבהנחה.'}));
@@ -137,7 +137,7 @@ export function initSetProof(box){
       const form=el('form',{class:'set-proof-input'}),stepNo=checked.nextStep;
       const action=el('select',{'aria-label':'סוג הפעולה'},[
         el('option',{value:'step',text:'הסקת צעד'}),
-        el('option',{value:'let',text:'יהי — פתיחת הנחה לאיבר כלשהו'}),
+        el('option',{value:'let',text:'יהי — פתיחת הנחה'}),
         ...(checked.frames.at(-1)?.kind==='assume'?[]:[el('option',{value:'restate-goal',text:'ניסוח שקול של המטרה'})]),
         el('option',{value:'match-goal',text:'קישור צעד מוכח למטרה'})]);
       action.value=draft?.kind||state.action||'step';if(!action.value)action.value='step';

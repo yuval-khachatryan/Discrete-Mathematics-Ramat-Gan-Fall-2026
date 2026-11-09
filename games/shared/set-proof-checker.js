@@ -22,15 +22,15 @@ export function setRuleCategory(id){
 
 export const SET_PROOF_RULES=[
   ['goal-chain','הניסוחים השקולים שכבר נבדקו למטרה',1,1],
-  ['open-forall','פתיחת הנחה — יהי איבר כלשהו',0,0],
-  ['close-forall','סגירת הנחה לאיבר כלשהו — הכללה לכל איברי התחום',2,2],
+  ['open-forall','פתיחת הנחה — יהי',0,0],
+  ['close-forall','סגירת הנחה — הכללה לכל איברי התחום',2,2],
   ['subset-definition','הגדרת ההכלה — X⊆Y ⇔ ∀x∈X (x∈Y)',1,1],
   ['forall-use','שימוש בטענה לכל איבר — הצבה של איבר מן התחום',2,2],
   ['universe-member','התחום U — איבר בקבוצה הנדונה שייך גם ל־U',1,1],
   ['intersection','הגדרת החיתוך — שייכות לשתי הקבוצות',1,2],
   ['union','הגדרת האיחוד — שייכות לפחות לאחת הקבוצות',1,1],
   ['difference','הגדרת ההפרש — שייך לראשונה ולא לשנייה',1,2],
-  ['complement','הגדרת המשלים — בתוך U ומחוץ לקבוצה',1,2],
+  ['complement','הגדרת המשלים — x ∈ Xᶜ ⇔ x ∉ X',1,2],
   ['empty','הקבוצה הריקה — אין בה איברים',1,1],
   ['power','קבוצת החזקה — X ∈ P(Y) אם ורק אם X ⊆ Y',1,1],
   ['symmetric','הפרש סימטרי — שייך בדיוק לאחת',1,1],
@@ -101,7 +101,10 @@ function directBoolean(rule,sources,target){
 import {parse as parseLogic,format as formatLogic} from './logic.js';
 function checkPropositionalIdentity(a,b){return formatLogic(parseLogic(a))===formatLogic(parseLogic(b));}
 function definitionCheck(kind,sources,target,config){
-  const expand=s=>{for(let i=0;i<24;i++){const next=unfold(s,kind,config.universe);if(same(s,next))return s;if(JSON.stringify(next).length>40000)throw Error('פצלו את הפעלת ההגדרה לצעדים קצרים יותר.');s=next;}return s;};
+  // The ambient universe is implicit by default. Keep accepting the longer
+  // expansion too, when a student explicitly supplies its membership condition.
+  if(kind==='complement'&&!config.explicitComplement&&config.universe&&definitionCheck(kind,sources,target,{...config,explicitComplement:true}))return true;
+  const expand=s=>{for(let i=0;i<24;i++){const next=unfold(s,kind,config.universe,config.explicitComplement);if(same(s,next))return s;if(JSON.stringify(next).length>40000)throw Error('פצלו את הפעלת ההגדרה לצעדים קצרים יותר.');s=next;}return s;};
   const src=sources.map(expand),t=expand(target);
   if(src.every((s,i)=>same(s,sources[i]))&&same(t,target))return false;
   // Definitional equivalence, extracting conjuncts, joining the required facts,
@@ -131,15 +134,15 @@ export function checkLocal(rule,sources,target,config={}){
   if(rule==='false'){
     if(target.type!=='false')return false;
     // Membership in a complement entails nonmembership in the original set.
-    // Only unfold this definition when a universe and the definition are available.
-    const facts=sources.flatMap(s=>parts(config.universe&&config.rules?.includes('complement')?unfold(s,'complement',config.universe):s));
+    // Use the ambient universe convention, while respecting explicitly scoped tasks.
+    const facts=sources.flatMap(s=>parts(config.rules?.includes('complement')?unfold(s,'complement',config.universe,config.explicitComplement):s));
     return facts.some((a,i)=>facts.slice(i+1).some(b=>opposite(a,b)));
   }
   if(rule==='subset-definition')return permutations([sources[0],target]).some(([a,b])=>a.type==='subset'&&b.type==='forall'&&!freeNames(a).includes(b.args[0].name)&&eq(expandSubset(a,b.args[0].name),b));
   if(rule==='forall-use')return permutations(sources).some(([a,b])=>a.type==='forall'&&b.type==='member'&&same(a.args[1],b.args[1])&&eq(substituteName(a.args[2],a.args[0].name,b.args[0]),target));
   if(rule==='universe-member')return !!config.universe&&sources[0].type==='member'&&eq(target,node('member',sources[0].args[0],{type:'name',name:config.universe}));
 
-  if(laws[rule])return (rule!=='set-double-complement'||!!config.universe)&&setLawApplies(rule,sources[0],target);
+  if(laws[rule])return setLawApplies(rule,sources[0],target);
   if(definitions.includes(rule)){
     if(!definitionCheck(rule,sources,target,config))return false;
     if(config.mode!=='equivalence')return true;
@@ -179,7 +182,8 @@ export function checkSetEquivalence(rule,before,after,config){
   return !same(before,after)&&walk(before,after);
  }
  if(definitions.includes(rule)){
-  const expand=s=>{for(let i=0;i<24;i++){const next=unfold(s,rule,config.universe);if(same(s,next))return s;if(JSON.stringify(next).length>40000)throw Error('פצלו את השינוי לכמה צעדים.');s=next;}return s;};
+  if(rule==='complement'&&!config.explicitComplement&&config.universe&&checkSetEquivalence(rule,before,after,{...config,explicitComplement:true}))return true;
+  const expand=s=>{for(let i=0;i<24;i++){const next=unfold(s,rule,config.universe,config.explicitComplement);if(same(s,next))return s;if(JSON.stringify(next).length>40000)throw Error('פצלו את השינוי לכמה צעדים.');s=next;}return s;};
   const a=expand(before),b=expand(after);
   return (!same(a,before)||!same(b,after))&&!same(before,after)&&eq(a,b);
  }
@@ -193,6 +197,9 @@ export function setEquivalenceHints(before,rule,config,extras=[]){
  const candidates=[...extras];
  const root=n=>{
   const out=[];
+  if(rule==='complement'&&n.type==='not'&&n.args[0].type==='member'){
+   const [x,set]=n.args[0].args;out.push(node('member',x,node('complement',set)));
+  }
   if(rule==='subset-definition'){
    if(n.type==='subset'){
     const variable=['x','y','z','x1'].find(v=>!freeNames(n).includes(v));if(variable)out.push(expandSubset(n,variable));
@@ -219,7 +226,7 @@ export function setEquivalenceHints(before,rule,config,extras=[]){
   (n.args||[]).forEach((child,i)=>{if(out.length>=64)return;for(const v of variants(child).slice(0,64-out.length)){const args=[...n.args];args[i]=v;out.push({...n,args});}});
   return out.slice(0,64);
  };
- if(definitions.includes(rule))candidates.push(unfold(before,rule,config.universe));
+ if(definitions.includes(rule))candidates.push(unfold(before,rule,config.universe,config.explicitComplement));
  candidates.push(...variants(before));
  return [...new Set(candidates.map(show))].filter(text=>{try{return text.length<=500&&checkSetEquivalence(rule,before,validateTypes(parseStatement(text),config),config);}catch{return false;}}).slice(0,8);
 }
@@ -238,7 +245,7 @@ export function checkSetProof(config,steps){
     try{
       if(!rule||(!config.rules.includes(step.rule)&&!(step.kind==='match-goal'&&step.rule==='goal-chain')))throw Error('בחרו כלל שנלמד וזמין בתרגיל הזה.');
       if(step.kind==='let'){
-        if(step.rule!=='open-forall')throw Error('לפתיחת ״יהי״ משתמשים בכלל הפתיחה לאיבר כלשהו.');
+        if(step.rule!=='open-forall')throw Error('לפתיחת ״יהי״ בחרו בכלל פתיחת ההנחה.');
         const owner=goalOwner().current;
         const text=(step.assumption||'').trim().replace(/^יהי\s+/, '').trim();
         const bare=/^[a-z][a-z0-9_]{0,7}$/.test(text);
@@ -273,7 +280,7 @@ export function checkSetProof(config,steps){
         if(ref==='R'&&!r)throw Error('R היא עדיין המטרה בלבד. אפשר לצטט אותה רק אחרי שהוכחה בלי הנחות זמניות פתוחות.');
         if(!r)throw Error(`המקור ${ref} עדיין אינו קיים בהוכחה.`);
         if(r.goalOnly)throw Error('זהו ניסוח של המטרה, לא טענה שהוכחה. אי אפשר לצטט אותו כנתון.');
-        if(r.declaration&&step.rule!=='close-forall')throw Error('בחירת איבר כלשהו אינה טענה שאפשר להשתמש בה כנתון.');
+        if(r.declaration&&step.rule!=='close-forall')throw Error('מתן שם לאיבר אינו טענה שאפשר להשתמש בה כנתון.');
         if(!visible(r.scope,stack))throw Error(`המקור ${ref} שייך לענף שנסגר. השתמשו במסקנה שהתקבלה בסגירתו.`);
         return r;
       });
@@ -346,7 +353,8 @@ export function setStepHints(config,steps,rule,refs){
       if(s.type==='forall'&&s.args[2].type==='member'&&same(s.args[0],s.args[2].args[0]))add(node('subset',s.args[1],s.args[2].args[1]));
     }
     if(rule==='universe-member'&&s.type==='member'&&config.universe)add(node('member',s.args[0],{type:'name',name:config.universe}));
-    if(definitions.includes(rule)){const n=unfold(s,rule,config.universe);add(n);parts(n).forEach(add);}
+    if(definitions.includes(rule)){const n=unfold(s,rule,config.universe,config.explicitComplement);add(n);parts(n).forEach(add);}
+    if(rule==='complement')setEquivalenceHints(s,rule,config).map(parseStatement).forEach(add);
     if(rule==='and-out')parts(s).forEach(add);
   }
   if(sources.length===2){
