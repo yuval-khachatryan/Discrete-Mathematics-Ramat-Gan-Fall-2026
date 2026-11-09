@@ -54,7 +54,7 @@ export function subsets(atoms){
 }
 export function readable(text){
   if(!/[א-ת]/.test(text)||text.includes('\u2066'))return text;
-  return text.replace(/[A-Za-z0-9∅{}()[\]∈∉⊆∩∪ᶜ△×¬⇒⇔∖≥≤][A-Za-z0-9∅{}()[\],. :\-−=<>∈∉⊆∩∪ᶜ△×¬⇒⇔∖≥≤]*/g,chunk=>{
+  return text.replace(/[A-Za-z0-9∅{}()[\]∈∉⊆⊇∩∪ᶜ△×¬⇒⇔∖≥≤][A-Za-z0-9_∅{}()[\],. :\-−=<>∈∉⊆⊇∩∪ᶜ△×¬⇒⇔∖≥≤]*/g,chunk=>{
     const core=chunk.trimEnd();return '\u2066'+core+'\u2069'+chunk.slice(core.length);
   });
 }
@@ -69,7 +69,7 @@ function mixedText(text){
   return el('p',{class:'sets-prompt',text});
 }
 const rotate=(xs,n)=>xs.slice(n%xs.length).concat(xs.slice(0,n%xs.length));
-function selectOptions(options,seed=0){const s=el('select',{'aria-label':'בחרו תשובה'},[el('option',{value:'',text:'בחרו…'})]);for(const {text,i}of rotate(options.map((text,i)=>({text,i})),seed))s.append(el('option',{value:String(i),text}));return s;}
+function selectOptions(options,seed=0){const s=el('select',{'aria-label':'בחרו תשובה',dir:options.every(t=>!/[א-ת]/.test(t))?'ltr':'rtl'},[el('option',{value:'',text:'בחרו…'})]);for(const {text,i}of rotate(options.map((text,i)=>({text,i})),seed))s.append(el('option',{value:String(i),text}));return s;}
 
 export function initSets(box){
   if(box.dataset.ready)return;const data=SET_TASKS[box.dataset.sets];if(!data)return;
@@ -80,12 +80,20 @@ export function initSets(box){
   if(data.type==='select')return selection(box,data);
   if(data.type==='venn')return venn(box,data);
   if(data.type==='power')return power(box,data);
-  if(data.type==='proof')return proof(box,data);
 }
 function choices(box,data,offset=0){
   const form=el('form');box.append(form);
-  const rows=data.items.map((q,i)=>{const s=selectOptions(q.options,i+box.dataset.sets.length),feedback=msg();s.setAttribute('aria-label',q.prompt);const row=el('fieldset',{class:'sets-item'},[el('legend',{class:'sets-item-number',text:`סעיף ${i+1+offset}`}),mixedText(q.prompt),s,feedback]);s.addEventListener('change',()=>{say(feedback,'');s.removeAttribute('aria-invalid');});form.append(row);return {q,s,feedback};});
-  const result=msg();form.append(button('בדיקת התשובות',()=>{let all=true;for(const {q,s,feedback}of rows){const ok=s.value!==''&&Number(s.value)===q.answer;all&&=ok;s.setAttribute('aria-invalid',String(!ok));say(feedback,s.value===''?'בחרו תשובה.':(ok?'נכון. ':'כדאי לבדוק שוב. ')+q.why,ok);}say(result,all?(data.success||'כל התשובות נכונות.'):'בדקו את המשוב ונסו שוב.',all);}),button('איפוס',()=>{form.reset();rows.forEach(({s,feedback})=>{s.removeAttribute('aria-invalid');say(feedback,'');});say(result,'');}),result);
+  const rows=data.items.map((q,i)=>{
+    const binary=q.options.length===2&&q.options.includes('כן')&&q.options.includes('לא');
+    const s=binary?el('div',{class:'sets-binary',role:'group'}):selectOptions(q.options,i+box.dataset.sets.length),feedback=msg();
+    s.setAttribute('aria-label',q.prompt);
+    if(binary){
+      s.value='';q.options.forEach((text,j)=>{const b=button(text,()=>{s.value=String(j);[...s.children].forEach((n,k)=>n.setAttribute('aria-pressed',String(j===k)));s.dispatchEvent(new Event('change'));});b.setAttribute('aria-pressed','false');s.append(b);});
+    }
+    const row=el('fieldset',{class:'sets-item'},[el('legend',{class:'sets-item-number',text:`סעיף ${i+1+offset}`}),mixedText(q.prompt),s,feedback]);
+    s.addEventListener('change',()=>{say(feedback,'');s.removeAttribute('aria-invalid');});form.append(row);return {q,s,feedback,binary};
+  });
+  const result=msg();form.append(button('בדיקת התשובות',()=>{let all=true;for(const {q,s,feedback}of rows){const ok=s.value!==''&&Number(s.value)===q.answer;all&&=ok;s.setAttribute('aria-invalid',String(!ok));say(feedback,s.value===''?'בחרו תשובה.':(ok?'נכון. ':'כדאי לבדוק שוב. ')+q.why,ok);}say(result,all?(data.success||'כל התשובות נכונות.'):'בדקו את המשוב ונסו שוב.',all);}),button('איפוס',()=>{form.reset();rows.forEach(({s,feedback,binary})=>{if(binary){s.value='';[...s.children].forEach(n=>n.setAttribute('aria-pressed','false'));}s.removeAttribute('aria-invalid');say(feedback,'');});say(result,'');}),result);
   form.addEventListener('submit',e=>e.preventDefault());
 }
 function cardinality(box,data){
@@ -144,21 +152,4 @@ function power(box,data){
   const buttons=data.atoms.map(a=>{const b=button(a,()=>{chosen.has(a)?chosen.delete(a):chosen.add(a);b.setAttribute('aria-pressed',String(chosen.has(a)));say(feedback,'');});b.setAttribute('aria-pressed','false');cards.append(b);return b;});
   function update(){progress.textContent=`נמצאו ${saved.size} מתוך ${expected.length} תת־קבוצות.`;list.replaceChildren();for(const [k,n]of saved){const b=button(display(n)+' ×',()=>{saved.delete(k);say(feedback,'');update();});b.dir='ltr';b.setAttribute('aria-label','מחיקת '+display(n));list.append(b);}}
   box.append(math('A = {'+data.atoms.join(', ')+'}'),mixedText('בנו את כל תת־הקבוצות של A. בחרו איברים והוסיפו את הקבוצה שבניתם. כדי להוסיף את הקבוצה הריקה, השאירו את כל האיברים לא מסומנים. לחיצה על קבוצה שכבר הוספתם מוחקת אותה.'),cards,button('הוספת הקבוצה',()=>{const n={type:'set',items:[...chosen].map(parseObject)},k=key(n);if(saved.has(k))return say(feedback,'הקבוצה הזאת כבר ברשימה. שינוי הסדר אינו יוצר קבוצה חדשה.',false);saved.set(k,n);chosen.clear();buttons.forEach(b=>b.setAttribute('aria-pressed','false'));say(feedback,saved.size===expected.length?'מצאתם את כל תת־הקבוצות! הרשימה שיצרתם היא קבוצת החזקה.':'הקבוצה נוספה. איזו אפשרות עוד חסרה?',true);update();}),button('רמז',()=>{const missing=expected.filter(n=>!saved.has(key(n)));say(feedback,missing.length?`עדיין חסרה תת־קבוצה עם ${missing[0].items.length} איברים.`:'כבר מצאתם את כולן.');}),button('איפוס',()=>{saved.clear();chosen.clear();buttons.forEach(b=>b.setAttribute('aria-pressed','false'));say(feedback,'');update();}),progress,list,feedback);update();
-}
-function proof(box,data){
-  let index=0;const preview=el('ol',{class:'sets-proof-preview'}),area=el('div'),feedback=msg();
-  const rules=[...new Set(data.steps.map(s=>s.rule)), 'משפט נכון בדוגמה אחת'];
-  function row(){area.replaceChildren();if(index===data.steps.length){area.append(mixedText(data.end),mixedText('כתבו עכשיו את ההוכחה ברצף על דף, כולל המטרה והנימוקים.'));return;}
-    const step=data.steps[index],formula=selectOptions(step.options,index+1),rule=selectOptions(rules,index+2);
-    formula.setAttribute('aria-label','השורה הבאה בהוכחה');rule.setAttribute('aria-label','הנימוק למעבר');
-    const selected=el('p',{class:'sets-selected-formula'});formula.addEventListener('change',()=>{selected.textContent=formula.value===''?'':readable(step.options[Number(formula.value)]);say(feedback,'');});rule.addEventListener('change',()=>say(feedback,''));
-    area.append(el('label',{},[mixedText('בחרו את השורה הבאה:'),formula,selected]),el('label',{},[mixedText('בחרו נימוק:'),rule]),button('בדיקת הצעד',()=>{
-      if(formula.value===''||rule.value==='')return say(feedback,'בחרו גם שורה וגם נימוק.',false);
-      if(Number(formula.value)!==step.answer)return say(feedback,'השורה שבחרתם אינה המעבר המבוקש. '+step.why,false);
-      if(rules[Number(rule.value)]!==step.rule)return say(feedback,'השורה מתאימה, אבל הנימוק אינו מצדיק את המעבר. '+step.why,false);
-      preview.append(el('li',{},[math(data.link+' '+step.options[step.answer]),el('span',{text:' — '+step.rule})]));index++;say(feedback,index===data.steps.length?'ההוכחה הושלמה.':'הצעד נכון ונוסף להוכחה.',true);row();
-    }));
-  }
-  const reset=()=>{index=0;preview.replaceChildren(el('li',{},[math(data.start),el('span',{text:' — נקודת ההתחלה'})]));say(feedback,'');row();};
-  box.append(mixedText(data.goal),mixedText(data.intro),preview,area,button('התחלה מחדש',reset),feedback);reset();
 }

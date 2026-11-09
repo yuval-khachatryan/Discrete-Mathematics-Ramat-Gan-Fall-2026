@@ -59,6 +59,8 @@ import { initNavigation } from "./navigation.js";
 import { initReferences } from "./references.js";
 import { contextualKeyboard } from "./formula-keyboard.js";
 import { initSets } from "./sets.js";
+import { initSetProof } from './set-proof-editor.js';
+import { initSetLab } from './set-labs.js';
 import { initPracticeChoice } from "./practice-choice.js";
 import { initLectureTable, initLectureAnswers } from "./lecture-reveal.js";
 import { evaluationSteps, show } from "../gate/knights.js";
@@ -338,6 +340,8 @@ function init() {
   document.querySelectorAll(".knight-activity").forEach(initKnightWorkshop);
   document.querySelectorAll(".method-proof").forEach(initMethodProof);
   document.querySelectorAll(".sets-exercise").forEach(initSets);
+  document.querySelectorAll(".set-proof").forEach(initSetProof);
+  document.querySelectorAll(".set-lab").forEach(initSetLab);
   document.querySelectorAll(".choice-exercise").forEach(initPracticeChoice);
   document.querySelectorAll(".argument-editor").forEach(initArgumentEditor);
   document.querySelectorAll(".proof-editor").forEach(initProofEditor);
