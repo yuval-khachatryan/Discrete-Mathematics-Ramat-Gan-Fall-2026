@@ -1,5 +1,5 @@
 import {setProofRuleView} from "./set-proof-rule-view.js";
-import {MODELS} from './set-proof-models.js';
+import {MODELS,EQUIVALENCE_MODELS} from './set-proof-models.js';
 import {checkSetProof,ruleById} from './set-proof-checker.js';
 import {show,showWritten} from './set-proof-syntax.js';
 
@@ -15,19 +15,23 @@ export function createSetModelView(id,exercise){
   return {panel,build(){
     if(built)return;built=true;
     panel.append(el('h4','set-model-heading','פתרון לדוגמה'),el('p','set-model-intro','זו דרך אפשרית אחת. גם דרך אחרת מתקבלת, כל עוד כל צעד מנומק והמטרה הוכחה.'));
-    exercise.parts.forEach((config,i)=>{
-      const result=checkSetProof(config,MODELS[id][i]);
+    const equivalence=exercise.defaultMethod==='equivalence';
+    const parts=equivalence?exercise.equivalence:exercise.parts,models=equivalence?EQUIVALENCE_MODELS[id]:MODELS[id];
+    parts.forEach((config,i)=>{
+      const result=checkSetProof(config,models[i]);
       if(!result.ok||!result.reached)throw Error(`Invalid model solution: ${id}/${i}: ${result.error?.message||'target not reached'}`);
       const section=el('section','set-model-part');
-      if(exercise.parts.length>1)section.append(el('h5','',config.title||`חלק ${i+1}`));
+      if(parts.length>1)section.append(el('h5','',config.title||`חלק ${i+1}`));
       const target=el('p','set-model-target','נראה ש־');target.append(math(showWritten(config.goal)));section.append(target);
       if(config.universe)section.append(el('p','set-model-intro','כל המשלים נלקחים ביחס לאותו עולם דיון.'));
+      if(config.mode==='equivalence')section.append(el('p','set-model-intro','יהי x עצם שרירותי בעולם הדיון. כל שורה שקולה לשורה שלפניה; לכן השייכות לשתי הקבוצות שקולה לכל x.'));
       const blocks=new Map();
       for(const r of result.rows){
         const row=el('div','set-model-row'),label=el('b','set-proof-row-id',r.id);label.dir='ltr';
         const statement=el('div','set-model-statement');
         if(r.rule==='open-forall')statement.append(document.createTextNode('יהי '));
         else if(r.rule==='assume')statement.append(document.createTextNode('נניח ש־'));
+        if(config.mode==='equivalence'&&!r.fixed&&!r.given)statement.append(math('⇔ '));
         statement.append(math(r.written||show(r.formula)));
         const reason=el('div','set-model-reason',r.given?'נתון':r.fixed?'נקודת המוצא':ruleById(r.rule)?.label.split(' — ')[0]||'');
         if(!r.given&&!r.fixed){const details=setProofRuleView(r,result.rows);if(details)reason.replaceChildren(details);}
@@ -44,6 +48,6 @@ export function createSetModelView(id,exercise){
       }
       section.append(el('p','set-proof-qed','מש״ל'));panel.append(section);
     });
-    if(exercise.parts.length>1){const final=el('p','set-model-target','קיבלנו את שני הכיוונים, ולכן ');final.append(math(exercise.target));panel.append(final);}
+    if(parts.length>1||equivalence){const final=el('p','set-model-target',equivalence?'תנאי השייכות שקולים לכל x, ולכן ':'קיבלנו את שני הכיוונים, ולכן ');final.append(math(exercise.target));panel.append(final);}
   }};
 }

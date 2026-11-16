@@ -2,8 +2,8 @@ import {answerPanel,answerReveal} from './answer-panel.js';
 import {contextualKeyboard} from './formula-keyboard.js';
 import {readable} from './sets.js';
 function normalize(text){
-  return text.replace(/[\u2066-\u2069]/g,'').replace(/\\(?:left|right)/g,'')
-    .replace(/\\?\b(forall|exists|neg|lnot|not|in|colon)\b/gi,(_,w)=>({forall:'∀',exists:'∃',neg:'¬',lnot:'¬',not:'¬',in:'∈',colon:':'})[w.toLowerCase()])
+  return text.replace(/[\u2066-\u2069]/g,'').replace(/\\(?:left|right)/g,'').replace(/∄|\\nexists\b/g,'¬∃')
+    .replace(/\\?\b(forall|exists|exist|neg|lnot|not|in|colon)\b/gi,(_,w)=>({forall:'∀',exists:'∃',exist:'∃',neg:'¬',lnot:'¬',not:'¬',in:'∈',colon:':'})[w.toLowerCase()])
     .replace(/[!~]/g,'¬').trim();
 }
 
@@ -90,4 +90,39 @@ export function initQuantifierNegation(box){
   form.append(label,keys,check,hint,feedback);
   if(!writing)form.append(answerReveal((original==='∀'?'∃':'∀')+'x ∈ D (¬P(x))'));
   box.append(answerPanel(form));
+}
+
+
+// Normalize only quantifier negation and double negation; never evaluate a fixed class roster.
+export function checkQuantifierStatement(input,mode){
+ const fail=message=>({ok:false,message});
+ const text=normalize(input);if(!text)return fail('כתבו נוסחה לפני הבדיקה.');
+ if(text.length>300)return fail('כתבו נוסחה קצרה המתארת את הטענה.');
+ let tree;try{tree=parse(text);}catch(e){return fail(e.message);}
+ function normal(n,negative=false){
+  if(n.type==='not')return normal(n.body,!negative);
+  if(n.type==='∀'||n.type==='∃')return {...n,type:negative?(n.type==='∀'?'∃':'∀'):n.type,body:normal(n.body,negative)};
+  return {...n,negative};
+ }
+ const n=normal(tree),negative=mode==='not-all';
+ if(n.type!==(negative?'∃':'∀')||n.domain!=='D'||n.body.type!=='predicate'||n.body.predicate!=='P'||n.body.variables.length!==1||n.body.variable!==n.variable||n.body.negative!==negative)
+  return fail(negative?'הנוסחה צריכה לומר שיש לפחות סטודנט אחד שלא החזיר. ״אף אחד לא החזיר״ היא טענה חזקה יותר. בדקו גם את התחום ואת המשתנה.':'הנוסחה צריכה לחול על כל הסטודנטים בתחום D ולקבוע שכל אחד מהם מקיים את P.');
+ return {ok:true,message:negative?'נכון. לא כולם החזירו: קיים לפחות סטודנט אחד שלא החזיר. ייתכן שהאחרים כן החזירו.':'נכון. הנוסחה אומרת שכל סטודנט בתחום D החזיר את הספר.'};
+}
+export function initQuantifierStatement(box){
+ if(box.dataset.ready)return;box.dataset.ready='true';box.replaceChildren();
+ const mode=box.dataset.quantifierStatement;
+ const el=(tag,text='',attrs={})=>{const n=document.createElement(tag);n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};
+ const form=el('form','',{class:'quantifier-negation-form'}),input=el('input','',{type:'text',dir:'ltr',maxlength:'300',class:'bk-input','aria-label':mode==='all'?'ניסוח כל הסטודנטים החזירו':'ניסוח לא כל הסטודנטים החזירו',autocomplete:'off',spellcheck:'false'});
+ const keys=el('div','',{class:'quantifier-negation-keys'});
+ for(const symbol of ['∀','∃','¬','∄','x','∈','D','P(x)','(',')']){
+  const b=el('button',symbol,{type:'button',class:'bk-btn',dir:'ltr','aria-label':'הוספת '+symbol});
+  b.onclick=()=>{input.setRangeText(symbol,input.selectionStart,input.selectionEnd,'end');input.focus();input.dispatchEvent(new Event('input',{bubbles:true}));};keys.append(b);
+ }
+ contextualKeyboard(input,keys,{shortcuts:false});
+ const feedback=el('p','',{class:'bk-msg','aria-live':'polite'}),submit=el('button','בדיקה',{type:'submit',class:'bk-btn'});
+ input.oninput=()=>{feedback.textContent='';input.removeAttribute('aria-invalid');};
+ form.onsubmit=e=>{e.preventDefault();input.value=normalize(input.value);const result=checkQuantifierStatement(input.value,mode);feedback.textContent=result.message;feedback.className='bk-msg '+(result.ok?'bk-good':'bk-bad');input.setAttribute('aria-invalid',String(!result.ok));};
+ form.append(input,keys,el('p','אפשר להקליד forall, exists, not. הסימן ∄ פירושו ״לא קיים״.'),submit,feedback,answerReveal(mode==='all'?'∀x ∈ D (P(x))  ⇔  ¬∃x ∈ D (¬P(x))':'¬∀x ∈ D (P(x))  ⇔  ∃x ∈ D (¬P(x))'));
+ box.append(answerPanel(form));
 }

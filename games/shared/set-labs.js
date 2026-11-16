@@ -1,10 +1,9 @@
+import {attachSetAnswerInput} from "./set-answer-input.js";
 import {initDisjointCounterexample} from "./disjoint-counterexample.js";
 import {stageNavigation} from "./stage-navigation.js";
-import {contextualKeyboard} from './formula-keyboard.js';
 import {robotSpeech} from './robot-speech.js';
 import {initCountingLab} from './set-counting-lab.js';
 import {parseObject,key,display} from './sets.js';
-import {parseStatement} from './set-proof-syntax.js';
 const el=(t,a={},children=[])=>{const n=document.createElement(t);for(const[k,v]of Object.entries(a)){if(k==='text')n.textContent=v;else n.setAttribute(k,v);}n.append(...children);return n;};
 const btn=(text,fn)=>{const b=el('button',{type:'button',class:'bk-btn',text});b.addEventListener('click',fn);return b;};
 const message=()=>el('p',{'aria-live':'polite',class:'bk-msg'});
@@ -70,23 +69,36 @@ function grid(box){
  }),next,btn('איפוס',()=>{matrix=people.map(()=>songs.map(()=>false));buttons.forEach(b=>{b.textContent='לא';b.setAttribute('aria-pressed','false');});next.hidden=true;feedback.textContent='';update();}),feedback);update();
 }
 function mailing(box){
- const names=['נועה','דן','מאיה','אורי','רוני','גל'],A=new Set([0,1,2]),B=new Set([1,2,3]),env={A,B,U:new Set(names.map((_,i)=>i))};
+ const names=['נועה','דן','מאיה','אורי','רוני','גל'],A=new Set([0,1,2]),B=new Set([1,2,3]);
  const tasks=[{text:'שלחו הודעה רק למי שנרשם גם לציור וגם למוזיקה.',answer:intersect(A,B)},{text:'שלחו הודעה לכל מי שנרשם לפחות לאחת משתי הסדנאות.',answer:union(A,B)},{text:'שלחו הודעה למי שנרשם לציור ולא למוזיקה.',answer:difference(A,B)}];let stage=0;
- const answers=tasks.map(()=>({value:'',text:'',kind:''}));
+ const states=tasks.map(()=>({chosen:new Set(),text:'',solved:false}));
  const nav=stageNavigation(tasks.map(t=>t.text),go);
- function go(i){answers[stage]={value:field.value,text:feedback.textContent,kind:feedback.className};stage=i;field.value=answers[i].value;feedback.textContent=answers[i].text;feedback.className=answers[i].kind;update();}
- const title=el('p'),field=input('ביטוי של קבוצת הנמענים','A ∩ B'),feedback=message(),next=btn('למשימה הבאה',()=>go(stage+1));next.hidden=true;
- const roster=el('div',{class:'set-lab-roster'});names.forEach((name,i)=>roster.append(el('span',{class:'set-lab-person',text:`${name}: ${[A.has(i)?'ציור':'',B.has(i)?'מוזיקה':''].filter(Boolean).join(' וגם ')||'לא נרשם/ה'}`})));
- const keys=el('div');for(const symbol of ['A','B','∩','∪','∖','(',')'])keys.append(btn(symbol,()=>{field.setRangeText(symbol,field.selectionStart,field.selectionEnd,'end');field.focus();}));
- contextualKeyboard(field,keys,{shortcuts:false});
- function update(){nav.update(stage);title.textContent=tasks[stage].text;next.hidden=true;}
- box.append(nav.root,el('p',{text:'A — נרשמו לציור; B — נרשמו למוזיקה.'}),roster,robotSpeech(title),lab('כתבו את קבוצת הנמענים',field),keys,btn('בדיקת הרשימה',()=>{try{
-  const n=parseStatement('x ∈ ('+field.value+')');const chosen=evaluateSet(n.args[1],env),correct=tasks[stage].answer,extra=[...chosen].find(x=>!correct.has(x)),missing=[...correct].find(x=>!chosen.has(x));
-  if(extra!==undefined){say(feedback,`${names[extra]} נכלל/ת ברשימה, אבל אינו/ה עומד/ת בתנאי המבוקש. בדקו את שתי ההרשמות שלו/ה.`);return;}
-  if(missing!==undefined){say(feedback,`${names[missing]} עומד/ת בתנאי, אבל נשמט/ה מהרשימה.`);return;}
-  say(feedback,'נכון — אלה בדיוק הנמענים המתאימים. הרשימה משמשת בדיקה לדוגמה הזאת, ולא הוכחה לכל הקבוצות.',true);next.hidden=stage===tasks.length-1;
- }catch(e){say(feedback,e.message);}}),next,feedback);update();
+ const title=el('p'),feedback=message(),next=btn('למשימה הבאה',()=>go(stage+1));
+ const lists=el('div',{class:'set-mail-lists'});
+ for(const [name,description,indices]of [['A','נרשמו לציור',A],['B','נרשמו למוזיקה',B]]){
+  lists.append(el('section',{class:'set-mail-list','aria-label':`קבוצה ${name}`},[
+   el('h4',{text:`${name} — ${description}`}),el('ul',{},[...indices].map(i=>el('li',{text:names[i]}))),
+  ]));
+ }
+ const choices=el('div',{class:'set-mail-choices',role:'group','aria-label':'בחירת הנמענים'});
+ const buttons=names.map((name,i)=>{
+  const button=btn(name,()=>{const state=states[stage];state.chosen.has(i)?state.chosen.delete(i):state.chosen.add(i);state.text='';state.solved=false;update();});
+  button.setAttribute('aria-pressed','false');choices.append(button);return button;
+ });
+ function go(i){stage=i;update();}
+ function update(){
+  const state=states[stage];nav.update(stage,states.map(s=>s.solved));title.textContent=tasks[stage].text;
+  buttons.forEach((b,i)=>b.setAttribute('aria-pressed',String(state.chosen.has(i))));
+  feedback.textContent=state.text;feedback.className='bk-msg '+(state.text?(state.solved?'bk-good':'bk-bad'):'');next.hidden=!state.solved||stage===tasks.length-1;
+ }
+ box.append(nav.root,lists,robotSpeech(title),el('p',{text:'בחרו את שמות הנמענים. לחיצה נוספת מבטלת בחירה. חלק מהשמות אינם מופיעים באף רשימה.'}),choices,btn('בדיקת הרשימה',()=>{
+  const state=states[stage],correct=tasks[stage].answer,extra=[...state.chosen].find(x=>!correct.has(x)),missing=[...correct].find(x=>!state.chosen.has(x));
+  state.solved=extra===undefined&&missing===undefined;
+  state.text=extra!==undefined?`${names[extra]} אינו/ה עומד/ת בתנאי המבוקש. בדקו באילו רשימות השם מופיע.`:missing!==undefined?'עדיין חסרים נמענים. בדקו שוב את שתי הרשימות.':'נכון — בחרתם בדיוק את הנמענים המתאימים.';
+  update();
+ }),btn('איפוס הבחירה',()=>{states[stage]={chosen:new Set(),text:'',solved:false};update();}),next,feedback);update();
 }
+
 function counter(box,kind){
  const descriptions={
  'union-equal':'בנו קבוצות A ו־B שמפריכות את טענת הרובוט. כתבו גם איבר שמבדיל בין שני הצדדים.',
@@ -100,5 +112,5 @@ function counter(box,kind){
  for(const name of ['A','B',...(['inclusion-error','strict-union-diff','difference-brackets'].includes(kind)?['C']:[])]){fields[name]=input('קבוצה '+name);form.append(lab(name,fields[name]));}
  const witness=input('איבר שמפריך את הטענה','למשל 4');if(kind!=='two-witnesses')form.append(lab('איבר שמראה את הכישלון',witness));
  const check=()=>{const result=checkCounterexample(kind,Object.fromEntries(Object.entries(fields).map(([k,v])=>[k,v.value])),kind==='two-witnesses'?'0':witness.value);say(feedback,result.message,result.ok);};
- form.addEventListener('submit',e=>{e.preventDefault();check();});form.append(btn('בדיקת הדוגמה',check),feedback);box.append(form);
+ form.addEventListener('submit',e=>{e.preventDefault();check();});form.append(btn('בדיקת הדוגמה',check),feedback);box.append(form);Object.values(fields).forEach(attachSetAnswerInput);if(kind!=='two-witnesses')attachSetAnswerInput(witness);
 }

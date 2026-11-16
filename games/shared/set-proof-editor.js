@@ -18,14 +18,14 @@ export function initSetProof(box){
   const question=el('div',{class:'set-proof-question'},[...box.childNodes]);
   box.dataset.ready='true';box.classList.add('set-proof-editor');box.replaceChildren();
   const workspace=el('details',{class:'set-proof-workspace'},[el('summary',{text:'כתיבת הוכחה'})]);
-  let parts=exercise.parts,states=parts.map(()=>({steps:[],complete:false})),active=0,editing=null,draft=null;
+  let parts=exercise.defaultMethod==='equivalence'?exercise.equivalence:exercise.parts,states=parts.map(()=>({steps:[],complete:false})),active=0,editing=null,draft=null;
   const toolbar=el('div',{class:'set-proof-toolbar'}),host=el('div'),status=el('p',{'aria-live':'polite',class:'bk-msg'});
   function cancelPendingEdit(){if(editing){states[active].steps=editing.steps;states[active].complete=editing.complete;editing=null;draft=null;}}
   const help=el('details',{class:'set-proof-help'},[el('summary',{text:'הוראות וסימנים'}),el('p',{text:'כתבו טענה ונמקו אותה בעזרת כלל ומקורות. G מסמן נתון, S מסמן צעד, ו־R היא הטענה המבוקשת. היא מופיעה כמסקנה בסוף ההוכחה. לפני שהוכחה, אי אפשר להסתמך עליה כמקור.'}),el('p',{text:'אפשר לנסח מחדש את המטרה: כותבים נוסחה שקולה ובוחרים הגדרה או חוק שקילות. הניסוח נבדק ומוצג בהוכחה, אך אינו נוסף לנתונים. אפשר גם לבחור צעד שכבר הוכח ולהצדיק מדוע הוא שקול למטרה. רמזים מציעים ניסוחים שנבדקו; בזמן ההקלדה אפשר להשלים סימנים בעזרת Tab או Enter. בפעולה ״יהי״ כתבו למשל x ∈ A, ובשדה ״נוכיח״ כתבו מה רוצים להראות עבורו. זוהי הנחה זמנית; אין צורך לדעת שקיים איבר ב־A. אין לייחס ל־x תכונות נוספות שלא נובעות מההנחה ומהנתונים. לאחר שהוכחתם אותה, סוגרים את ההנחה ומסיקים טענה לכל איברי התחום. השם שנבחר אינו מציין איבר מסוים מתוך הנתונים. הצעדים שבתוך ההנחה נשארים גלויים לאחר הסגירה, אך מחוץ לה אפשר לצטט רק את המסקנה שהתקבלה בסגירה. אפשר גם להוכיח תחילה גרירה: מניחים שייכות, מסיקים את המסקנה וסוגרים את ההנחה.'}),el('p',{text:'אפשר להקליד forall, in, notin, subset, supset, intersect, union, not, and, or, ->; הם יומרו לסימנים. דוגמה: x in A. בהוכחה לפי מקרים פותחים הנחה זמנית, מסיקים מסקנה וסוגרים את ההנחה כגרירה. רק אז פותחים את הענף הבא.'}),el('p',{text:'הבודק מבין את הסימון המתמטי ואת הכללים המוצעים. כתבו את הטענה בשדה הנוסחה; ההערה המילולית מסייעת לקריאה, ואינה מחליפה נימוק מתמטי. כדאי לכתוב את ההוכחה גם על דף. לאחר הגעה ל־F, סגירה בדרך השלילה נותנת את שלילת ההנחה; סגירה כגרירה נותנת גרירה מן ההנחה אל F. אפשר לפתוח פתרון לדוגמה או להשוות אותו להוכחה שלכם בלי לשנות אותה.'})]);
   if(exercise.equivalence){
     const method=el('select',{'aria-label':'דרך ההוכחה'},[el('option',{value:'inclusions',text:'שתי הכלות'}),el('option',{value:'equivalence',text:'שקילות של תנאי השייכות'})]);
     // Keep independent work when switching strategies.
-    const saved={inclusions:states};let current='inclusions';
+    let current=exercise.defaultMethod||'inclusions';const saved={[current]:states};method.value=current;
     method.addEventListener('change',()=>{cancelPendingEdit();saved[current]=states;current=method.value;parts=current==='equivalence'?exercise.equivalence:exercise.parts;states=saved[current]||parts.map(()=>({steps:[],complete:false}));active=0;editing=null;draft=null;render();});
     toolbar.append(label('דרך ההוכחה',method));
   }
