@@ -1644,15 +1644,9 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div class="thmbox thmbox-question" title="מי באמת ברשימה?">
-<p><strong>שאלה 2.1.16 — מי באמת ברשימה?</strong></p>
-<div class="sets-exercise" data-sets="membership">
-<p>בחרו אמת או שקר: עבור <span class="math inline">\(A=\{1,4,7\}\)</span>, בדקו <span class="math inline">\(4\in A\)</span>, <span class="math inline">\(2\in A\)</span> ו־<span class="math inline">\(\{4\}\in A\)</span>.</p>
-</div>
-</div>
 <p>גם הקבוצה הריקה יכולה להופיע כאיבר של קבוצה אחרת. נבדוק כיצד זה משפיע על מספר האיברים:</p>
 <div class="thmbox thmbox-example" title="קופסה ריקה בתוך קופסה">
-<p><strong>דוגמה 2.1.17 — קופסה ריקה בתוך קופסה.</strong></p>
+<p><strong>דוגמה 2.1.16 — קופסה ריקה בתוך קופסה.</strong></p>
 <p><strong>א.</strong> כמה איברים יש ב־<span class="math inline">\(\varnothing\)</span>?</p>
 <div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="בחירת תשובה לסעיף א">
 <button type="button" class="tf-opt" data-val="0">
@@ -1690,12 +1684,6 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div class="thmbox thmbox-question" title="סופרים רק ברמה הנכונה">
-<p><strong>שאלה 2.1.18 — סופרים רק ברמה הנכונה.</strong></p>
-<div class="sets-exercise" data-sets="empty">
-<p>בדקו כמה איברים יש ב־<span class="math inline">\(\varnothing\)</span> וב־<span class="math inline">\(\{\varnothing\}\)</span>, ואילו איברים יש ב־<span class="math inline">\(\{1,\{2\},\varnothing\}\)</span>.</p>
-</div>
-</div>
 <div class="thmbox thmbox-summary has-helper-art" title="קבוצות ושייכות">
 <p><strong>סיכום — קבוצות ושייכות.</strong></p>
 <img class="helper-box-art" src="images/box-helpers/summary.svg" alt="" aria-hidden="true" width="56" height="56">
@@ -1711,6 +1699,18 @@ window.Quarto = {
 </section>
 <section id="practice-sets-membership" class="level3" data-number="2.1.6">
 <h3 data-number="2.1.6" class="anchored" data-anchor-id="practice-sets-membership"><span class="header-section-number">2.1.6</span> תרגול לסעיף: קבוצות ואיברים</h3>
+<div class="thmbox thmbox-question" title="מי באמת ברשימה?">
+<p><strong>שאלה 2.1.17 — מי באמת ברשימה?</strong></p>
+<div class="sets-exercise" data-sets="membership">
+<p>בחרו אמת או שקר: עבור <span class="math inline">\(A=\{1,4,7\}\)</span>, בדקו <span class="math inline">\(4\in A\)</span>, <span class="math inline">\(2\in A\)</span> ו־<span class="math inline">\(\{4\}\in A\)</span>.</p>
+</div>
+</div>
+<div class="thmbox thmbox-question" title="סופרים רק ברמה הנכונה">
+<p><strong>שאלה 2.1.18 — סופרים רק ברמה הנכונה.</strong></p>
+<div class="sets-exercise" data-sets="empty">
+<p>בדקו כמה איברים יש ב־<span class="math inline">\(\varnothing\)</span> וב־<span class="math inline">\(\{\varnothing\}\)</span>, ואילו איברים יש ב־<span class="math inline">\(\{1,\{2\},\varnothing\}\)</span>.</p>
+</div>
+</div>
 <div id="practice-set-q-roster" class="thmbox thmbox-question" title="כותבים את האיברים">
 <p><strong>שאלה 2.1.19 — כותבים את האיברים.</strong></p>
 <div class="sets-exercise" data-sets="practice-roster">
@@ -2190,47 +2190,6 @@ x חופשי, y קשור
 <p><strong>תחום הדיון בתחילת המשחק:</strong> ששת הסטודנטים שבכרטיסים. כאן <span class="math inline">\(D\)</span> מציין את הסטודנטים האלה, ולא את המספרים מהדוגמה הקודמת.</p>
 <iframe class="widget-frame" src="games/witness/index.html?levels=witness,counter,check-all,nobody&amp;embed=1" loading="lazy" title="משחק: מצאו עד"></iframe>
 </div>
-<div class="thmbox thmbox-self-check has-helper-art" title="טענות קיום וטענות על כולם">
-<p><strong>בדיקה עצמית — טענות קיום וטענות על כולם.</strong></p>
-<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
-<p>נבחר <span class="math inline">\(D=\{1,2,3,4\}\)</span>. קבעו אמת או שקר לכל טענה.</p>
-<ol type="1">
-<li><span class="math inline">\(\forall x\in D\,(x &lt; 5)\)</span></li>
-</ol>
-<div class="tf-quiz" data-correct="true">
-<button class="tf-opt" data-val="true">אמת</button>
-<button class="tf-opt" data-val="false">שקר</button>
-<div class="tf-feedback"></div>
-<div class="tf-why"><b>אמת:</b> כל ארבעת איברי התחום קטנים מ־\(5\), ולכן הבדיקה מכסה את כולם.</div>
-</div>
-<ol start="2" type="1">
-<li><span class="math inline">\(\exists x\in D\,(x &gt; 4)\)</span></li>
-</ol>
-<div class="tf-quiz" data-correct="false">
-<button class="tf-opt" data-val="true">אמת</button>
-<button class="tf-opt" data-val="false">שקר</button>
-<div class="tf-feedback"></div>
-<div class="tf-why"><b>שקר:</b> אף אחד מ-\(1, 2, 3, 4\) אינו גדול מ-\(4\). הבדיקה מכסה את כל איברי התחום.</div>
-</div>
-<ol start="3" type="1">
-<li><span class="math inline">\(\forall x\in D\,(E(x))\)</span> כאשר <span class="math inline">\(E(x)\)</span> = ״<span class="math inline">\(x\)</span> זוגי״</li>
-</ol>
-<div class="tf-quiz" data-correct="false">
-<button class="tf-opt" data-val="true">אמת</button>
-<button class="tf-opt" data-val="false">שקר</button>
-<div class="tf-feedback"></div>
-<div class="tf-why"><b>שקר:</b> מספיקה דוגמה נגדית אחת, למשל \(x = 1\).</div>
-</div>
-<ol start="4" type="1">
-<li><span class="math inline">\(\exists x\in D\,(x^2 = 9)\)</span></li>
-</ol>
-<div class="tf-quiz" data-correct="true">
-<button class="tf-opt" data-val="true">אמת</button>
-<button class="tf-opt" data-val="false">שקר</button>
-<div class="tf-feedback"></div>
-<div class="tf-why"><b>אמת:</b> העד הוא \(x = 3\). שימו לב ש-\(x = -3\) לא בתחום, אבל עד אחד מספיק.</div>
-</div>
-</div>
 </section>
 <section id="sec-arbitrary-element" class="level3" data-number="2.2.5">
 <h3 data-number="2.2.5" class="anchored" data-anchor-id="sec-arbitrary-element"><span class="header-section-number">2.2.5</span> איך מוכיחים טענה על כל האיברים?</h3>
@@ -2359,8 +2318,8 @@ x חופשי, y קשור
 </details>
 </div>
 <p>בדוגמה הסופית יכולנו להשתמש בחוקי דה מורגן על צירוף של פסוקים. כללי השלילה של הכמתים תקפים גם בקבוצות אינסופיות.</p>
-<div id="box-q-negate-each-quantifier" class="thmbox thmbox-question" title="שוללים כל כמת">
-<p><strong>שאלה 2.2.22 — שוללים כל כמת.</strong></p>
+<div id="box-q-negate-each-quantifier" class="thmbox thmbox-example" title="שוללים כל כמת">
+<p><strong>דוגמה 2.2.22 — שוללים כל כמת.</strong></p>
 <p>כתבו את שלילת כל פסוק, <strong>כשהשלילה נמצאת לפני <span class="math inline">\(P(x)\)</span>, ולא לפני הכמת</strong>. תחום הדיון <span class="math inline">\(D\)</span> נשאר קבוע.</p>
 <p><strong>א.</strong></p>
 <div class="quantifier-negation" data-quantifier-negation="∀">
@@ -2371,9 +2330,8 @@ x חופשי, y קשור
 <p><span class="math display">\[\exists x\in D\,(P(x)).\]</span></p>
 </div>
 </div>
-<div id="box-check-negate-exists" class="thmbox thmbox-self-check has-helper-art" title="פלאפל בלי חומוס: איך שוללים ״קיים״?">
-<p><strong>בדיקה עצמית — פלאפל בלי חומוס: איך שוללים ״קיים״?</strong></p>
-<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
+<div id="box-check-negate-exists" class="thmbox thmbox-example" title="פלאפל בלי חומוס: איך שוללים ״קיים״?">
+<p><strong>דוגמה 2.2.23 — פלאפל בלי חומוס: איך שוללים ״קיים״?</strong></p>
 <p>נסמן ב־<span class="math inline">\(D\)</span> את קבוצת הסטודנטים בכיתה, וב־<span class="math inline">\(P(x)\)</span> את המשפט ״הסטודנט <span class="math inline">\(x\)</span> אוכל פלאפל בלי חומוס״. מה השלילה של ״<strong>קיים לפחות סטודנט אחד שאוכל פלאפל בלי חומוס</strong>״?</p>
 <div class="tf-quiz" data-correct="false">
 <button class="tf-opt" data-val="true">״קיים סטודנט שלא אוכל פלאפל בלי חומוס״</button>
@@ -2383,7 +2341,7 @@ x חופשי, y קשור
 </div>
 </div>
 <div class="thmbox thmbox-game" title="שוללים טענה על כולם">
-<p><strong>משחק 2.2.23 — שוללים טענה על כולם.</strong></p>
+<p><strong>משחק 2.2.24 — שוללים טענה על כולם.</strong></p>
 <iframe class="widget-frame" src="games/witness/index.html?level=negation&amp;embed=1" loading="lazy" title="משחק: שלילת כמת"></iframe>
 </div>
 </section>
@@ -2391,7 +2349,7 @@ x חופשי, y קשור
 <h3 data-number="2.2.8" class="anchored" data-anchor-id="sec-quantifier-order"><span class="header-section-number">2.2.8</span> סדר הכמתים</h3>
 <p>כשכמת אחד מופיע אחרי כמת אחר, סדרם יכול לשנות את הטענה. בדוגמה הבאה נשווה בין בחירה עבור כל אדם בנפרד לבין בחירה אחת שמתאימה לכולם.</p>
 <div class="thmbox thmbox-example" title="מנה אהובה לכל סטודנט, או מנה שכולם אוהבים?">
-<p><strong>דוגמה 2.2.24 — מנה אהובה לכל סטודנט, או מנה שכולם אוהבים?</strong></p>
+<p><strong>דוגמה 2.2.25 — מנה אהובה לכל סטודנט, או מנה שכולם אוהבים?</strong></p>
 <p>בדוגמה הזאת <span class="math inline">\(S\)</span> היא קבוצת הסטודנטים בכיתה, <span class="math inline">\(M\)</span> היא קבוצת המנות בתפריט קבוע, ו־<span class="math inline">\(L(x,y)\)</span> אומר: ״הסטודנט <span class="math inline">\(x\)</span> אוהב את המנה <span class="math inline">\(y\)</span>״.</p>
 <p><strong>א.</strong> <span class="math display">\[\forall x\in S\,\exists y\in M\,(L(x,y)).\]</span> לכל סטודנט קיימת לפחות מנה אחת שהוא אוהב. המנה יכולה להשתנות מסטודנט לסטודנט, אבל מותר גם לכמה סטודנטים לבחור אותה מנה.</p>
 <p><strong>ב.</strong> <span class="math display">\[\exists y\in M\,\forall x\in S\,(L(x,y)).\]</span> קיימת לפחות מנה אחת שכל הסטודנטים אוהבים. כאן אותה מנה צריכה להתאים לכולם; ייתכן שקיימות כמה מנות כאלה.</p>
@@ -2412,7 +2370,7 @@ x חופשי, y קשור
 </div>
 </div>
 <div id="box-exm-order" class="thmbox thmbox-example">
-<p><strong>דוגמה 2.2.25.</strong></p>
+<p><strong>דוגמה 2.2.26.</strong></p>
 <p>בדוגמה הזאת <span class="math inline">\(D=\{0,1,2,3,\dots\}\)</span>. קבעו אמת או שקר:</p>
 <p><strong>א.</strong> <span class="math inline">\(\forall x\in D\,\exists y\in D\,(y&gt;x)\)</span>.</p>
 <div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="בחירת תשובה לסעיף א">
@@ -2456,9 +2414,8 @@ x חופשי, y קשור
 </div>
 </div>
 </div>
-<div class="thmbox thmbox-self-check has-helper-art" title="כעת בודקים בתחום סופי">
-<p><strong>בדיקה עצמית — כעת בודקים בתחום סופי.</strong></p>
-<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
+<div class="thmbox thmbox-example" title="כעת בודקים בתחום סופי">
+<p><strong>דוגמה 2.2.27 — כעת בודקים בתחום סופי.</strong></p>
 <p>נבחר <span class="math inline">\(D=\{1,2,3,4\}\)</span>. האם הטענה אמת או שקר?</p>
 <p><strong>הטענה:</strong> <span class="math display">\[\forall x\in D\,\exists y\in D\,(y &gt; x)\]</span></p>
 <div class="tf-quiz" data-correct="false">
@@ -2468,8 +2425,8 @@ x חופשי, y קשור
 <div class="tf-why"><b>שקר!</b> בתחום הסופי הזה, עבור \(x = 4\) אין אף \(y\) בתחום שגדול ממנו. לעומת זאת, בתחום המספרים הטבעיים אפשר תמיד לבחור מספר גדול יותר.</div>
 </div>
 </div>
-<div id="box-q-ex-negate" class="thmbox thmbox-question" title="מנסחים ושוללים טענה עם שני כמתים">
-<p><strong>שאלה 2.2.26 — מנסחים ושוללים טענה עם שני כמתים.</strong></p>
+<div id="box-q-ex-negate" class="thmbox thmbox-example" title="מנסחים ושוללים טענה עם שני כמתים">
+<p><strong>דוגמה 2.2.28 — מנסחים ושוללים טענה עם שני כמתים.</strong></p>
 <p>נניח ש־<span class="math inline">\(S\)</span> היא קבוצת הסטודנטים בכיתה, <span class="math inline">\(M\)</span> היא קבוצת הפריטים בתפריט, ו־<span class="math inline">\(L(x,y)\)</span> אומר: ״הסטודנט <span class="math inline">\(x\)</span> אוהב את הפריט <span class="math inline">\(y\)</span>״.</p>
 <p><strong>א.</strong> כתבו בכמתים: ״כל סטודנט אוהב לפחות פריט אחד בתפריט״.</p>
 <div class="quantifier-writing" data-quantifier-writing="menu">
@@ -2510,11 +2467,11 @@ x חופשי, y קשור
 </details>
 </div>
 <div class="thmbox thmbox-game" title="בודקים את סדר הכמתים">
-<p><strong>משחק 2.2.27 — בודקים את סדר הכמתים.</strong></p>
+<p><strong>משחק 2.2.29 — בודקים את סדר הכמתים.</strong></p>
 <iframe class="widget-frame" src="games/witness/index.html?level=order&amp;embed=1" loading="lazy" title="משחק: סדר הכמתים"></iframe>
 </div>
 <div class="thmbox thmbox-game" title="לכל אחד שיר — אבל לא אותו שיר">
-<p><strong>משחק 2.2.28 — לכל אחד שיר — אבל לא אותו שיר.</strong></p>
+<p><strong>משחק 2.2.30 — לכל אחד שיר — אבל לא אותו שיר.</strong></p>
 <div class="set-lab" data-set-lab="quantifier-grid">
 <p>בנו מצב שבו לכל אדם קיים שיר אהוב, אך אין שיר שאהוב על כולם.</p>
 </div>
@@ -2535,8 +2492,48 @@ x חופשי, y קשור
 <h3 data-number="2.2.9" class="anchored" data-anchor-id="practice-quantifiers"><span class="header-section-number">2.2.9</span> תרגול לסעיף: כמתים</h3>
 <p>תרגילים על <a href="#sec-quantifiers">הכמתים שלמדנו בפרק</a>, עם קלט, משוב ופתרונות בצעדים. נסו לענות לפני פתיחת הרמזים והפתרון.</p>
 <p>לפני הפתרון סמנו את התחום. <span class="term"><strong>עד</strong></span> הוא איבר שמראה שטענת ״קיים״ נכונה. <span class="term"><strong>דוגמה נגדית</strong></span> היא איבר שמראה שטענת ״לכל״ שגויה. דוגמה אחת שמתאימה אינה מספיקה להוכיח ״לכל״.</p>
+<div class="thmbox thmbox-question" title="טענות קיום וטענות על כולם">
+<p><strong>שאלה 2.2.31 — טענות קיום וטענות על כולם.</strong></p>
+<p>נבחר <span class="math inline">\(D=\{1,2,3,4\}\)</span>. קבעו אמת או שקר לכל טענה.</p>
+<ol type="1">
+<li><span class="math inline">\(\forall x\in D\,(x &lt; 5)\)</span></li>
+</ol>
+<div class="tf-quiz" data-correct="true">
+<button class="tf-opt" data-val="true">אמת</button>
+<button class="tf-opt" data-val="false">שקר</button>
+<div class="tf-feedback"></div>
+<div class="tf-why"><b>אמת:</b> כל ארבעת איברי התחום קטנים מ־\(5\), ולכן הבדיקה מכסה את כולם.</div>
+</div>
+<ol start="2" type="1">
+<li><span class="math inline">\(\exists x\in D\,(x &gt; 4)\)</span></li>
+</ol>
+<div class="tf-quiz" data-correct="false">
+<button class="tf-opt" data-val="true">אמת</button>
+<button class="tf-opt" data-val="false">שקר</button>
+<div class="tf-feedback"></div>
+<div class="tf-why"><b>שקר:</b> אף אחד מ-\(1, 2, 3, 4\) אינו גדול מ-\(4\). הבדיקה מכסה את כל איברי התחום.</div>
+</div>
+<ol start="3" type="1">
+<li><span class="math inline">\(\forall x\in D\,(E(x))\)</span> כאשר <span class="math inline">\(E(x)\)</span> = ״<span class="math inline">\(x\)</span> זוגי״</li>
+</ol>
+<div class="tf-quiz" data-correct="false">
+<button class="tf-opt" data-val="true">אמת</button>
+<button class="tf-opt" data-val="false">שקר</button>
+<div class="tf-feedback"></div>
+<div class="tf-why"><b>שקר:</b> מספיקה דוגמה נגדית אחת, למשל \(x = 1\).</div>
+</div>
+<ol start="4" type="1">
+<li><span class="math inline">\(\exists x\in D\,(x^2 = 9)\)</span></li>
+</ol>
+<div class="tf-quiz" data-correct="true">
+<button class="tf-opt" data-val="true">אמת</button>
+<button class="tf-opt" data-val="false">שקר</button>
+<div class="tf-feedback"></div>
+<div class="tf-why"><b>אמת:</b> העד הוא \(x = 3\). שימו לב ש-\(x = -3\) לא בתחום, אבל עד אחד מספיק.</div>
+</div>
+</div>
 <div id="practice-q-free" class="thmbox thmbox-question" title="איזה משתנה עדיין חופשי?">
-<p><strong>שאלה 2.2.29 — איזה משתנה עדיין חופשי?</strong></p>
+<p><strong>שאלה 2.2.32 — איזה משתנה עדיין חופשי?</strong></p>
 <p>התחום של <span class="math inline">\(x\)</span> ושל <span class="math inline">\(y\)</span> הוא <span class="math inline">\(D=\{1,2,3\}\)</span>. הסתכלו על <span class="math inline">\(\forall x\in D\,(x\le y)\)</span>.</p>
 <ol type="1">
 <li>על איזה משתנה חל הכמת ״לכל״?</li>
@@ -2562,7 +2559,7 @@ x חופשי, y קשור
 </div>
 </div>
 <div id="practice-q-quant-finite" class="thmbox thmbox-question" title="ארבע טענות על תחום קטן">
-<p><strong>שאלה 2.2.30 — ארבע טענות על תחום קטן.</strong></p>
+<p><strong>שאלה 2.2.33 — ארבע טענות על תחום קטן.</strong></p>
 <p>התחום הוא <span class="math inline">\(D=\{0,1,2,3\}\)</span>. קבעו אמת או שקר ותנו הסבר: עד, דוגמה נגדית או בדיקה של כל התחום, לפי הצורך.</p>
 <ol type="1">
 <li><span class="math inline">\(\forall x\in D\,(x\ge0)\)</span>.</li>
@@ -2595,7 +2592,7 @@ x חופשי, y קשור
 </div>
 </div>
 <div id="practice-q-quant-domain" class="thmbox thmbox-question" title="איבר חדש משנה את התשובה">
-<p><strong>שאלה 2.2.31 — איבר חדש משנה את התשובה.</strong></p>
+<p><strong>שאלה 2.2.34 — איבר חדש משנה את התשובה.</strong></p>
 <p>בדקו את <span class="math inline">\(\forall x\in D\,(x\ne0)\)</span> בשני עולמות דיון:</p>
 <ol type="1">
 <li><span class="math inline">\(D=\{1,2,3\}\)</span>.</li>
@@ -2620,7 +2617,7 @@ x חופשי, y קשור
 </div>
 </div>
 <div id="practice-q-quant-not-all" class="thmbox thmbox-question" title="לא כולם — אבל אולי חלק כן">
-<p><strong>שאלה 2.2.32 — לא כולם — אבל אולי חלק כן.</strong></p>
+<p><strong>שאלה 2.2.35 — לא כולם — אבל אולי חלק כן.</strong></p>
 <p>תחום הדיון <span class="math inline">\(D\)</span> הוא הסטודנטים בכיתה. נסמן ב־<span class="math inline">\(P(x)\)</span> את ״הסטודנט <span class="math inline">\(x\)</span> החזיר את הספר״. כתבו בכמתים את ״כל הסטודנטים החזירו את הספר״, ואז כתבו את שלילתו בכמתים ובמילים. האם השלילה אומרת שאף אחד לא החזיר?</p>
 <p><strong>א. הטענה המקורית.</strong> כתבו בכמתים: ״כל הסטודנטים החזירו את הספר״.</p>
 <div class="quantifier-statement" data-quantifier-statement="all">
@@ -2643,7 +2640,7 @@ x חופשי, y קשור
 </div>
 </div>
 <div id="practice-q-quant-nobody" class="thmbox thmbox-question" title="אין כיסאות פנויים">
-<p><strong>שאלה 2.2.33 — אין כיסאות פנויים.</strong></p>
+<p><strong>שאלה 2.2.36 — אין כיסאות פנויים.</strong></p>
 <p>תחום הדיון <span class="math inline">\(D\)</span> הוא הכיסאות בכיתה. נסמן ב־<span class="math inline">\(P(x)\)</span> את ״הכיסא <span class="math inline">\(x\)</span> פנוי״. כתבו את שלילת ״קיים כיסא פנוי״. האם מספיק להראות כיסא אחד תפוס כדי להצדיק אותה?</p>
 <div class="choice-exercise" data-choice="quant-nobody">
 <div class="choice-offline">
@@ -2663,7 +2660,7 @@ x חופשי, y קשור
 </div>
 </div>
 <div id="practice-q-quant-menu" class="thmbox thmbox-question" title="מועד לכל מתנדב — או מועד משותף?">
-<p><strong>שאלה 2.2.34 — מועד לכל מתנדב — או מועד משותף?</strong></p>
+<p><strong>שאלה 2.2.37 — מועד לכל מתנדב — או מועד משותף?</strong></p>
 <p>נסמן ב־<span class="math inline">\(S\)</span> את קבוצת המתנדבים דנה, נועם ורותם, וב־<span class="math inline">\(M\)</span> את קבוצת המועדים רביעי ושישי בשבוע הבא. אלה המועדים שבהם כל אחד פנוי:</p>
 <table class="caption-top table">
 <thead>
@@ -2715,7 +2712,7 @@ x חופשי, y קשור
 </div>
 </div>
 <div id="practice-q-quant-order" class="thmbox thmbox-question" title="מספר אחר לכל אחד?">
-<p><strong>שאלה 2.2.35 — מספר אחר לכל אחד?</strong></p>
+<p><strong>שאלה 2.2.38 — מספר אחר לכל אחד?</strong></p>
 <p>התחום של שני המשתנים הוא <span class="math inline">\(D=\{1,2,3\}\)</span>. קבעו אמת או שקר:</p>
 <ol type="1">
 <li><span class="math display">\[\forall x\in D\,\exists y\in D\,(x+y=4)\]</span>.</li>
@@ -2740,7 +2737,7 @@ x חופשי, y קשור
 </div>
 </div>
 <div id="practice-q-quant-negate-order" class="thmbox thmbox-question" title="שוללים בלי לשנות את הסדר בטעות">
-<p><strong>שאלה 2.2.36 — שוללים בלי לשנות את הסדר בטעות.</strong></p>
+<p><strong>שאלה 2.2.39 — שוללים בלי לשנות את הסדר בטעות.</strong></p>
 <p>נסמן ב־<span class="math inline">\(S\)</span> את קבוצת הסטודנטים בכיתה וב־<span class="math inline">\(B\)</span> את קבוצת הספרים בספרייה. לכן <span class="math inline">\(x\in S\)</span> ו־<span class="math inline">\(y\in B\)</span>. נסמן ב־<span class="math inline">\(R(x,y)\)</span> את ״הסטודנט <span class="math inline">\(x\)</span> קרא את הספר <span class="math inline">\(y\)</span>״.</p>
 <p>כתבו בכמתים: ״קיים ספר שכל הסטודנטים קראו״. כתבו את שלילת המשפט והעבירו את השלילה פנימה. הסבירו במילים. האם מתקבל ״קיים סטודנט שלא קרא אף ספר״?</p>
 <div class="choice-exercise" data-choice="quant-negate-order">
@@ -2828,18 +2825,12 @@ x חופשי, y קשור
 <p>לכן גם <span class="math inline">\(|\{3,6,6,10\}|=3\)</span>: חזרה על אותו איבר אינה מוסיפה איבר לקבוצה.</p>
 <p>בניגוד לקופסה רגילה, קבוצה אינה מכילה כמה עותקים של אותו איבר.</p>
 <p><strong>אותה עצמה אינה מספיקה לשוויון קבוצות.</strong> בקבוצות <span class="math inline">\(\{1,4\}\)</span> ו־<span class="math inline">\(\{1,7\}\)</span> יש שני איברים, אך הן אינן שוות: <span class="math inline">\(4\)</span> שייך לראשונה ואינו שייך לשנייה.</p>
-<div class="thmbox thmbox-question" title="סופרים איברים שונים">
-<p><strong>שאלה 2.3.3 — סופרים איברים שונים.</strong></p>
-<div class="sets-exercise" data-sets="cardinality">
-<p>הקלידו את מספר האיברים בכל קבוצה וכתבו את איבריה בתוך סוגריים מסולסלים. לאחר מכן בדקו אם קבוצות בעלות אותה עצמה חייבות להיות שוות.</p>
-</div>
-</div>
 </section>
 <section id="sec-set-subset" class="level3" data-number="2.3.3">
 <h3 data-number="2.3.3" class="anchored" data-anchor-id="sec-set-subset"><span class="header-section-number">2.3.3</span> קבוצה בתוך קבוצה</h3>
 <p>נניח ש־<span class="math inline">\(A\)</span> היא קבוצת הנגנים בהרכב, ו־<span class="math inline">\(B\)</span> היא קבוצת המשתתפים במופע. אם כל נגן משתתף במופע, אז <span class="math inline">\(A\)</span> מוכלת ב־<span class="math inline">\(B\)</span>. ייתכנו משתתפים נוספים, למשל זמרים.</p>
 <div class="thmbox thmbox-definition" title="הכלה ותת־קבוצה">
-<p><strong>הגדרה 2.3.4 — הכלה ותת־קבוצה.</strong></p>
+<p><strong>הגדרה 2.3.3 — הכלה ותת־קבוצה.</strong></p>
 <p>אומרים ש־<span class="math inline">\(A\)</span> <span class="term"><strong>מוכלת</strong></span> ב־<span class="math inline">\(B\)</span>, או ש־<span class="math inline">\(A\)</span> היא <span class="term"><strong>תת־קבוצה</strong></span> של <span class="math inline">\(B\)</span>, אם <strong>כל איבר של <span class="math inline">\(A\)</span> הוא גם איבר של <span class="math inline">\(B\)</span></strong>. מסמנים <span class="math inline">\(A\subseteq B\)</span>. אפשר לכתוב את אותה הכלה גם <span class="math inline">\(B\supseteq A\)</span>, ולקרוא: ״<span class="math inline">\(B\)</span> מכילה את <span class="math inline">\(A\)</span>״.</p>
 <p>בעזרת הכמת ״לכל״ כותבים:</p>
 <p><span class="math display">\[A\subseteq B\quad\Longleftrightarrow\quad \forall x\in A\,(x\in B).\]</span></p>
@@ -2848,7 +2839,7 @@ x חופשי, y קשור
 </div>
 <p>זהו קשר לגרירה מהלוגיקה: <strong>אם עצם שייך ל־<span class="math inline">\(A\)</span>, אז הוא שייך ל־<span class="math inline">\(B\)</span></strong>. ההכלה דורשת שהגרירה הזאת תהיה נכונה לכל עצם, ולא רק לדוגמה אחת.</p>
 <div class="thmbox thmbox-example" title="שתי הכלות שמתקיימות תמיד">
-<p><strong>דוגמה 2.3.5 — שתי הכלות שמתקיימות תמיד.</strong></p>
+<p><strong>דוגמה 2.3.4 — שתי הכלות שמתקיימות תמיד.</strong></p>
 <p>תהי <span class="math inline">\(A\)</span> קבוצה כלשהי.</p>
 <p><strong>א. <span class="key-rule">כל קבוצה מוכלת בעצמה.</span></strong></p>
 <p><span class="math display">\[A\subseteq A.\]</span></p>
@@ -2884,7 +2875,7 @@ x חופשי, y קשור
 <p><span class="math display">\[\varnothing\notin A.\]</span></p>
 </div>
 <div class="thmbox thmbox-example" title="בודקים את כיוון ההכלה">
-<p><strong>דוגמה 2.3.6 — בודקים את כיוון ההכלה.</strong></p>
+<p><strong>דוגמה 2.3.5 — בודקים את כיוון ההכלה.</strong></p>
 <p>תהיינה <span class="math inline">\(A=\{1,4\}\)</span> ו־<span class="math inline">\(B=\{1,4,7\}\)</span>. קבעו אמת או שקר:</p>
 <p><strong>א.</strong> <span class="math inline">\(A\subseteq B\)</span>.</p>
 <div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="בחירת תשובה לסעיף א">
@@ -2942,7 +2933,7 @@ x חופשי, y קשור
 <h3 data-number="2.3.4" class="anchored" data-anchor-id="sec-inclusion-writing"><span class="header-section-number">2.3.4</span> כותבים הוכחת הכלה</h3>
 <p>כדי להוכיח הכלה, משתמשים בהגדרה: מראים שאיבר כלשהו של הקבוצה הראשונה שייך גם לשנייה. זהו שימוש בהוכחת גרירה — מניחים את תנאי השייכות הראשון ומסיקים את השני.</p>
 <div class="thmbox thmbox-method has-helper-art" title="הוכחת הכלה — עוקבים אחרי איבר כלשהו">
-<p><strong>שיטה 2.3.7 — הוכחת הכלה — עוקבים אחרי איבר כלשהו.</strong></p>
+<p><strong>שיטה 2.3.6 — הוכחת הכלה — עוקבים אחרי איבר כלשהו.</strong></p>
 <img class="helper-box-art" src="images/box-helpers/method.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>כדי להוכיח <span class="math inline">\(A\subseteq B\)</span>:</p>
 <ol type="1">
@@ -2952,17 +2943,22 @@ x חופשי, y קשור
 </ol>
 <p>האיבר <span class="math inline">\(x\)</span> הוא <strong>כלשהו</strong>: לא בחרנו איבר עם תכונה מיוחדת. הנימוק חייב לעבוד לכל איבר אפשרי של <span class="math inline">\(A\)</span>. בדיקה רק עבור המספר <span class="math inline">\(2\)</span>, למשל, אינה מספיקה להוכחה כללית.</p>
 </div>
-<div class="thmbox thmbox-question" title="מן הקבוצה הראשונה לשלישית">
-<p><strong>שאלה 2.3.8 — מן הקבוצה הראשונה לשלישית.</strong></p>
+<div class="thmbox thmbox-example" title="מן הקבוצה הראשונה לשלישית">
+<p><strong>דוגמה 2.3.7 — מן הקבוצה הראשונה לשלישית.</strong></p>
 <div class="set-proof" data-set-proof="inclusion-chain">
 <p>נניח ש־<span class="math inline">\(A\)</span> מוכלת ב־<span class="math inline">\(B\)</span> וש־<span class="math inline">\(B\)</span> מוכלת ב־<span class="math inline">\(C\)</span>. הוכיחו בעזרת הגדרת ההכלה שכל איבר של <span class="math inline">\(A\)</span> שייך גם ל־<span class="math inline">\(C\)</span>, כלומר <span class="math inline">\(A\subseteq C\)</span>.</p>
 </div>
+<details class="thmcollapse thmfoldable"><summary>הוכחה במילים — לפי צעדי הפתרון לדוגמה</summary>
+<div id="written-proof-inclusion-chain" class="foldable" title="הוכחה במילים — לפי צעדי הפתרון לדוגמה">
+<p>נניח ש־<span class="math inline">\(A\subseteq B\)</span> וש־<span class="math inline">\(B\subseteq C\)</span>. יהי <span class="math inline">\(x\in A\)</span>. מן ההכלה <span class="math inline">\(A\subseteq B\)</span> נקבל <span class="math inline">\(x\in B\)</span>, ומן ההכלה <span class="math inline">\(B\subseteq C\)</span> נקבל כעת <span class="math inline">\(x\in C\)</span>. הראינו שכל איבר של <span class="math inline">\(A\)</span> שייך ל־<span class="math inline">\(C\)</span>, ולכן <span class="math inline">\(A\subseteq C\)</span>.</p>
+</div>
+</details>
 </div>
 </section>
 <section id="sec-double-inclusion" class="level3" data-number="2.3.5">
 <h3 data-number="2.3.5" class="anchored" data-anchor-id="sec-double-inclusion"><span class="header-section-number">2.3.5</span> מוכיחים שוויון בשתי הכלות</h3>
 <div class="thmbox thmbox-method has-helper-art" title="שתי הכלות — שוויון אחד">
-<p><strong>שיטה 2.3.9 — שתי הכלות — שוויון אחד.</strong></p>
+<p><strong>שיטה 2.3.8 — שתי הכלות — שוויון אחד.</strong></p>
 <img class="helper-box-art" src="images/box-helpers/method.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>כדי להוכיח ש־<span class="math inline">\(A=B\)</span>, מוכיחים <strong>שני דברים</strong>:</p>
 <ol type="1">
@@ -2974,7 +2970,7 @@ x חופשי, y קשור
 <p><span class="key-rule"><strong>הכלה בכיוון אחד בלבד אינה מספיקה להוכחת שוויון.</strong></span></p>
 </div>
 <div id="box-exm-double-inclusion" class="thmbox thmbox-example" title="אותה קבוצה בשני תיאורים">
-<p><strong>דוגמה 2.3.10 — אותה קבוצה בשני תיאורים.</strong></p>
+<p><strong>דוגמה 2.3.9 — אותה קבוצה בשני תיאורים.</strong></p>
 <p>נגדיר <span class="math inline">\(A=\{x\in\mathbb{Z}\mid 0\le x\le 2\}\)</span> ו־<span class="math inline">\(B=\{0,1,2\}\)</span>. נוכיח ש־<span class="math inline">\(A=B\)</span> באמצעות שתי הכלות.</p>
 <p><strong>א.</strong> כדי להוכיח <span class="math inline">\(A\subseteq B\)</span>, מספיק לבדוק שכל מספר שלם בין <span class="math inline">\(0\)</span> ל־<span class="math inline">\(2\)</span> נמצא ב־<span class="math inline">\(B\)</span>.</p>
 <div class="tf-quiz example-choice" data-correct="0" role="group" aria-label="ההכלה הראשונה בהוכחת שוויון">
@@ -3007,12 +3003,6 @@ x חופשי, y קשור
 </div>
 </div>
 </div>
-<div class="thmbox thmbox-question" title="שוויון, הכלה ודוגמה נגדית">
-<p><strong>שאלה 2.3.11 — שוויון, הכלה ודוגמה נגדית.</strong></p>
-<div class="sets-exercise" data-sets="inclusion">
-<p>בדקו את טענות השוויון וההכלה וקבעו איזו דוגמה נגדית מתאימה.</p>
-</div>
-</div>
 </section>
 <section id="sec-membership-vs-inclusion" class="level3" data-number="2.3.6">
 <h3 data-number="2.3.6" class="anchored" data-anchor-id="sec-membership-vs-inclusion"><span class="header-section-number">2.3.6</span> שייכות אינה הכלה</h3>
@@ -3024,12 +3014,6 @@ x חופשי, y קשור
 <img class="helper-box-art" src="images/box-helpers/warning.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>מהטענה <span class="math inline">\(3\in A\)</span> לא נובע ש־<span class="math inline">\(\{3\}\in A\)</span>. כדי ש־<span class="math inline">\(\{3\}\)</span> תהיה איבר, הקבוצה הזאת צריכה להופיע כאיבר של <span class="math inline">\(A\)</span>.</p>
 <p>לעומת זאת, אם <span class="math inline">\(B=\{\{3\},6\}\)</span>, אז <span class="math inline">\(\{3\}\in B\)</span>. במקרה הזה אחד האיברים הוא בעצמו קבוצה.</p>
-</div>
-<div class="thmbox thmbox-question" title="איבר או תת־קבוצה?">
-<p><strong>שאלה 2.3.12 — איבר או תת־קבוצה?</strong></p>
-<div class="sets-exercise" data-sets="member-or-subset">
-<p>בחרו את סימן היחס המתאים ובדקו גם מקרה שבו קבוצה היא איבר.</p>
-</div>
 </div>
 <div class="thmbox thmbox-summary has-helper-art" title="שוויון והכלה">
 <p><strong>סיכום — שוויון והכלה.</strong></p>
@@ -3045,6 +3029,24 @@ x חופשי, y קשור
 </section>
 <section id="practice-set-inclusion" class="level3" data-number="2.3.7">
 <h3 data-number="2.3.7" class="anchored" data-anchor-id="practice-set-inclusion"><span class="header-section-number">2.3.7</span> תרגול לסעיף: הכלה ודוגמאות נגדיות</h3>
+<div class="thmbox thmbox-question" title="סופרים איברים שונים">
+<p><strong>שאלה 2.3.10 — סופרים איברים שונים.</strong></p>
+<div class="sets-exercise" data-sets="cardinality">
+<p>הקלידו את מספר האיברים בכל קבוצה וכתבו את איבריה בתוך סוגריים מסולסלים. לאחר מכן בדקו אם קבוצות בעלות אותה עצמה חייבות להיות שוות.</p>
+</div>
+</div>
+<div class="thmbox thmbox-question" title="שוויון, הכלה ודוגמה נגדית">
+<p><strong>שאלה 2.3.11 — שוויון, הכלה ודוגמה נגדית.</strong></p>
+<div class="sets-exercise" data-sets="inclusion">
+<p>בדקו את טענות השוויון וההכלה וקבעו איזו דוגמה נגדית מתאימה.</p>
+</div>
+</div>
+<div class="thmbox thmbox-question" title="איבר או תת־קבוצה?">
+<p><strong>שאלה 2.3.12 — איבר או תת־קבוצה?</strong></p>
+<div class="sets-exercise" data-sets="member-or-subset">
+<p>בחרו את סימן היחס המתאים ובדקו גם מקרה שבו קבוצה היא איבר.</p>
+</div>
+</div>
 <div class="thmbox thmbox-question" title="קבוצה כאיבר וכקבוצה מכילה">
 <p><strong>שאלה 2.3.13 — קבוצה כאיבר וכקבוצה מכילה.</strong></p>
 <div class="sets-exercise" data-sets="practice-relations-inclusion">
@@ -3103,11 +3105,16 @@ x חופשי, y קשור
 </details>
 </div>
 <p>ההוכחה לא נעזרה ברשימה מסוימת של איברים. לכן היא תקפה לכל שתי קבוצות. אם החיתוך ריק, ההכלה נכונה גם אז: אין איבר בחיתוך שיכול להפריך אותה.</p>
-<div class="thmbox thmbox-question" title="שתי דרישות לאותו איבר">
-<p><strong>שאלה 2.4.3 — שתי דרישות לאותו איבר.</strong></p>
+<div class="thmbox thmbox-example" title="שתי דרישות לאותו איבר">
+<p><strong>דוגמה 2.4.3 — שתי דרישות לאותו איבר.</strong></p>
 <div class="set-proof" data-set-proof="intersection-target">
 <p>נניח ש־<span class="math inline">\(A\)</span> מוכלת גם ב־<span class="math inline">\(B\)</span> וגם ב־<span class="math inline">\(C\)</span>. הוכיחו שכל איבר של <span class="math inline">\(A\)</span> שייך לחיתוך של שתי הקבוצות, כלומר <span class="math inline">\(A\subseteq B\cap C\)</span>.</p>
 </div>
+<details class="thmcollapse thmfoldable"><summary>הוכחה במילים — לפי צעדי הפתרון לדוגמה</summary>
+<div id="written-proof-intersection-target" class="foldable" title="הוכחה במילים — לפי צעדי הפתרון לדוגמה">
+<p>נניח ש־<span class="math inline">\(A\subseteq B\)</span> וש־<span class="math inline">\(A\subseteq C\)</span>. יהי <span class="math inline">\(x\in A\)</span>. לפי ההכלה הראשונה <span class="math inline">\(x\in B\)</span>, ולפי ההכלה השנייה <span class="math inline">\(x\in C\)</span>. לפי הגדרת החיתוך, משתי השייכויות נקבל <span class="math inline">\(x\in B\cap C\)</span>. הראינו שכל איבר של <span class="math inline">\(A\)</span> שייך ל־<span class="math inline">\(B\cap C\)</span>, ולכן <span class="math inline">\(A\subseteq B\cap C\)</span>.</p>
+</div>
+</details>
 </div>
 </section>
 <section id="sec-union" class="level3" data-number="2.4.2">
@@ -3164,11 +3171,19 @@ x חופשי, y קשור
 <img class="helper-box-art" src="images/box-helpers/method.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>כדי להוכיח שייכות לאיחוד, מספיק להראות שייכות לאחת הקבוצות. לעומת זאת, כשנתון שאיבר שייך לאיחוד, עדיין לא יודעים לאיזו קבוצה הוא שייך. אפשר לחלק למקרים ולהגיע לאותה מסקנה בכל אחד מהם. המקרים אינם חייבים להיות זרים: ייתכן שהאיבר שייך לשתי הקבוצות.</p>
 </div>
-<div class="thmbox thmbox-question" title="שני מקרים, מסקנה אחת">
-<p><strong>שאלה 2.4.7 — שני מקרים, מסקנה אחת.</strong></p>
+<div class="thmbox thmbox-example" title="שני מקרים, מסקנה אחת">
+<p><strong>דוגמה 2.4.7 — שני מקרים, מסקנה אחת.</strong></p>
 <div class="set-proof" data-set-proof="union-target">
 <p>נניח שהקבוצות <span class="math inline">\(A\)</span> ו־<span class="math inline">\(B\)</span> מוכלות שתיהן ב־<span class="math inline">\(C\)</span>. הוכיחו שכל איבר באיחוד שלהן שייך ל־<span class="math inline">\(C\)</span>, כלומר <span class="math inline">\(A\cup B\subseteq C\)</span>.</p>
 </div>
+<details class="thmcollapse thmfoldable"><summary>הוכחה במילים — לפי צעדי הפתרון לדוגמה</summary>
+<div id="written-proof-union-target" class="foldable" title="הוכחה במילים — לפי צעדי הפתרון לדוגמה">
+<p>נניח ש־<span class="math inline">\(A\subseteq C\)</span> וש־<span class="math inline">\(B\subseteq C\)</span>. יהי <span class="math inline">\(x\in A\cup B\)</span>. לפי הגדרת האיחוד, <span class="math inline">\(x\in A\)</span> או <span class="math inline">\(x\in B\)</span>. נחלק למקרים.</p>
+<p>אם <span class="math inline">\(x\in A\)</span>, אז מן ההכלה <span class="math inline">\(A\subseteq C\)</span> נקבל <span class="math inline">\(x\in C\)</span>. לכן במקרה הראשון השייכות ל־<span class="math inline">\(A\)</span> גוררת שייכות ל־<span class="math inline">\(C\)</span>.</p>
+<p>אם <span class="math inline">\(x\in B\)</span>, אז מן ההכלה <span class="math inline">\(B\subseteq C\)</span> נקבל <span class="math inline">\(x\in C\)</span>. לכן גם במקרה השני השייכות ל־<span class="math inline">\(B\)</span> גוררת שייכות ל־<span class="math inline">\(C\)</span>.</p>
+<p>שני המקרים מכסים את האפשרויות שמתקבלות מן השייכות לאיחוד, ובשניהם <span class="math inline">\(x\in C\)</span>. הראינו שכל איבר של <span class="math inline">\(A\cup B\)</span> שייך ל־<span class="math inline">\(C\)</span>, ולכן <span class="math inline">\(A\cup B\subseteq C\)</span>.</p>
+</div>
+</details>
 </div>
 <div class="thmbox thmbox-game" title="הרובוט מכין רשימת נמענים">
 <p><strong>משחק 2.4.8 — הרובוט מכין רשימת נמענים.</strong></p>
@@ -3197,26 +3212,20 @@ x חופשי, y קשור
 <p>בחרו את האזורים של <span class="math inline">\(A\cap B\)</span> ושל <span class="math inline">\(A\cup B\)</span> בדיאגרמה.</p>
 </div>
 </div>
-<div class="thmbox thmbox-question" title="מהציור בחזרה לרשימה">
-<p><strong>שאלה 2.4.11 — מהציור בחזרה לרשימה.</strong></p>
-<div class="sets-exercise" data-sets="operations">
-<p>עבור <span class="math inline">\(A=\{0,2,5,8\}\)</span> ו־<span class="math inline">\(B=\{2,6,8\}\)</span>, כתבו את החיתוך ואת האיחוד.</p>
-</div>
-</div>
 <div class="thmbox thmbox-definition" title="קבוצות זרות">
-<p><strong>הגדרה 2.4.12 — קבוצות זרות.</strong></p>
+<p><strong>הגדרה 2.4.11 — קבוצות זרות.</strong></p>
 <p>שתי קבוצות <span class="math inline">\(A,B\)</span> נקראות <span class="term"><strong>זרות</strong></span> אם אין להן איברים משותפים, כלומר <span class="math inline">\(A\cap B=\varnothing\)</span>.</p>
 </div>
 <div class="thmbox thmbox-example" title="קבוצות שאינן זרות">
-<p><strong>דוגמה 2.4.13 — קבוצות שאינן זרות.</strong></p>
+<p><strong>דוגמה 2.4.12 — קבוצות שאינן זרות.</strong></p>
 <p>הקבוצות <span class="math inline">\(A=\{1,3\}\)</span> ו־<span class="math inline">\(B=\{3,4\}\)</span> אינן זרות, כי <span class="math inline">\(A\cap B=\{3\}\ne\varnothing\)</span>.</p>
 </div>
 <div class="thmbox thmbox-example" title="קבוצות זרות">
-<p><strong>דוגמה 2.4.14 — קבוצות זרות.</strong></p>
+<p><strong>דוגמה 2.4.13 — קבוצות זרות.</strong></p>
 <p>הקבוצות <span class="math inline">\(A=\{1,3\}\)</span> ו־<span class="math inline">\(B=\{2,4\}\)</span> זרות, כי <span class="math inline">\(A\cap B=\varnothing\)</span>.</p>
 </div>
-<div class="thmbox thmbox-question" title="הכלה וזרות — נכון או לא נכון?">
-<p><strong>שאלה 2.4.15 — הכלה וזרות — נכון או לא נכון?</strong></p>
+<div class="thmbox thmbox-example" title="הכלה וזרות — נכון או לא נכון?">
+<p><strong>דוגמה 2.4.14 — הכלה וזרות — נכון או לא נכון?</strong></p>
 <p>נכון או לא נכון? לכל שתי קבוצות <span class="math inline">\(A,B\)</span>, אם <span class="math inline">\(A\subseteq B\)</span>, אז <span class="math inline">\(A\)</span> ו־<span class="math inline">\(B\)</span> אינן זרות.</p>
 <div class="set-lab" data-set-lab="disjoint-inclusion">
 <p>בחרו נכון או לא נכון. אם הטענה אינה נכונה, הזינו דוגמה נגדית של שתי קבוצות קטנות.</p>
@@ -3236,6 +3245,12 @@ x חופשי, y קשור
 <section id="practice-set-direct-proofs" class="level3" data-number="2.4.4">
 <h3 data-number="2.4.4" class="anchored" data-anchor-id="practice-set-direct-proofs"><span class="header-section-number">2.4.4</span> תרגול לסעיף: איחוד וחיתוך</h3>
 <p><span id="practice-set-proofs"></span></p>
+<div class="thmbox thmbox-question" title="מהציור בחזרה לרשימה">
+<p><strong>שאלה 2.4.15 — מהציור בחזרה לרשימה.</strong></p>
+<div class="sets-exercise" data-sets="operations">
+<p>עבור <span class="math inline">\(A=\{0,2,5,8\}\)</span> ו־<span class="math inline">\(B=\{2,6,8\}\)</span>, כתבו את החיתוך ואת האיחוד.</p>
+</div>
+</div>
 <div class="thmbox thmbox-question" title="משתמשים בשני הנתונים">
 <p><strong>שאלה 2.4.16 — משתמשים בשני הנתונים.</strong></p>
 <div class="set-proof" data-set-proof="hw-intersection">
@@ -3276,12 +3291,20 @@ x חופשי, y קשור
 <p>כתבו את <span class="math inline">\(A\setminus B\)</span> ואת <span class="math inline">\(B\setminus A\)</span> כרשימות איברים בתוך סוגריים מסולסלים.</p>
 </div>
 </div>
-<div class="thmbox thmbox-question" title="הפרש בתוך הפרש">
-<p><strong>שאלה 2.5.3 — הפרש בתוך הפרש.</strong></p>
+<div class="thmbox thmbox-example" title="הפרש בתוך הפרש">
+<p><strong>דוגמה 2.5.3 — הפרש בתוך הפרש.</strong></p>
 <div class="set-proof" data-set-proof="double-difference">
 <p>תהיינה <span class="math inline">\(A\)</span> ו־<span class="math inline">\(B\)</span> קבוצות. הוכיחו שאם מוציאים מ־<span class="math inline">\(A\)</span> את כל איברי <span class="math inline">\(A\setminus B\)</span>, נשארים בדיוק האיברים המשותפים ל־<span class="math inline">\(A\)</span> ול־<span class="math inline">\(B\)</span>:</p>
 <p><span class="math display">\[A\setminus(A\setminus B)=A\cap B.\]</span></p>
 </div>
+<details class="thmcollapse thmfoldable"><summary>הוכחה במילים — לפי צעדי הפתרון לדוגמה</summary>
+<div id="written-proof-double-difference" class="foldable" title="הוכחה במילים — לפי צעדי הפתרון לדוגמה">
+<p>נוכיח את השוויון באמצעות שתי הכלות.</p>
+<p><strong>ההכלה הראשונה.</strong> יהי <span class="math inline">\(x\in A\setminus(A\setminus B)\)</span>. לפי הגדרת ההפרש, מתקיים <span class="math inline">\(x\in A\)</span> וגם <span class="math inline">\(x\notin A\setminus B\)</span>. נוציא מן הצירוף את שני חלקיו: <span class="math inline">\(x\in A\)</span>, וכן <span class="math inline">\(x\notin A\setminus B\)</span>. ההגדרה של ההפרש הפנימי מתרגמת את החלק השני ל־<span class="math inline">\(\neg(x\in A\land x\notin B)\)</span>. לפי חוק דה מורגן ושלילה כפולה, נקבל <span class="math inline">\(x\notin A\)</span> או <span class="math inline">\(x\in B\)</span>. כבר ידוע ש־<span class="math inline">\(x\in A\)</span>, ולכן האפשרות הראשונה אינה מתקיימת ומסיקים <span class="math inline">\(x\in B\)</span>. כעת <span class="math inline">\(x\in A\)</span> וגם <span class="math inline">\(x\in B\)</span>, ולפי הגדרת החיתוך <span class="math inline">\(x\in A\cap B\)</span>. מכאן <span class="math inline">\(A\setminus(A\setminus B)\subseteq A\cap B\)</span>.</p>
+<p><strong>ההכלה השנייה.</strong> יהי <span class="math inline">\(x\in A\cap B\)</span>. לפי הגדרת החיתוך, <span class="math inline">\(x\in A\)</span> וגם <span class="math inline">\(x\in B\)</span>. נוציא את שני חלקי הצירוף ונשתמש בכל אחד מהם בנפרד. נניח בשלילה ש־<span class="math inline">\(x\in A\setminus B\)</span>. לפי הגדרת ההפרש, נקבל <span class="math inline">\(x\in A\)</span> וגם <span class="math inline">\(x\notin B\)</span>, ובפרט <span class="math inline">\(x\notin B\)</span>. זו סתירה לשייכות <span class="math inline">\(x\in B\)</span> שהוכחנו. לכן <span class="math inline">\(x\notin A\setminus B\)</span>. נצרף זאת ל־<span class="math inline">\(x\in A\)</span>: מתקיים <span class="math inline">\(x\in A\)</span> וגם <span class="math inline">\(x\notin A\setminus B\)</span>, ולכן, לפי הגדרת ההפרש, <span class="math inline">\(x\in A\setminus(A\setminus B)\)</span>. מכאן <span class="math inline">\(A\cap B\subseteq A\setminus(A\setminus B)\)</span>.</p>
+<p>קיבלנו את שתי ההכלות, ולכן <span class="math inline">\(A\setminus(A\setminus B)=A\cap B\)</span>.</p>
+</div>
+</details>
 </div>
 </section>
 <section id="sec-complement" class="level3" data-number="2.5.2">
@@ -3343,11 +3366,18 @@ x חופשי, y קשור
 <p>כדי להוכיח ״אם <span class="math inline">\(P\)</span>, אז <span class="math inline">\(Q\)</span>״, אפשר להוכיח במקום זאת ״אם לא <span class="math inline">\(Q\)</span>, אז לא <span class="math inline">\(P\)</span>״. אלה גרירות שקולות, כפי שראינו בפרק הלוגיקה.</p>
 <p>למשל, <span class="math inline">\(A\subseteq B\)</span> אומר ששייכות ל־<span class="math inline">\(A\)</span> גוררת שייכות ל־<span class="math inline">\(B\)</span>. לכן אי־שייכות ל־<span class="math inline">\(B\)</span> גוררת אי־שייכות ל־<span class="math inline">\(A\)</span>. נשתמש בכך כשעוברים למשלים.</p>
 </div>
-<div class="thmbox thmbox-question" title="הכיוון מתהפך במשלים">
-<p><strong>שאלה 2.5.7 — הכיוון מתהפך במשלים.</strong></p>
+<div class="thmbox thmbox-example" title="הכיוון מתהפך במשלים">
+<p><strong>דוגמה 2.5.7 — הכיוון מתהפך במשלים.</strong></p>
 <div class="set-proof" data-set-proof="complement-inclusion">
 <p>נניח ש־<span class="math inline">\(A\)</span> ו־<span class="math inline">\(B\)</span> מוכלות באותה קבוצה אוניברסלית <span class="math inline">\(U\)</span>, וש־<span class="math inline">\(A\subseteq B\)</span>. הוכיחו שכל איבר של <span class="math inline">\(U\)</span> שאינו שייך ל־<span class="math inline">\(B\)</span> אינו שייך גם ל־<span class="math inline">\(A\)</span>, כלומר <span class="math inline">\(B^c\subseteq A^c\)</span>.</p>
 </div>
+<details class="thmcollapse thmfoldable"><summary>הוכחה במילים — לפי צעדי הפתרון לדוגמה</summary>
+<div id="written-proof-complement-inclusion" class="foldable" title="הוכחה במילים — לפי צעדי הפתרון לדוגמה">
+<p>נניח ש־<span class="math inline">\(A\subseteq B\)</span>, כאשר שני המשלימים נלקחים באותו עולם דיון. יהי <span class="math inline">\(x\in B^c\)</span>. נוכיח ש־<span class="math inline">\(x\in A^c\)</span>.</p>
+<p>נניח בשלילה ש־<span class="math inline">\(x\in A\)</span>. מן ההכלה <span class="math inline">\(A\subseteq B\)</span> נקבל <span class="math inline">\(x\in B\)</span>. זו סתירה ל־<span class="math inline">\(x\in B^c\)</span>: שייכות לקבוצה ושייכות למשלים שלה אינן יכולות להתקיים יחד. לכן <span class="math inline">\(x\notin A\)</span>. לפי הגדרת המשלים, <span class="math inline">\(x\notin A\)</span> אם ורק אם <span class="math inline">\(x\in A^c\)</span>, ולכן <span class="math inline">\(x\in A^c\)</span>.</p>
+<p>הראינו שכל איבר של <span class="math inline">\(B^c\)</span> שייך ל־<span class="math inline">\(A^c\)</span>, ולכן <span class="math inline">\(B^c\subseteq A^c\)</span>.</p>
+</div>
+</details>
 </div>
 </section>
 <section id="sec-symmetric-difference" class="level3" data-number="2.5.3">
@@ -3372,23 +3402,23 @@ x חופשי, y קשור
 <p>סמנו בדיאגרמה הפרש, משלים, הפרש סימטרי ושילובים שלהם.</p>
 </div>
 </div>
-<div class="thmbox thmbox-question" title="מחשבים וכותבים קבוצה">
-<p><strong>שאלה 2.5.10 — מחשבים וכותבים קבוצה.</strong></p>
-<div class="sets-exercise" data-sets="differences">
-<p>עבור <span class="math inline">\(U=\{1,2,3,4,5,6,7\}\)</span>, <span class="math inline">\(A=\{1,3,5\}\)</span> ו־<span class="math inline">\(B=\{3,4,5,7\}\)</span>, חשבו הפרש, משלים והפרש סימטרי.</p>
-</div>
-</div>
 </section>
 <section id="sec-set-demorgan-proof" class="level3" data-number="2.5.4">
 <h3 data-number="2.5.4" class="anchored" data-anchor-id="sec-set-demorgan-proof"><span class="header-section-number">2.5.4</span> מוכיחים את חוק דה מורגן באמצעות לוגיקה</h3>
 <p>כדי להוכיח ששתי קבוצות שוות, אפשר להראות שלכל עצם <span class="math inline">\(x\)</span>, תנאי השייכות לשתיהן שקולים. כך מוכיחים את שני כיווני ההכלה בשרשרת אחת: כל מעבר הוא <strong>שקילות</strong>, ולא רק גרירה בכיוון אחד.</p>
-<div class="thmbox thmbox-question" title="מהגדרות הקבוצות אל דה מורגן">
-<p><strong>שאלה 2.5.11 — מהגדרות הקבוצות אל דה מורגן.</strong></p>
+<div class="thmbox thmbox-example" title="מהגדרות הקבוצות אל דה מורגן">
+<p><strong>דוגמה 2.5.10 — מהגדרות הקבוצות אל דה מורגן.</strong></p>
 <div class="set-proof" data-set-proof="proof-demorgan">
 <p>תהיינה <span class="math inline">\(A,B\)</span> קבוצות באותו עולם דיון. הוכיחו באמצעות שקילות של תנאי השייכות:</p>
 <p><span class="math display">\[(A\cup B)^c=A^c\cap B^c.\]</span></p>
 <p>יהי <span class="math inline">\(x\)</span> עצם שרירותי בעולם הדיון. התחילו ב־<span class="math inline">\(x\in(A\cup B)^c\)</span>, ותרגמו את השייכות בעזרת הגדרות המשלים והאיחוד. השתמשו בחוק דה מורגן <strong>הלוגי</strong>, ואז תרגמו בחזרה לשייכות לקבוצות.</p>
 </div>
+<details class="thmcollapse thmfoldable"><summary>הוכחה במילים — לפי צעדי הפתרון לדוגמה</summary>
+<div id="written-proof-proof-demorgan" class="foldable" title="הוכחה במילים — לפי צעדי הפתרון לדוגמה">
+<p>יהי <span class="math inline">\(x\)</span> עצם כלשהו בעולם הדיון. לפי הגדרת המשלים, <span class="math inline">\(x\in(A\cup B)^c\)</span> אם ורק אם <span class="math inline">\(x\notin A\cup B\)</span>. לפי הגדרת האיחוד, התנאי האחרון שקול ל־<span class="math inline">\(\neg(x\in A\lor x\in B)\)</span>. לפי חוק דה מורגן בלוגיקה, זה שקול ל־<span class="math inline">\(x\notin A\land x\notin B\)</span>. לפי הגדרת המשלים, זה שקול ל־<span class="math inline">\(x\in A^c\land x\in B^c\)</span>, ולפי הגדרת החיתוך — ל־<span class="math inline">\(x\in A^c\cap B^c\)</span>.</p>
+<p>כל המעברים הם שקילויות, ולכן לכל <span class="math inline">\(x\)</span> השייכות ל־<span class="math inline">\((A\cup B)^c\)</span> שקולה לשייכות ל־<span class="math inline">\(A^c\cap B^c\)</span>. לפי הגדרת שוויון קבוצות, <span class="math inline">\((A\cup B)^c=A^c\cap B^c\)</span>.</p>
+</div>
+</details>
 </div>
 </section>
 <section id="sec-set-laws" class="level3" data-number="2.5.5">
@@ -3449,7 +3479,7 @@ x חופשי, y קשור
 </div>
 </div>
 <div id="box-set-laws" class="thmbox thmbox-theorem" title="חוקי קבוצות">
-<p><strong>משפט 2.5.12 — חוקי קבוצות.</strong></p>
+<p><strong>משפט 2.5.11 — חוקי קבוצות.</strong></p>
 <p>כל המשלים בטבלה נלקחים ביחס <strong>לאותו עולם דיון</strong>. בשורה שבה מופיע <span class="math inline">\(U\)</span>, הוא מסמן את העולם הזה.</p>
 <table class="caption-top table">
 <colgroup>
@@ -3515,6 +3545,12 @@ x חופשי, y קשור
 </section>
 <section id="practice-set-difference" class="level3" data-number="2.5.6">
 <h3 data-number="2.5.6" class="anchored" data-anchor-id="practice-set-difference"><span class="header-section-number">2.5.6</span> תרגול לסעיף: הפרש ומשלים</h3>
+<div class="thmbox thmbox-question" title="מחשבים וכותבים קבוצה">
+<p><strong>שאלה 2.5.12 — מחשבים וכותבים קבוצה.</strong></p>
+<div class="sets-exercise" data-sets="differences">
+<p>עבור <span class="math inline">\(U=\{1,2,3,4,5,6,7\}\)</span>, <span class="math inline">\(A=\{1,3,5\}\)</span> ו־<span class="math inline">\(B=\{3,4,5,7\}\)</span>, חשבו הפרש, משלים והפרש סימטרי.</p>
+</div>
+</div>
 <div id="practice-set-q-complement" class="thmbox thmbox-question" title="מה השתנה בעולם?">
 <p><strong>שאלה 2.5.13 — מה השתנה בעולם?</strong></p>
 <div class="sets-exercise" data-sets="practice-complement">
@@ -3599,24 +3635,18 @@ x חופשי, y קשור
 <p><span class="key-rule"><strong>מחברים את מספרי האיברים, ומחסירים את עצמת החיתוך כי איבריו נספרו פעמיים.</strong></span></p>
 <p>אם הקבוצות זרות, החיתוך ריק ועצמתו <span class="math inline">\(0\)</span>, ולכן פשוט מחברים: <span class="math inline">\(|A\cup B|=|A|+|B|\)</span>.</p>
 </div>
-<div class="thmbox thmbox-question" title="מתקנים את הספירה">
-<p><strong>שאלה 2.6.4 — מתקנים את הספירה.</strong></p>
-<div class="sets-exercise" data-sets="count-union">
-<p>הקלידו את עצמת האיחוד ובדקו מדוע מחסירים את עצמת החיתוך.</p>
-</div>
-</div>
 <section id="sec-inclusion-exclusion-three" class="level3" data-number="2.6.1">
 <h3 data-number="2.6.1" class="anchored" data-anchor-id="sec-inclusion-exclusion-three"><span class="header-section-number">2.6.1</span> ומה קורה עם שלוש קבוצות?</h3>
 <p>גם כאן מתחילים בחיבור, אבל צריך לעקוב אחרי איברים שנמצאים ביותר מקבוצה אחת.</p>
 <p><span class="key-rule"><strong>בחיתוך של זוג קבוצות נכללים גם האיברים ששייכים לקבוצה השלישית.</strong></span> למשל, <span class="math inline">\(A\cap B\)</span> אינו אומר ״ב־<span class="math inline">\(A\)</span> וב־<span class="math inline">\(B\)</span> בלבד״.</p>
 <div class="thmbox thmbox-example" title="למה מחסירים, ולמה מוסיפים בחזרה?">
-<p><strong>דוגמה 2.6.5 — למה מחסירים, ולמה מוסיפים בחזרה?</strong></p>
+<p><strong>דוגמה 2.6.4 — למה מחסירים, ולמה מוסיפים בחזרה?</strong></p>
 <div class="set-lab" data-set-lab="count-contributions-three">
 <p>ספרו שמות בשלוש רשימות ובחיתוכים שלהן. הקלידו את הספירות, ובדקו מדוע צריך להוסיף בחזרה את מי שמופיע בשלוש הרשימות.</p>
 </div>
 </div>
 <div class="thmbox thmbox-theorem" title="עקרון ההכלה וההפרדה לשלוש קבוצות">
-<p><strong>משפט 2.6.6 — עקרון ההכלה וההפרדה לשלוש קבוצות.</strong></p>
+<p><strong>משפט 2.6.5 — עקרון ההכלה וההפרדה לשלוש קבוצות.</strong></p>
 <p>לכל שלוש קבוצות סופיות <span class="math inline">\(A,B,C\)</span>:</p>
 <p><span class="math display">\[\begin{aligned}
 |A\cup B\cup C|={}&amp;|A|+|B|+|C|\\
@@ -3624,12 +3654,6 @@ x חופשי, y קשור
 &amp;+|A\cap B\cap C|.
 \end{aligned}\]</span></p>
 <p>מחברים את שלוש העצמות, מחסירים את עצמות שלושת החיתוכים הזוגיים, ומוסיפים בחזרה את עצמת החיתוך המשולש.</p>
-</div>
-<div class="thmbox thmbox-question" title="שלוש רשימות, בלי לספור פעמיים">
-<p><strong>שאלה 2.6.7 — שלוש רשימות, בלי לספור פעמיים.</strong></p>
-<div class="sets-exercise" data-sets="count-three">
-<p>חשבו את עצמת האיחוד של שלוש קבוצות ובדקו מה כוללים החיתוכים הזוגיים.</p>
-</div>
 </div>
 <div class="thmbox thmbox-summary has-helper-art" title="סופרים איחוד">
 <p><strong>סיכום — סופרים איחוד.</strong></p>
@@ -3643,6 +3667,18 @@ x חופשי, y קשור
 </section>
 <section id="practice-sets-counting" class="level3" data-number="2.6.2">
 <h3 data-number="2.6.2" class="anchored" data-anchor-id="practice-sets-counting"><span class="header-section-number">2.6.2</span> תרגול לסעיף: הכלה והפרדה</h3>
+<div class="thmbox thmbox-question" title="מתקנים את הספירה">
+<p><strong>שאלה 2.6.6 — מתקנים את הספירה.</strong></p>
+<div class="sets-exercise" data-sets="count-union">
+<p>הקלידו את עצמת האיחוד ובדקו מדוע מחסירים את עצמת החיתוך.</p>
+</div>
+</div>
+<div class="thmbox thmbox-question" title="שלוש רשימות, בלי לספור פעמיים">
+<p><strong>שאלה 2.6.7 — שלוש רשימות, בלי לספור פעמיים.</strong></p>
+<div class="sets-exercise" data-sets="count-three">
+<p>חשבו את עצמת האיחוד של שלוש קבוצות ובדקו מה כוללים החיתוכים הזוגיים.</p>
+</div>
+</div>
 <div class="thmbox thmbox-question" title="כמה עצמים שונים נספרו?">
 <p><strong>שאלה 2.6.8 — כמה עצמים שונים נספרו?</strong></p>
 <div class="sets-exercise" data-sets="practice-counting">
@@ -3726,23 +3762,11 @@ x חופשי, y קשור
 </table>
 <p>כשאין איברים, נשארת בחירה אחת בלבד: לא לבחור שום דבר. לכן גם לקבוצה הריקה יש תת־קבוצה אחת.</p>
 <p><span class="key-rule"><strong><span class="math inline">\(|A|\)</span> סופר את איברי <span class="math inline">\(A\)</span>; <span class="math inline">\(|\mathcal P(A)|\)</span> סופר את תת־הקבוצות של <span class="math inline">\(A\)</span>.</strong></span> אלה שתי קבוצות שונות, ובהתאם סופרים בהן עצמים שונים.</p>
-<div class="thmbox thmbox-question" title="סופרים בחירות, לא את גודל המספרים">
-<p><strong>שאלה 2.7.5 — סופרים בחירות, לא את גודל המספרים.</strong></p>
-<div class="sets-exercise" data-sets="count-power">
-<p>הקלידו כמה איברים יש בקבוצת החזקה ובדקו איך מספרם משתנה כשמוסיפים איבר לקבוצה המקורית.</p>
-</div>
-</div>
 <div class="thmbox thmbox-warning has-helper-art" title="הריקה והקבוצה כולה תמיד ברשימה">
 <p><strong>שימו לב — הריקה והקבוצה כולה תמיד ברשימה.</strong></p>
 <img class="helper-box-art" src="images/box-helpers/warning.svg" alt="" aria-hidden="true" width="56" height="56">
 <p>תמיד <span class="math inline">\(\varnothing\in\mathcal P(A)\)</span> וגם <span class="math inline">\(A\in\mathcal P(A)\)</span>. אם <span class="math inline">\(A=\varnothing\)</span>, שתי האמירות מתייחסות <strong>לאותו איבר</strong>, ולכן לא סופרים אותו פעמיים:</p>
 <p><span class="math display">\[\mathcal P(\varnothing)=\{\varnothing\}.\]</span></p>
-</div>
-<div class="thmbox thmbox-question" title="איזה סוג של איבר מחפשים?">
-<p><strong>שאלה 2.7.6 — איזה סוג של איבר מחפשים?</strong></p>
-<div class="sets-exercise" data-sets="power-check">
-<p>בדקו שייכות לקבוצת החזקה ואת קבוצת החזקה של הריקה.</p>
-</div>
 </div>
 <div class="thmbox thmbox-summary has-helper-art" title="קבוצה של קבוצות">
 <p><strong>סיכום — קבוצה של קבוצות.</strong></p>
@@ -3756,6 +3780,18 @@ x חופשי, y קשור
 </section>
 <section id="practice-sets-power-product" class="level3" data-number="2.7.4">
 <h3 data-number="2.7.4" class="anchored" data-anchor-id="practice-sets-power-product"><span class="header-section-number">2.7.4</span> תרגול לסעיף: קבוצת החזקה</h3>
+<div class="thmbox thmbox-question" title="סופרים בחירות, לא את גודל המספרים">
+<p><strong>שאלה 2.7.5 — סופרים בחירות, לא את גודל המספרים.</strong></p>
+<div class="sets-exercise" data-sets="count-power">
+<p>הקלידו כמה איברים יש בקבוצת החזקה ובדקו איך מספרם משתנה כשמוסיפים איבר לקבוצה המקורית.</p>
+</div>
+</div>
+<div class="thmbox thmbox-question" title="איזה סוג של איבר מחפשים?">
+<p><strong>שאלה 2.7.6 — איזה סוג של איבר מחפשים?</strong></p>
+<div class="sets-exercise" data-sets="power-check">
+<p>בדקו שייכות לקבוצת החזקה ואת קבוצת החזקה של הריקה.</p>
+</div>
+</div>
 <div id="practice-set-q-power" class="thmbox thmbox-question" title="גם הקבוצה הריקה יכולה להיות איבר">
 <p><strong>שאלה 2.7.7 — גם הקבוצה הריקה יכולה להיות איבר.</strong></p>
 <div class="sets-exercise" data-sets="practice-power">
@@ -3811,12 +3847,6 @@ x חופשי, y קשור
 <p>בדרך כלל <span class="math inline">\(A\times B\)</span> ו־<span class="math inline">\(B\times A\)</span> שונות: התפקידים של המקום הראשון והשני מתחלפים. לעומת זאת, כשסופרים את הזוגות בקבוצות סופיות, מקבלים:</p>
 <p><span class="math display">\[|A\times B|=|A|\cdot|B|.\]</span></p>
 <p>לכל איבר ראשון אפשר לצרף כל איבר שני. אם אחת הקבוצות ריקה, אי אפשר להשלים זוג, ולכן <span class="math inline">\(A\times\varnothing=\varnothing\times A=\varnothing\)</span>.</p>
-<div class="thmbox thmbox-question" title="מבחן הסוגריים והמקומות">
-<p><strong>שאלה 2.8.5 — מבחן הסוגריים והמקומות.</strong></p>
-<div class="sets-exercise" data-sets="pair-check">
-<p>השוו זוגות וקבוצות, ספרו זוגות ובדקו מכפלה עם הקבוצה הריקה.</p>
-</div>
-</div>
 <div class="thmbox thmbox-summary has-helper-art" title="שתי בחירות עם תפקידים">
 <p><strong>סיכום — שתי בחירות עם תפקידים.</strong></p>
 <img class="helper-box-art" src="images/box-helpers/summary.svg" alt="" aria-hidden="true" width="56" height="56">
@@ -3829,6 +3859,12 @@ x חופשי, y קשור
 </section>
 <section id="practice-sets-product" class="level3" data-number="2.8.4">
 <h3 data-number="2.8.4" class="anchored" data-anchor-id="practice-sets-product"><span class="header-section-number">2.8.4</span> תרגול לסעיף: מכפלה קרטזית</h3>
+<div class="thmbox thmbox-question" title="מבחן הסוגריים והמקומות">
+<p><strong>שאלה 2.8.5 — מבחן הסוגריים והמקומות.</strong></p>
+<div class="sets-exercise" data-sets="pair-check">
+<p>השוו זוגות וקבוצות, ספרו זוגות ובדקו מכפלה עם הקבוצה הריקה.</p>
+</div>
+</div>
 <div id="practice-set-q-product" class="thmbox thmbox-question" title="מחליפים את תפקידי המקומות">
 <p><strong>שאלה 2.8.6 — מחליפים את תפקידי המקומות.</strong></p>
 <div class="sets-exercise" data-sets="practice-product">
@@ -3842,26 +3878,27 @@ x חופשי, y קשור
 <p>כעת נשלב את מה שכבר למדנו. התחילו מן הנתונים, בדקו מה דורשת המטרה, ובחרו את ההגדרה שתעזור לעבור ביניהם. ציור יכול להציע רעיון; ההוכחה צריכה להסביר מדוע הוא נכון לכל הקבוצות המתאימות.</p>
 <section id="sec-set-inclusion-proof" class="level3" data-number="2.9.1">
 <h3 data-number="2.9.1" class="anchored" data-anchor-id="sec-set-inclusion-proof"><span class="header-section-number">2.9.1</span> הכלה ומקרים</h3>
-<div class="thmbox thmbox-question" title="מהאיחוד אל איחוד גדול יותר">
-<p><strong>שאלה 2.9.1 — מהאיחוד אל איחוד גדול יותר.</strong></p>
+<div class="thmbox thmbox-example" title="מהאיחוד אל איחוד גדול יותר">
+<p><strong>דוגמה 2.9.1 — מהאיחוד אל איחוד גדול יותר.</strong></p>
 <div class="set-proof" data-set-proof="proof-union">
 <p>נניח ש־<span class="math inline">\(A\subseteq B\)</span>, ותהי <span class="math inline">\(C\)</span> קבוצה. הוכיחו שאיחוד של כל אחת משתי הקבוצות עם <span class="math inline">\(C\)</span> שומר על ההכלה:</p>
 <p><span class="math display">\[A\cup C\subseteq B\cup C.\]</span></p>
 </div>
+<details class="thmcollapse thmfoldable"><summary>הוכחה במילים — לפי צעדי הפתרון לדוגמה</summary>
+<div id="written-proof-proof-union" class="foldable" title="הוכחה במילים — לפי צעדי הפתרון לדוגמה">
+<p>נניח ש־<span class="math inline">\(A\subseteq B\)</span>. יהי <span class="math inline">\(x\in A\cup C\)</span>. לפי הגדרת האיחוד, <span class="math inline">\(x\in A\)</span> או <span class="math inline">\(x\in C\)</span>. נחלק למקרים.</p>
+<p>אם <span class="math inline">\(x\in A\)</span>, אז מן ההכלה הנתונה נקבל <span class="math inline">\(x\in B\)</span>, ולכן לפי הגדרת האיחוד <span class="math inline">\(x\in B\cup C\)</span>. הראינו שבמקרה הראשון השייכות ל־<span class="math inline">\(A\)</span> גוררת שייכות ל־<span class="math inline">\(B\cup C\)</span>.</p>
+<p>אם <span class="math inline">\(x\in C\)</span>, אז לפי הגדרת האיחוד <span class="math inline">\(x\in B\cup C\)</span>. הראינו שגם במקרה השני השייכות ל־<span class="math inline">\(C\)</span> גוררת שייכות ל־<span class="math inline">\(B\cup C\)</span>.</p>
+<p>שני המקרים מכסים את כל האפשרויות, ובשניהם <span class="math inline">\(x\in B\cup C\)</span>. הראינו שכל איבר של <span class="math inline">\(A\cup C\)</span> שייך ל־<span class="math inline">\(B\cup C\)</span>, ולכן <span class="math inline">\(A\cup C\subseteq B\cup C\)</span>.</p>
 </div>
-<div class="thmbox thmbox-question" title="שתי דרכים להיכנס לאיחוד">
-<p><strong>שאלה 2.9.2 — שתי דרכים להיכנס לאיחוד.</strong></p>
-<div class="set-proof" data-set-proof="mixed-union">
-<p>תהיינה <span class="math inline">\(A,B,C\)</span> קבוצות. הוכיחו שכל איבר ששייך ל־<span class="math inline">\(A\)</span> וגם לאיחוד <span class="math inline">\(B\cup C\)</span> שייך לחיתוך <span class="math inline">\(A\cap B\)</span> או לקבוצה <span class="math inline">\(C\)</span>. כלומר, הוכיחו:</p>
-<p><span class="math display">\[A\cap(B\cup C)\subseteq(A\cap B)\cup C.\]</span></p>
-</div>
+</details>
 </div>
 </section>
 <section id="sec-set-proof-goals" class="level3" data-number="2.9.2">
 <h3 data-number="2.9.2" class="anchored" data-anchor-id="sec-set-proof-goals"><span class="header-section-number">2.9.2</span> מפריכים באמצעות איבר שמבדיל</h3>
 <p>כדי להפריך הכלה, צריך איבר ששייך לקבוצה הראשונה ואינו שייך לשנייה. כדי להפריך שוויון, מספיק איבר ששייך לצד אחד בלבד. אם יש נתונים בשאלה, הדוגמה הנגדית חייבת לקיים גם אותם.</p>
 <div class="thmbox thmbox-game" title="שברו את החוק של הרובוט">
-<p><strong>משחק 2.9.3 — שברו את החוק של הרובוט.</strong></p>
+<p><strong>משחק 2.9.2 — שברו את החוק של הרובוט.</strong></p>
 <div class="set-lab" data-set-lab="union-equal">
 <p>הקלידו קבוצות <span class="math inline">\(A,B\)</span> שמפריכות את הטענה <span class="math inline">\(A\cup B=A\cap B\)</span>, ואיבר שמבדיל בין שני הצדדים. אפשר להזין <span class="math inline">\(\varnothing\)</span> באמצעות כפתור הקבוצה הריקה במקלדת הסימנים, או להקליד <code>empty</code> ולהשלים באמצעות Tab.</p>
 </div>
@@ -3894,15 +3931,22 @@ x חופשי, y קשור
 </section>
 <section id="practice-set-equality-proofs" class="level3" data-number="2.10.2">
 <h3 data-number="2.10.2" class="anchored" data-anchor-id="practice-set-equality-proofs"><span class="header-section-number">2.10.2</span> שוויון קבוצות ושילוב כללים</h3>
+<div class="thmbox thmbox-question" title="שתי דרכים להיכנס לאיחוד">
+<p><strong>שאלה 2.10.2 — שתי דרכים להיכנס לאיחוד.</strong></p>
+<div class="set-proof" data-set-proof="mixed-union">
+<p>תהיינה <span class="math inline">\(A,B,C\)</span> קבוצות. הוכיחו שכל איבר ששייך ל־<span class="math inline">\(A\)</span> וגם לאיחוד <span class="math inline">\(B\cup C\)</span> שייך לחיתוך <span class="math inline">\(A\cap B\)</span> או לקבוצה <span class="math inline">\(C\)</span>. כלומר, הוכיחו:</p>
+<p><span class="math display">\[A\cap(B\cup C)\subseteq(A\cap B)\cup C.\]</span></p>
+</div>
+</div>
 <div class="thmbox thmbox-question" title="בודקים את הסוגריים">
-<p><strong>שאלה 2.10.2 — בודקים את הסוגריים.</strong></p>
+<p><strong>שאלה 2.10.3 — בודקים את הסוגריים.</strong></p>
 <div class="set-proof" data-set-proof="hw-association">
 <p>תהיינה <span class="math inline">\(A,B,C\)</span> קבוצות. הוכיחו שהוצאת איברי <span class="math inline">\(B\)</span> מתוך <span class="math inline">\(A\)</span>, ולאחר מכן הוצאת איברי <span class="math inline">\(C\)</span>, נותנת אותה קבוצה כמו הוצאת איברי האיחוד <span class="math inline">\(B\cup C\)</span> בבת אחת:</p>
 <p><span class="math display">\[(A\setminus B)\setminus C=A\setminus(B\cup C).\]</span></p>
 </div>
 </div>
 <div class="thmbox thmbox-question" title="הפרש של איחוד">
-<p><strong>שאלה 2.10.3 — הפרש של איחוד.</strong></p>
+<p><strong>שאלה 2.10.4 — הפרש של איחוד.</strong></p>
 <div class="set-proof" data-set-proof="hw-demorgan">
 <p>תהיינה <span class="math inline">\(A,B,C\)</span> קבוצות. הוכיחו שהאיברים של <span class="math inline">\(A\)</span> שאינם שייכים לאיחוד <span class="math inline">\(B\cup C\)</span> הם בדיוק האיברים שנמצאים גם ב־<span class="math inline">\(A\setminus B\)</span> וגם ב־<span class="math inline">\(A\setminus C\)</span>:</p>
 <p><span class="math display">\[A\setminus(B\cup C)=(A\setminus B)\cap(A\setminus C).\]</span></p>
@@ -3912,26 +3956,26 @@ x חופשי, y קשור
 <section id="practice-set-counterexamples" class="level3" data-number="2.10.3">
 <h3 data-number="2.10.3" class="anchored" data-anchor-id="practice-set-counterexamples"><span class="header-section-number">2.10.3</span> כמתים, מקרים ודוגמאות נגדיות</h3>
 <div class="thmbox thmbox-question" title="קיים איבר כאן וקיים איבר שם">
-<p><strong>שאלה 2.10.4 — קיים איבר כאן וקיים איבר שם.</strong></p>
+<p><strong>שאלה 2.10.5 — קיים איבר כאן וקיים איבר שם.</strong></p>
 <div class="set-lab" data-set-lab="two-witnesses">
 <p>כתבו דוגמה נגדית ובדקו את הנתונים ואת המסקנה.</p>
 </div>
 </div>
 <div class="thmbox thmbox-question" title="הכלה שאינה תמיד שוויון">
-<p><strong>שאלה 2.10.5 — הכלה שאינה תמיד שוויון.</strong></p>
+<p><strong>שאלה 2.10.6 — הכלה שאינה תמיד שוויון.</strong></p>
 <div class="set-proof" data-set-proof="hw-union-diff">
 <p>תהיינה <span class="math inline">\(A,B,C\)</span> קבוצות. הוכיחו שכל איבר באיחוד <span class="math inline">\(A\cup B\)</span> שאינו שייך ל־<span class="math inline">\(C\)</span> שייך ל־<span class="math inline">\(A\)</span> או ל־<span class="math inline">\(B\setminus C\)</span>:</p>
 <p><span class="math display">\[(A\cup B)\setminus C\subseteq A\cup(B\setminus C).\]</span></p>
 </div>
 </div>
 <div class="thmbox thmbox-question" title="מתי ההכלה מן התרגיל אינה שוויון?">
-<p><strong>שאלה 2.10.6 — מתי ההכלה מן התרגיל אינה שוויון?</strong></p>
+<p><strong>שאלה 2.10.7 — מתי ההכלה מן התרגיל אינה שוויון?</strong></p>
 <div class="set-lab" data-set-lab="strict-union-diff">
 <p>כתבו דוגמה נגדית ובדקו את הנתונים ואת המסקנה.</p>
 </div>
 </div>
 <div class="thmbox thmbox-question" title="בוחרים בעצמנו את המקרים">
-<p><strong>שאלה 2.10.7 — בוחרים בעצמנו את המקרים.</strong></p>
+<p><strong>שאלה 2.10.8 — בוחרים בעצמנו את המקרים.</strong></p>
 <div class="set-proof" data-set-proof="hw-difference-cases">
 <p>תהיינה <span class="math inline">\(A,B,C\)</span> קבוצות. הוכיחו שכל איבר של <span class="math inline">\(A\)</span> שאינו שייך ל־<span class="math inline">\(C\)</span> נמצא ב־<span class="math inline">\(A\setminus B\)</span> או ב־<span class="math inline">\(B\setminus C\)</span>:</p>
 <p><span class="math display">\[A\setminus C\subseteq(A\setminus B)\cup(B\setminus C).\]</span></p>

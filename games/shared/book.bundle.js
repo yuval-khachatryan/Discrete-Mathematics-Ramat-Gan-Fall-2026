@@ -7472,7 +7472,7 @@
   }
   var SET_PROOF_RULES = [
     ["goal-chain", "הניסוחים השקולים שכבר נבדקו למטרה", 1, 1],
-    ["open-forall", "פתיחת הנחה — יהי", 0, 0],
+    ["open-forall", "הנחה — יהי", 0, 0],
     ["close-forall", "סגירת הנחה — הכללה לכל איברי התחום", 2, 2],
     ["subset-definition", "הגדרת ההכלה — X⊆Y ⇔ ∀x∈X (x∈Y)", 1, 1],
     ["forall-use", "שימוש בטענה לכל איבר — הצבה של איבר מן התחום", 2, 2],
@@ -7934,14 +7934,24 @@
     intersection: "x ∈ (C ∩ D) ⇔ ((x ∈ C) ∧ (x ∈ D))",
     union: "x ∈ (C ∪ D) ⇔ ((x ∈ C) ∨ (x ∈ D))"
   };
+  function setProofJustification(row) {
+    var _a;
+    if (row.given) return "הטענה נתונה בשאלה.";
+    if (row.fixed) return "זוהי נקודת המוצא של ההוכחה.";
+    const name = (_a = ruleById(row.rule)) == null ? void 0 : _a.label.split(" — ")[0];
+    if (!name) return "הטענה נובעת מהצעדים שהוכחו.";
+    const refs = (row.sources || []).map((id) => "⁦" + id + "⁩");
+    const cited = refs.length > 1 ? refs.slice(0, -1).join(", ") + " ו־" + refs.at(-1) : refs[0];
+    return `לפי הכלל ״${name}״${refs.length ? ", ובהסתמך על " + (refs.length === 1 ? "שורה " : "השורות ") + cited : ""}.`;
+  }
   function setProofRuleView(row, rows2) {
     var _a;
     const rule = ruleById(row.rule);
     if (!rule) return null;
     const details = el13("details");
     details.className = "set-proof-rule-details";
-    const summary = el13("summary", rule.label.split(" — ")[0]);
-    summary.setAttribute("aria-label", "פירוט הכלל: " + rule.label.split(" — ")[0]);
+    const summary = el13("summary", setProofJustification(row));
+    summary.setAttribute("aria-label", setProofJustification(row) + " לחצו לפירוט.");
     const content = el13("div");
     content.className = "set-proof-rule-content";
     content.append(el13("p", rule.label));
@@ -8163,7 +8173,7 @@
       const equivalence = exercise.defaultMethod === "equivalence";
       const parts2 = equivalence ? exercise.equivalence : exercise.parts, models = equivalence ? EQUIVALENCE_MODELS[id] : MODELS[id];
       parts2.forEach((config, i) => {
-        var _a, _b, _c;
+        var _a, _b;
         const result = checkSetProof(config, models[i]);
         if (!result.ok || !result.reached) throw Error(`Invalid model solution: ${id}/${i}: ${((_a = result.error) == null ? void 0 : _a.message) || "target not reached"}`);
         const section = el14("section", "set-model-part");
@@ -8182,15 +8192,12 @@
           else if (r.rule === "assume") statement.append(document.createTextNode("נניח ש־"));
           if (config.mode === "equivalence" && !r.fixed && !r.given) statement.append(math3("⇔ "));
           statement.append(math3(r.written || show2(r.formula)));
-          const reason = el14("div", "set-model-reason", r.given ? "נתון" : r.fixed ? "נקודת המוצא" : ((_b = ruleById(r.rule)) == null ? void 0 : _b.label.split(" — ")[0]) || "");
+          const reason = el14("div", "set-model-reason", setProofJustification(r));
           if (!r.given && !r.fixed) {
             const details = setProofRuleView(r, result.rows);
             if (details) reason.replaceChildren(details);
           }
-          if ((_c = r.sources) == null ? void 0 : _c.length) {
-            const cited = el14("span", "", r.sources.join(", "));
-            cited.dir = "ltr";
-            reason.append(document.createTextNode(" · "), cited);
+          if ((_b = r.sources) == null ? void 0 : _b.length) {
             reason.title = r.sources.map((ref) => {
               const source = result.rows.find((s) => s.id === ref);
               return ref + ": " + show2(source.formula);
@@ -8339,10 +8346,10 @@
       }
       const rows2 = el15("div", { class: "set-proof-rows", "aria-label": "ההוכחה שנכתבה" }), blocks = /* @__PURE__ */ new Map();
       checked.rows.forEach((r) => {
-        var _a2, _b2, _c, _d;
+        var _a2, _b2, _c;
         const row = el15("div", { class: "set-proof-row" + (r.assumption ? " set-proof-assumption" : "") + (r.goalOnly ? " set-proof-goal-row" : ""), "data-row": r.id });
         row.style.setProperty("--proof-depth", 0);
-        let reason = r.given ? "נתון" : r.fixed ? "הנחת השייכות לתחילת ההוכחה" : ((_a2 = ruleById(r.rule)) == null ? void 0 : _a2.label.split(" — ")[0]) || "";
+        const reason = setProofJustification(r);
         const reasonNode = el15("div", { class: "set-proof-reason", text: reason });
         if (!r.given && !r.fixed) {
           const details = setProofRuleView(r, checked.rows);
@@ -8350,9 +8357,8 @@
         }
         if (r.kind === "match-goal") reasonNode.prepend(el15("span", { text: "קישור למטרה — " }));
         if (r.goalOnly) reasonNode.prepend(el15("span", { text: "ניסוח שקול למטרה — " }));
-        if ((_b2 = r.goalLinks) == null ? void 0 : _b2.length) reasonNode.append(el15("span", { text: " · הניסוחים " + r.goalLinks.join(", ") }));
-        if ((_c = r.sources) == null ? void 0 : _c.length) {
-          reasonNode.append(el15("span", { text: " · " + r.sources.join(", ") }));
+        if ((_a2 = r.goalLinks) == null ? void 0 : _a2.length) reasonNode.append(el15("span", { text: " נעזרנו גם בניסוחים " + r.goalLinks.join(", ") + "." }));
+        if ((_b2 = r.sources) == null ? void 0 : _b2.length) {
           reasonNode.title = r.sources.map((id) => {
             const source = checked.rows.find((s) => s.id === id);
             return id + ": " + rowText(source);
@@ -8375,7 +8381,7 @@
             render(true);
           }, "bk-btn bk-quiet"));
         }
-        const parentId = r.opens ? r.scope.at(-2) : r.scope.at(-1), parent = ((_d = blocks.get(parentId)) == null ? void 0 : _d.body) || rows2;
+        const parentId = r.opens ? r.scope.at(-2) : r.scope.at(-1), parent = ((_c = blocks.get(parentId)) == null ? void 0 : _c.body) || rows2;
         if (r.opens) {
           const block = el15("section", { class: "set-proof-block", "data-assumption": r.id, "aria-label": "הנחה " + r.id, "data-state": "open" }), body2 = el15("div", { class: "set-proof-block-body" });
           block.append(row);
@@ -8507,7 +8513,7 @@
         const form = el15("form", { class: "set-proof-input" }), stepNo = checked.nextStep;
         const action = el15("select", { "aria-label": "סוג הפעולה" }, [
           el15("option", { value: "step", text: "הסקת צעד" }),
-          el15("option", { value: "let", text: "יהי — פתיחת הנחה" }),
+          el15("option", { value: "let", text: "יהי — הנחה" }),
           ...((_a = checked.frames.at(-1)) == null ? void 0 : _a.kind) === "assume" ? [] : [el15("option", { value: "restate-goal", text: "ניסוח שקול של המטרה" })],
           el15("option", { value: "match-goal", text: "קישור צעד מוכח למטרה" })
         ]);

@@ -1,4 +1,4 @@
-import {setProofRuleView} from "./set-proof-rule-view.js";
+import {setProofRuleView,setProofJustification} from "./set-proof-rule-view.js";
 import {MODELS,EQUIVALENCE_MODELS} from './set-proof-models.js';
 import {checkSetProof,ruleById} from './set-proof-checker.js';
 import {show,showWritten} from './set-proof-syntax.js';
@@ -33,10 +33,9 @@ export function createSetModelView(id,exercise){
         else if(r.rule==='assume')statement.append(document.createTextNode('נניח ש־'));
         if(config.mode==='equivalence'&&!r.fixed&&!r.given)statement.append(math('⇔ '));
         statement.append(math(r.written||show(r.formula)));
-        const reason=el('div','set-model-reason',r.given?'נתון':r.fixed?'נקודת המוצא':ruleById(r.rule)?.label.split(' — ')[0]||'');
+        const reason=el('div','set-model-reason',setProofJustification(r));
         if(!r.given&&!r.fixed){const details=setProofRuleView(r,result.rows);if(details)reason.replaceChildren(details);}
         if(r.sources?.length){
-          const cited=el('span','',r.sources.join(', '));cited.dir='ltr';reason.append(document.createTextNode(' · '),cited);
           reason.title=r.sources.map(ref=>{const source=result.rows.find(s=>s.id===ref);return ref+': '+show(source.formula);}).join('\n');
         }
         row.append(label,statement,reason);

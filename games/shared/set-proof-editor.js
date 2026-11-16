@@ -1,4 +1,4 @@
-import {setProofRuleView} from "./set-proof-rule-view.js";
+import {setProofRuleView,setProofJustification} from "./set-proof-rule-view.js";
 import {contextualKeyboard} from './formula-keyboard.js';
 import {createSetModelView} from './set-proof-model-view.js';
 import {attachSetFormulaInput} from './set-formula-input.js';
@@ -64,13 +64,13 @@ export function initSetProof(box){
     checked.rows.forEach(r=>{
       const row=el('div',{class:'set-proof-row'+(r.assumption?' set-proof-assumption':'')+(r.goalOnly?' set-proof-goal-row':''),'data-row':r.id});
       row.style.setProperty('--proof-depth',0);
-      let reason=r.given?'נתון':r.fixed?'הנחת השייכות לתחילת ההוכחה':ruleById(r.rule)?.label.split(' — ')[0]||'';
+      const reason=setProofJustification(r);
       const reasonNode=el('div',{class:'set-proof-reason',text:reason});
       if(!r.given&&!r.fixed){const details=setProofRuleView(r,checked.rows);if(details)reasonNode.replaceChildren(details);}
       if(r.kind==='match-goal')reasonNode.prepend(el('span',{text:'קישור למטרה — '}));
       if(r.goalOnly)reasonNode.prepend(el('span',{text:'ניסוח שקול למטרה — '}));
-      if(r.goalLinks?.length)reasonNode.append(el('span',{text:' · הניסוחים '+r.goalLinks.join(', ')}));
-      if(r.sources?.length){reasonNode.append(el('span',{text:' · '+r.sources.join(', ')}));reasonNode.title=r.sources.map(id=>{const source=checked.rows.find(s=>s.id===id);return id+': '+rowText(source);}).join('\n');}
+      if(r.goalLinks?.length)reasonNode.append(el('span',{text:' נעזרנו גם בניסוחים '+r.goalLinks.join(', ')+'.'}));
+      if(r.sources?.length){reasonNode.title=r.sources.map(id=>{const source=checked.rows.find(s=>s.id===id);return id+': '+rowText(source);}).join('\n');}
       const finalRow=state.complete&&parts.length===1&&!config.start&&!r.given&&!r.goalOnly&&!r.scope.length&&equivalentShape(r.formula,parseStatement(config.goal));
       row.append(el('b',{class:'set-proof-row-id',dir:'ltr',text:finalRow?`R (${r.id})`:r.id}),r.rule==='open-forall'?el('span',{class:'set-proof-arbitrary'},[
         el('span',{text:'יהי '}),formula(r.declaration?r.opens.variable:rowText(r)),...(r.declaration?[el('span',{text:'.'})]:[])
@@ -139,7 +139,7 @@ export function initSetProof(box){
       const form=el('form',{class:'set-proof-input'}),stepNo=checked.nextStep;
       const action=el('select',{'aria-label':'סוג הפעולה'},[
         el('option',{value:'step',text:'הסקת צעד'}),
-        el('option',{value:'let',text:'יהי — פתיחת הנחה'}),
+        el('option',{value:'let',text:'יהי — הנחה'}),
         ...(checked.frames.at(-1)?.kind==='assume'?[]:[el('option',{value:'restate-goal',text:'ניסוח שקול של המטרה'})]),
         el('option',{value:'match-goal',text:'קישור צעד מוכח למטרה'})]);
       action.value=draft?.kind||state.action||'step';if(!action.value)action.value='step';
