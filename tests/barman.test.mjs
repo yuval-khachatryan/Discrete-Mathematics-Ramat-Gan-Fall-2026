@@ -12,7 +12,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   PEOPLE, QUESTION, answers, knowledge, explainAnswers, explainKnowledge, reason, RULE_IDS,
-  gendered, answerText, solutions, freePeople,
+  gendered, answerText, solutions, freePeople, checkDesignPicks,
 } from "../games/barman/rules.js";
 import { LEVELS } from "../games/barman/levels.js";
 
@@ -207,3 +207,12 @@ test("levels: the cases the book quotes", () => {
   const d = get("design");
   assert.equal(d.target.map((a, i) => answerText(a, PEOPLE[i])).join(", "), "לא יודע, לא יודעת, לא יודע, לא, לא");
 });
+
+ test('design accepts uncertainty only when every represented choice fits the conversation',()=>{
+ const target=LEVELS.find(l=>l.id==='design').target;
+ for(const last of [true,false,null])assert.equal(checkDesignPicks(target,'all',[true,true,true,false,last]).ok,true);
+ assert.equal(checkDesignPicks(target,'all',[true,true,true,false,undefined]).kind,'missing');
+ for(const i of [0,1,2,3]){const picks=[true,true,true,false,null];picks[i]=null;assert.equal(checkDesignPicks(target,'all',picks).ok,false);}
+ assert.equal(checkDesignPicks(target,'all',[null,null,null,null,null]).ok,false);
+ assert.equal(checkDesignPicks(target,'all',[true,true,true,true,null]).ok,false);
+ });

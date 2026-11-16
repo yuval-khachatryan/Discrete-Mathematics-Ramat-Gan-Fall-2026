@@ -94,3 +94,10 @@
 .quantifier-negation-keys[hidden]{display:none}
 .quantifier-negation-keys button{direction:ltr;unicode-bidi:isolate}
 .quantifier-negation-form>button{justify-self:start}
+
+.set-proof-rule-details { margin:0; max-width:100%; }
+.set-proof-rule-details > summary { cursor:pointer; color:#245c85; text-decoration:underline dotted; text-underline-offset:.2em; }
+.set-proof-rule-details > summary:focus-visible { outline:2px solid #245c85; outline-offset:3px; }
+.set-proof-rule-content { margin-top:.5rem; padding:.65rem; border:1px solid #ccd8e3; border-radius:.4rem; background:#f5f8fb; color:#253e50; overflow-wrap:anywhere; }
+.set-proof-rule-content p { margin:.35rem 0; }
+.set-proof-rule-content .set-proof-formula { white-space:normal; }

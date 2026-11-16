@@ -43,12 +43,46 @@ test('no circular proof, no future citations, no leaking temporary assumptions',
  assert.match(checkSetProof(c,steps).error.message,/ענף שנסגר/);
  assert.equal(checkSetProof(c,[step('intersection','x ∈ C','S1')]).ok,false);
 });
-test('union cannot be treated as intersection; complement needs universe membership',()=>{
+test('union cannot be treated as intersection; complements use the implicit universe by default',()=>{
  const c=SET_PROOFS['union-target'].parts[0];
  assert.equal(checkSetProof(c,[step('union','x ∈ A','S1')]).ok,false);
  const cfg={...SET_PROOFS['proof-demorgan'].parts[0],givens:['x ∉ A'],start:null,goal:'x ∈ Aᶜ'};
- assert.equal(checkSetProof(cfg,[step('complement','x ∈ Aᶜ','G1')]).ok,false);
+ assert.equal(checkSetProof(cfg,[step('complement','x ∈ Aᶜ','G1')]).reached,true);
+ assert.equal(checkSetProof({...cfg,explicitComplement:true},[step('complement','x ∈ Aᶜ','G1')]).ok,false);
  cfg.givens.push('x ∈ U');assert.equal(checkSetProof(cfg,[step('complement','x ∈ Aᶜ','G1','G2')]).reached,true);
+ assert.equal(checkSetProof({...cfg,explicitComplement:true},[step('complement','x ∈ Aᶜ','G1','G2')]).reached,true);
+});
+test('complement rewriting works in both directions and inside larger formulas without a named universe',()=>{
+ const config={sets:['A','B'],objects:['x','a'],rules:['complement'],givens:[],goal:'x ∈ Aᶜ'};
+ for(const [a,b]of [
+  ['x ∈ Aᶜ','x ∉ A'],
+  ['(x ∈ Aᶜ) ∧ (x ∈ Bᶜ)','(x ∉ A) ∧ (x ∉ B)'],
+  ['(x ∈ Aᶜ) → (x ∈ B)','(x ∉ A) → (x ∈ B)']
+ ])for(const [before,after]of [[a,b],[b,a]]){
+  assert.equal(checkSetEquivalence('complement',parseStatement(before),parseStatement(after),config),true);
+ }
+ assert.equal(checkSetEquivalence('complement',parseStatement('x ∈ Aᶜ'),parseStatement('a ∉ A'),config),false);
+ const hints=setEquivalenceHints(parseStatement('x ∉ A'),'complement',config);
+ assert.ok(hints.includes('x ∈ Aᶜ'));
+ const c={...config,givens:['x ∉ A'],goal:'x ∈ B'};
+ assert.ok(setStepHints(c,[],'complement',['G1']).includes('x ∈ Aᶜ'));
+ assert.equal(checkSetProof({...config,givens:['x ∉ A']},[step('complement','x ∈ Aᶜ','G1')]).reached,true);
+});
+test('explicit set difference still requires membership in its first set',()=>{
+ const c={sets:['A','U'],objects:['x'],rules:['complement','difference'],givens:['x ∉ A'],goal:'x ∈ U ∖ A'};
+ assert.equal(checkSetProof(c,[step('difference','x ∈ U ∖ A','G1')]).ok,false);
+ c.givens.push('x ∈ U');
+ assert.equal(checkSetProof(c,[step('difference','x ∈ U ∖ A','G2','G1')]).reached,true);
+});
+test('complement inclusion can be proved without a separate universe membership step',()=>{
+ verify('complement-inclusion',[
+  {kind:'let',rule:'open-forall',assumption:'x ∈ Bᶜ',formula:'x ∈ Aᶜ',sources:[]},
+  step('complement','x ∉ B','S1'),
+  step('subset-negative','x ∉ A','G1','S2'),
+  step('complement','x ∈ Aᶜ','S3'),
+  step('close-forall','∀x ∈ Bᶜ (x ∈ Aᶜ)','S1','S4'),
+  step('subset-definition','Bᶜ ⊆ Aᶜ','S5')
+ ]);
 });
 test('hints are checked by the same rule checker and never use the goal as a premise',()=>{
  const c=SET_PROOFS['hw-intersection'].parts[0];
@@ -65,12 +99,12 @@ test('known set laws apply inside formulas, not merely as arbitrary equivalent a
  assert.equal(checkSetProof(c,[MODELS['hw-union'][0][0],step('set-commute','x ∈ B ∩ A','S1')]).ok,true);
  assert.equal(checkSetProof(c,[MODELS['hw-union'][0][0],step('set-commute','x ∈ A ∪ B','S1')]).ok,false);
 });
-test('De Morgan equivalence can explicitly use the given universe membership',()=>{
+test('De Morgan equivalence uses complement directly without universe membership',()=>{
  verify('proof-demorgan',[
-  step('complement','x ∉ A ∪ B','S1','G1'),
+  step('complement','x ∉ A ∪ B','S1'),
   step('union','¬((x ∈ A) ∨ (x ∈ B))','S2'),
   step('eq:demorgan','(x ∉ A) ∧ (x ∉ B)','S3'),
-  step('complement','(x ∈ Aᶜ) ∧ (x ∈ Bᶜ)','S4','G1'),
+  step('complement','(x ∈ Aᶜ) ∧ (x ∈ Bᶜ)','S4'),
   step('intersection','x ∈ Aᶜ ∩ Bᶜ','S5'),
  ],0,'equivalence');
 });
@@ -224,7 +258,7 @@ test('contradictions use either two facts or one conjunction, including compleme
  for(const refs of [['S1','S3'],['S3','S1']]){
   const contradiction=step('false','F',...refs);
   const close=step('raa','x ∉ A','S2','S4');
-  const proof=[...prefix,contradiction,close,step('universe-member','x ∈ U','S1'),step('complement','x ∈ Aᶜ','S5','S6'),step('close-forall','∀x ∈ Bᶜ: (x ∈ Aᶜ)','S1','S7'),step('subset-definition','Bᶜ ⊆ Aᶜ','S8')];
+  const proof=[...prefix,contradiction,close,step('complement','x ∈ Aᶜ','S5'),step('close-forall','∀x ∈ Bᶜ: (x ∈ Aᶜ)','S1','S6'),step('subset-definition','Bᶜ ⊆ Aᶜ','S7')];
   const result=verify('complement-inclusion',proof);assert.equal(show(result.rows.find(r=>r.id==='S5').formula),'x ∉ A');
   assert.ok(setStepHints(c,prefix,'false',refs).includes('F'));
  }
@@ -247,4 +281,38 @@ test('quantifiers accept new notation and legacy colons, but display without col
  const a=parseStatement('∀x ∈ A (x ∈ B)'),b=parseStatement('∀x ∈ A: (x ∈ B)');
  assert.deepEqual(a,b);assert.equal(show(a),'∀x ∈ A (x ∈ B)');
  assert.deepEqual(parseStatement('∀x ∈ A (∀y ∈ B ((x ∈ C) → (y ∈ C)))'),parseStatement('∀x ∈ A: (∀y ∈ B: ((x ∈ C) → (y ∈ C)))'));
+});
+
+test('double difference unfolds the full definition before extracting conjuncts',()=>{
+ const config=SET_PROOFS['double-difference'].parts[0],opening=MODELS['double-difference'][0].slice(0,1);
+ const full=step('difference','(x ∈ A) ∧ (x ∉ (A ∖ B))','S1');
+ assert.equal(checkSetProof(config,[...opening,full]).ok,true);
+ for(const formula of ['x ∈ A','x ∉ (A ∖ B)','(x ∈ A) ∧ (x ∈ (A ∖ B))']){
+  assert.equal(checkSetProof(config,[...opening,step('difference',formula,'S1')]).ok,false,formula);
+ }
+ const hints=setStepHints(config,opening,'difference',['S1']);
+ assert.ok(hints.some(h=>equivalentShape(parseStatement(h),parseStatement(full.formula))));
+ assert.ok(hints.every(h=>parseStatement(h).type==='and'));
+ assert.equal(checkSetProof(config,[...opening,full,step('and-out','x ∈ A','S2')]).ok,true);
+ const checked=verify('double-difference',MODELS['double-difference'][0]);
+ assert.equal(checked.rows.find(r=>r.id==='S2').formula.type,'and');
+ verify('double-difference',MODELS['double-difference'][1],1);
+ const simple={...config,givens:['x ∈ A ∖ B'],goal:'x ∉ B'};
+ assert.equal(checkSetProof(simple,[step('difference','(x ∈ A) ∧ (x ∉ B)','G1')]).ok,true);
+ assert.equal(checkSetProof(simple,[step('difference','(x ∉ A) ∧ (x ∈ B)','G1')]).ok,false);
+});
+
+test('all authored complement proofs omit standalone universe membership',()=>{
+ for(const id of ['proof-demorgan','complement-inclusion']){
+  const exercise=SET_PROOFS[id];
+  for(const config of [...exercise.parts,...(exercise.equivalence||[])]){
+   assert.ok(!config.givens.includes('x ∈ U'));
+   assert.ok(!config.rules.includes('universe-member'));
+  }
+  for(const [i,steps]of MODELS[id].entries()){
+   assert.ok(steps.every(s=>s.rule!=='universe-member'&&s.formula!=='x ∈ U'));
+   assert.ok(steps.filter(s=>s.rule==='complement').every(s=>s.sources.length===1));
+   verify(id,steps,i);
+  }
+ }
 });

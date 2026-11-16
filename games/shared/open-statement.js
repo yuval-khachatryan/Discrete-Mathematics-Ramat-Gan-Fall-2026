@@ -1,3 +1,4 @@
+import {stageNavigation} from "./stage-navigation.js";
 /* Exact integer substitution: classify first, then produce both truth values. */
 export function integerValue(value) {
   if (typeof value === 'bigint') return value;
@@ -35,6 +36,13 @@ export function substitutionState(round, values) {
 }
 export function initOpenStatement(box) {
   let index = 0, phase, firstTruth, values;
+  const saved=[];
+  const nav=stageNavigation(SUBSTITUTION_ROUNDS.map(r=>r.title),go);
+  function go(i){
+    saved[index]={phase,firstTruth,values:{...values},first:[...first.childNodes].map(n=>n.cloneNode(true)),feedback:feedback.textContent,kind:feedback.className};
+    index=i;start();const state=saved[i];
+    if(state){phase=state.phase;firstTruth=state.firstTruth;values={...state.values};for(const input of choices.querySelectorAll('input'))input.value=values[input.dataset.variable]||'';first.replaceChildren(...state.first.map(n=>n.cloneNode(true)));feedback.textContent=state.feedback;feedback.className=state.kind;draw();}
+  }
   const make = (tag, cls, text) => {
     const node = document.createElement(tag);
     if (cls) node.className = cls;
@@ -61,7 +69,7 @@ export function initOpenStatement(box) {
   const reset = make('button', 'bk-btn bk-quiet', 'התחילו את הסיבוב מחדש');
   for (const b of [next, skip, reset]) b.type = 'button';
   controls.append(next, skip, reset);
-  box.replaceChildren(title, prompt, formula, first, stage, choices, status, answers, feedback, controls);
+  box.replaceChildren(nav.root,title, prompt, formula, first, stage, choices, status, answers, feedback, controls);
   for (const [text, answer] of [['פסוק פתוח — עדיין חסרה הצבה', null], ['פסוק אמת', true], ['פסוק שקר', false]]) {
     const button = make('button', 'bk-btn', text); button.type = 'button'; button.dataset.answer = String(answer);
     button.addEventListener('click', () => check(answer)); answers.append(button);
@@ -78,6 +86,7 @@ export function initOpenStatement(box) {
     return valid ? substitutionState(SUBSTITUTION_ROUNDS[index], values) : null;
   }
   function draw() {
+    nav.update(index,SUBSTITUTION_ROUNDS.map((_,i)=>i===index?phase==='done':saved[i]?.phase==='done'));
     const state = read();
     box.dataset.phase = phase;
     original.textContent = SUBSTITUTION_ROUNDS[index].tokens.join(' ');
@@ -89,7 +98,7 @@ export function initOpenStatement(box) {
     stage.textContent = phase === 'classify' ? 'מה אפשר לומר על הביטוי לפני שבוחרים מספרים?'
       : phase === 'choose' ? 'כעת בחרו מספרים. מה אפשר לומר על התוצאה?'
       : phase === 'opposite' ? `כעת מצאו הצבה שנותנת פסוק ${firstTruth ? 'שקר' : 'אמת'}, ובחרו את התשובה המתאימה.`
-      : index === SUBSTITUTION_ROUNDS.length - 1 ? 'סיימתם את שלושת הסיבובים.' : 'הסיבוב הושלם.';
+      : 'הסיבוב הושלם.';
     status.textContent = phase === 'done' ? 'אפשר להמשיך או להתחיל את הסיבוב מחדש.'
       : phase === 'classify' ? 'תחילה בחרו תשובה. אחר כך ייפתחו שדות ההצבה.'
       : !state ? 'יש להזין מספר שלם בכל שדה שממלאים, למשל 0 או ‎−3. שברים אינם בתחום של הפעילות.'
@@ -141,7 +150,7 @@ export function initOpenStatement(box) {
     }
     draw();
   }
-  next.addEventListener('click', () => { if (phase === 'done') { index = (index + 1) % SUBSTITUTION_ROUNDS.length; start(); answers.firstChild.focus(); } });
+  next.addEventListener('click', () => { if (phase === 'done') { go((index + 1) % SUBSTITUTION_ROUNDS.length); answers.firstChild.focus(); } });
   skip.addEventListener('click', () => { if (phase === 'opposite') { phase = 'done'; draw(); say('ההצבה הראשונה נבדקה. דילגתם על מציאת ההצבה הנוספת.', 'info'); } });
   reset.addEventListener('click', () => { start(); answers.firstChild.focus(); });
   start();

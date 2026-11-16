@@ -1,0 +1,24 @@
+.venn-workshop { margin: 1rem 0; }
+.venn-workshop select { max-width: 100%; padding: .4rem; }
+.vw-prompt { display:flex; flex-wrap:wrap; justify-content:center; gap:.6rem 1.5rem; font-size:1.1rem; margin:1rem 0; }
+.vw-prompt strong { font-size:1.6rem; width:100%; text-align:center; }
+.vw-arena { position:relative; max-width:660px; margin:1rem auto; }
+.vw-arena svg { display:block; width:100%; height:auto; cursor:pointer; }
+.vw-arena svg > g { pointer-events:none; }
+.vw-label { font: bold 22px sans-serif; fill:#23435c; text-anchor:middle; }
+.vw-bank { display:flex; flex-wrap:wrap; gap:.6rem; justify-content:center; min-height:48px; padding:.5rem; border:1px dashed #8ca3b5; border-radius:8px; }
+.vw-bank { display:grid; grid-template-columns:repeat(9,minmax(0,1fr)); gap:.25rem; justify-items:center; box-sizing:border-box; min-height:54px; }
+.vw-token { border:2px solid #45647a; background:white; color:#163347; border-radius:50%; width:34px; height:34px; padding:0; font: bold 17px sans-serif; display:grid; place-items:center; cursor:grab; touch-action:none; user-select:none; }
+.vw-placed { position:absolute; transform:translate(-50%,-50%); }
+.vw-selected { background:#ffe49b; outline:3px solid #a96d00; }
+.vw-wrong { border:3px dashed #b32d27; background:#fff0ee; }
+.vw-token:focus-visible,.vw-regions button:focus-visible { outline:3px solid #005fcc; outline-offset:3px; }
+.vw-ghost { position:fixed; transform:translate(-50%,-50%); z-index:10000; pointer-events:none; background:#ffe49b; }
+.vw-regions,.vw-actions { display:flex; flex-wrap:wrap; gap:.5rem; margin:.8rem 0; }
+.vw-regions button { font-size:.85rem; }
+.vw-regions button[aria-pressed=true] { background:#81c9c0; color:#123a36; border-color:#24665e; }
+@media(max-width:480px) { .vw-token { width:24px; height:24px; font-size:14px; } }
+
+.vw-ambiguous { border:3px dashed #a66a00; background:#fff2ce; }
+.vw-boundary-dialog { max-width:min(90vw,28rem); border:1px solid #8ca3b5; border-radius:12px; padding:1.2rem; color:#163347; background:white; }
+.vw-boundary-dialog::backdrop { background:rgb(0 0 0 / .25); }

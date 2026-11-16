@@ -14,6 +14,34 @@ try{
  await page.goto(pathToFileURL(fileURLToPath(new URL('../_book/02-sets.html',import.meta.url))).href);
  await page.waitForFunction(()=>window.MathJax?.startup?.promise);
  await page.evaluate(()=>window.MathJax.startup.promise);
+ if(process.argv.includes('--barman-design')){
+  await page.goto(new URL('../_book/games/barman/index.html?levels=no-early,after-no,anyone,anyone-serve,design&embed=1',import.meta.url).href);
+  await page.locator('.g-lvl').nth(4).click();
+  const cards=page.locator('.bm-card');assert.equal(await cards.count(),5);
+  for(const card of await cards.all())assert.equal(await card.getByRole('button',{name:'אי אפשר לדעת',exact:true}).count(),1);
+  await page.getByRole('button',{name:'פתרון',exact:true}).click();
+  assert.equal(await page.locator('.bm-pick [aria-pressed="true"]').count(),5);
+  assert.equal(await cards.last().getByRole('button',{name:'אי אפשר לדעת',exact:true}).getAttribute('aria-pressed'),'true');
+  await page.getByRole('button',{name:'בדיקה',exact:true}).click();assert.equal(await page.locator('.g-feedback.g-good').count(),1);
+  for(const choice of ['רוצה','לא רוצה']){
+   await cards.last().getByRole('button',{name:choice,exact:true}).click();
+   await page.getByRole('button',{name:'בדיקה',exact:true}).click();assert.equal(await page.locator('.g-feedback.g-good').count(),1);
+  }
+  await cards.first().getByRole('button',{name:'אי אפשר לדעת',exact:true}).click();
+  await page.getByRole('button',{name:'בדיקה',exact:true}).click();assert.equal(await page.locator('.g-feedback.g-bad').count(),1);
+  await page.getByRole('button',{name:'איפוס',exact:true}).click();assert.equal(await page.locator('.bm-pick [aria-pressed="true"]').count(),0);
+  await page.getByRole('button',{name:'פתרון',exact:true}).click();
+  await page.setViewportSize({width:390,height:844});await page.screenshot({path:'/tmp/falafel-design-uncertainty-mobile.png',fullPage:true});
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);
+  assert.deepEqual(errors,[]);console.log('Stage 5: uncertainty option, fully selected reveal, rechecking, both concrete choices, rejecting false uncertainty, reset and mobile passed.');
+  await browser.close();process.exit(0);
+ }
+ if(process.argv.includes('--robot-activities')){
+  const {checkRobotActivities}=await import('./robot-activity-checks.mjs');
+  await checkRobotActivities(page);assert.deepEqual(errors,[]);
+  console.log('All four restored robot scenes, existing robot artwork, staged speech, answer checks and desktop/mobile layout passed.');
+  await browser.close();process.exit(0);
+ }
  if(process.argv.includes('--field-keyboards')){
   const {checkFieldKeyboards}=await import('./field-keyboard-checks.mjs');
   await checkFieldKeyboards(page);assert.deepEqual(errors,[]);
@@ -27,7 +55,7 @@ try{
   await browser.close();process.exit(0);
  }
  await page.locator('.answer-panel').evaluateAll(ns=>ns.forEach(n=>n.open=true));
- assert.equal(await page.locator('.sets-ready').count(),Object.keys(SET_TASKS).length);
+ assert.equal(await page.locator('.sets-ready').count(),Object.keys(SET_TASKS).length-1);
  assert.equal(await page.locator('mjx-merror,[data-mml-node="merror"]').count(),0);
  assert.equal(await page.locator('main').innerText().then(t=>t.includes('TODO')),false);
  const helperImages=page.locator('.helper-box-art');
@@ -102,7 +130,11 @@ try{
  await games.setViewportSize({width:390,height:844});await games.screenshot({path:'/tmp/falafel-stage-b-mobile.png',fullPage:true});
  await games.goto(new URL('../_book/games/barman/index.html?level=classic&embed=1',import.meta.url).href);
  assert.equal(await games.locator('.g-prev').isVisible(),false);
- await games.locator('.bm-next').click();assert.equal(await games.locator('.bm-say.bm-empty').count(),2);
+ assert.equal(await games.locator('.bm-say.bm-empty').count(),0);
+ assert.equal(await games.locator('.bm-say').count(),3);
+ assert.match(await games.locator('.bm-say').nth(0).innerText(),/לא יודע/);
+ assert.match(await games.locator('.bm-say').nth(1).innerText(),/לא יודעת/);
+ assert.match(await games.locator('.bm-say').nth(2).innerText(),/כן/);
  await games.goto(new URL('../_book/games/witness/index.html?level=order&embed=1',import.meta.url).href);
  await games.locator('.w-robot svg').waitFor();
  assert.equal(await games.locator('.w-robot svg').isVisible(),true);
@@ -130,6 +162,7 @@ try{
   await browser.close();process.exit(0);
  }
  for(const [id,data]of Object.entries(SET_TASKS)){
+  if(id==='venn-difference')continue; // Replaced by the extended Venn workshop.
   const box=page.locator(`[data-sets="${id}"]`);
   const check=()=>box.getByRole('button',{name:'בדיקה',exact:true}).click();
   if(data.type==='cardinality'){
@@ -188,6 +221,12 @@ try{
    await box.getByRole('button',{name:'איפוס',exact:true}).click();assert.equal(await box.locator('[aria-pressed=true]').count(),0);
   }
   if(data.type==='venn'){
+   const stages=box.locator('.stage-navigation [data-stage]');
+   assert.equal(await stages.count(),data.tasks.length);
+   await box.locator('.sets-cards button').first().click();
+   await stages.nth(1).click();await stages.nth(0).click();
+   assert.equal(await box.locator('.sets-cards button').first().getAttribute('aria-pressed'),'true');
+   await box.getByRole('button',{name:'איפוס',exact:true}).click();
    for(const [i,t]of data.tasks.entries()){
     await check();assert.equal(await box.locator('.bk-bad').count(),1);
     for(const region of t.regions){const b=box.locator('.sets-cards button').nth(region);await b.focus();await page.keyboard.press('Space');}

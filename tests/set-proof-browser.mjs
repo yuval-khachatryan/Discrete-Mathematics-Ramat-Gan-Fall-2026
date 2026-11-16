@@ -44,6 +44,25 @@ try{
   await box.getByRole('button',{name:step.kind==='restate-goal'?'בדיקת הניסוח':'בדיקת הצעד',exact:true}).click();
   assert.equal(await box.locator('.set-proof-input .bk-bad').count(),0,await box.innerText());
  }
+ if(process.argv.includes('--implicit-complement')){
+  const box=page.locator('[data-set-proof="complement-inclusion"]');
+  await fill(box,{rule:'open-forall',formula:'∀x ∈ Bᶜ (x ∈ Aᶜ)',variable:'x'});
+  await fill(box,step('complement','x ∉ B','S1'));
+  await fill(box,step('subset-negative','x ∉ A','G1','S2'));
+  await box.getByLabel('תחום ההצדקה',{exact:true}).selectOption('definitions');
+  await box.getByLabel('כלל ההצדקה',{exact:true}).selectOption('complement');
+  await box.getByLabel('מקור 1',{exact:true}).selectOption('S3');
+  await box.locator('.set-proof-hint > summary').click();
+  assert.equal(await box.locator('.set-proof-hint').getByRole('button',{name:'x ∈ Aᶜ',exact:true}).count(),1);
+  await fill(box,step('complement','x ∈ Aᶜ','S3'));
+  await box.getByRole('button',{name:'סגירת ההנחה — הכללה',exact:true}).click();
+  await fill(box,step('subset-definition','Bᶜ ⊆ Aᶜ','S5'));
+  await box.getByRole('button',{name:'סיימתי את ההוכחה — בדקו',exact:true}).click();
+  assert.match(await box.locator(':scope>.bk-msg').innerText(),/ההוכחה הושלמה/);
+  assert.deepEqual(errors,[]);
+  console.log('Complement inclusion completed with direct nonmembership/complement steps and no universe membership step; reverse hint passed.');
+  await browser.close();process.exit(0);
+ }
  if(process.argv.includes('--solution-views-only')){
   const box=page.locator('[data-set-proof="complement-inclusion"]');
   await openEditor(box);
@@ -64,10 +83,9 @@ try{
   await box.getByRole('button',{name:'סגירת ההנחה בדרך השלילה',exact:true}).click();
   assert.match(await box.locator('[data-row="S5"]').innerText(),/x ∉ A/);
   assert.equal(await box.locator('[data-assumption="S2"]').getAttribute('data-state'),'closed');
-  await fill(box,step('universe-member','x ∈ U','S1'));
-  await fill(box,step('complement','x ∈ Aᶜ','S5','S6'));
-  await box.getByRole('button',{name:'סגירת ההנחה — האיבר היה כלשהו',exact:true}).click();
-  await fill(box,step('subset-definition','Bᶜ ⊆ Aᶜ','S8'));
+  await fill(box,step('complement','x ∈ Aᶜ','S5'));
+  await box.getByRole('button',{name:'סגירת ההנחה — הכללה',exact:true}).click();
+  await fill(box,step('subset-definition','Bᶜ ⊆ Aᶜ','S7'));
   await box.getByRole('button',{name:'סיימתי את ההוכחה — בדקו',exact:true}).click();
   assert.match(await box.locator(':scope>.bk-msg').innerText(),/ההוכחה הושלמה/);
   await box.screenshot({path:'/tmp/set-proof-comparison-desktop.png'});
@@ -76,13 +94,20 @@ try{
   await box.getByRole('button',{name:'ההוכחה שלי',exact:true}).click();
   assert.equal(await box.getByLabel('הטענה בצעד החדש',{exact:true}).inputValue(),'x ∈ B');
   await box.getByRole('button',{name:'ביטול העריכה ושחזור ההמשך',exact:true}).click();
-  assert.equal(await box.locator('[data-row="S9"]').count(),1);
+  assert.equal(await box.locator('[data-row="S8"]').count(),1);
   // Every exercise exposes a complete checked model without changing student work.
   for(const id of Object.keys(SET_PROOFS)){
    const other=page.locator(`[data-set-proof="${id}"]`);
    const count=await other.locator('.set-proof-rows [data-row]').count();
    await other.getByRole('button',{name:'פתרון לדוגמה',exact:true}).click();
    assert.equal(await other.locator('.set-model-part').count(),SET_PROOFS[id].parts.length);
+   const ruleDetails=other.locator('.set-model-panel .set-proof-rule-details').first();
+   assert.equal(await ruleDetails.getAttribute('open'),null);
+   await ruleDetails.locator('summary').click();
+   assert.equal(await ruleDetails.evaluate(n=>n.open),true);
+   assert.ok(await ruleDetails.locator('.set-proof-rule-content').isVisible());
+   await ruleDetails.locator('summary').press('Enter');
+   assert.equal(await ruleDetails.evaluate(n=>n.open),false);
    assert.equal(await other.locator('.set-proof-rows [data-row]').count(),count);
   }
   await box.getByRole('button',{name:'השוואה',exact:true}).click();
@@ -173,7 +198,7 @@ try{
  await fill(first,{rule:'open-forall',variable:'x',style:'member'});
  await fill(first,step('subset-use','x ∈ B','G1','S1'));
  await fill(first,step('subset-use','x ∈ C','G2','S2'));
- await first.getByRole('button',{name:'סגירת ההנחה — האיבר היה כלשהו',exact:true}).click();
+ await first.getByRole('button',{name:'סגירת ההנחה — הכללה',exact:true}).click();
  await first.getByLabel('סוג הפעולה',{exact:true}).selectOption('match-goal');
  await first.getByLabel('תחום ההצדקה',{exact:true}).selectOption('definitions');
  await first.getByLabel('כלל ההצדקה',{exact:true}).selectOption('subset-definition');
@@ -225,13 +250,13 @@ try{
  await fill(chain,{rule:'open-forall',variable:'y',style:'conditional'});
  assert.match(await chain.locator('[data-row="S1"]').innerText(),/יהי y איבר כלשהו/);
  assert.match(await chain.locator('[data-assumption="S1"] .set-proof-local-goal').innerText(),/y ∈ A/);
- assert.equal(await chain.getByRole('button',{name:'סגירת ההנחה — האיבר היה כלשהו',exact:true}).isDisabled(),true);
+ assert.equal(await chain.getByRole('button',{name:'סגירת ההנחה — הכללה',exact:true}).isDisabled(),true);
  await fill(chain,step('assume','y ∈ A'));
  await fill(chain,step('subset-use','y ∈ B','G1','S2'));
  await fill(chain,step('subset-use','y ∈ C','G2','S3'));
- assert.equal(await chain.getByRole('button',{name:'סגירת ההנחה — האיבר היה כלשהו',exact:true}).isDisabled(),true);
+ assert.equal(await chain.getByRole('button',{name:'סגירת ההנחה — הכללה',exact:true}).isDisabled(),true);
  await fill(chain,step('conditional','(y ∈ A) → (y ∈ C)','S2','S4'));
- await chain.getByRole('button',{name:'סגירת ההנחה — האיבר היה כלשהו',exact:true}).click();
+ await chain.getByRole('button',{name:'סגירת ההנחה — הכללה',exact:true}).click();
  assert.equal(await chain.locator('[data-assumption="S1"]').getAttribute('data-state'),'closed');
  await fill(chain,step('subset-definition','A ⊆ C','S6'));
  await chain.getByRole('button',{name:'סיימתי את ההוכחה — בדקו',exact:true}).click();
@@ -250,7 +275,7 @@ try{
  await fill(local,step('subset-use','x ∈ B','G1','S1'));
  await fill(local,step('subset-use','x ∈ C','G2','S1'));
  await fill(local,step('and-in','(x ∈ B) ∧ (x ∈ C)','S2','S3'));
- await local.getByRole('button',{name:'סגירת ההנחה — האיבר היה כלשהו',exact:true}).click();
+ await local.getByRole('button',{name:'סגירת ההנחה — הכללה',exact:true}).click();
  assert.match(await local.locator('[data-row="S5"]').innerText(),/R2/);
  await local.getByRole('button',{name:'סיימתי את ההוכחה — בדקו',exact:true}).click();
  assert.match(await local.locator('[data-row="S6"]').innerText(),/הניסוחים השקולים/);

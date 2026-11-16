@@ -8,18 +8,18 @@ function equality(title,givens,left,right,hint,extra={}){
   const rules=extra.rules||defaults.rules;
   return {title,target:`${left} = ${right}`,hint,
     parts:[inc(givens,left,right,{...extra,title:'ההכלה הראשונה'}),inc(givens,right,left,{...extra,title:'ההכלה השנייה',goal:`(${left}) ⊇ (${right})`,conclusion:`${left} ⊇ ${right}`})],
-    equivalence:[part(givens,`x ∈ (${left})`,`x ∈ (${right})`,{...extra,mode:'equivalence',intro:'יהי x איבר כלשהו. נראה שתנאי השייכות לשתי הקבוצות שקולים.',conclusion:`${left} = ${right}`,rules:rules.filter(r=>r.startsWith('eq:')||['equal-use','intersection','union','difference','complement','empty','symmetric','power'].includes(r))})]};
+    equivalence:[part(givens,`x ∈ (${left})`,`x ∈ (${right})`,{...extra,mode:'equivalence',intro:'יהי x. נראה שתנאי השייכות לשתי הקבוצות שקולים.',conclusion:`${left} = ${right}`,rules:rules.filter(r=>r.startsWith('eq:')||['equal-use','intersection','union','difference','complement','empty','symmetric','power'].includes(r))})]};
 }
-const withComplement={universe:'U',rules:[...defaults.rules,'complement','universe-member']};
+const withComplement={universe:'U',rules:[...defaults.rules,'complement']};
 export const SET_PROOFS={
   'inclusion-chain':inclusion('שרשרת הכלות',['A ⊆ B','B ⊆ C'],'A','C','פתחו את הגדרת ההכלה במטרה. עקבו אחר איבר כלשהו באמצעות שתי ההכלות הנתונות.'),
   'intersection-target':inclusion('שתי דרישות לאותו איבר',['A ⊆ B','A ⊆ C'],'A','B ∩ C','כדי להגיע לחיתוך, הראו בנפרד שייכות ל־B ול־C.'),
   'union-target':inclusion('שתי דרכים לאותה קבוצה',['A ⊆ C','B ⊆ C'],'A ∪ B','C','פתחו שני מקרים על פי השייכות לאיחוד. סגרו כל ענף כגרירה, ואז השתמשו בכלל המקרים.'),
   'mixed-union':inclusion('וגם, ואז או',[],'A ∩ (B ∪ C)','(A ∩ B) ∪ C','פצלו את השייכות לחיתוך. מן השייכות לאיחוד מתקבלים שני מקרים.'),
-  'double-difference':equality('הפרש בתוך הפרש',[],'A ∖ (A ∖ B)','A ∩ B','פתחו את הגדרת ההפרש, תחילה בחוץ ואחר כך בפנים. אפשר להשתמש בדה מורגן ובפילוג.'),
+  'double-difference':equality('הפרש בתוך הפרש',[],'A ∖ (A ∖ B)','A ∩ B','פתחו את הגדרת ההפרש לתנאי השייכות המלא: שייכות לראשונה וגם אי־שייכות לשנייה. חילוץ אחד החלקים הוא צעד נפרד של הוצאת חלק מ״וגם״.',{explicitDefinitions:['difference']}),
   'proof-union':inclusion('מהאיחוד אל איחוד גדול יותר',['A ⊆ B'],'A ∪ C','B ∪ C','בשני המקרים אפשר להגיע לאיחוד המבוקש, אך לאותו מקור אין תפקיד בשניהם.'),
-  'proof-demorgan':equality('דה מורגן בקבוצות',['x ∈ U'],'(A ∪ B)ᶜ','Aᶜ ∩ Bᶜ','פענחו את המשלים ואת האיחוד; שלילת ״או״ נותנת ״וגם״ של שתי השלילות.',withComplement),
-  'complement-inclusion':inclusion('הכיוון מתהפך במשלים',['A ⊆ B','x ∈ U'],'Bᶜ','Aᶜ','מאיבר שאינו ב־B אפשר להסיק שאינו ב־A. אל תשכחו שהמשלים נלקח בתוך U.',withComplement),
+  'proof-demorgan':equality('דה מורגן בקבוצות',[],'(A ∪ B)ᶜ','Aᶜ ∩ Bᶜ','פענחו את המשלים ואת האיחוד; שלילת ״או״ נותנת ״וגם״ של שתי השלילות.',withComplement),
+  'complement-inclusion':inclusion('הכיוון מתהפך במשלים',['A ⊆ B'],'Bᶜ','Aᶜ','מאיבר שאינו ב־B אפשר להסיק שאינו ב־A. בעזרת הגדרת המשלים אפשר לעבור ישירות מאי־שייכות לקבוצה לשייכות למשלים שלה.',withComplement),
   'hw-intersection':{title:'משתמשים בשני הנתונים',target:'x ∈ A ∩ C',hint:'הוציאו משייכות לחיתוך את שתי השייכויות. איזו מהן מאפשרת להשתמש בהכלה?',parts:[part(['x ∈ A ∩ B','B ⊆ C'],null,'x ∈ A ∩ C')]},
   'hw-union':inclusion('די באחד הצדדים',[],'A ∩ B','A ∪ C','לא נדרש להוכיח שייכות ל־C. איזה חלק מהנתון מספיק?'),
   'hw-absorption':{title:'שוויון והכלה — שני הכיוונים',target:'(A ∩ B = A) ↔ (A ⊆ B)',hint:'בכיוון הראשון משתמשים בשוויון הנתון. בכיוון השני מוכיחים שתי הכלות.',parts:[

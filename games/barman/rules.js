@@ -116,6 +116,19 @@ export function freePeople(target, mode) {
   return target.map((_, i) => i).filter(i => sols.some(w => w[i]) && sols.some(w => !w[i]));
 }
 
+// null means that both desires remain possible, not an unanswered field.
+export function checkDesignPicks(target,mode,picks){
+  const missing=target.findIndex((_,i)=>picks[i]===undefined);
+  if(missing>=0)return {ok:false,kind:'missing',index:missing};
+  const candidates=patterns(target.length).filter(w=>picks.every((v,i)=>v===null||v===w[i]));
+  if(!candidates.length)return {ok:false,kind:'invalid',index:0};
+  for(const wants of candidates){
+    const said=explainAnswers(wants,mode),index=said.findIndex((a,i)=>a.answer!==target[i]);
+    if(index>=0)return {ok:false,kind:'mismatch',index,answer:said[index].answer,rule:said[index].rule,uncertain:picks.some(v=>v===null)};
+  }
+  return {ok:true};
+}
+
 /* ---- reasons, in Hebrew ------------------------------------------------ */
 
 const REASONS = {

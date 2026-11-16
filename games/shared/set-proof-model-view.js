@@ -1,3 +1,4 @@
+import {setProofRuleView} from "./set-proof-rule-view.js";
 import {MODELS} from './set-proof-models.js';
 import {checkSetProof,ruleById} from './set-proof-checker.js';
 import {show,showWritten} from './set-proof-syntax.js';
@@ -20,7 +21,7 @@ export function createSetModelView(id,exercise){
       const section=el('section','set-model-part');
       if(exercise.parts.length>1)section.append(el('h5','',config.title||`חלק ${i+1}`));
       const target=el('p','set-model-target','נראה ש־');target.append(math(showWritten(config.goal)));section.append(target);
-      if(config.universe)section.append(el('p','set-model-intro','כל הקבוצות הנדונות מוכלות בעולם U. המשלים נלקח ביחס אליו.'));
+      if(config.universe)section.append(el('p','set-model-intro','כל המשלים נלקחים ביחס לאותו עולם דיון.'));
       const blocks=new Map();
       for(const r of result.rows){
         const row=el('div','set-model-row'),label=el('b','set-proof-row-id',r.id);label.dir='ltr';
@@ -29,6 +30,7 @@ export function createSetModelView(id,exercise){
         else if(r.rule==='assume')statement.append(document.createTextNode('נניח ש־'));
         statement.append(math(r.written||show(r.formula)));
         const reason=el('div','set-model-reason',r.given?'נתון':r.fixed?'נקודת המוצא':ruleById(r.rule)?.label.split(' — ')[0]||'');
+        if(!r.given&&!r.fixed){const details=setProofRuleView(r,result.rows);if(details)reason.replaceChildren(details);}
         if(r.sources?.length){
           const cited=el('span','',r.sources.join(', '));cited.dir='ltr';reason.append(document.createTextNode(' · '),cited);
           reason.title=r.sources.map(ref=>{const source=result.rows.find(s=>s.id===ref);return ref+': '+show(source.formula);}).join('\n');

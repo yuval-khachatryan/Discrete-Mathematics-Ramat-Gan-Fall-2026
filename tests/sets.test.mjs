@@ -32,7 +32,8 @@ test('Venn solutions follow the logical membership tests',()=>{
 test('activities are linked and written exercise answers are well-formed sets',()=>{
  const qmd=readFileSync(new URL('../02-sets.qmd',import.meta.url),'utf8');
  for(const [id,t]of Object.entries(SET_TASKS)){
-  assert.ok(qmd.includes(`data-sets="${id}"`),id);
+  if(id==='venn-difference')assert.ok(qmd.includes('data-venn-workshop="areas"'),'extended Venn workshop replaces the old difference game');
+  else assert.ok(qmd.includes(`data-sets="${id}"`),id);
   if(t.type==='write')for(const q of t.items)assert.ok(checkSetAnswer(q.answer,q.answer).ok,id);
   if(t.type==='choice')for(const q of t.items){assert.ok(q.answer>=0&&q.answer<q.options.length);assert.ok(q.why.length>15);}
  }

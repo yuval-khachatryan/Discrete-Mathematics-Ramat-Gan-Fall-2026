@@ -9,8 +9,21 @@ export const MODELS={
  'union-target':[[step('union','(x ∈ A) ∨ (x ∈ B)','S1'),step('assume','x ∈ A'),step('subset-use','x ∈ C','G1','S3'),step('conditional','(x ∈ A) → (x ∈ C)','S3','S4'),step('assume','x ∈ B'),step('subset-use','x ∈ C','G2','S6'),step('conditional','(x ∈ B) → (x ∈ C)','S6','S7'),step('cases','x ∈ C','S2','S5','S8')]],
  'hw-difference':[[step('difference','x ∈ C','S1'),step('difference','x ∉ B','S1'),step('subset-negative','x ∉ A','G1','S3'),step('difference','x ∈ C ∖ A','S2','S4')]],
  'double-difference':[
-  [step('difference','x ∈ A','S1'),step('difference','x ∉ A ∖ B','S1'),step('difference','¬((x ∈ A) ∧ (x ∉ B))','S3'),step('eq:demorgan','(x ∉ A) ∨ (x ∈ B)','S4'),step('or-out','x ∈ B','S5','S2'),step('intersection','x ∈ A ∩ B','S2','S6')],
-  [step('intersection','x ∈ A','S1'),step('intersection','x ∈ B','S1'),step('assume','x ∈ A ∖ B'),step('difference','x ∉ B','S4'),step('false','F','S3','S5'),step('raa','x ∉ A ∖ B','S4','S6'),step('difference','x ∈ A ∖ (A ∖ B)','S2','S7')],
+  [step('difference','(x ∈ A) ∧ (x ∉ (A ∖ B))','S1'),
+   step('and-out','x ∈ A','S2'),step('and-out','x ∉ (A ∖ B)','S2'),
+   step('difference','¬((x ∈ A) ∧ (x ∉ B))','S4'),
+   step('eq:demorgan','(x ∉ A) ∨ (x ∈ B)','S5'),
+   step('or-out','x ∈ B','S6','S3'),
+   step('and-in','(x ∈ A) ∧ (x ∈ B)','S3','S7'),
+   step('intersection','x ∈ A ∩ B','S8')],
+  [step('intersection','(x ∈ A) ∧ (x ∈ B)','S1'),
+   step('and-out','x ∈ A','S2'),step('and-out','x ∈ B','S2'),
+   step('assume','x ∈ A ∖ B'),
+   step('difference','(x ∈ A) ∧ (x ∉ B)','S5'),
+   step('and-out','x ∉ B','S6'),step('false','F','S4','S7'),
+   step('raa','x ∉ (A ∖ B)','S5','S8'),
+   step('and-in','(x ∈ A) ∧ (x ∉ (A ∖ B))','S3','S9'),
+   step('difference','x ∈ A ∖ (A ∖ B)','S10')],
  ],
  'hw-witness':[[step('subset-use','x ∈ B','G1','G2'),step('and-in','(x ∈ B) ∧ (x ∉ C)','S1','G3')]],
  'hw-absorption':[
@@ -50,9 +63,9 @@ MODELS['hw-demorgan']=[build(add=>{
  const ab=add('intersection','x ∈ A ∖ B','S1'),ac=add('intersection','x ∈ A ∖ C','S1'),a=add('difference','x ∈ A',ab),nb=add('difference','x ∉ B',ab),nc=add('difference','x ∉ C',ac),both=add('and-in','(x ∉ B) ∧ (x ∉ C)',nb,nc),n=add('eq:demorgan','¬((x ∈ B) ∨ (x ∈ C))',both),not=add('union','x ∉ B ∪ C',n);add('difference','x ∈ A ∖ (B ∪ C)',a,not);
 })];
 MODELS['proof-demorgan']=[build(add=>{
- const not=add('complement','x ∉ A ∪ B','S1'),n=add('union','¬((x ∈ A) ∨ (x ∈ B))',not),both=add('eq:demorgan','(x ∉ A) ∧ (x ∉ B)',n),na=add('and-out','x ∉ A',both),nb=add('and-out','x ∉ B',both),u=add('universe-member','x ∈ U','S1'),a=add('complement','x ∈ Aᶜ',u,na),b=add('complement','x ∈ Bᶜ',u,nb);add('intersection','x ∈ Aᶜ ∩ Bᶜ',a,b);
+ const not=add('complement','x ∉ A ∪ B','S1'),n=add('union','¬((x ∈ A) ∨ (x ∈ B))',not),both=add('eq:demorgan','(x ∉ A) ∧ (x ∉ B)',n),na=add('and-out','x ∉ A',both),nb=add('and-out','x ∉ B',both),a=add('complement','x ∈ Aᶜ',na),b=add('complement','x ∈ Bᶜ',nb);add('intersection','x ∈ Aᶜ ∩ Bᶜ',a,b);
 }),build(add=>{
- const a=add('intersection','x ∈ Aᶜ','S1'),b=add('intersection','x ∈ Bᶜ','S1'),na=add('complement','x ∉ A',a),nb=add('complement','x ∉ B',b),both=add('and-in','(x ∉ A) ∧ (x ∉ B)',na,nb),n=add('eq:demorgan','¬((x ∈ A) ∨ (x ∈ B))',both),not=add('union','x ∉ A ∪ B',n);const u=add('universe-member','x ∈ U','S1');add('complement','x ∈ (A ∪ B)ᶜ',u,not);
+ const a=add('intersection','x ∈ Aᶜ','S1'),b=add('intersection','x ∈ Bᶜ','S1'),na=add('complement','x ∉ A',a),nb=add('complement','x ∉ B',b),both=add('and-in','(x ∉ A) ∧ (x ∉ B)',na,nb),n=add('eq:demorgan','¬((x ∈ A) ∨ (x ∈ B))',both),not=add('union','x ∉ A ∪ B',n);add('complement','x ∈ (A ∪ B)ᶜ',not);
 })];
 MODELS['hw-association']=[build(add=>{
  const ab=add('difference','x ∈ A ∖ B','S1'),nc=add('difference','x ∉ C','S1'),a=add('difference','x ∈ A',ab),nb=add('difference','x ∉ B',ab),both=add('and-in','(x ∉ B) ∧ (x ∉ C)',nb,nc),n=add('eq:demorgan','¬((x ∈ B) ∨ (x ∈ C))',both),not=add('union','x ∉ B ∪ C',n);add('difference','x ∈ A ∖ (B ∪ C)',a,not);
@@ -61,7 +74,7 @@ MODELS['hw-association']=[build(add=>{
 })];
 MODELS['complement-inclusion']=[build(add=>{
  const a=add('assume','x ∈ A'),b=add('subset-use','x ∈ B','G1',a),contradiction=add('false','F',b,'S1');
- const na=add('raa','x ∉ A',a,contradiction),u=add('universe-member','x ∈ U','S1');add('complement','x ∈ Aᶜ',u,na);
+ const na=add('raa','x ∉ A',a,contradiction);add('complement','x ∈ Aᶜ',na);
 })];
 
 // The learner explicitly opens and closes the arbitrary-element proof.

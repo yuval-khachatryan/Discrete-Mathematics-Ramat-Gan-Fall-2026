@@ -1,4 +1,6 @@
+import {stageNavigation} from "./stage-navigation.js";
 import {answerPanel,answerReveal} from './answer-panel.js';
+import {robotSpeech} from './robot-speech.js';
 import { SET_TASKS } from './sets-data.js';
 
 // Finite sets and ordered pairs are different objects. No JavaScript evaluation.
@@ -75,6 +77,7 @@ function selectOptions(options,seed=0){const s=el('select',{'aria-label':'בחר
 export function initSets(box){
   if(box.dataset.ready)return;const data=SET_TASKS[box.dataset.sets];if(!data)return;
   box.dataset.ready='true';box.classList.add('sets-ready');box.replaceChildren();
+  if(data.robot)box.append(robotSpeech(data.robot.text,data.robot.formula));
   if(data.type==='choice')return choices(box,data);
   if(data.type==='cardinality')return cardinality(box,data);
   if(data.type==='write')return writes(box,data);
@@ -138,21 +141,25 @@ function selection(box,data){
   const buttons=data.candidates.map(c=>{const b=button(c,()=>{selected.has(c)?selected.delete(c):selected.add(c);b.setAttribute('aria-pressed',String(selected.has(c)));say(feedback,'');});b.dir='ltr';b.setAttribute('aria-pressed','false');cards.append(b);return b;});
   box.append(answerPanel(cards,button('בדיקה',()=>{const extra=[...selected].find(x=>!data.answer.includes(x));const missing=data.answer.some(x=>!selected.has(x));say(feedback,extra?`⁦${extra}⁩ אינו מתאים לתנאי. ${data.hint}`:missing?'עדיין חסרה בחירה. '+data.hint:'נכון! נבחרו בדיוק כל האפשרויות המתאימות.',!extra&&!missing);}),button('רמז',()=>say(feedback,data.hint)),button('איפוס',()=>{selected.clear();buttons.forEach(b=>b.setAttribute('aria-pressed','false'));say(feedback,'');}),feedback,answerReveal(readable(data.answer.join(', ')))));
 }
-const REGIONS=['רק ב־A','גם ב־A וגם ב־B','רק ב־B','מחוץ לשתיהן, בתוך U'];
+const REGIONS=['רק ב־A','גם ב־A וגם ב־B','רק ב־B','מחוץ לשתי הקבוצות'];
 function venn(box,data){
   let stage=0,selected=new Set(),solved=false;
+  const states=data.tasks.map(()=>({selected:new Set(),solved:false,text:'',kind:''}));
+  const nav=stageNavigation(data.tasks.map(q=>q.formula),go);
+  function save(){states[stage]={selected,solved,text:feedback.textContent,kind:feedback.className};}
+  function go(i){save();stage=i;const state=states[i];selected=state.selected;solved=state.solved;feedback.textContent=state.text;feedback.className=state.kind;draw();}
   const heading=el('p',{class:'sets-stage'}),formula=math(''),svgHost=el('div',{class:'sets-venn'}),cards=el('div',{class:'sets-cards'}),feedback=msg();
   // Four disjoint regions. The outer rectangle is behind the three inner paths.
   const lens='M190 62.76 A76 76 0 0 1 190 177.24 A76 76 0 0 1 190 62.76 Z';
   const circleA='M64 120 a76 76 0 1 0 152 0 a76 76 0 1 0 -152 0 Z';
   const circleB='M164 120 a76 76 0 1 0 152 0 a76 76 0 1 0 -152 0 Z';
-  svgHost.innerHTML=`<svg viewBox="0 0 380 240" role="img" aria-label="עולם U ובו שתי קבוצות חופפות A ו־B"><rect data-region="3" x="4" y="4" width="372" height="232" rx="9"/><path data-region="0" fill-rule="evenodd" d="${circleA} ${lens}"/><path data-region="2" fill-rule="evenodd" d="${circleB} ${lens}"/><path data-region="1" d="${lens}"/><g class="sets-venn-label"><text x="25" y="30">U</text><text x="120" y="115">A</text><text x="260" y="115">B</text></g></svg>`;
+  svgHost.innerHTML=`<svg viewBox="0 0 380 240" role="img" aria-label="שתי קבוצות חופפות A ו־B בתוך מלבן"><rect data-region="3" x="4" y="4" width="372" height="232" rx="9"/><path data-region="0" fill-rule="evenodd" d="${circleA} ${lens}"/><path data-region="2" fill-rule="evenodd" d="${circleB} ${lens}"/><path data-region="1" d="${lens}"/><g class="sets-venn-label"><text x="120" y="115">A</text><text x="260" y="115">B</text></g></svg>`;
   const paths=[0,1,2,3].map(i=>svgHost.querySelector(`[data-region="${i}"]`));
   const buttons=REGIONS.map((name,i)=>{const b=button(name,()=>toggle(i));b.setAttribute('aria-pressed','false');cards.append(b);paths[i].addEventListener('click',()=>toggle(i));return b;});
-  function toggle(i){selected.has(i)?selected.delete(i):selected.add(i);solved=false;next.disabled=true;say(feedback,'');draw();}
-  function draw(){heading.textContent=`שלב ${stage+1} מתוך ${data.tasks.length}`;formula.textContent=data.tasks[stage].formula;paths.forEach((p,i)=>p.classList.toggle('selected',selected.has(i)));buttons.forEach((b,i)=>b.setAttribute('aria-pressed',String(selected.has(i))));next.hidden=stage===data.tasks.length-1;}
-  const next=button('לשלב הבא',()=>{if(!solved)return;stage++;selected.clear();solved=false;next.disabled=true;say(feedback,'');draw();});next.disabled=true;
-  box.append(heading,mixedText('בחרו בתרשים או בכפתורים את כל האזורים ששייכים לקבוצה הבאה, ואז לחצו ״בדיקה״. מלבן U הוא העולם כולו.'),formula,svgHost,cards,button('בדיקה',()=>{const q=data.tasks[stage];solved=selected.size===q.regions.length&&q.regions.every(i=>selected.has(i));next.disabled=!solved;say(feedback,(solved?(stage===data.tasks.length-1?'סיימתם את כל האתגרים. ':'נכון! '):'האזורים שבחרתם עדיין אינם מתאימים. ')+q.why,solved);}),next,button('איפוס',()=>{stage=0;selected.clear();solved=false;next.disabled=true;say(feedback,'');draw();}),feedback);draw();
+  function toggle(i){selected.has(i)?selected.delete(i):selected.add(i);solved=false;say(feedback,'');draw();}
+  function draw(){nav.update(stage,states.map((s,i)=>i===stage?solved:s.solved));heading.textContent=`שלב ${stage+1} מתוך ${data.tasks.length}`;formula.textContent=data.tasks[stage].formula;paths.forEach((p,i)=>p.classList.toggle('selected',selected.has(i)));buttons.forEach((b,i)=>b.setAttribute('aria-pressed',String(selected.has(i))));next.hidden=stage===data.tasks.length-1;}
+  const next=button('לשלב הבא',()=>go(stage+1));
+  box.append(nav.root,heading,mixedText('בחרו בתרשים או בכפתורים את כל האזורים ששייכים לקבוצה הבאה, ואז לחצו ״בדיקה״.'),formula,svgHost,cards,button('בדיקה',()=>{const q=data.tasks[stage];solved=selected.size===q.regions.length&&q.regions.every(i=>selected.has(i));say(feedback,(solved?'נכון! ':'האזורים שבחרתם עדיין אינם מתאימים. ')+q.why,solved);draw();}),next,button('איפוס',()=>{selected.clear();solved=false;say(feedback,'');draw();}),feedback);draw();
 }
 function power(box,data){
   const expected=subsets(data.atoms),saved=new Map(),chosen=new Set(),feedback=msg(),progress=el('p'),list=el('div',{class:'sets-saved'}),cards=el('div',{class:'sets-cards'});

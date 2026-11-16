@@ -9,7 +9,7 @@ try{
  await page.goto(new URL('../_book/02-sets.html',import.meta.url).href);
  await page.waitForFunction(()=>window.MathJax?.startup?.promise);await page.evaluate(()=>window.MathJax.startup.promise);
  await page.locator('.answer-panel').evaluateAll(ns=>ns.forEach(n=>n.open=true));
- const quizzes=page.locator('.example-choice');assert.equal(await quizzes.count(),36);
+ const quizzes=page.locator('.example-choice');assert.equal(await quizzes.count(),34);
  for(let i=0;i<await quizzes.count();i++){
   const quiz=quizzes.nth(i),why=quiz.locator('.tf-why');assert.equal(await why.isVisible(),false,`unanswered part ${i}`);
   const correct=await quiz.getAttribute('data-correct'),wrong=quiz.locator(`.tf-opt:not([data-val="${correct}"])`).first();
@@ -28,5 +28,5 @@ try{
   const overflow=await quizzes.evaluateAll(ns=>ns.filter(n=>n.getBoundingClientRect().left< -1||n.getBoundingClientRect().right>innerWidth+1).length);assert.equal(overflow,0);
  }
  assert.equal(await page.locator('mjx-merror,[data-mml-node="merror"]').count(),0);
- assert.deepEqual(errors,[]);console.log('Passed: all 36 example parts hide explanations until answered, independent feedback, retry, keyboard, maths and mobile layout.');
+ assert.deepEqual(errors,[]);console.log('Passed: all 34 example parts hide explanations until answered, independent feedback, retry, keyboard, maths and mobile layout.');
 }finally{await browser.close();}
