@@ -145,6 +145,10 @@ export function checkLocal(rule,sources,target,config={}){
   if(laws[rule])return setLawApplies(rule,sources[0],target);
   if(definitions.includes(rule)){
     if(!definitionCheck(rule,sources,target,config))return false;
+    // In introductory exercises, keep unfolding a definition separate from
+    // conjunction elimination/introduction: the step must be an equivalence.
+    if(config.explicitDefinitions?.includes(rule)&&
+      (sources.length!==1||!definitionCheck(rule,[target],sources[0],config)))return false;
     if(config.mode!=='equivalence')return true;
     const givens=(config.givens||[]).map(parseStatement),main=sources.filter(s=>!givens.some(g=>eq(g,s))),facts=sources.filter(s=>givens.some(g=>eq(g,s)));
     return main.length===1&&definitionCheck(rule,[target,...facts],main[0],config);

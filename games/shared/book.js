@@ -61,6 +61,7 @@ import { initKnightWorkshop } from "./knight-workshop.js";
 import { initNavigation } from "./navigation.js";
 import { initReferences } from "./references.js";
 import { contextualKeyboard } from "./formula-keyboard.js";
+import { initVennWorkshop } from "./venn-workshop.js";
 import { initSets } from "./sets.js";
 import { initSetProof } from './set-proof-editor.js';
 import { initSetLab } from './set-labs.js';
@@ -353,6 +354,7 @@ function init() {
   document.querySelectorAll(".knight-activity").forEach(initKnightWorkshop);
   document.querySelectorAll(".method-proof").forEach(initMethodProof);
   document.querySelectorAll(".sets-exercise").forEach(initSets);
+  document.querySelectorAll(".venn-workshop").forEach(initVennWorkshop);
   document.querySelectorAll(".set-proof").forEach(initSetProof);
   document.querySelectorAll(".set-lab").forEach(initSetLab);
   document.querySelectorAll(".choice-exercise").forEach(initPracticeChoice);

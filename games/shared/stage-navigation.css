@@ -1,0 +1,7 @@
+.stage-navigation { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; margin:0 0 1rem; direction:rtl; }
+.stage-navigation button { font:inherit; font-weight:600; min-width:2.4rem; min-height:2.4rem; padding:.35rem .65rem; border:1px solid #b6c6d4; border-radius:.55rem; background:#fff; color:#254b68; cursor:pointer; }
+.stage-navigation button[aria-current=step] { background:#245c85; color:white; border-color:#245c85; }
+.stage-navigation button.stage-complete:not([aria-current]) { border-color:#27845b; color:#216843; }
+.stage-navigation button:disabled { opacity:.4; cursor:default; }
+.stage-navigation button:focus-visible { outline:3px solid #b06b00; outline-offset:2px; }
+.stage-navigation .stage-direction { font-size:.85rem; }

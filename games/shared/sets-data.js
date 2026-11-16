@@ -2,6 +2,10 @@
 const choice = (prompt, options, answer, why) => ({prompt, options, answer, why});
 const write = (prompt, answer, hint) => ({prompt, answer, hint});
 export const SET_TASKS = {
+  'difference-directions': {type:'write',items:[
+    write('א. חשבו A ∖ B.', '{0,4}', 'התחילו באיברי A והוציאו כל איבר ששייך גם ל־B.'),
+    write('ב. חשבו B ∖ A.', '{3}', 'כאן מתחילים באיברי B. סדר הקבוצות בהפרש חשוב.'),
+  ]},
   cardinality: {type:'cardinality',items:[
     {given:'A = {2, 5, 2, 8, 5}',answer:'{2,5,8}',hint:'ספרו איברים שונים, ולא הופעות ברשימה. אין צורך לחבר את ערכי המספרים.'},
     {given:'A = {4, {6, 7}}',answer:'{4,{6,7}}',hint:'קבוצה שמופיעה כאיבר נספרת כאיבר אחד. שמרו על הסוגריים כשאתם כותבים אותה.'},

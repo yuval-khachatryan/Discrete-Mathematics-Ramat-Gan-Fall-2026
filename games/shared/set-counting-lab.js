@@ -1,3 +1,4 @@
+import {stageSelectNavigation} from "./stage-navigation.js";
 // Count one arbitrary element's contribution, not the cardinality of the whole region.
 export function elementContributions(membership){
   const names=['A','B','C'],terms=[];
@@ -25,7 +26,9 @@ export function initCountingLab(box,size){
  const host=el('div'),progress=el('p',{'aria-live':'polite'}),proof=el('div',{class:'set-counting-conclusion'});
  selector.addEventListener('change',()=>{active=Number(selector.value);render();});
  box.append(el('p',{text:'נעקוב אחר איבר אחד. כתבו 1 במקום שבו הוא נספר, ו־0 במקום שבו אינו נספר. הסימן שליד כל חלק קובע אם מוסיפים את הספירה הזאת או מחסירים אותה.'}),el('label',{},[el('span',{text:'היכן נמצא האיבר?'}),selector]),host,progress,proof);
+ const nav=stageSelectNavigation(box,selector);
  function updateProgress(){
+  nav.update(active,states.map(s=>s.solved));
   const count=states.filter(s=>s.solved).length;
   progress.textContent=`הושלמו ${count} מתוך ${stages.length} מקרים.`;
   proof.replaceChildren();

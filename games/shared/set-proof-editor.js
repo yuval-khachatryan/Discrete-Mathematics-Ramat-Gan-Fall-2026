@@ -1,3 +1,4 @@
+import {setProofRuleView} from "./set-proof-rule-view.js";
 import {contextualKeyboard} from './formula-keyboard.js';
 import {createSetModelView} from './set-proof-model-view.js';
 import {attachSetFormulaInput} from './set-formula-input.js';
@@ -48,7 +49,7 @@ export function initSetProof(box){
     const config=parts[active],state=states[active],checked=checkSetProof(config,state.steps);
     host.replaceChildren();
     if(parts.length>1){const tabs=el('div',{class:'set-proof-tabs'});parts.forEach((p,i)=>{const b=button((states[i].complete?'✓ ':'')+(p.title||`חלק ${i+1}`),()=>{cancelPendingEdit();active=i;draft=null;editing=null;render();});b.setAttribute('aria-pressed',String(i===active));tabs.append(b);});host.append(tabs);}
-    if(config.universe)host.append(el('p',{class:'set-proof-intro',text:config.explicitComplement?'המשלים נלקח ביחס ל־U. בתרגיל הזה מציינים במפורש גם שייכות ל־U.':'המשלים נלקח ביחס לעולם הדיון. אפשר לעבור ישירות בין שייכות למשלים לאי־שייכות לקבוצה, בלי צעד נפרד של שייכות ל־U.'}));
+    if(config.universe)host.append(el('p',{class:'set-proof-intro',text:config.explicitComplement?'המשלים נלקח ביחס ל־U. בתרגיל הזה מציינים במפורש גם שייכות ל־U.':'לפי הגדרת המשלים: x ∉ A ⇔ x ∈ Aᶜ. אפשר להשתמש בהגדרה בשני הכיוונים.'}));
     if(config.intro)host.append(el('p',{class:'set-proof-intro',text:config.intro}));
     if(config.start)host.append(el('p',{},[el('span',{text:'בחלק הזה נוכיח: '}),formula(config.goal)]));
     const currentFrame=checked.frames.filter(f=>f.kind==='forall').at(-1);
@@ -64,7 +65,8 @@ export function initSetProof(box){
       const row=el('div',{class:'set-proof-row'+(r.assumption?' set-proof-assumption':'')+(r.goalOnly?' set-proof-goal-row':''),'data-row':r.id});
       row.style.setProperty('--proof-depth',0);
       let reason=r.given?'נתון':r.fixed?'הנחת השייכות לתחילת ההוכחה':ruleById(r.rule)?.label.split(' — ')[0]||'';
-      const reasonNode=el('span',{class:'set-proof-reason',text:reason});
+      const reasonNode=el('div',{class:'set-proof-reason',text:reason});
+      if(!r.given&&!r.fixed){const details=setProofRuleView(r,checked.rows);if(details)reasonNode.replaceChildren(details);}
       if(r.kind==='match-goal')reasonNode.prepend(el('span',{text:'קישור למטרה — '}));
       if(r.goalOnly)reasonNode.prepend(el('span',{text:'ניסוח שקול למטרה — '}));
       if(r.goalLinks?.length)reasonNode.append(el('span',{text:' · הניסוחים '+r.goalLinks.join(', ')}));
