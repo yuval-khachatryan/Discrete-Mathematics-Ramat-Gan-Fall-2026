@@ -85,3 +85,13 @@ export function wrapInclusion(config,body,variable='x'){
   step('subset-definition',config.goal,'S'+(body.length+2))];
 }
 for(const [id,parts]of Object.entries(MODELS))MODELS[id]=parts.map((body,i)=>SET_PROOFS[id].parts[i].flow==='goals'?wrapInclusion(SET_PROOFS[id].parts[i],body):body);
+
+export const EQUIVALENCE_MODELS={
+ 'proof-demorgan':[[
+  step('complement','x ∉ (A ∪ B)','S1'),
+  step('union','¬((x ∈ A) ∨ (x ∈ B))','S2'),
+  step('eq:demorgan','(x ∉ A) ∧ (x ∉ B)','S3'),
+  step('complement','(x ∈ Aᶜ) ∧ (x ∈ Bᶜ)','S4'),
+  step('intersection','x ∈ Aᶜ ∩ Bᶜ','S5'),
+ ]],
+};

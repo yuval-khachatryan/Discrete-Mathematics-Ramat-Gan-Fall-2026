@@ -58,3 +58,21 @@ test('written cardinality and elements are checked independently, including nest
  assert.equal(check('2','').elements.ok,false);
  assert.ok(checkCardinalityAnswer('0','{}','∅').ok);
 });
+
+test('power-set rows separate empty, singleton, and two-element subsets',async()=>{
+ const {checkPowerLayer:check}=await import('../games/shared/sets.js');
+ const atoms=['2','9'];
+ assert.ok(check(['∅'],atoms,0).ok);assert.ok(check(['{}'],atoms,0).ok);
+ assert.ok(check(['{9}','{2}'],atoms,1).ok);
+ assert.ok(check(['{9,2}'],atoms,2).ok);
+ for(const [values,size]of [[[''],0],[['{∅}'],0],[['{2}','{2}'],1],[['2','9'],1],[['{2}','{3}'],1],[['{2}'],2]])assert.equal(check(values,atoms,size).ok,false);
+});
+
+test('Cartesian example accepts a complete typed roster; both power counts use numeric entry',()=>{
+ const task=SET_TASKS['product-full-roster'];assert.equal(task.type,'write');
+ const answer=task.items[0].answer;
+ assert.ok(checkSetAnswer('{(2,4),(1,4),(2,2),(1,2)}',answer).ok);
+ assert.equal(checkSetAnswer('{(1,2),(1,4),(2,2)}',answer).ok,false);
+ assert.equal(checkSetAnswer('{(1,2),(1,4),(2,2),(4,2)}',answer).ok,false);
+ assert.ok(SET_TASKS['count-power'].items.every(q=>q.input==='number'));
+});

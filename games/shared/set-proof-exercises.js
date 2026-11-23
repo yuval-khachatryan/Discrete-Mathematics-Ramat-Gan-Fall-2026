@@ -40,9 +40,12 @@ for(const id of ['inclusion-chain'])for(const p of SET_PROOFS[id].parts)p.rules=
 for(const id of ['intersection-target'])for(const p of SET_PROOFS[id].parts)p.rules=p.rules.filter(r=>!['union','difference'].includes(r));
 for(const id of ['union-target','mixed-union','proof-union'])for(const p of SET_PROOFS[id].parts)p.rules=p.rules.filter(r=>r!=='difference');
 // Later exercises may cite the set laws already stated in the chapter.
-for(const [id,exercise]of Object.entries(SET_PROOFS))if(id.startsWith('hw-')||['proof-union','mixed-union','proof-demorgan'].includes(id)){
+for(const [id,exercise]of Object.entries(SET_PROOFS))if((id.startsWith('hw-')&&!['hw-witness','hw-intersection','hw-union','hw-absorption'].includes(id))||['proof-union','mixed-union'].includes(id)){
   for(const p of [...exercise.parts,...(exercise.equivalence||[])]){
     p.rules=[...p.rules,'set-commute','set-associate','set-distribute','set-empty'];
     if(p.universe&&id!=='proof-demorgan')p.rules.push('set-demorgan','set-double-complement');
   }
 }
+
+// This first set-law proof translates membership through logical equivalences.
+SET_PROOFS['proof-demorgan'].defaultMethod='equivalence';

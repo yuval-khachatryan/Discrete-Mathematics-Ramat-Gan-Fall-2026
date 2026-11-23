@@ -1,3 +1,4 @@
+import {attachSetAnswerInput} from "./set-answer-input.js";
 import {stageNavigation} from "./stage-navigation.js";
 import {answerPanel,answerReveal} from './answer-panel.js';
 import {robotSpeech} from './robot-speech.js';
@@ -84,6 +85,7 @@ export function initSets(box){
   if(data.type==='select')return selection(box,data);
   if(data.type==='venn')return venn(box,data);
   if(data.type==='power')return power(box,data);
+  if(data.type==='power-layers')return powerLayers(box,data);
 }
 function choices(box,data,offset=0){
   data.items.forEach((q,i)=>{
@@ -122,7 +124,7 @@ function cardinality(box,data){
     };
     [count,roster].forEach(n=>n.addEventListener('input',clear));form.addEventListener('submit',e=>{e.preventDefault();check();});
     form.append(el('button',{type:'submit',class:'bk-btn',text:'בדיקה'}),button('רמז',()=>say(summary,q.hint)),button('איפוס',()=>{count.value='';roster.value='';clear();}),summary,answerReveal(readable('מספר האיברים: '+new Set(parseObject(q.answer).items.map(key)).size+'. האיברים: '+q.answer)));
-    const controls=[...form.children].slice(2);form.append(answerPanel(...controls));box.append(form);
+    const controls=[...form.children].slice(2);form.append(answerPanel(...controls));box.append(form);attachSetAnswerInput(roster);
   });
   if(data.comparison?.length)choices(box,{items:data.comparison,success:'התשובה להשוואת הקבוצות נכונה.'},data.items.length);
 }
@@ -133,7 +135,7 @@ function writes(box,data){
     const check=()=>{const r=checkSetAnswer(input.value,q.answer);input.setAttribute('aria-invalid',String(!r.ok));say(feedback,r.message,r.ok);};
     form.addEventListener('submit',e=>{e.preventDefault();check();});input.addEventListener('input',()=>{say(feedback,'');input.removeAttribute('aria-invalid');});
     input.remove();
-    form.append(answerPanel(input,button('בדיקה',check),button('רמז',()=>say(feedback,q.hint)),button('איפוס',()=>{input.value='';input.removeAttribute('aria-invalid');say(feedback,'');}),feedback,answerReveal(readable(q.answer))));box.append(form);
+    form.append(answerPanel(input,button('בדיקה',check),button('רמז',()=>say(feedback,q.hint)),button('איפוס',()=>{input.value='';input.removeAttribute('aria-invalid');say(feedback,'');}),feedback,answerReveal(readable(q.answer))));box.append(form);attachSetAnswerInput(input);
   });
 }
 function selection(box,data){
@@ -166,4 +168,31 @@ function power(box,data){
   const buttons=data.atoms.map(a=>{const b=button(a,()=>{chosen.has(a)?chosen.delete(a):chosen.add(a);b.setAttribute('aria-pressed',String(chosen.has(a)));say(feedback,'');});b.setAttribute('aria-pressed','false');cards.append(b);return b;});
   function update(){progress.textContent=`נמצאו ${saved.size} מתוך ${expected.length} תת־קבוצות.`;list.replaceChildren();for(const [k,n]of saved){const b=button(display(n)+' ×',()=>{saved.delete(k);say(feedback,'');update();});b.dir='ltr';b.setAttribute('aria-label','מחיקת '+display(n));list.append(b);}}
   box.append(math('A = {'+data.atoms.join(', ')+'}'),mixedText('בנו את כל תת־הקבוצות של A. בחרו איברים והוסיפו את הקבוצה שבניתם. כדי להוסיף את הקבוצה הריקה, השאירו את כל האיברים לא מסומנים. לחיצה על קבוצה שכבר הוספתם מוחקת אותה.'),cards,button('הוספת הקבוצה',()=>{const n={type:'set',items:[...chosen].map(parseObject)},k=key(n);if(saved.has(k))return say(feedback,'הקבוצה הזאת כבר ברשימה. שינוי הסדר אינו יוצר קבוצה חדשה.',false);saved.set(k,n);chosen.clear();buttons.forEach(b=>b.setAttribute('aria-pressed','false'));say(feedback,saved.size===expected.length?'מצאתם את כל תת־הקבוצות! הרשימה שיצרתם היא קבוצת החזקה.':'הקבוצה נוספה. איזו אפשרות עוד חסרה?',true);update();}),button('רמז',()=>{const missing=expected.filter(n=>!saved.has(key(n)));say(feedback,missing.length?`עדיין חסרה תת־קבוצה עם ${missing[0].items.length} איברים.`:'כבר מצאתם את כולן.');}),button('איפוס',()=>{saved.clear();chosen.clear();buttons.forEach(b=>b.setAttribute('aria-pressed','false'));say(feedback,'');update();}),progress,list,feedback);update();
+}
+
+export function checkPowerLayer(values,atoms,size){
+ const expected=subsets(atoms).filter(s=>s.items.length===size),wanted=new Set(expected.map(key));
+ if(values.some(s=>!s.trim()))return {ok:false,message:'מלאו כל שדה בשורה. לקבוצה הריקה אפשר לכתוב ∅ או {}.'};
+ try{
+  const entered=values.map(parseObject);
+  if(entered.some(s=>s.type!=='set'))return {ok:false,message:'כל תשובה היא קבוצה. כתבו את איבריה בתוך { }, או כתבו ∅.'};
+  const keys=entered.map(key);
+  if(new Set(keys).size!==keys.length)return {ok:false,message:'אותה תת־קבוצה נכתבה יותר מפעם אחת. כתבו תת־קבוצות שונות.'};
+  if(keys.length!==wanted.size||keys.some(k=>!wanted.has(k)))return {ok:false,message:`בדקו שבכל תת־קבוצה יש בדיוק ${size} איברים שונים, ושכולם שייכים לקבוצה הנתונה.`};
+  return {ok:true,message:'נכון! אלו בדיוק תת־הקבוצות בשורה הזאת.'};
+ }catch(e){return {ok:false,message:e.message};}
+}
+function powerLayers(box,data){
+ const all=subsets(data.atoms);
+ for(let size=0;size<=data.atoms.length;size++){
+  const expected=all.filter(s=>s.items.length===size),title=size===0?'בלי איברים':size===1?'עם איבר אחד':'עם שני איברים';
+  const row=el('form',{class:'sets-power-layer'}),fields=el('div',{class:'sets-power-layer-fields'}),feedback=msg();
+  row.append(el('h4',{text:title}));
+  const inputs=expected.map((_,i)=>{const field=el('input',{type:'text',class:'bk-input',dir:'ltr',placeholder:'{ ... }',maxlength:'100','aria-label':`${title} — תת־קבוצה ${i+1}`,autocomplete:'off',spellcheck:'false'});field.addEventListener('input',()=>say(feedback,''));fields.append(field);return field;});
+  const check=()=>{const result=checkPowerLayer(inputs.map(n=>n.value),data.atoms,size);say(feedback,result.message,result.ok);};
+  row.addEventListener('submit',e=>{e.preventDefault();check();});
+  row.append(fields,button('בדיקת השורה',check),feedback,answerReveal(readable(expected.map(display).join(' , '))));box.append(row);inputs.forEach(attachSetAnswerInput);
+ }
+ const full=answerReveal(readable('P({'+data.atoms.join(', ')+'}) = {'+all.map(display).join(', ')+'}. בקבוצת החזקה ארבעה איברים, וכל אחד מהם הוא קבוצה.'));
+ full.querySelector('summary').textContent='הצגת קבוצת החזקה כולה';box.append(full);
 }

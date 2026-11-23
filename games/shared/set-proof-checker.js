@@ -22,7 +22,7 @@ export function setRuleCategory(id){
 
 export const SET_PROOF_RULES=[
   ['goal-chain','הניסוחים השקולים שכבר נבדקו למטרה',1,1],
-  ['open-forall','פתיחת הנחה — יהי',0,0],
+  ['open-forall','הנחה — יהי',0,0],
   ['close-forall','סגירת הנחה — הכללה לכל איברי התחום',2,2],
   ['subset-definition','הגדרת ההכלה — X⊆Y ⇔ ∀x∈X (x∈Y)',1,1],
   ['forall-use','שימוש בטענה לכל איבר — הצבה של איבר מן התחום',2,2],

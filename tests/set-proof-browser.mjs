@@ -100,7 +100,7 @@ try{
    const other=page.locator(`[data-set-proof="${id}"]`);
    const count=await other.locator('.set-proof-rows [data-row]').count();
    await other.getByRole('button',{name:'פתרון לדוגמה',exact:true}).click();
-   assert.equal(await other.locator('.set-model-part').count(),SET_PROOFS[id].parts.length);
+   assert.equal(await other.locator('.set-model-part').count(),(SET_PROOFS[id].defaultMethod==='equivalence'?SET_PROOFS[id].equivalence:SET_PROOFS[id].parts).length);
    const ruleDetails=other.locator('.set-model-panel .set-proof-rule-details').first();
    assert.equal(await ruleDetails.getAttribute('open'),null);
    await ruleDetails.locator('summary').click();
@@ -220,6 +220,7 @@ try{
  await testBox.getByRole('button',{name:'איפוס החלק הזה',exact:true}).click();
  for(const [id,parts]of Object.entries(MODELS)){
   const box=page.locator(`[data-set-proof="${id}"]`);
+  if(SET_PROOFS[id].defaultMethod==='equivalence')await box.getByLabel('דרך ההוכחה').selectOption('inclusions');
   for(let i=0;i<parts.length;i++){
    await openEditor(box);
    if(i)await box.locator('.set-proof-tabs button').nth(i).click();
@@ -321,28 +322,24 @@ try{
  assert.equal(await membership.locator('select').first().evaluate(n=>getComputedStyle(n).direction),'ltr');
  await membership.screenshot({path:'/tmp/chapter2-relations-direction.png'});
  // The counting activities require contributions from each intersection.
- for(const size of [2,3]){
-  const lab=page.locator(`[data-set-lab="count-contributions-${size===2?'two':'three'}"]`);
-  await lab.getByRole('button',{name:'בדיקת הספירה',exact:true}).click();
-  assert.equal(await lab.locator('.bk-bad').count(),1,'blank counts are not zero answers');
-  const cases=size===2?[[true,false],[true,true],[false,false]]:[[true,false,false],[true,true,false],[true,true,true],[false,false,false]];
-  for(const [i,membership]of cases.entries()){
-   await lab.getByLabel('מיקום האיבר',{exact:true}).selectOption(String(i));
-   const terms=elementContributions(membership);
-   for(const t of terms)await lab.getByLabel('ספירת האיבר ב־'+t.name,{exact:true}).fill(String(t.count));
-   await lab.getByLabel('מספר הספירות לאחר החיבור והחיסור',{exact:true}).fill(membership.some(Boolean)?'1':'0');
-   if(size===3&&i===2){
-    await lab.getByLabel('ספירת האיבר ב־A ∩ B',{exact:true}).fill('0');
-    await lab.getByRole('button',{name:'בדיקת הספירה',exact:true}).click();
-    assert.equal(await lab.getByLabel('ספירת האיבר ב־A ∩ B',{exact:true}).getAttribute('aria-invalid'),'true');
-    assert.equal(await lab.locator('.set-counting-conclusion').innerText(),'');
-    await lab.getByLabel('ספירת האיבר ב־A ∩ B',{exact:true}).fill('1');
-   }
-   await lab.getByRole('button',{name:'בדיקת הספירה',exact:true}).click();
-   assert.equal(await lab.locator('.bk-good').count(),1);
-  }
-  assert.match(await lab.locator('.set-counting-conclusion').innerText(),/כל איבר באיחוד נספר בדיוק פעם אחת/);
+ const two=page.locator('[data-set-lab="count-contributions-two"]');
+ await two.getByRole('button',{name:'בדיקת הספירה',exact:true}).click();assert.equal(await two.locator('.bk-bad').count(),1);
+ await two.locator('input').fill('6');await two.getByRole('button',{name:'בדיקת הספירה',exact:true}).click();
+ await two.locator('[data-stage="1"]').click();
+ for(const name of ['דן','מאיה'])await two.locator('.set-mail-choices').getByRole('button',{name,exact:true}).click();
+ await two.getByRole('button',{name:'בדיקת הספירה',exact:true}).click();assert.equal(await two.locator('.bk-good').count(),1);
+ await two.locator('[data-stage="2"]').click();assert.equal(await two.locator('del').count(),2);
+ await two.locator('input').fill('4');await two.getByRole('button',{name:'בדיקת הספירה',exact:true}).click();
+ assert.match(await two.locator('.set-counting-conclusion').innerText(),/כל איבר באיחוד נספר בדיוק פעם אחת/);
+ await two.locator('[data-stage="0"]').click();assert.equal(await two.locator('input').inputValue(),'6');
+ const three=page.locator('[data-set-lab="count-contributions-three"]');
+ for(const [i,answer]of ['9','5','1','5'].entries()){
+  await three.locator(`[data-stage="${i}"]`).click();
+  await three.getByRole('button',{name:'בדיקת הספירה',exact:true}).click();assert.equal(await three.locator('.bk-bad').count(),1);
+  await three.locator('input').fill(answer);await three.locator('input').press('Enter');assert.equal(await three.locator('.bk-good').count(),1);
  }
+ assert.match(await three.locator('.set-counting-conclusion').innerText(),/כל איבר באיחוד נספר בדיוק פעם אחת/);
+ await three.locator('[data-stage="0"]').click();assert.equal(await three.locator('input').inputValue(),'9');
  // Constructive activities require evidence, not merely a verdict.
  const grid=page.locator('[data-set-lab="quantifier-grid"]');
  for(let i=0;i<3;i++)await grid.locator('tbody tr').nth(i).locator('button').nth(i).click();
@@ -351,10 +348,15 @@ try{
  for(const [name,value]of Object.entries({A:'{4}',B:'{9}',C:'{4,9}'}))await counter.getByLabel('קבוצה '+name,{exact:true}).fill(value);
  await counter.getByLabel('איבר שמפריך את הטענה',{exact:true}).fill('4');await counter.getByRole('button',{name:'בדיקת הדוגמה',exact:true}).click();assert.equal(await counter.locator('.bk-good').count(),1);
  const mail=page.locator('[data-set-lab="mailing"]');
- for(const [i,f]of ['A ∩ B','A ∪ B','A ∖ B'].entries()){
-  await mail.getByLabel('ביטוי של קבוצת הנמענים',{exact:true}).fill(f);await mail.getByRole('button',{name:'בדיקת הרשימה',exact:true}).click();assert.equal(await mail.locator('.bk-good').count(),1);
+ assert.equal(await mail.locator('input').count(),0);
+ assert.equal(await mail.locator('.set-mail-list').count(),2);
+ assert.equal(await mail.locator('.set-mail-list li').filter({hasText:'דן'}).count(),2);
+ for(const [i,names]of [['דן','מאיה'],['נועה','דן','מאיה','אורי'],['נועה']].entries()){
+  for(const name of names)await mail.locator('.set-mail-choices').getByRole('button',{name,exact:true}).click();await mail.getByRole('button',{name:'בדיקת הרשימה',exact:true}).click();assert.equal(await mail.locator('.bk-good').count(),1);
   if(i<2)await mail.getByRole('button',{name:'למשימה הבאה',exact:true}).click();
  }
+ await mail.locator('[data-stage="0"]').click();assert.equal(await mail.locator('.set-mail-choices [aria-pressed=true]').count(),2);
+ await mail.locator('[data-stage="1"]').click();assert.equal(await mail.locator('.set-mail-choices [aria-pressed=true]').count(),4);
  await chain.screenshot({path:'/tmp/chapter2-assumption-block-desktop.png'});
  await testBox.screenshot({path:'/tmp/chapter2-proof-desktop.png'});
  await page.setViewportSize({width:390,height:844});

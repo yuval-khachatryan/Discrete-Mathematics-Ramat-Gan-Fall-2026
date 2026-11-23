@@ -1,4 +1,4 @@
-import {setProofRuleView} from "./set-proof-rule-view.js";
+import {setProofRuleView,setProofJustification} from "./set-proof-rule-view.js";
 import {contextualKeyboard} from './formula-keyboard.js';
 import {createSetModelView} from './set-proof-model-view.js';
 import {attachSetFormulaInput} from './set-formula-input.js';
@@ -18,14 +18,14 @@ export function initSetProof(box){
   const question=el('div',{class:'set-proof-question'},[...box.childNodes]);
   box.dataset.ready='true';box.classList.add('set-proof-editor');box.replaceChildren();
   const workspace=el('details',{class:'set-proof-workspace'},[el('summary',{text:'כתיבת הוכחה'})]);
-  let parts=exercise.parts,states=parts.map(()=>({steps:[],complete:false})),active=0,editing=null,draft=null;
+  let parts=exercise.defaultMethod==='equivalence'?exercise.equivalence:exercise.parts,states=parts.map(()=>({steps:[],complete:false})),active=0,editing=null,draft=null;
   const toolbar=el('div',{class:'set-proof-toolbar'}),host=el('div'),status=el('p',{'aria-live':'polite',class:'bk-msg'});
   function cancelPendingEdit(){if(editing){states[active].steps=editing.steps;states[active].complete=editing.complete;editing=null;draft=null;}}
   const help=el('details',{class:'set-proof-help'},[el('summary',{text:'הוראות וסימנים'}),el('p',{text:'כתבו טענה ונמקו אותה בעזרת כלל ומקורות. G מסמן נתון, S מסמן צעד, ו־R היא הטענה המבוקשת. היא מופיעה כמסקנה בסוף ההוכחה. לפני שהוכחה, אי אפשר להסתמך עליה כמקור.'}),el('p',{text:'אפשר לנסח מחדש את המטרה: כותבים נוסחה שקולה ובוחרים הגדרה או חוק שקילות. הניסוח נבדק ומוצג בהוכחה, אך אינו נוסף לנתונים. אפשר גם לבחור צעד שכבר הוכח ולהצדיק מדוע הוא שקול למטרה. רמזים מציעים ניסוחים שנבדקו; בזמן ההקלדה אפשר להשלים סימנים בעזרת Tab או Enter. בפעולה ״יהי״ כתבו למשל x ∈ A, ובשדה ״נוכיח״ כתבו מה רוצים להראות עבורו. זוהי הנחה זמנית; אין צורך לדעת שקיים איבר ב־A. אין לייחס ל־x תכונות נוספות שלא נובעות מההנחה ומהנתונים. לאחר שהוכחתם אותה, סוגרים את ההנחה ומסיקים טענה לכל איברי התחום. השם שנבחר אינו מציין איבר מסוים מתוך הנתונים. הצעדים שבתוך ההנחה נשארים גלויים לאחר הסגירה, אך מחוץ לה אפשר לצטט רק את המסקנה שהתקבלה בסגירה. אפשר גם להוכיח תחילה גרירה: מניחים שייכות, מסיקים את המסקנה וסוגרים את ההנחה.'}),el('p',{text:'אפשר להקליד forall, in, notin, subset, supset, intersect, union, not, and, or, ->; הם יומרו לסימנים. דוגמה: x in A. בהוכחה לפי מקרים פותחים הנחה זמנית, מסיקים מסקנה וסוגרים את ההנחה כגרירה. רק אז פותחים את הענף הבא.'}),el('p',{text:'הבודק מבין את הסימון המתמטי ואת הכללים המוצעים. כתבו את הטענה בשדה הנוסחה; ההערה המילולית מסייעת לקריאה, ואינה מחליפה נימוק מתמטי. כדאי לכתוב את ההוכחה גם על דף. לאחר הגעה ל־F, סגירה בדרך השלילה נותנת את שלילת ההנחה; סגירה כגרירה נותנת גרירה מן ההנחה אל F. אפשר לפתוח פתרון לדוגמה או להשוות אותו להוכחה שלכם בלי לשנות אותה.'})]);
   if(exercise.equivalence){
     const method=el('select',{'aria-label':'דרך ההוכחה'},[el('option',{value:'inclusions',text:'שתי הכלות'}),el('option',{value:'equivalence',text:'שקילות של תנאי השייכות'})]);
     // Keep independent work when switching strategies.
-    const saved={inclusions:states};let current='inclusions';
+    let current=exercise.defaultMethod||'inclusions';const saved={[current]:states};method.value=current;
     method.addEventListener('change',()=>{cancelPendingEdit();saved[current]=states;current=method.value;parts=current==='equivalence'?exercise.equivalence:exercise.parts;states=saved[current]||parts.map(()=>({steps:[],complete:false}));active=0;editing=null;draft=null;render();});
     toolbar.append(label('דרך ההוכחה',method));
   }
@@ -64,13 +64,13 @@ export function initSetProof(box){
     checked.rows.forEach(r=>{
       const row=el('div',{class:'set-proof-row'+(r.assumption?' set-proof-assumption':'')+(r.goalOnly?' set-proof-goal-row':''),'data-row':r.id});
       row.style.setProperty('--proof-depth',0);
-      let reason=r.given?'נתון':r.fixed?'הנחת השייכות לתחילת ההוכחה':ruleById(r.rule)?.label.split(' — ')[0]||'';
+      const reason=setProofJustification(r);
       const reasonNode=el('div',{class:'set-proof-reason',text:reason});
       if(!r.given&&!r.fixed){const details=setProofRuleView(r,checked.rows);if(details)reasonNode.replaceChildren(details);}
       if(r.kind==='match-goal')reasonNode.prepend(el('span',{text:'קישור למטרה — '}));
       if(r.goalOnly)reasonNode.prepend(el('span',{text:'ניסוח שקול למטרה — '}));
-      if(r.goalLinks?.length)reasonNode.append(el('span',{text:' · הניסוחים '+r.goalLinks.join(', ')}));
-      if(r.sources?.length){reasonNode.append(el('span',{text:' · '+r.sources.join(', ')}));reasonNode.title=r.sources.map(id=>{const source=checked.rows.find(s=>s.id===id);return id+': '+rowText(source);}).join('\n');}
+      if(r.goalLinks?.length)reasonNode.append(el('span',{text:' נעזרנו גם בניסוחים '+r.goalLinks.join(', ')+'.'}));
+      if(r.sources?.length){reasonNode.title=r.sources.map(id=>{const source=checked.rows.find(s=>s.id===id);return id+': '+rowText(source);}).join('\n');}
       const finalRow=state.complete&&parts.length===1&&!config.start&&!r.given&&!r.goalOnly&&!r.scope.length&&equivalentShape(r.formula,parseStatement(config.goal));
       row.append(el('b',{class:'set-proof-row-id',dir:'ltr',text:finalRow?`R (${r.id})`:r.id}),r.rule==='open-forall'?el('span',{class:'set-proof-arbitrary'},[
         el('span',{text:'יהי '}),formula(r.declaration?r.opens.variable:rowText(r)),...(r.declaration?[el('span',{text:'.'})]:[])
@@ -139,7 +139,7 @@ export function initSetProof(box){
       const form=el('form',{class:'set-proof-input'}),stepNo=checked.nextStep;
       const action=el('select',{'aria-label':'סוג הפעולה'},[
         el('option',{value:'step',text:'הסקת צעד'}),
-        el('option',{value:'let',text:'יהי — פתיחת הנחה'}),
+        el('option',{value:'let',text:'יהי — הנחה'}),
         ...(checked.frames.at(-1)?.kind==='assume'?[]:[el('option',{value:'restate-goal',text:'ניסוח שקול של המטרה'})]),
         el('option',{value:'match-goal',text:'קישור צעד מוכח למטרה'})]);
       action.value=draft?.kind||state.action||'step';if(!action.value)action.value='step';

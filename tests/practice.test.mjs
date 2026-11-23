@@ -8,15 +8,15 @@ import { PRACTICE_CHOICES } from "../games/shared/practice-choices.js";
 
 const qmd = readFileSync(new URL("../02-sets.qmd", import.meta.url), "utf8");
 const logic = readFileSync(new URL("../01-logic.qmd", import.meta.url), "utf8");
-const practice = logic.slice(logic.indexOf("## תרגול עצמי לפי נושאים")) + "\n" + qmd.slice(qmd.indexOf("### כמתים {#practice-quantifiers}"),qmd.indexOf("### הכלה",qmd.indexOf("### כמתים {#practice-quantifiers}")));
+const practice = logic.slice(logic.indexOf("## תרגול עצמי לפי נושאים")) + "\n" + qmd.slice(qmd.indexOf("### תרגול לסעיף: כמתים {#practice-quantifiers}"),qmd.indexOf("## שוויון והכלה"));
 test("practice bank has eight topics, 48 exercises and 20 assisted proofs", () => {
   assert.equal((practice.match(/^### |^## תרגול עצמי: כמתים/gm) || []).length, 8);
   assert.equal((practice.match(/#practice-q-/g) || []).length, 48);
   assert.equal((practice.match(/\.argument-editor /g) || []).length, 16);
   assert.equal((practice.match(/\.proof-editor /g) || []).length, 4);
-  assert.equal((practice.match(/\.choice-exercise /g) || []).length, 19);
+  assert.equal((practice.match(/\.choice-exercise /g) || []).length, 18);
   for(const exercise of practice.split(/^:::::: \{/m).slice(1)) {
-    assert.match(exercise,/\.(choice-exercise|argument-editor|proof-editor|fq|ttq) /);
+    assert.match(exercise,/\.(choice-exercise|argument-editor|proof-editor|fq|ttq|quantifier-statement) /);
   }
   const ids = [...practice.matchAll(/#(practice-[\w-]+)/g)].map(m => m[1]);
   const definitions = [...practice.matchAll(/\{#(practice-[\w-]+)/g)].map(m => m[1]);
@@ -30,8 +30,8 @@ test("practice bank has eight topics, 48 exercises and 20 assisted proofs", () =
 });
 
 test("choice questions have one answer and an explanation for every option, including every classification item",()=>{
-  assert.equal(Object.keys(PRACTICE_CHOICES).length,19);
-  assert.equal(Object.values(PRACTICE_CHOICES).flat().length,49);
+  assert.equal(Object.keys(PRACTICE_CHOICES).length,18);
+  assert.equal(Object.values(PRACTICE_CHOICES).flat().length,47);
   for(const [id,items] of Object.entries(PRACTICE_CHOICES)) {
     assert.ok(practice.includes(`data-choice="${id}"`));
     for(const item of items) {

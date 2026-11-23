@@ -1,3 +1,4 @@
+import {EQUIVALENCE_MODELS} from '../games/shared/set-proof-models.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {parseStatement,show,validateTypes,equivalentShape,freeNames,substituteName,showWritten} from '../games/shared/set-proof-syntax.js';
@@ -95,7 +96,8 @@ test('R becomes citable only after a completed unscoped derivation',()=>{
  assert.equal(checkSetProof(c,[step('assume','x ∈ A ∩ C'),step('intersection','x ∈ C','R')]).ok,false);
 });
 test('known set laws apply inside formulas, not merely as arbitrary equivalent answers',()=>{
- const c=SET_PROOFS['hw-union'].parts[0];
+ const original=SET_PROOFS['hw-union'].parts[0];
+ const c={...original,rules:[...original.rules,'set-commute']};
  assert.equal(checkSetProof(c,[MODELS['hw-union'][0][0],step('set-commute','x ∈ B ∩ A','S1')]).ok,true);
  assert.equal(checkSetProof(c,[MODELS['hw-union'][0][0],step('set-commute','x ∈ A ∪ B','S1')]).ok,false);
 });
@@ -315,4 +317,17 @@ test('all authored complement proofs omit standalone universe membership',()=>{
    verify(id,steps,i);
   }
  }
+});
+
+test('De Morgan opens with a short equivalence proof before set laws are available',()=>{
+ const exercise=SET_PROOFS['proof-demorgan'];
+ assert.equal(exercise.defaultMethod,'equivalence');
+ const steps=EQUIVALENCE_MODELS['proof-demorgan'][0];
+ assert.equal(steps.length,5);
+ const result=verify('proof-demorgan',steps,0,'equivalence');
+ assert.ok(result.rows.every(r=>!r.opens));
+ for(const config of [...exercise.parts,...exercise.equivalence])assert.ok(config.rules.every(r=>!r.startsWith('set-')));
+ assert.ok(steps.every(s=>s.sources.length===1&&!s.formula.includes('U')));
+ const invalid=[...steps];invalid[0]=step('complement','x ∉ A','S1');
+ assert.equal(checkSetProof(exercise.equivalence[0],invalid).ok,false);
 });

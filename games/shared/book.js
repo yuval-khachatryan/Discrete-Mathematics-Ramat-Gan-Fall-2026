@@ -1,6 +1,6 @@
 import {answerPanel,answerReveal} from './answer-panel.js';
 import {initQuantifierEvidence} from './quantifier-evidence.js';
-import {initQuantifierNegation} from './quantifier-negation.js';
+import {initQuantifierNegation,initQuantifierStatement} from './quantifier-negation.js';
 import {initMethodProof} from './method-proof-editor.js';
 /* book.js — interactive exercises inside the chapters (not inside a game).
    ---------------------------------------------------------------------------
@@ -349,6 +349,7 @@ function initTF(quiz) {
 function init() {
   document.querySelectorAll("[data-quantifier-evidence]").forEach(initQuantifierEvidence);
   document.querySelectorAll("[data-quantifier-negation], [data-quantifier-writing]").forEach(initQuantifierNegation);
+  document.querySelectorAll("[data-quantifier-statement]").forEach(initQuantifierStatement);
   initNavigation();
   initReferences();
   document.querySelectorAll(".knight-activity").forEach(initKnightWorkshop);

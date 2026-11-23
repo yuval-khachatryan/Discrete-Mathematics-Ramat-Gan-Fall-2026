@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {checkQuantifierNegation as check,checkQuantifierWriting} from '../games/shared/quantifier-negation.js';
+import {checkQuantifierNegation as check,checkQuantifierWriting,checkQuantifierStatement} from '../games/shared/quantifier-negation.js';
 test('both negations accept symbols, typed aliases, parentheses and bound-variable renaming',()=>{
  for(const s of ['∃x ∈ D: ¬P(x)','exists x in D: not P(x)','(∃y ∈ D: (¬(P(y))))','\\exists x \\in D \\colon \\neg P(x)'])assert.equal(check(s,'∀').ok,true,s);
  for(const s of ['∀x ∈ D: ¬P(x)','forall y in D: !P(y)'])assert.equal(check(s,'∃').ok,true,s);
@@ -40,4 +40,10 @@ test('parenthesized quantifier answers need no colons',()=>{
  assert.ok(check('∀x ∈ D (¬P(x))','∃').ok);
  assert.ok(checkQuantifierWriting('∀x ∈ S ∃y ∈ M (L(x,y))','menu').ok);
  assert.ok(checkQuantifierWriting('∃x ∈ S (∀y ∈ M (¬L(x,y)))','menu-negation').ok);
+});
+
+test('written not-all activity accepts equivalent quantified statements and explicit negation',()=>{
+ for(const input of ['∀x ∈ D (P(x))','not exists y in D (not P(y))','∄x ∈ D (¬P(x))',String.raw`\not \exist x \in D (\not P(x))`,String.raw`\nexists x \in D (\neg P(x))`])assert.equal(checkQuantifierStatement(input,'all').ok,true,input);
+ for(const input of ['¬∀x ∈ D (P(x))','∃y ∈ D (¬P(y))','not not exists x in D (not P(x))',String.raw`\not \forall x \in D (P(x))`])assert.equal(checkQuantifierStatement(input,'not-all').ok,true,input);
+ for(const input of ['∄x ∈ D (P(x))','∀x ∈ D (¬P(x))','∃x ∈ D (P(x))','∃y ∈ D (¬P(x))','∃x ∈ E (¬P(x))',''])assert.equal(checkQuantifierStatement(input,'not-all').ok,false,input);
 });

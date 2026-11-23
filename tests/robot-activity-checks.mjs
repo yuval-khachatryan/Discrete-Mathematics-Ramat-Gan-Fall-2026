@@ -18,14 +18,16 @@ export async function checkRobotActivities(page){
     }
   }
   const mailing=page.locator(selectors[1]);
-  await mailing.locator('input').fill('A ∩ B');
+  for(const name of ['דן','מאיה'])await mailing.locator('.set-mail-choices').getByRole('button',{name,exact:true}).click();
   await mailing.getByRole('button',{name:'בדיקת הרשימה',exact:true}).click();
   await mailing.getByRole('button',{name:'למשימה הבאה',exact:true}).click();
   assert.match(await mailing.locator('.robot-bubble').innerText(),/לפחות לאחת/);
   const union=page.locator(selectors[2]);
-  await union.getByLabel('קבוצה A',{exact:true}).fill('{1}');
+  const setA=union.getByLabel('קבוצה A',{exact:true});
+  await setA.fill('empty');await setA.press('Tab');assert.equal(await setA.inputValue(),'∅');
+  await setA.fill('');await setA.focus();await union.getByRole('button',{name:'קבוצה ריקה',exact:true}).click();assert.equal(await setA.inputValue(),'∅');
   await union.getByLabel('קבוצה B',{exact:true}).fill('{2}');
-  await union.getByLabel('איבר שמפריך את הטענה',{exact:true}).fill('1');
+  await union.getByLabel('איבר שמפריך את הטענה',{exact:true}).fill('2');
   await union.getByRole('button',{name:'בדיקת הדוגמה',exact:true}).click();
   assert.equal(await union.locator('.bk-good').count(),1);
   const question=page.locator(selectors[3]);
