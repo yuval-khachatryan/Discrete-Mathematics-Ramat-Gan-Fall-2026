@@ -3,7 +3,8 @@ import {initDisjointCounterexample} from "./disjoint-counterexample.js";
 import {stageNavigation} from "./stage-navigation.js";
 import {robotSpeech} from './robot-speech.js';
 import {initCountingLab} from './set-counting-lab.js';
-import {parseObject,key,display} from './sets.js';
+import {parseObject,key,display,readable} from './sets.js';
+import {answerReveal} from './answer-panel.js';
 const el=(t,a={},children=[])=>{const n=document.createElement(t);for(const[k,v]of Object.entries(a)){if(k==='text')n.textContent=v;else n.setAttribute(k,v);}n.append(...children);return n;};
 const btn=(text,fn)=>{const b=el('button',{type:'button',class:'bk-btn',text});b.addEventListener('click',fn);return b;};
 const message=()=>el('p',{'aria-live':'polite',class:'bk-msg'});
@@ -18,6 +19,15 @@ function readSet(s){const n=parseObject(s);if(n.type!=='set')throw Error('כתב
 export function checkCounterexample(kind,values,witness){
   try{
     const A=readSet(values.A),B=readSet(values.B),C=readSet(values.C||'{}'),w=key(parseObject(witness));let left,right;
+    if(kind==='relation-missing-pair'){
+      const R=parseObject(values.R),pair=parseObject(witness);
+      if(R.type!=='set'||!R.items.length)return {ok:false,message:'כתבו יחס R שאינו ריק, כקבוצה של זוגות סדורים.'};
+      const inProduct=p=>p.type==='pair'&&A.has(key(p.items[0]))&&B.has(key(p.items[1]));
+      if(!R.items.every(inProduct))return {ok:false,message:'כל איבר של R צריך להיות זוג שהרכיב הראשון שלו ב־A והרכיב השני שלו ב־B.'};
+      if(!inProduct(pair))return {ok:false,message:'הזוג שנבחר צריך להשתייך למכפלה: הרכיב הראשון ב־A והרכיב השני ב־B.'};
+      if(R.items.some(p=>key(p)===w))return {ok:false,message:'הזוג שנבחר כבר נמצא ב־R. כדי להפריך את הטענה צריך זוג מן המכפלה שאינו ב־R.'};
+      return {ok:true,message:'נכון. R הוא יחס לא ריק מ־A ל־B, והזוג שכתבתם שייך למכפלה אך אינו שייך ל־R.'};
+    }
     if(kind==='union-equal'){left=union(A,B);right=intersect(A,B);}
     else if(kind==='inclusion-error'){
       if(!subset(A,C)||!subset(B,C))return {ok:false,message:'הדוגמה אינה מקיימת את הנתונים: גם A וגם B צריכות להיות מוכלות ב־C.'};
@@ -101,6 +111,7 @@ function mailing(box){
 
 function counter(box,kind){
  const descriptions={
+ 'relation-missing-pair':'כתבו קבוצות A ו־B, יחס לא ריק R ביניהן, וזוג ששייך למכפלה אך אינו שייך ל־R.',
  'union-equal':'בנו קבוצות A ו־B שמפריכות את טענת הרובוט. כתבו גם איבר שמבדיל בין שני הצדדים.',
  'inclusion-error':'נתון A ⊆ C וגם B ⊆ C. הטענה היא ש־A ⊆ B. בנו דוגמה שמקיימת את שני הנתונים, וכתבו איבר של A שאינו ב־B.',
  'two-witnesses':'מישהו טוען: ״אם A ו־B אינן ריקות, אז קיים איבר משותף לשתיהן״. כתבו שתי קבוצות לא ריקות שמפריכות את הטענה.',
@@ -109,8 +120,13 @@ function counter(box,kind){
  };
  if(kind==='union-equal')box.append(robotSpeech('לכל שתי קבוצות, האיחוד והחיתוך שווים!', 'A ∪ B = A ∩ B'));
  const feedback=message(),fields={},form=el('form');form.append(el('p',{text:descriptions[kind]}));
- for(const name of ['A','B',...(['inclusion-error','strict-union-diff','difference-brackets'].includes(kind)?['C']:[])]){fields[name]=input('קבוצה '+name);form.append(lab(name,fields[name]));}
- const witness=input('איבר שמפריך את הטענה','למשל 4');if(kind!=='two-witnesses')form.append(lab('איבר שמראה את הכישלון',witness));
+ for(const name of ['A','B',...(kind==='relation-missing-pair'?['R']:[]),...(['inclusion-error','strict-union-diff','difference-brackets'].includes(kind)?['C']:[])]){fields[name]=input('קבוצה '+name);form.append(lab(name,fields[name]));}
+ const relation=kind==='relation-missing-pair';
+ const witness=input(relation?'זוג במכפלה שאינו ביחס':'איבר שמפריך את הטענה',relation?'למשל (1,3)':'למשל 4');if(kind!=='two-witnesses')form.append(lab(relation?'זוג ששייך למכפלה אך אינו שייך ליחס':'איבר שמראה את הכישלון',witness));
  const check=()=>{const result=checkCounterexample(kind,Object.fromEntries(Object.entries(fields).map(([k,v])=>[k,v.value])),kind==='two-witnesses'?'0':witness.value);say(feedback,result.message,result.ok);};
  form.addEventListener('submit',e=>{e.preventDefault();check();});form.append(btn('בדיקת הדוגמה',check),feedback);box.append(form);Object.values(fields).forEach(attachSetAnswerInput);if(kind!=='two-witnesses')attachSetAnswerInput(witness);
+ if(relation){
+   form.append(btn('איפוס',()=>{form.reset();feedback.textContent='';}),answerReveal(readable('למשל: A = {1}, B = {2,3}, R = {(1,2)}. הזוג (1,3) שייך למכפלה ואינו ב־R.')));
+   [...Object.values(fields),witness].forEach(field=>field.addEventListener('input',()=>{feedback.textContent='';}));
+ }
 }

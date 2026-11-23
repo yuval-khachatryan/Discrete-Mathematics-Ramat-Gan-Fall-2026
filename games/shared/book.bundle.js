@@ -614,6 +614,26 @@
   var choice = (prompt, options, answer, why) => ({ prompt, options, answer, why, ...options.every((option) => /^\d+$/.test(option)) ? { input: "number" } : {} });
   var write = (prompt, answer, hint) => ({ prompt, answer, hint });
   var SET_TASKS = {
+    "ordered-pair-components": { type: "number-fields", prompt: "מצאו את x ואת y אם (x + 1, 4) = (3, y − 2).", fields: [
+      { name: "x", answer: 2, why: "משוויון הרכיבים הראשונים מתקבל x + 1 = 3, ולכן x = 2." },
+      { name: "y", answer: 6, why: "משוויון הרכיבים השניים מתקבל 4 = y − 2, ולכן y = 6." }
+    ] },
+    "ordered-pair-swap": { type: "choice", items: [
+      choice("מתי מתקיים (a,b) = (b,a)?", ["a = b", "a ≠ b", "לכל a ו־b"], 0, "משוויון הרכיבים הראשונים נקבל a = b. בכיוון ההפוך, אם a = b, שני הזוגות שווים ל־(a,a).")
+    ] },
+    "product-equality-check": { type: "choice", items: [
+      choice("A = {1}, B = {2}. האם מן השוויון |A × B| = |B × A| נובע A × B = B × A?", ["כן", "לא"], 1, "המכפלות הן {(1,2)} ו־{(2,1)}. בכל אחת איבר אחד, אבל האיברים שונים."),
+      choice("A = {1}. האם (1,∅) שייך ל־A × ∅?", ["כן", "לא"], 1, "לא, כי ∅ אינה איבר של ∅. הזוג (1,∅) שייך ל־A × {∅}, שבה הקבוצה השנייה מכילה את האיבר ∅.")
+    ] },
+    "relations-classify": { type: "choice", items: [
+      choice("האם R₁ = {(1,3),(1,4)} הוא יחס מ־A ל־B?", ["כן", "לא"], 0, "שני הזוגות שייכים למכפלה. מותר ש־1 יופיע פעמיים כרכיב ראשון וש־2 לא יופיע כלל."),
+      choice("האם R₂ = {(1,3),(4,2)} הוא יחס מ־A ל־B?", ["כן", "לא"], 1, "הזוג (4,2) אינו במכפלה: 4 אינו ב־A ו־2 אינו ב־B. סדר הרכיבים חשוב."),
+      choice("האם R₃ = {1,3} הוא יחס מ־A ל־B?", ["כן", "לא"], 1, "איברי הקבוצה הם מספרים, ולא זוגות מן המכפלה. לעומת זאת, {(1,3)} הוא יחס מ־A ל־B."),
+      choice("האם R₄ = ∅ הוא יחס מ־A ל־B?", ["כן", "לא"], 0, "הקבוצה הריקה מוכלת בכל קבוצה, ובפרט במכפלה A × B.")
+    ] },
+    "relation-membership-check": { type: "choice", items: [
+      choice("נתון R ⊆ A × B וכן a ∈ A ו־b ∈ B. האם בהכרח (a,b) ∈ R?", ["כן", "לא"], 1, "ההכלה מבטיחה שכל זוג ב־R שייך למכפלה. היא אינה מחייבת שכל זוג במכפלה ייכלל ב־R.")
+    ] },
     "product-full-roster": { type: "write", items: [write("כתבו את כל הזוגות במכפלה A × B.", "{(1,2),(1,4),(2,2),(2,4)}", "לכל איבר של A צרפו כל איבר של B. הרכיב הראשון מגיע מ־A והשני מ־B.")] },
     "power-two-rows": { type: "power-layers", atoms: ["2", "9"] },
     "difference-directions": { type: "write", items: [
@@ -698,7 +718,14 @@
       choice("A = {2, 9}. האם 2 ∈ P(A)?", ["אמת", "שקר"], 1, "איברי קבוצת החזקה הם קבוצות. כאן {2} שייכת לקבוצת החזקה, ואילו המספר 2 אינו אחת מתת־הקבוצות."),
       choice("מהי P(∅)?", ["∅", "{∅}", "{0}"], 1, "לקבוצה הריקה יש תת־קבוצה אחת: היא עצמה. לכן קבוצת החזקה שלה מכילה איבר אחד.")
     ] },
-    pairs: { type: "select", given: "A = {2, 3}, B = {1, 3}", prompt: "בחרו את כל הזוגות ששייכים ל־A × B. זכרו לבדוק את המקום הראשון ואת המקום השני בנפרד.", candidates: ["(2,1)", "(2,3)", "(3,1)", "(3,3)", "(1,2)", "(1,3)", "(3,2)"], answer: ["(2,1)", "(2,3)", "(3,1)", "(3,3)"], hint: "המקום הראשון נבחר מ־A והמקום השני מ־B. אותו מספר יכול להופיע בשני המקומות, אם הוא שייך לשתי הקבוצות." },
+    pairs: {
+      type: "select",
+      prompt: "בחרו את כל הקלפים ששייכים למכפלה A × B. בדקו גם את המספר וגם את הסוג.",
+      candidates: ["(2,לב)", "(3,עלה)", "(4,לב)", "(3,לב)", "(2,תלתן)", "(2,עלה)", "(3,יהלום)"],
+      answer: ["(2,לב)", "(3,לב)", "(2,עלה)", "(3,עלה)"],
+      playingCards: { "(2,לב)": { rank: "2", suit: "♥", name: "2 לב" }, "(3,עלה)": { rank: "3", suit: "♠", name: "3 עלה" }, "(4,לב)": { rank: "4", suit: "♥", name: "4 לב" }, "(3,לב)": { rank: "3", suit: "♥", name: "3 לב" }, "(2,תלתן)": { rank: "2", suit: "♣", name: "2 תלתן" }, "(2,עלה)": { rank: "2", suit: "♠", name: "2 עלה" }, "(3,יהלום)": { rank: "3", suit: "♦", name: "3 יהלום" } },
+      hint: "המספר צריך להיות 2 או 3, והסוג צריך להיות לב או עלה. יש ארבעה צירופים מתאימים."
+    },
     "pair-check": { type: "choice", items: [
       choice("האם (3, 8) = (8, 3)?", ["כן", "לא"], 1, "בזוג סדור הסדר חשוב: האיברים הראשונים שונים."),
       choice("האם {3, 8} = {8, 3}?", ["כן", "לא"], 0, "בקבוצה הסדר אינו חשוב. סוג הסוגריים משנה את המשמעות."),
@@ -796,9 +823,9 @@
     return Array.from({ length: 2 ** atoms.length }, (_, mask) => ({ type: "set", items: atoms.filter((_2, j) => mask & 1 << j).map(parseObject) }));
   }
   function readable(text) {
-    if (!/[א-ת]/.test(text) || text.includes("⁦")) return text;
-    return text.replace(/[A-Za-z0-9∅{}()[\]∈∉⊆⊇∩∪ᶜ△×¬⇒⇔∖≥≤][A-Za-z0-9_∅{}()[\],. :\-−=<>∈∉⊆⊇∩∪ᶜ△×¬⇒⇔∖≥≤]*/g, (chunk) => {
-      const core = chunk.trimEnd();
+    if (text.includes("⁦")) return text;
+    return text.replace(/[A-Za-z0-9∅{}()[\]|+\-−√∈∉⊆⊇∩∪ᶜ△×¬⇒⇔∖≥≤][A-Za-z0-9_₀-₉²³ⁿ∅{}()[\]|,. :+*/^%·÷√\-−=≠<>∈∉⊆⊇∩∪ᶜ△×¬⇒⇔∖≥≤]*/g, (chunk) => {
+      const core = chunk.replace(/[\s.,:]+$/, "");
       return "⁦" + core + "⁩" + chunk.slice(core.length);
     });
   }
@@ -845,12 +872,47 @@
     box.replaceChildren();
     if (data.robot) box.append(robotSpeech(data.robot.text, data.robot.formula));
     if (data.type === "choice") return choices(box, data);
+    if (data.type === "number-fields") return numberFields(box, data);
     if (data.type === "cardinality") return cardinality(box, data);
     if (data.type === "write") return writes(box, data);
     if (data.type === "select") return selection(box, data);
     if (data.type === "venn") return venn(box, data);
     if (data.type === "power") return power(box, data);
     if (data.type === "power-layers") return powerLayers(box, data);
+  }
+  function numberFields(box, data) {
+    const form = el2("form", { class: "sets-item" }), fields = el2("div", { class: "sets-number-fields" }), feedback = msg();
+    const inputs = data.fields.map((q) => {
+      const input2 = el2("input", { type: "text", inputmode: "numeric", dir: "ltr", class: "bk-input", maxlength: "10", autocomplete: "off", "aria-label": q.name });
+      const clear = () => {
+        input2.removeAttribute("aria-invalid");
+        say(feedback, "");
+      };
+      input2.addEventListener("input", clear);
+      fields.append(el2("label", { dir: "ltr" }, [math(q.name + " ="), input2]));
+      return input2;
+    });
+    const solution = answerReveal(readable(data.fields.map((q) => q.why).join(" ")));
+    const check = () => {
+      const incorrect = [];
+      inputs.forEach((input2, i) => {
+        const value = input2.value.trim(), ok = /^-?\d+$/.test(value) && Number(value) === data.fields[i].answer;
+        input2.setAttribute("aria-invalid", String(!ok));
+        if (!ok) incorrect.push(data.fields[i].name);
+      });
+      say(feedback, incorrect.length ? "בדקו את הערכים בשדות המסומנים: " + incorrect.join(", ") + ". השוו רכיבים במקומות המתאימים." : "נכון! שני הערכים מקיימים את השוויון בין הזוגות הסדורים.", !incorrect.length);
+    };
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      check();
+    });
+    form.append(fields, el2("button", { type: "submit", class: "bk-btn", text: "בדיקה" }), button("איפוס", () => {
+      form.reset();
+      inputs.forEach((input2) => input2.removeAttribute("aria-invalid"));
+      say(feedback, "");
+      solution.open = false;
+    }), feedback, solution);
+    box.append(mixedText(data.prompt), answerPanel(form));
   }
   function choices(box, data, offset = 0) {
     data.items.forEach((q, i) => {
@@ -875,7 +937,7 @@
       const check = () => {
         const ok = numeric ? /^\d+$/.test(s.value.trim()) && Number(s.value) === Number(q.options[q.answer]) : s.value !== "" && Number(s.value) === q.answer;
         s.setAttribute("aria-invalid", String(!ok));
-        say(feedback, s.value.trim() === "" ? numeric ? "כתבו את מספר האיברים." : "בחרו תשובה." : numeric && !/^\d+$/.test(s.value.trim()) ? "כתבו מספר שלם שאינו שלילי." : (ok ? "נכון. " : "כדאי לבדוק שוב. ") + q.why, ok);
+        say(feedback, s.value.trim() === "" ? q.emptyMessage || (numeric ? "כתבו את מספר האיברים." : "בחרו תשובה.") : numeric && !/^\d+$/.test(s.value.trim()) ? "כתבו מספר שלם שאינו שלילי." : (ok ? "נכון. " : "כדאי לבדוק שוב. ") + q.why, ok);
       };
       s.addEventListener(numeric ? "input" : "change", () => {
         say(feedback, "");
@@ -970,9 +1032,11 @@
     });
   }
   function selection(box, data) {
-    box.append(math(data.given), mixedText(data.prompt));
+    if (data.given) box.append(math(data.given));
+    box.append(mixedText(data.prompt));
     const selected = /* @__PURE__ */ new Set(), cards = el2("div", { class: "sets-cards" }), feedback = msg();
     const buttons = data.candidates.map((c) => {
+      var _a;
       const b = button(c, () => {
         selected.has(c) ? selected.delete(c) : selected.add(c);
         b.setAttribute("aria-pressed", String(selected.has(c)));
@@ -980,18 +1044,26 @@
       });
       b.dir = "ltr";
       b.setAttribute("aria-pressed", "false");
+      const card = (_a = data.playingCards) == null ? void 0 : _a[c];
+      if (card) {
+        b.classList.add("playing-card");
+        b.setAttribute("aria-label", card.name);
+        b.title = card.name;
+        b.dataset.suit = card.suit;
+        b.replaceChildren(el2("span", { class: "playing-card-rank", "aria-hidden": "true", text: card.rank }), el2("span", { class: "playing-card-suit", "aria-hidden": "true", text: card.suit }), el2("span", { class: "playing-card-name", dir: "rtl", text: card.name }));
+      }
       cards.append(b);
       return b;
     });
     box.append(answerPanel(cards, button("בדיקה", () => {
       const extra = [...selected].find((x) => !data.answer.includes(x));
       const missing = data.answer.some((x) => !selected.has(x));
-      say(feedback, extra ? `⁦${extra}⁩ אינו מתאים לתנאי. ${data.hint}` : missing ? "עדיין חסרה בחירה. " + data.hint : "נכון! נבחרו בדיוק כל האפשרויות המתאימות.", !extra && !missing);
+      say(feedback, extra ? data.playingCards ? `הקלף ${data.playingCards[extra].name} אינו מתאים לתנאי. ${data.hint}` : `⁦${extra}⁩ אינו מתאים לתנאי. ${data.hint}` : missing ? "עדיין חסרה בחירה. " + data.hint : "נכון! נבחרו בדיוק כל האפשרויות המתאימות.", !extra && !missing);
     }), button("רמז", () => say(feedback, data.hint)), button("איפוס", () => {
       selected.clear();
       buttons.forEach((b) => b.setAttribute("aria-pressed", "false"));
       say(feedback, "");
-    }), feedback, answerReveal(readable(data.answer.join(", ")))));
+    }), feedback, answerReveal(readable(data.playingCards ? data.answer.map((c) => data.playingCards[c].name).join(", ") : data.answer.join(", ")))));
   }
   var REGIONS = ["רק ב־A", "גם ב־A וגם ב־B", "רק ב־B", "מחוץ לשתי הקבוצות"];
   function venn(box, data) {
@@ -9023,6 +9095,15 @@
     try {
       const A = readSet(values.A), B = readSet(values.B), C = readSet(values.C || "{}"), w = key(parseObject(witness));
       let left, right;
+      if (kind === "relation-missing-pair") {
+        const R = parseObject(values.R), pair = parseObject(witness);
+        if (R.type !== "set" || !R.items.length) return { ok: false, message: "כתבו יחס R שאינו ריק, כקבוצה של זוגות סדורים." };
+        const inProduct = (p) => p.type === "pair" && A.has(key(p.items[0])) && B.has(key(p.items[1]));
+        if (!R.items.every(inProduct)) return { ok: false, message: "כל איבר של R צריך להיות זוג שהרכיב הראשון שלו ב־A והרכיב השני שלו ב־B." };
+        if (!inProduct(pair)) return { ok: false, message: "הזוג שנבחר צריך להשתייך למכפלה: הרכיב הראשון ב־A והרכיב השני ב־B." };
+        if (R.items.some((p) => key(p) === w)) return { ok: false, message: "הזוג שנבחר כבר נמצא ב־R. כדי להפריך את הטענה צריך זוג מן המכפלה שאינו ב־R." };
+        return { ok: true, message: "נכון. R הוא יחס לא ריק מ־A ל־B, והזוג שכתבתם שייך למכפלה אך אינו שייך ל־R." };
+      }
       if (kind === "union-equal") {
         left = union(A, B);
         right = intersect(A, B);
@@ -9197,6 +9278,7 @@
   }
   function counter(box, kind) {
     const descriptions = {
+      "relation-missing-pair": "כתבו קבוצות A ו־B, יחס לא ריק R ביניהן, וזוג ששייך למכפלה אך אינו שייך ל־R.",
       "union-equal": "בנו קבוצות A ו־B שמפריכות את טענת הרובוט. כתבו גם איבר שמבדיל בין שני הצדדים.",
       "inclusion-error": "נתון A ⊆ C וגם B ⊆ C. הטענה היא ש־A ⊆ B. בנו דוגמה שמקיימת את שני הנתונים, וכתבו איבר של A שאינו ב־B.",
       "two-witnesses": "מישהו טוען: ״אם A ו־B אינן ריקות, אז קיים איבר משותף לשתיהן״. כתבו שתי קבוצות לא ריקות שמפריכות את הטענה.",
@@ -9206,12 +9288,13 @@
     if (kind === "union-equal") box.append(robotSpeech("לכל שתי קבוצות, האיחוד והחיתוך שווים!", "A ∪ B = A ∩ B"));
     const feedback = message3(), fields = {}, form = el17("form");
     form.append(el17("p", { text: descriptions[kind] }));
-    for (const name of ["A", "B", ...["inclusion-error", "strict-union-diff", "difference-brackets"].includes(kind) ? ["C"] : []]) {
+    for (const name of ["A", "B", ...kind === "relation-missing-pair" ? ["R"] : [], ...["inclusion-error", "strict-union-diff", "difference-brackets"].includes(kind) ? ["C"] : []]) {
       fields[name] = input("קבוצה " + name);
       form.append(lab(name, fields[name]));
     }
-    const witness = input("איבר שמפריך את הטענה", "למשל 4");
-    if (kind !== "two-witnesses") form.append(lab("איבר שמראה את הכישלון", witness));
+    const relation = kind === "relation-missing-pair";
+    const witness = input(relation ? "זוג במכפלה שאינו ביחס" : "איבר שמפריך את הטענה", relation ? "למשל (1,3)" : "למשל 4");
+    if (kind !== "two-witnesses") form.append(lab(relation ? "זוג ששייך למכפלה אך אינו שייך ליחס" : "איבר שמראה את הכישלון", witness));
     const check = () => {
       const result = checkCounterexample(kind, Object.fromEntries(Object.entries(fields).map(([k, v]) => [k, v.value])), kind === "two-witnesses" ? "0" : witness.value);
       say5(feedback, result.message, result.ok);
@@ -9224,6 +9307,15 @@
     box.append(form);
     Object.values(fields).forEach(attachSetAnswerInput);
     if (kind !== "two-witnesses") attachSetAnswerInput(witness);
+    if (relation) {
+      form.append(btn4("איפוס", () => {
+        form.reset();
+        feedback.textContent = "";
+      }), answerReveal(readable("למשל: A = {1}, B = {2,3}, R = {(1,2)}. הזוג (1,3) שייך למכפלה ואינו ב־R.")));
+      [...Object.values(fields), witness].forEach((field) => field.addEventListener("input", () => {
+        feedback.textContent = "";
+      }));
+    }
   }
 
   // games/shared/practice-choices.js

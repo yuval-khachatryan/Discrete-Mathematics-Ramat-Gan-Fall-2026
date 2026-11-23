@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {SET_PROOFS} from '../games/shared/set-proof-exercises.js';
 
-const pages = Object.fromEntries(['index.qmd','01-logic.qmd','02-sets.qmd']
+const pages = Object.fromEntries(['index.qmd','01-logic.qmd','02-sets.qmd','03-relations.qmd']
   .map(file => [file,readFileSync(new URL(`../${file}`,import.meta.url),'utf8')]));
 
 test('chapters keep sets before quantifiers and retain the complete exercise bank',()=>{
@@ -66,7 +67,6 @@ test('section practice stays with its topic; mixed exercises remain at the end',
   'sec-set-difference-complement':['data-sets="practice-complement"','data-set-proof="hw-difference"'],
   'sec-inclusion-exclusion':['data-sets="practice-counting"'],
   'sec-power-set':['data-sets="practice-power"','data-sets="practice-counting-power"'],
-  'sec-cartesian-product':['data-sets="practice-product"'],
   'practice-sets':['data-sets="practice-operations"','data-set-proof="hw-demorgan"','data-set-proof="hw-union-diff"','data-set-lab="two-witnesses"'],
  }))for(const activity of activities)within(section,activity);
 });
@@ -93,4 +93,48 @@ test('proof examples retain the shared engine and include a prose proof',()=>{
  for(const [,id,body]of examples){
   assert.ok(body.includes(`#written-proof-${id} .foldable`),`${id} has an expandable prose proof`);
  }
+});
+
+test('every set-proof exercise has exactly one adjacent folded written proof',()=>{
+ const seen=[];
+ for(const source of Object.values(pages)){
+  const widgets=[...source.matchAll(/^::: \{\.set-proof data-set-proof="([^"]+)"\}\n[\s\S]*?^:::\s*$/gm)];
+  for(const widget of widgets){
+   const id=widget[1];
+   assert.ok(SET_PROOFS[id],`${id} has an engine model configuration`);
+   const after=source.slice(widget.index+widget[0].length);
+   const written=after.match(/^\s*::: \{#written-proof-([^ ]+) \.foldable title="[^"]+"\}\n([\s\S]*?)^:::\s*$/m);
+   assert.ok(written,`${id} has a folded prose proof`);
+   assert.equal(written.index,0,`${id} immediately precedes its prose proof`);
+   assert.equal(written[1],id);
+   assert.ok(written[2].trim().length>0,`${id} has written content`);
+   assert.equal(source.split(`#written-proof-${id} `).length-1,1,`${id} has no duplicate written proof`);
+   seen.push(id);
+  }
+ }
+ assert.deepEqual(seen.sort(),Object.keys(SET_PROOFS).sort());
+});
+
+
+test('ordered pairs and Cartesian products move with every activity into chapter 3',()=>{
+ const sets=pages['02-sets.qmd'], relations=pages['03-relations.qmd'];
+ for(const anchor of ['sec-cartesian-product','sec-ordered-pair','sec-product-definition','sec-product-properties','practice-sets-product','practice-set-q-product']){
+  assert.ok(!sets.includes('{#'+anchor),anchor+' leaves chapter 2');
+  assert.match(relations,new RegExp('#'+anchor+'(?=[\\s}])'),anchor+' exists in chapter 3');
+ }
+ for(const id of ['product-full-roster','pairs','pair-check','practice-product']){
+  assert.ok(!sets.includes(`data-sets="${id}"`));
+  assert.equal(relations.split(`data-sets="${id}"`).length-1,1);
+ }
+ assert.ok(relations.indexOf('{#sec-cartesian-product}')<relations.indexOf('{#sec-relations-between-sets}'));
+ assert.match(readFileSync(new URL('../_quarto.yml',import.meta.url),'utf8'),/    - 03-relations.qmd/);
+});
+
+test('chapter 3 self-tests and the ordered-pair exercise accept student answers',()=>{
+ const chapter=pages['03-relations.qmd'];
+ const checks=[...chapter.matchAll(/^:::: \{\.thmchk[^\n]*\}\n([\s\S]*?)^::::\s*$/gm)];
+ assert.equal(checks.length,4);
+ for(const [,body]of checks)assert.match(body,/data-sets="[^"]+"/);
+ assert.match(chapter,/title="מוצאים את הרכיבים"[\s\S]*?data-sets="ordered-pair-components"/);
+ assert.match(chapter,/data-set-lab="relation-missing-pair"/);
 });

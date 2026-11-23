@@ -1,8 +1,10 @@
+import {readFileSync} from 'node:fs';
 import {chromium} from 'playwright-core';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
 import {SET_TASKS} from '../games/shared/sets-data.js';
 import {subsets,parseObject,key} from '../games/shared/sets.js';
+const chapter3Ids=new Set([...readFileSync(new URL('../03-relations.qmd',import.meta.url),'utf8').matchAll(/data-sets="([^"]+)"/g)].map(m=>m[1]));
 const browser=await chromium.launch({channel:'chrome',headless:true});
 try{
  const page=await browser.newPage({viewport:{width:1200,height:900}}),errors=[];
@@ -55,7 +57,7 @@ try{
   await browser.close();process.exit(0);
  }
  await page.locator('.answer-panel').evaluateAll(ns=>ns.forEach(n=>n.open=true));
- assert.equal(await page.locator('.sets-ready').count(),Object.keys(SET_TASKS).length-1);
+ assert.equal(await page.locator('.sets-ready').count(),Object.keys(SET_TASKS).length-1-chapter3Ids.size);
  assert.equal(await page.locator('mjx-merror,[data-mml-node="merror"]').count(),0);
  assert.equal(await page.locator('main').innerText().then(t=>t.includes('TODO')),false);
  const helperImages=page.locator('.helper-box-art');
@@ -161,10 +163,54 @@ try{
   assert.deepEqual(errors,[]);console.log('Quantifier examples, written evidence/formulas/negations, four classifications, varied truth values, five-game back navigation, falafel conversation, math and mobile layout passed.');
   await browser.close();process.exit(0);
  }
+ const relationsPage=await browser.newPage({viewport:{width:1200,height:900}});
+ relationsPage.on('pageerror',e=>errors.push(e.message));
+ await relationsPage.route(/^https?:/,async r=>{
+  if(r.request().url().includes('mathjax'))await r.fulfill({path:fileURLToPath(new URL('../../Alternative Versions/source/node_modules/mathjax/es5/tex-svg.js',import.meta.url)),contentType:'application/javascript'});
+  else await r.abort();
+ });
+ await relationsPage.goto(new URL('../_book/03-relations.html',import.meta.url).href);
+ await relationsPage.waitForFunction(()=>window.MathJax?.startup?.promise);
+ await relationsPage.evaluate(()=>window.MathJax.startup.promise);
+ await relationsPage.locator('.answer-panel').evaluateAll(ns=>ns.forEach(n=>n.open=true));
+ assert.equal(await relationsPage.locator('.sets-ready').count(),chapter3Ids.size);
+ assert.equal(await relationsPage.locator('mjx-merror,[data-mml-node="merror"]').count(),0);
+ const counter=relationsPage.locator('[data-set-lab="relation-missing-pair"]');
+ for(const [label,value]of [['קבוצה A','{1}'],['קבוצה B','{2,3}'],['קבוצה R','{(1,2)}'],['זוג במכפלה שאינו ביחס','(1,3)']])await counter.getByRole('textbox',{name:label,exact:true}).fill(value);
+ await counter.getByRole('button',{name:'בדיקת הדוגמה',exact:true}).click();assert.equal(await counter.locator('.bk-good').count(),1);
+ await counter.getByRole('textbox',{name:'זוג במכפלה שאינו ביחס',exact:true}).fill('(1,2)');
+ await counter.getByRole('button',{name:'בדיקת הדוגמה',exact:true}).click();assert.equal(await counter.locator('.bk-bad').count(),1);
+ await counter.getByRole('button',{name:'איפוס',exact:true}).click();assert.equal(await counter.getByRole('textbox',{name:'קבוצה R',exact:true}).inputValue(),'');
+ assert.equal(await relationsPage.locator('.playing-card').count(),7);
+
+ assert.match(await relationsPage.locator('#box-relation-between-sets').innerText(),/3\.2\.1/);
+ for(const detail of await relationsPage.locator('#sec-relations-between-sets details.thmfoldable').all()){
+  await detail.locator(':scope > summary').click();
+  assert.equal(await detail.getAttribute('open'),'');
+ }
+ const moved=chapter3Ids;
  for(const [id,data]of Object.entries(SET_TASKS)){
   if(id==='venn-difference')continue; // Replaced by the extended Venn workshop.
-  const box=page.locator(`[data-sets="${id}"]`);
+  const box=(moved.has(id)?relationsPage:page).locator(`[data-sets="${id}"]`);
   const check=()=>box.getByRole('button',{name:'בדיקה',exact:true}).click();
+  if(data.type==='number-fields'){
+   assert.equal(await box.locator('form').count(),1);
+   assert.equal(await box.locator('input').count(),2);
+   assert.equal(await box.locator('.sets-prompt').count(),1);
+   const x=box.getByRole('textbox',{name:'x',exact:true}),y=box.getByRole('textbox',{name:'y',exact:true});
+   await check();assert.equal(await box.locator('[aria-invalid=true]').count(),2);
+   await x.fill('2');await y.fill('4');await y.press('Enter');
+   assert.equal(await x.getAttribute('aria-invalid'),'false');assert.equal(await y.getAttribute('aria-invalid'),'true');
+   await y.fill('6');await y.press('Enter');assert.equal(await box.locator('.bk-good').count(),1);
+   assert.equal(await x.inputValue(),'2');
+   await box.locator('.answer-reveal > summary').click();
+   assert.match(await box.locator('.answer-reveal').innerText(),/x = 2/);
+   assert.match(await box.locator('.answer-reveal').innerText(),/y = 6/);
+   await box.getByRole('button',{name:'איפוס',exact:true}).click();
+   assert.equal(await x.inputValue(),'');assert.equal(await y.inputValue(),'');
+   assert.equal(await box.locator('[aria-invalid]').count(),0);
+   assert.equal(await box.locator('.answer-reveal').getAttribute('open'),null);
+  }
   if(data.type==='cardinality'){
    for(const [i,q]of data.items.entries()){
     const form=box.locator('.sets-count-item').nth(i),count=form.locator('.sets-count-input'),roster=form.locator('.sets-roster-input');
@@ -249,6 +295,9 @@ try{
 
  }
  for(const width of [1200,390,320]){
+  await relationsPage.setViewportSize({width,height:900});
+  assert.equal(await relationsPage.evaluate(()=>document.documentElement.scrollWidth>innerWidth+2),false,`chapter 3 overflow at ${width}`);
+  await relationsPage.locator('#sec-relation-definition').screenshot({path:`/tmp/relations-definition-${width}.png`});
   await page.setViewportSize({width,height:900});
   const overflow=await page.evaluate(()=>[...document.querySelectorAll('.sets-ready')].filter(n=>n.getBoundingClientRect().right>innerWidth+2||n.getBoundingClientRect().left<-2).map(n=>n.dataset.sets));
   assert.deepEqual(overflow,[],`activity overflow at ${width}`);

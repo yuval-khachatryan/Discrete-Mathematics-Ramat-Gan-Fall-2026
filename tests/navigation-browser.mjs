@@ -7,10 +7,10 @@ try{
  page.on('pageerror',e=>errors.push(e.message));
  await page.route(/^https?:/,async r=>{if(r.request().url().includes('mathjax'))await r.fulfill({path:fileURLToPath(new URL('../../Alternative Versions/source/node_modules/mathjax/es5/tex-svg.js',import.meta.url)),contentType:'application/javascript'});else await r.abort();});
  const url=file=>pathToFileURL(fileURLToPath(new URL('../_book/'+file,import.meta.url))).href;
- for(const file of ['index.html','01-logic.html','02-sets.html']){
+ for(const file of ['index.html','01-logic.html','02-sets.html','03-relations.html']){
   await page.goto(url(file));await page.locator('.toc-chapter-toggle').first().waitFor();
   const nav=page.locator('#quarto-sidebar');
-  assert.equal(await nav.locator('.toc-chapter').count(),3);
+  assert.equal(await nav.locator('.toc-chapter').count(),4);
   assert.equal(await page.locator('#quarto-margin-sidebar #TOC').count(),0);
   const nr=await nav.boundingBox(),mr=await page.locator('main').boundingBox();
   assert.ok(nr.x>=mr.x+mr.width-2,'sidebar must be physically right of the text');

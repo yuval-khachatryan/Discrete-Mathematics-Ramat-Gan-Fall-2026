@@ -30,7 +30,7 @@ test('Venn solutions follow the logical membership tests',()=>{
  tasks.forEach((t,i)=>assert.deepEqual(t.regions,rows.flatMap((r,j)=>tests[i](...r)?[j]:[])));
 });
 test('activities are linked and written exercise answers are well-formed sets',()=>{
- const qmd=readFileSync(new URL('../02-sets.qmd',import.meta.url),'utf8');
+ const qmd=['02-sets.qmd','03-relations.qmd'].map(file=>readFileSync(new URL('../'+file,import.meta.url),'utf8')).join('\n');
  for(const [id,t]of Object.entries(SET_TASKS)){
   if(id==='venn-difference')assert.ok(qmd.includes('data-venn-workshop="areas"'),'extended Venn workshop replaces the old difference game');
   else assert.ok(qmd.includes(`data-sets="${id}"`),id);
@@ -75,4 +75,45 @@ test('Cartesian example accepts a complete typed roster; both power counts use n
  assert.equal(checkSetAnswer('{(1,2),(1,4),(2,2)}',answer).ok,false);
  assert.equal(checkSetAnswer('{(1,2),(1,4),(2,2),(4,2)}',answer).ok,false);
  assert.ok(SET_TASKS['count-power'].items.every(q=>q.input==='number'));
+});
+
+test('ordered-pair exercise groups both unknowns under one prompt',()=>{
+ const task=SET_TASKS['ordered-pair-components'];
+ assert.equal(task.type,'number-fields');
+ assert.deepEqual(task.fields.map(q=>q.name),['x','y']);
+ const [x,y]=task.fields.map(q=>q.answer);
+ assert.deepEqual([x+1,4],[3,y-2]);
+ assert.notDeepEqual([y+1,4],[3,x-2]);
+});
+
+test('the selectable cards are exactly the product of the stated ranks and suits',()=>{
+ const task=SET_TASKS.pairs;
+ const expected=[2,3].flatMap(rank=>['לב','עלה'].map(suit=>`(${rank},${suit})`));
+ assert.deepEqual([...task.answer].sort(),expected.sort());
+ assert.equal(new Set(task.candidates).size,7);
+ assert.ok(task.candidates.every(c=>task.playingCards[c]?.name&&parseObject(c).type==='pair'));
+ assert.ok(task.candidates.some(c=>!task.answer.includes(c)));
+});
+
+test('pure numeric formulas and cardinality expressions are isolated from RTL prose',()=>{
+ for(const raw of ['{(1,2),(1,4),(2,2),(2,4)}','|A × B| = |B × A|']){
+  assert.equal(readable(raw),'\u2066'+raw+'\u2069');
+  assert.equal(readable(readable(raw)),readable(raw));
+ }
+});
+
+test('exercise prompts keep arithmetic formulas whole and prose punctuation outside',()=>{
+ const ltr=s=>'\u2066'+s+'\u2069';
+ assert.equal(readable('כתבו את A × B.'),'כתבו את '+ltr('A × B')+'.');
+ for(const variable of ['x','y']){
+  const prompt=`מצאו את ${variable} מתוך (x + 1, 4) = (3, y − 2).`;
+  const expected=`מצאו את ${ltr(variable)} מתוך ${ltr('(x + 1, 4) = (3, y − 2)')}.`;
+  assert.equal(readable(prompt),expected);
+ }
+ assert.equal(readable(SET_TASKS['ordered-pair-components'].prompt),`מצאו את ${ltr('x')} ואת ${ltr('y')} אם ${ltr('(x + 1, 4) = (3, y − 2)')}.`);
+ for(const formula of ['(-2, 0.5) = (x / 2, y^2)','|x + 1| ≤ 3','√x + 2·y = 4','{(1,2),(3,4)}']){
+  assert.equal(readable('בדקו '+formula+'.'),'בדקו '+ltr(formula)+'.');
+  assert.equal(readable('בדקו '+formula+', ואז נמקו.'),'בדקו '+ltr(formula)+', ואז נמקו.');
+ }
+ assert.equal(readable('נתון x = 1.5. מצאו את y.'),'נתון '+ltr('x = 1.5')+'. מצאו את '+ltr('y')+'.');
 });

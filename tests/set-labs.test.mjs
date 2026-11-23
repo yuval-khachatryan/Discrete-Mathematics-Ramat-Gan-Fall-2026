@@ -33,3 +33,20 @@ test('inclusion-exclusion counts every union element once and outside elements z
  assert.deepEqual(triple.filter(t=>t.sign===-1).map(t=>[t.name,t.count]),[['A ∩ B',1],['A ∩ C',1],['B ∩ C',1]]);
  assert.deepEqual(elementContributions([true,true,false]).map(t=>t.count),[1,1,0,1,0,0,0]);
 });
+
+test('relation counterexamples accept varied sets and reject every unmet condition',()=>{
+ const check=(A,B,R,w)=>checkCounterexample('relation-missing-pair',{A,B,R},w);
+ assert.equal(check('{1}','{2,3}','{(1,2)}','(1,3)').ok,true);
+ assert.equal(check('{a,b}','{c}','{(b,c)}','(a,c)').ok,true);
+ assert.equal(check('{{1}}','{2,3}','{({1},2)}','({1},3)').ok,true);
+ for(const [A,B,R,w]of [
+  ['{1}','{2,3}','{}','(1,3)'],
+  ['{1}','{2,3}','{1,2}','(1,3)'],
+  ['{1}','{2,3}','{(2,1)}','(1,3)'],
+  ['{1}','{2,3}','{(1,4)}','(1,3)'],
+  ['{1}','{2,3}','{(1,2)}','(1,2)'],
+  ['{1}','{2,3}','{(1,2)}','(1,4)'],
+  ['{1}','{2,3}','{(1,2)}','3'],
+  ['{1}','{2,3}','','(1,3)'],
+ ])assert.equal(check(A,B,R,w).ok,false,JSON.stringify([A,B,R,w]));
+});

@@ -380,14 +380,14 @@ $$A=\{x\in D\mid x>8\}.$$
 
 ### תרגול לסעיף: קבוצות ואיברים {#practice-sets-membership}
 
-:::: {.thmqst title="מי באמת ברשימה?"}
+:::: {.thmqst}
 ::: {.sets-exercise data-sets="membership"}
 בחרו אמת או שקר: עבור $A=\{1,4,7\}$, בדקו $4\in A$, $2\in A$ ו־$\{4\}\in A$.
 :::
 ::::
 
 
-:::: {.thmqst title="סופרים רק ברמה הנכונה"}
+:::: {.thmqst}
 ::: {.sets-exercise data-sets="empty"}
 בדקו כמה איברים יש ב־$\varnothing$ וב־$\{\varnothing\}$, ואילו איברים יש ב־$\{1,\{2\},\varnothing\}$.
 :::
@@ -400,7 +400,7 @@ $$A=\{x\in D\mid x>8\}.$$
 :::
 ::::
 
-:::: {.thmqst #practice-set-q-nesting title="קוראים את הסוגריים"}
+:::: {.thmqst #practice-set-q-nesting}
 ::: {.sets-exercise data-sets="practice-relations"}
 בדקו שייכות בקבוצה שמכילה גם קבוצה כאיבר.
 :::
@@ -1352,7 +1352,7 @@ $x$ קשור לכמת; $y$ חופשי. בלי לבחור את $y$ אין כאן 
 ::::::
 
 
-:::::: {#practice-q-quant-finite .thmqst title="ארבע טענות על תחום קטן"}
+:::::: {#practice-q-quant-finite .thmqst}
 התחום הוא $D=\{0,1,2,3\}$. קבעו אמת או שקר ותנו הסבר: עד, דוגמה נגדית או בדיקה של כל התחום, לפי הצורך.
 
 1. $\forall x\in D\,(x\ge0)$.
@@ -1394,7 +1394,7 @@ $x$ קשור לכמת; $y$ חופשי. בלי לבחור את $y$ אין כאן 
 ::::::
 
 
-:::::: {#practice-q-quant-domain .thmqst title="איבר חדש משנה את התשובה"}
+:::::: {#practice-q-quant-domain .thmqst}
 בדקו את $\forall x\in D\,(x\ne0)$ בשני עולמות דיון:
 
 1. $D=\{1,2,3\}$.
@@ -1422,7 +1422,7 @@ $x$ קשור לכמת; $y$ חופשי. בלי לבחור את $y$ אין כאן 
 ::::::
 
 
-:::::: {#practice-q-quant-not-all .thmqst title="לא כולם — אבל אולי חלק כן"}
+:::::: {#practice-q-quant-not-all .thmqst}
 תחום הדיון $D$ הוא הסטודנטים בכיתה. נסמן ב־$P(x)$ את ״הסטודנט $x$ החזיר את הספר״. כתבו בכמתים את ״כל הסטודנטים החזירו את הספר״, ואז כתבו את שלילתו בכמתים ובמילים. האם השלילה אומרת שאף אחד לא החזיר?
 
 
@@ -1455,7 +1455,7 @@ $x$ קשור לכמת; $y$ חופשי. בלי לבחור את $y$ אין כאן 
 ::::::
 
 
-:::::: {#practice-q-quant-nobody .thmqst title="אין כיסאות פנויים"}
+:::::: {#practice-q-quant-nobody .thmqst}
 תחום הדיון $D$ הוא הכיסאות בכיתה. נסמן ב־$P(x)$ את ״הכיסא $x$ פנוי״. כתבו את שלילת ״קיים כיסא פנוי״. האם מספיק להראות כיסא אחד תפוס כדי להצדיק אותה?
 
 
@@ -1482,7 +1482,7 @@ $x$ קשור לכמת; $y$ חופשי. בלי לבחור את $y$ אין כאן 
 ::::::
 
 
-:::::: {#practice-q-quant-menu .thmqst title="מועד לכל מתנדב — או מועד משותף?"}
+:::::: {#practice-q-quant-menu .thmqst}
 נסמן ב־$S$ את קבוצת המתנדבים דנה, נועם ורותם, וב־$M$ את קבוצת המועדים רביעי ושישי בשבוע הבא. אלה המועדים שבהם כל אחד פנוי:
 
 | מתנדב | פנוי ברביעי? | פנוי בשישי? |
@@ -1518,7 +1518,7 @@ $x$ קשור לכמת; $y$ חופשי. בלי לבחור את $y$ אין כאן 
 ::::::
 
 
-:::::: {#practice-q-quant-order .thmqst title="מספר אחר לכל אחד?"}
+:::::: {#practice-q-quant-order .thmqst}
 התחום של שני המשתנים הוא $D=\{1,2,3\}$. קבעו אמת או שקר:
 
 1. $$\forall x\in D\,\exists y\in D\,(x+y=4)$$.
@@ -1550,7 +1550,7 @@ $x$ קשור לכמת; $y$ חופשי. בלי לבחור את $y$ אין כאן 
 ::::::
 
 
-:::::: {#practice-q-quant-negate-order .thmqst title="שוללים בלי לשנות את הסדר בטעות"}
+:::::: {#practice-q-quant-negate-order .thmqst}
 נסמן ב־$S$ את קבוצת הסטודנטים בכיתה וב־$B$ את קבוצת הספרים בספרייה. לכן $x\in S$ ו־$y\in B$. נסמן ב־$R(x,y)$ את ״הסטודנט $x$ קרא את הספר $y$״.
 
 כתבו בכמתים: ״קיים ספר שכל הסטודנטים קראו״. כתבו את שלילת המשפט והעבירו את השלילה פנימה. הסבירו במילים. האם מתקבל ״קיים סטודנט שלא קרא אף ספר״?
@@ -1895,19 +1895,23 @@ $$3\in A,\qquad \{3\}\subseteq A.$$
 :::
 ::::
 
-:::: {.thmqst #practice-set-q-counter title="תפסו את האיבר שמפריך"}
+:::: {.thmqst #practice-set-q-counter}
 ::: {.sets-exercise data-sets="practice-counter"}
 מצאו איבר שמפריך את ההכלה הנתונה.
 :::
 ::::
 
-:::: {.thmqst title="אותו איבר מפריך גם את ההכלה השנייה"}
+:::: {.thmqst}
 ::: {.set-proof data-set-proof="hw-witness"}
 נניח ש־$A$ מוכלת ב־$B$, ושהאיבר $x$ שייך ל־$A$ ואינו שייך ל־$C$. הוכיחו ש־$x$ שייך ל־$B$ ואינו שייך ל־$C$, והסיקו ש־$B$ אינה מוכלת ב־$C$.
 :::
+
+::: {#written-proof-hw-witness .foldable title="הוכחה במילים — לפי צעדי הפתרון לדוגמה"}
+נתון $A\subseteq B$, וכן $x\in A$ ו־$x\notin C$. מן ההכלה $A\subseteq B$ ומן השייכות $x\in A$ נקבל $x\in B$. בצירוף הנתון $x\notin C$, מתקיים $x\in B$ וגם $x\notin C$. לכן $x$ הוא איבר של $B$ שאינו שייך ל־$C$, ומכאן $B\nsubseteq C$.
+:::
 ::::
 
-:::: {.thmqst title="שתיהן בתוך C — האם אחת בתוך השנייה?"}
+:::: {.thmqst}
 ::: {.set-lab data-set-lab="inclusion-error"}
 כתבו דוגמה נגדית ובדקו את הנתונים ואת המסקנה.
 :::
@@ -2013,9 +2017,9 @@ $A\cup B=\{1,3,4,5,7\}$. המשתתפים $3$ ו־$7$ נכללים, אבל אי�
 ::: {#written-proof-union-target .foldable title="הוכחה במילים — לפי צעדי הפתרון לדוגמה"}
 נניח ש־$A\subseteq C$ וש־$B\subseteq C$. יהי $x\in A\cup B$. לפי הגדרת האיחוד, $x\in A$ או $x\in B$. נחלק למקרים.
 
-אם $x\in A$, אז מן ההכלה $A\subseteq C$ נקבל $x\in C$. לכן במקרה הראשון השייכות ל־$A$ גוררת שייכות ל־$C$.
+אם $x\in A$, אז מן ההכלה $A\subseteq C$ נקבל $x\in C$.
 
-אם $x\in B$, אז מן ההכלה $B\subseteq C$ נקבל $x\in C$. לכן גם במקרה השני השייכות ל־$B$ גוררת שייכות ל־$C$.
+אם $x\in B$, אז מן ההכלה $B\subseteq C$ נקבל $x\in C$.
 
 שני המקרים מכסים את האפשרויות שמתקבלות מן השייכות לאיחוד, ובשניהם $x\in C$. הראינו שכל איבר של $A\cup B$ שייך ל־$C$, ולכן $A\cup B\subseteq C$.
 :::
@@ -2082,24 +2086,32 @@ $A\cup B=\{1,3,4,5,7\}$. המשתתפים $3$ ו־$7$ נכללים, אבל אי�
 
 []{#practice-set-proofs}
 
-:::: {.thmqst title="מהציור בחזרה לרשימה"}
+:::: {.thmqst}
 ::: {.sets-exercise data-sets="operations"}
 עבור $A=\{0,2,5,8\}$ ו־$B=\{2,6,8\}$, כתבו את החיתוך ואת האיחוד.
 :::
 ::::
 
 
-:::: {.thmqst title="משתמשים בשני הנתונים"}
+:::: {.thmqst}
 ::: {.set-proof data-set-proof="hw-intersection"}
 נניח שהאיבר $x$ שייך גם ל־$A$ וגם ל־$B$, ושהקבוצה $B$ מוכלת ב־$C$. הוכיחו ש־$x$ שייך לחיתוך $A\cap C$.
 :::
+
+::: {#written-proof-hw-intersection .foldable title="הוכחה במילים — לפי צעדי הפתרון לדוגמה"}
+נתון $x\in A\cap B$ וכן $B\subseteq C$. לפי הגדרת החיתוך, $x\in B$. מן ההכלה $B\subseteq C$ נקבל $x\in C$. מן הנתון $x\in A\cap B$ נקבל גם $x\in A$. לכן $x$ שייך גם ל־$A$ וגם ל־$C$, ולפי הגדרת החיתוך $x\in A\cap C$.
+:::
 ::::
 
-:::: {.thmqst title="די באחד הצדדים"}
+:::: {.thmqst}
 ::: {.set-proof data-set-proof="hw-union"}
 תהיינה $A,B,C$ קבוצות. הוכיחו שכל איבר שמשותף ל־$A$ ול־$B$ שייך לאיחוד $A\cup C$:
 
 $$A\cap B\subseteq A\cup C.$$
+:::
+
+::: {#written-proof-hw-union .foldable title="הוכחה במילים — לפי צעדי הפתרון לדוגמה"}
+יהי $x\in A\cap B$. לפי הגדרת החיתוך, $x\in A$. כדי להשתייך ל־$A\cup C$ מספיק להשתייך ל־$A$, ולכן $x\in A\cup C$. הראינו שכל איבר של $A\cap B$ שייך ל־$A\cup C$, ומכאן $A\cap B\subseteq A\cup C$.
 :::
 ::::
 
@@ -2108,6 +2120,16 @@ $$A\cap B\subseteq A\cup C.$$
 תהיינה $A$ ו־$B$ קבוצות. הוכיחו שהחיתוך שלהן שווה ל־$A$ אם ורק אם $A$ מוכלת ב־$B$:
 
 $$A\cap B=A\quad\Longleftrightarrow\quad A\subseteq B.$$
+:::
+
+::: {#written-proof-hw-absorption .foldable title="הוכחה במילים — לפי צעדי הפתרון לדוגמה"}
+נוכיח את שני הכיוונים.
+
+נניח תחילה ש־$A\cap B=A$, ונוכיח $A\subseteq B$. יהי $x\in A$. מן השוויון הנתון נקבל $x\in A\cap B$, ולפי הגדרת החיתוך $x\in B$. לכן $A\subseteq B$.
+
+בכיוון ההפוך, נניח ש־$A\subseteq B$. נוכיח $A\cap B=A$ באמצעות שתי הכלות. אם $x\in A\cap B$, אז לפי הגדרת החיתוך $x\in A$, ולכן $A\cap B\subseteq A$. כעת יהי $x\in A$. מן ההכלה הנתונה נקבל $x\in B$. לכן $x\in A\cap B$, ומכאן $A\subseteq A\cap B$. שתי ההכלות נותנות $A\cap B=A$.
+
+קיבלנו ש־$A\cap B=A$ אם ורק אם $A\subseteq B$.
 :::
 ::::
 
@@ -2145,9 +2167,9 @@ $$A\setminus(A\setminus B)=A\cap B.$$
 ::: {#written-proof-double-difference .foldable title="הוכחה במילים — לפי צעדי הפתרון לדוגמה"}
 נוכיח את השוויון באמצעות שתי הכלות.
 
-**ההכלה הראשונה.** יהי $x\in A\setminus(A\setminus B)$. לפי הגדרת ההפרש, מתקיים $x\in A$ וגם $x\notin A\setminus B$. נוציא מן הצירוף את שני חלקיו: $x\in A$, וכן $x\notin A\setminus B$. ההגדרה של ההפרש הפנימי מתרגמת את החלק השני ל־$\neg(x\in A\land x\notin B)$. לפי חוק דה מורגן ושלילה כפולה, נקבל $x\notin A$ או $x\in B$. כבר ידוע ש־$x\in A$, ולכן האפשרות הראשונה אינה מתקיימת ומסיקים $x\in B$. כעת $x\in A$ וגם $x\in B$, ולפי הגדרת החיתוך $x\in A\cap B$. מכאן $A\setminus(A\setminus B)\subseteq A\cap B$.
+**ההכלה הראשונה.** יהי $x\in A\setminus(A\setminus B)$. לפי הגדרת ההפרש, מתקיים $x\in A$ וגם $x\notin A\setminus B$. ההגדרה של ההפרש הפנימי מתרגמת את החלק השני ל־$\neg(x\in A\land x\notin B)$. לפי חוק דה מורגן ושלילה כפולה, נקבל $x\notin A$ או $x\in B$. כבר ידוע ש־$x\in A$, ולכן האפשרות הראשונה אינה מתקיימת ומסיקים $x\in B$. כעת $x\in A$ וגם $x\in B$, ולפי הגדרת החיתוך $x\in A\cap B$. מכאן $A\setminus(A\setminus B)\subseteq A\cap B$.
 
-**ההכלה השנייה.** יהי $x\in A\cap B$. לפי הגדרת החיתוך, $x\in A$ וגם $x\in B$. נוציא את שני חלקי הצירוף ונשתמש בכל אחד מהם בנפרד. נניח בשלילה ש־$x\in A\setminus B$. לפי הגדרת ההפרש, נקבל $x\in A$ וגם $x\notin B$, ובפרט $x\notin B$. זו סתירה לשייכות $x\in B$ שהוכחנו. לכן $x\notin A\setminus B$. נצרף זאת ל־$x\in A$: מתקיים $x\in A$ וגם $x\notin A\setminus B$, ולכן, לפי הגדרת ההפרש, $x\in A\setminus(A\setminus B)$. מכאן $A\cap B\subseteq A\setminus(A\setminus B)$.
+**ההכלה השנייה.** יהי $x\in A\cap B$. לפי הגדרת החיתוך, $x\in A$ וגם $x\in B$. נניח בשלילה ש־$x\in A\setminus B$. לפי הגדרת ההפרש, נקבל $x\in A$ וגם $x\notin B$, ובפרט $x\notin B$. זו סתירה לשייכות $x\in B$ שהוכחנו. לכן $x\notin A\setminus B$. נצרף זאת ל־$x\in A$: מתקיים $x\in A$ וגם $x\notin A\setminus B$, ולכן, לפי הגדרת ההפרש, $x\in A\setminus(A\setminus B)$. מכאן $A\cap B\subseteq A\setminus(A\setminus B)$.
 
 קיבלנו את שתי ההכלות, ולכן $A\setminus(A\setminus B)=A\cap B$.
 :::
@@ -2217,9 +2239,9 @@ $A^c=\{1,3,5\}$. $A$ לא השתנתה, אבל העולם השתנה — ולכ�
 :::
 
 ::: {#written-proof-complement-inclusion .foldable title="הוכחה במילים — לפי צעדי הפתרון לדוגמה"}
-נניח ש־$A\subseteq B$, כאשר שני המשלימים נלקחים באותו עולם דיון. יהי $x\in B^c$. נוכיח ש־$x\in A^c$.
+נניח ש־$A\subseteq B$, כאשר שני המשלימים נלקחים ביחס ל־$U$. יהי $x\in B^c$. בפרט, $x\in U$. נוכיח ש־$x\in A^c$.
 
-נניח בשלילה ש־$x\in A$. מן ההכלה $A\subseteq B$ נקבל $x\in B$. זו סתירה ל־$x\in B^c$: שייכות לקבוצה ושייכות למשלים שלה אינן יכולות להתקיים יחד. לכן $x\notin A$. לפי הגדרת המשלים, $x\notin A$ אם ורק אם $x\in A^c$, ולכן $x\in A^c$.
+נניח בשלילה ש־$x\in A$. מן ההכלה $A\subseteq B$ נקבל $x\in B$. זו סתירה ל־$x\in B^c$: שייכות לקבוצה ושייכות למשלים שלה אינן יכולות להתקיים יחד. לכן $x\notin A$. מכיוון ש־$x\in U$ ו־$x\notin A$, לפי הגדרת המשלים $x\in A^c$.
 
 הראינו שכל איבר של $B^c$ שייך ל־$A^c$, ולכן $B^c\subseteq A^c$.
 :::
@@ -2319,34 +2341,38 @@ $$(A\cup B)^c=A^c\cap B^c.$$
 
 ### תרגול לסעיף: הפרש ומשלים {#practice-set-difference}
 
-:::: {.thmqst title="מחשבים וכותבים קבוצה"}
+:::: {.thmqst}
 ::: {.sets-exercise data-sets="differences"}
 עבור $U=\{1,2,3,4,5,6,7\}$, $A=\{1,3,5\}$ ו־$B=\{3,4,5,7\}$, חשבו הפרש, משלים והפרש סימטרי.
 :::
 ::::
 
 
-:::: {.thmqst #practice-set-q-complement title="מה השתנה בעולם?"}
+:::: {.thmqst #practice-set-q-complement}
 ::: {.sets-exercise data-sets="practice-complement"}
 חשבו משלים בשני עולמות שונים.
 :::
 ::::
 
-:::: {.thmqst #practice-set-q-false-law title="הרובוט שוב ממהר להכריז על חוק"}
+:::: {.thmqst #practice-set-q-false-law}
 ::: {.sets-exercise data-sets="practice-false-law"}
 מצאו דוגמה נגדית לחוק שגוי, ובדקו מה אפשר להסיק מדוגמה אחת.
 :::
 ::::
 
-:::: {.thmqst title="מוציאים יותר, נשאר פחות"}
+:::: {.thmqst}
 ::: {.set-proof data-set-proof="hw-difference"}
 נניח ש־$A\subseteq B$, ותהי $C$ קבוצה. הוכיחו שכל איבר של $C$ שאינו שייך ל־$B$ אינו שייך גם ל־$A$, ולכן:
 
 $$C\setminus B\subseteq C\setminus A.$$
 :::
+
+::: {#written-proof-hw-difference .foldable title="הוכחה במילים — לפי צעדי הפתרון לדוגמה"}
+נניח ש־$A\subseteq B$. יהי $x\in C\setminus B$. לפי הגדרת ההפרש, $x\in C$ ו־$x\notin B$. ההכלה $A\subseteq B$ אומרת שאם $x\in A$ אז $x\in B$. לכן, לפי הגרירה הנגדית, מן הנתון $x\notin B$ נקבל $x\notin A$. כעת $x\in C$ וגם $x\notin A$, ולכן $x\in C\setminus A$. מכאן $C\setminus B\subseteq C\setminus A$.
+:::
 ::::
 
-:::: {.thmqst title="האם מותר להזיז את הסוגריים?"}
+:::: {.thmqst}
 ::: {.set-lab data-set-lab="difference-brackets"}
 כתבו דוגמה נגדית ובדקו את הנתונים ואת המסקנה.
 :::
@@ -2440,21 +2466,21 @@ $$\begin{aligned}
 
 ### תרגול לסעיף: הכלה והפרדה {#practice-sets-counting}
 
-:::: {.thmqst title="מתקנים את הספירה"}
+:::: {.thmqst}
 ::: {.sets-exercise data-sets="count-union"}
 הקלידו את עצמת האיחוד ובדקו מדוע מחסירים את עצמת החיתוך.
 :::
 ::::
 
 
-:::: {.thmqst title="שלוש רשימות, בלי לספור פעמיים"}
+:::: {.thmqst}
 ::: {.sets-exercise data-sets="count-three"}
 חשבו את עצמת האיחוד של שלוש קבוצות ובדקו מה כוללים החיתוכים הזוגיים.
 :::
 ::::
 
 
-:::: {.thmqst title="כמה עצמים שונים נספרו?"}
+:::: {.thmqst}
 ::: {.sets-exercise data-sets="practice-counting"}
 חשבו עצמות של איחודים ושל המשלימים שלהם באמצעות הכלה והפרדה.
 :::
@@ -2535,21 +2561,21 @@ $$\mathcal P(\varnothing)=\{\varnothing\}.$$
 
 ### תרגול לסעיף: קבוצת החזקה {#practice-sets-power-product}
 
-:::: {.thmqst title="סופרים בחירות, לא את גודל המספרים"}
+:::: {.thmqst}
 ::: {.sets-exercise data-sets="count-power"}
 הקלידו כמה איברים יש בקבוצת החזקה ובדקו איך מספרם משתנה כשמוסיפים איבר לקבוצה המקורית.
 :::
 ::::
 
 
-:::: {.thmqst title="איזה סוג של איבר מחפשים?"}
+:::: {.thmqst}
 ::: {.sets-exercise data-sets="power-check"}
 בדקו שייכות לקבוצת החזקה ואת קבוצת החזקה של הריקה.
 :::
 ::::
 
 
-:::: {.thmqst #practice-set-q-power title="גם הקבוצה הריקה יכולה להיות איבר"}
+:::: {.thmqst #practice-set-q-power}
 ::: {.sets-exercise data-sets="practice-power"}
 כתבו קבוצות חזקה, כולל מקרה שבו האיבר היחיד הוא הקבוצה הריקה.
 :::
@@ -2558,78 +2584,6 @@ $$\mathcal P(\varnothing)=\{\varnothing\}.$$
 :::: {.thmqst title="מהעצמה של קבוצת החזקה אל הקבוצה"}
 ::: {.sets-exercise data-sets="practice-counting-power"}
 מצאו את עצמת הקבוצה מתוך עצמת קבוצת החזקה שלה.
-:::
-::::
-
-## זוגות סדורים ומכפלה קרטזית {#sec-cartesian-product}
-
-### כאן הסדר דווקא חשוב {#sec-ordered-pair}
-
-בפתק ״שורה 2, כיסא 5״, שני המספרים ממלאים תפקידים שונים. החלפתם נותנת ״שורה 5, כיסא 2״ — מקום אחר. קבוצה רגילה אינה שומרת על הסדר; לשם כך משתמשים בזוג סדור.
-
-::: {.thmdef title="זוג סדור"}
-[**זוג סדור**]{.term} נכתב $(a,b)$. $a$ הוא הרכיב הראשון ו־$b$ הרכיב השני. שני זוגות סדורים שווים בדיוק כאשר הרכיבים המתאימים שווים:
-
-$$(a,b)=(c,d)\quad\Longleftrightarrow\quad a=c\ \land\ b=d.$$
-
-הסוגריים **עגולים**. להבדיל מקבוצה, כאן המקום חשוב.
-:::
-
-למשל, $(2,5)\ne(5,2)$, אבל $\{2,5\}=\{5,2\}$. מותר ששני רכיבי הזוג יהיו שווים: $(2,2)$ הוא זוג סדור תקין.
-
-### כל הצירופים של שתי בחירות {#sec-product-definition}
-
-אם יש שתי אפשרויות לשורה ושלוש אפשרויות לכיסא בכל שורה, אפשר ליצור שישה זוגות של ״שורה, כיסא״. כל מקום מתקבל מבחירה ראשונה ואחריה בחירה שנייה.
-
-::: {.thmdef title="מכפלה קרטזית"}
-ה[**מכפלה הקרטזית**]{.term} $A\times B$ היא קבוצת כל הזוגות הסדורים $(a,b)$ שבהם $a\in A$ ו־$b\in B$.
-
-$$A\times B=\{(a,b)\mid a\in A\text{ וגם }b\in B\}.$$
-
-הסימן $\times$ מציין כאן פעולה על קבוצות: בחירת רכיב ראשון מ־$A$ ורכיב שני מ־$B$. לא כופלים את ערכי הרכיבים.
-:::
-
-::: {.thmexm title="ממלאים שורה אחר שורה"}
-תהיינה $A=\{1,2\}$ ו־$B=\{2,4\}$. כתבו את $A\times B$.
-
-:::: {.sets-exercise data-sets="product-full-roster"}
-הקלידו את כל הזוגות הסדורים בתוך קבוצה, למשל `{(a,b),(c,d)}`. אפשר לבדוק את התשובה או לבחור להציג אותה.
-::::
-:::
-
-:::: {.thmgame title="מסדרים מקומות, לא מכפילים מספרים"}
-::: {.sets-exercise data-sets="pairs"}
-בחרו בדיוק את הזוגות ששייכים ל־$A\times B$, עבור $A=\{2,3\}$ ו־$B=\{1,3\}$.
-:::
-::::
-
-### הסדר, המספר והקבוצה הריקה {#sec-product-properties}
-
-בדרך כלל $A\times B$ ו־$B\times A$ שונות: התפקידים של המקום הראשון והשני מתחלפים. לעומת זאת, כשסופרים את הזוגות בקבוצות סופיות, מקבלים:
-
-$$|A\times B|=|A|\cdot|B|.$$
-
-לכל איבר ראשון אפשר לצרף כל איבר שני. אם אחת הקבוצות ריקה, אי אפשר להשלים זוג, ולכן $A\times\varnothing=\varnothing\times A=\varnothing$.
-
-
-::: {.thmsummary title="שתי בחירות עם תפקידים"}
-- בזוג סדור המקום חשוב; בקבוצה סדר האיברים אינו חשוב.
-- $(a,b)\in A\times B$ כאשר $a\in A$ וגם $b\in B$.
-- בקבוצות סופיות מכפילים את מספר האפשרויות בשני המקומות.
-:::
-
-### תרגול לסעיף: מכפלה קרטזית {#practice-sets-product}
-
-:::: {.thmqst title="מבחן הסוגריים והמקומות"}
-::: {.sets-exercise data-sets="pair-check"}
-השוו זוגות וקבוצות, ספרו זוגות ובדקו מכפלה עם הקבוצה הריקה.
-:::
-::::
-
-
-:::: {.thmqst #practice-set-q-product title="מחליפים את תפקידי המקומות"}
-::: {.sets-exercise data-sets="practice-product"}
-כתבו את שתי המכפלות הקרטזיות לפי הסדר המבוקש.
 :::
 ::::
 
@@ -2649,9 +2603,9 @@ $$A\cup C\subseteq B\cup C.$$
 ::: {#written-proof-proof-union .foldable title="הוכחה במילים — לפי צעדי הפתרון לדוגמה"}
 נניח ש־$A\subseteq B$. יהי $x\in A\cup C$. לפי הגדרת האיחוד, $x\in A$ או $x\in C$. נחלק למקרים.
 
-אם $x\in A$, אז מן ההכלה הנתונה נקבל $x\in B$, ולכן לפי הגדרת האיחוד $x\in B\cup C$. הראינו שבמקרה הראשון השייכות ל־$A$ גוררת שייכות ל־$B\cup C$.
+אם $x\in A$, אז מן ההכלה הנתונה נקבל $x\in B$, ולכן לפי הגדרת האיחוד $x\in B\cup C$.
 
-אם $x\in C$, אז לפי הגדרת האיחוד $x\in B\cup C$. הראינו שגם במקרה השני השייכות ל־$C$ גוררת שייכות ל־$B\cup C$.
+אם $x\in C$, אז לפי הגדרת האיחוד $x\in B\cup C$.
 
 שני המקרים מכסים את כל האפשרויות, ובשניהם $x\in B\cup C$. הראינו שכל איבר של $A\cup C$ שייך ל־$B\cup C$, ולכן $A\cup C\subseteq B\cup C$.
 :::
@@ -2684,7 +2638,7 @@ $$A\cup C\subseteq B\cup C.$$
 
 []{#practice-set-calculations}
 
-:::: {.thmqst #practice-set-q-operations title="קודם סוגריים"}
+:::: {.thmqst #practice-set-q-operations}
 ::: {.sets-exercise data-sets="practice-operations"}
 חשבו שילובים של איחוד, חיתוך והפרש.
 :::
@@ -2692,20 +2646,40 @@ $$A\cup C\subseteq B\cup C.$$
 
 ### שוויון קבוצות ושילוב כללים {#practice-set-equality-proofs}
 
-:::: {.thmqst title="שתי דרכים להיכנס לאיחוד"}
+:::: {.thmqst}
 ::: {.set-proof data-set-proof="mixed-union"}
 תהיינה $A,B,C$ קבוצות. הוכיחו שכל איבר ששייך ל־$A$ וגם לאיחוד $B\cup C$ שייך לחיתוך $A\cap B$ או לקבוצה $C$. כלומר, הוכיחו:
 
 $$A\cap(B\cup C)\subseteq(A\cap B)\cup C.$$
 :::
+
+::: {#written-proof-mixed-union .foldable title="הוכחה במילים — לפי צעדי הפתרון לדוגמה"}
+יהי $x\in A\cap(B\cup C)$. לפי הגדרת החיתוך, $x\in A$ וגם $x\in B\cup C$. לפי הגדרת האיחוד, $x\in B$ או $x\in C$. נחלק למקרים.
+
+אם $x\in B$, אז בצירוף $x\in A$ נקבל $x\in A\cap B$, ולכן $x\in(A\cap B)\cup C$.
+
+אם $x\in C$, אז לפי הגדרת האיחוד $x\in(A\cap B)\cup C$.
+
+שני המקרים מכסים את כל האפשרויות, ובשניהם $x\in(A\cap B)\cup C$. לכן $A\cap(B\cup C)\subseteq(A\cap B)\cup C$.
+:::
 ::::
 
 
-:::: {.thmqst title="בודקים את הסוגריים"}
+:::: {.thmqst}
 ::: {.set-proof data-set-proof="hw-association"}
 תהיינה $A,B,C$ קבוצות. הוכיחו שהוצאת איברי $B$ מתוך $A$, ולאחר מכן הוצאת איברי $C$, נותנת אותה קבוצה כמו הוצאת איברי האיחוד $B\cup C$ בבת אחת:
 
 $$(A\setminus B)\setminus C=A\setminus(B\cup C).$$
+:::
+
+::: {#written-proof-hw-association .foldable title="הוכחה במילים — לפי צעדי הפתרון לדוגמה"}
+נוכיח את השוויון באמצעות שתי הכלות.
+
+**ההכלה הראשונה.** יהי $x\in(A\setminus B)\setminus C$. לפי הגדרת ההפרש, $x\in A\setminus B$ וגם $x\notin C$. מ־$x\in A\setminus B$ נקבל $x\in A$ וגם $x\notin B$. נצרף את שתי טענות אי־השייכות: $x\notin B$ וגם $x\notin C$. לפי חוק דה מורגן, זה שקול ל־$\neg(x\in B\lor x\in C)$, ולפי הגדרת האיחוד נקבל $x\notin B\cup C$. בצירוף $x\in A$, הגדרת ההפרש נותנת $x\in A\setminus(B\cup C)$. לכן $(A\setminus B)\setminus C\subseteq A\setminus(B\cup C)$.
+
+**ההכלה השנייה.** יהי $x\in A\setminus(B\cup C)$. לפי הגדרת ההפרש, $x\in A$ וגם $x\notin B\cup C$. הגדרת האיחוד מתרגמת את התנאי השני ל־$\neg(x\in B\lor x\in C)$. לפי חוק דה מורגן נקבל $x\notin B$ וגם $x\notin C$. מן השייכות $x\in A$ ומ־$x\notin B$ נקבל $x\in A\setminus B$. בצירוף $x\notin C$, נקבל $x\in(A\setminus B)\setminus C$. לכן $A\setminus(B\cup C)\subseteq(A\setminus B)\setminus C$.
+
+שתי ההכלות מוכיחות $(A\setminus B)\setminus C=A\setminus(B\cup C)$.
 :::
 ::::
 
@@ -2715,11 +2689,21 @@ $$(A\setminus B)\setminus C=A\setminus(B\cup C).$$
 
 $$A\setminus(B\cup C)=(A\setminus B)\cap(A\setminus C).$$
 :::
+
+::: {#written-proof-hw-demorgan .foldable title="הוכחה במילים — לפי צעדי הפתרון לדוגמה"}
+נוכיח את השוויון באמצעות שתי הכלות.
+
+**ההכלה הראשונה.** יהי $x\in A\setminus(B\cup C)$. לפי הגדרת ההפרש, $x\in A$ וגם $x\notin B\cup C$. הגדרת האיחוד מתרגמת את התנאי השני ל־$\neg(x\in B\lor x\in C)$. לפי חוק דה מורגן נקבל $x\notin B$ וגם $x\notin C$. בצירוף $x\in A$, הגדרת ההפרש נותנת $x\in A\setminus B$ וכן $x\in A\setminus C$. לכן $x\in(A\setminus B)\cap(A\setminus C)$, ומכאן $A\setminus(B\cup C)\subseteq(A\setminus B)\cap(A\setminus C)$.
+
+**ההכלה השנייה.** יהי $x\in(A\setminus B)\cap(A\setminus C)$. לפי הגדרת החיתוך, $x\in A\setminus B$ וגם $x\in A\setminus C$. מן השייכות הראשונה נקבל $x\in A$ ו־$x\notin B$, ומן השנייה נקבל $x\notin C$. לפי חוק דה מורגן, הצירוף $x\notin B\land x\notin C$ שקול ל־$\neg(x\in B\lor x\in C)$. לכן $x\notin B\cup C$. בצירוף $x\in A$, נקבל $x\in A\setminus(B\cup C)$, ומכאן $(A\setminus B)\cap(A\setminus C)\subseteq A\setminus(B\cup C)$.
+
+שתי ההכלות מוכיחות $A\setminus(B\cup C)=(A\setminus B)\cap(A\setminus C)$.
+:::
 ::::
 
 ### כמתים, מקרים ודוגמאות נגדיות {#practice-set-counterexamples}
 
-:::: {.thmqst title="קיים איבר כאן וקיים איבר שם"}
+:::: {.thmqst}
 ::: {.set-lab data-set-lab="two-witnesses"}
 כתבו דוגמה נגדית ובדקו את הנתונים ואת המסקנה.
 :::
@@ -2731,18 +2715,38 @@ $$A\setminus(B\cup C)=(A\setminus B)\cap(A\setminus C).$$
 
 $$(A\cup B)\setminus C\subseteq A\cup(B\setminus C).$$
 :::
+
+::: {#written-proof-hw-union-diff .foldable title="הוכחה במילים — לפי צעדי הפתרון לדוגמה"}
+יהי $x\in(A\cup B)\setminus C$. לפי הגדרת ההפרש, $x\in A\cup B$ וגם $x\notin C$. מן השייכות לאיחוד נקבל $x\in A$ או $x\in B$. נחלק למקרים.
+
+אם $x\in A$, אז לפי הגדרת האיחוד $x\in A\cup(B\setminus C)$.
+
+אם $x\in B$, אז בצירוף $x\notin C$ נקבל $x\in B\setminus C$, ולכן $x\in A\cup(B\setminus C)$.
+
+בשני המקרים $x\in A\cup(B\setminus C)$, ולכן $(A\cup B)\setminus C\subseteq A\cup(B\setminus C)$.
+:::
 ::::
 
-:::: {.thmqst title="מתי ההכלה מן התרגיל אינה שוויון?"}
+:::: {.thmqst}
 ::: {.set-lab data-set-lab="strict-union-diff"}
 כתבו דוגמה נגדית ובדקו את הנתונים ואת המסקנה.
 :::
 ::::
 
-:::: {.thmqst title="בוחרים בעצמנו את המקרים"}
+:::: {.thmqst}
 ::: {.set-proof data-set-proof="hw-difference-cases"}
 תהיינה $A,B,C$ קבוצות. הוכיחו שכל איבר של $A$ שאינו שייך ל־$C$ נמצא ב־$A\setminus B$ או ב־$B\setminus C$:
 
 $$A\setminus C\subseteq(A\setminus B)\cup(B\setminus C).$$
+:::
+
+::: {#written-proof-hw-difference-cases .foldable title="הוכחה במילים — לפי צעדי הפתרון לדוגמה"}
+יהי $x\in A\setminus C$. לפי הגדרת ההפרש, $x\in A$ וגם $x\notin C$. נחלק לשני מקרים: $x\in B$ או $x\notin B$.
+
+אם $x\in B$, אז בצירוף $x\notin C$ נקבל $x\in B\setminus C$. לפי הגדרת האיחוד, $x\in(A\setminus B)\cup(B\setminus C)$.
+
+אם $x\notin B$, אז בצירוף $x\in A$ נקבל $x\in A\setminus B$. שוב, לפי הגדרת האיחוד, $x\in(A\setminus B)\cup(B\setminus C)$.
+
+כל איבר שייך ל־$B$ או שאינו שייך לה, ולכן שני המקרים מכסים את כל האפשרויות. בשניהם מתקבלת השייכות המבוקשת, ומכאן $A\setminus C\subseteq(A\setminus B)\cup(B\setminus C)$.
 :::
 ::::

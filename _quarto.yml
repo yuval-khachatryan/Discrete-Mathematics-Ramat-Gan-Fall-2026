@@ -27,6 +27,7 @@ book:
     - index.qmd
     - 01-logic.qmd
     - 02-sets.qmd
+    - 03-relations.qmd
 
 lang: he
 dir: rtl
