@@ -355,23 +355,23 @@
     root.className = "stage-navigation";
     root.setAttribute("aria-label", "שלבי הפעילות");
     root.hidden = labels.length < 2;
-    const button7 = (text, click) => {
+    const button8 = (text, click) => {
       const b = document.createElement("button");
       b.type = "button";
       b.textContent = text;
       b.addEventListener("click", click);
       return b;
     };
-    const prev = button7("→ הקודם", () => onChange(active - 1));
+    const prev = button8("→ הקודם", () => onChange(active - 1));
     prev.className = "stage-direction";
     const steps = labels.map((label2, i) => {
-      const b = button7(String(i + 1), () => onChange(i));
+      const b = button8(String(i + 1), () => onChange(i));
       b.title = label2;
       b.setAttribute("aria-label", `שלב ${i + 1}: ${label2}`);
       b.dataset.stage = String(i);
       return b;
     });
-    const next = button7("הבא ←", () => onChange(active + 1));
+    const next = button8("הבא ←", () => onChange(active + 1));
     next.className = "stage-direction";
     root.append(prev, ...steps, next);
     function update(index, done = completion) {
@@ -638,7 +638,17 @@
     "relation-membership-check": { type: "choice", items: [
       choice("נתון R ⊆ A × B וכן a ∈ A ו־b ∈ B. האם בהכרח (a,b) ∈ R?", ["כן", "לא"], 1, "ההכלה מבטיחה שכל זוג ב־R שייך למכפלה. היא אינה מחייבת שכל זוג במכפלה ייכלל ב־R.")
     ] },
+    "relation-on-set-check": { type: "choice", items: [
+      choice("האם בהכרח גם (2,1) ∈ R?", ["כן", "לא"], 1, "הזוג היחיד ב־R הוא (1,2). בחירת שני הרכיבים מתוך אותה קבוצה אינה מוסיפה את הזוג בסדר ההפוך."),
+      choice("האם R חייב להכיל את (1,1) ואת (2,2) כדי להיות יחס על A?", ["כן", "לא"], 1, "ההגדרה דורשת R ⊆ A × A. היא מתירה לבחור רק חלק מן הזוגות, ולכן אינה מחייבת לכלול זוגות ששני רכיביהם שווים."),
+      choice("האם R הוא גם יחס על B = {1,2,3}?", ["כן", "לא"], 0, "כן. שני הרכיבים של (1,2) שייכים גם ל־B. מותר שהאיבר 3 לא יופיע בשום זוג."),
+      choice("האם R ⊆ A?", ["כן", "לא"], 1, "האיבר של R הוא הזוג (1,2), ואיברי A הם המספרים 1 ו־2. ההכלה הנדרשת היא R ⊆ A × A, ולא R ⊆ A.")
+    ] },
+    "relation-read-diagram": { type: "write", items: [write("כתבו את S ברשימת זוגות סדורים.", "{(1,2),(2,1),(3,3)}", "כל חץ נותן זוג: תחילת החץ היא הרכיב הראשון וקצה החץ הוא השני. הלולאה נותנת זוג ששני רכיביו 3; לקודקוד המבודד אין זוג מתאים.")] },
+    "relation-sum-four": { type: "write", items: [write("כתבו את T ברשימת זוגות סדורים.", "{(0,4),(1,3),(2,2),(3,1),(4,0)}", "עברו על כל a ∈ A, חשבו b = 4 − a, ובדקו שגם b ∈ A.")] },
+    "relation-smallest-set": { type: "write", items: [write("כתבו את הקבוצה הקטנה ביותר A לפי הכלה, שעבורה R הוא יחס על A.", "{1,2,3}", "אספו את האיברים שמופיעים בשני המקומות של הזוגות. האם אפשר להשמיט אחד מהם ועדיין להשאיר את כל הזוגות בתוך A × A?")] },
     "product-full-roster": { type: "write", items: [write("כתבו את כל הזוגות במכפלה A × B.", "{(1,2),(1,4),(2,2),(2,4)}", "לכל איבר של A צרפו כל איבר של B. הרכיב הראשון מגיע מ־A והשני מ־B.")] },
+    "product-seating-roster": { type: "write", items: [write("כתבו את קבוצת המקומות כקבוצה של זוגות סדורים.", "{(1,1),(1,2),(1,3),(2,1),(2,2),(2,3)}", "הרכיב הראשון הוא מספר השורה: 1 או 2. לכל שורה צרפו את שלושת מספרי הכיסאות: 1, 2, 3.")] },
     "power-two-rows": { type: "power-layers", atoms: ["2", "9"] },
     "difference-directions": { type: "write", items: [
       write("א. חשבו A ∖ B.", "{0,4}", "התחילו באיברי A והוציאו כל איבר ששייך גם ל־B."),
@@ -1234,12 +1244,12 @@
     if (box.dataset.ready) return;
     box.dataset.ready = "true";
     const kind = box.dataset.quantifierEvidence, q = EVIDENCE_TASKS[kind];
-    const el20 = (tag, text) => {
+    const el21 = (tag, text) => {
       const n = document.createElement(tag);
       if (text) n.textContent = text;
       return n;
     };
-    const form = el20("form"), label2 = el20("label", kind === "witness" ? "כתבו עד: " : "כתבו דוגמה נגדית: "), input2 = el20("input");
+    const form = el21("form"), label2 = el21("label", kind === "witness" ? "כתבו עד: " : "כתבו דוגמה נגדית: "), input2 = el21("input");
     input2.type = "text";
     input2.inputMode = "decimal";
     input2.dir = "ltr";
@@ -1247,7 +1257,7 @@
     input2.className = "bk-input sets-count-input";
     input2.setAttribute("aria-label", kind === "witness" ? "מספר שמשמש עד" : "מספר שמשמש דוגמה נגדית");
     label2.append(input2);
-    const feedback = el20("p");
+    const feedback = el21("p");
     feedback.className = "bk-msg";
     feedback.setAttribute("aria-live", "polite");
     const clear = () => {
@@ -1255,8 +1265,8 @@
       feedback.className = "bk-msg";
       input2.removeAttribute("aria-invalid");
     };
-    const button7 = (text, fn) => {
-      const b = el20("button", text);
+    const button8 = (text, fn) => {
+      const b = el21("button", text);
       b.type = "button";
       b.className = "bk-btn";
       b.addEventListener("click", fn);
@@ -1273,10 +1283,10 @@
       check();
     });
     input2.addEventListener("input", clear);
-    form.append(label2, button7("בדיקה", check), button7("רמז", () => {
+    form.append(label2, button8("בדיקה", check), button8("רמז", () => {
       feedback.textContent = q.hint;
       feedback.className = "bk-msg";
-    }), button7("איפוס", () => {
+    }), button8("איפוס", () => {
       input2.value = "";
       clear();
     }), feedback, answerReveal(readable(q.success(q.domain.find(q.accept)))));
@@ -1388,13 +1398,13 @@
     if (box.dataset.ready) return;
     box.dataset.ready = "true";
     const original = box.dataset.quantifierNegation, mode = box.dataset.quantifierWriting, writing = Boolean(mode);
-    const el20 = (tag, cls, text) => {
+    const el21 = (tag, cls, text) => {
       const n = document.createElement(tag);
       if (cls) n.className = cls;
       if (text) n.textContent = text;
       return n;
     };
-    const form = el20("form", "quantifier-negation-form"), label2 = el20("label", "", writing ? mode === "menu" ? "כתבו את הטענה: " : "כתבו את השלילה: " : "כתבו את השלילה: "), input2 = el20("input", "bk-input");
+    const form = el21("form", "quantifier-negation-form"), label2 = el21("label", "", writing ? mode === "menu" ? "כתבו את הטענה: " : "כתבו את השלילה: " : "כתבו את השלילה: "), input2 = el21("input", "bk-input");
     input2.type = "text";
     input2.dir = "ltr";
     input2.maxLength = 300;
@@ -1402,11 +1412,11 @@
     input2.spellcheck = false;
     input2.setAttribute("aria-label", writing ? mode === "menu" ? "ניסוח הטענה בשני כמתים" : "שלילת הטענה בשני כמתים" : original === "∀" ? "שלילת פסוק לכל" : "שלילת פסוק קיים");
     label2.append(input2);
-    const keys = el20("div", "quantifier-negation-keys");
+    const keys = el21("div", "quantifier-negation-keys");
     keys.hidden = true;
     contextualKeyboard(input2, keys, { shortcuts: false });
     for (const symbol of ["∀", "∃", "∈", "¬", ...writing ? ["S", "M", "L(x,y)"] : ["P(x)"], "(", ")"]) {
-      const key3 = el20("button", "bk-btn", symbol);
+      const key3 = el21("button", "bk-btn", symbol);
       key3.type = "button";
       key3.dir = "ltr";
       key3.setAttribute("aria-label", "הוספת " + symbol);
@@ -1418,17 +1428,17 @@
       });
       keys.append(key3);
     }
-    const feedback = el20("p", "bk-msg");
+    const feedback = el21("p", "bk-msg");
     feedback.setAttribute("aria-live", "polite");
     input2.addEventListener("input", () => {
       feedback.textContent = "";
       feedback.className = "bk-msg";
       input2.removeAttribute("aria-invalid");
     });
-    const check = el20("button", "bk-btn bk-main", "בדיקה");
+    const check = el21("button", "bk-btn bk-main", "בדיקה");
     check.type = "submit";
-    const hint = el20("details", "set-proof-hint");
-    hint.append(el20("summary", "", "רמז"), el20("p", "", writing ? mode === "menu" ? "התחילו בסטודנט מתוך S, ואחריו בחרו פריט מתוך M. ב־L(x,y), הסטודנט קודם לפריט." : "החליפו כל כמת בכמת האחר, השאירו את התחומים S ו־M במקומם ושללו את L(x,y)." : "החליפו ״לכל״ ב״קיים״ או להפך, השאירו את התחום D, ושללו את P(x)."));
+    const hint = el21("details", "set-proof-hint");
+    hint.append(el21("summary", "", "רמז"), el21("p", "", writing ? mode === "menu" ? "התחילו בסטודנט מתוך S, ואחריו בחרו פריט מתוך M. ב־L(x,y), הסטודנט קודם לפריט." : "החליפו כל כמת בכמת האחר, השאירו את התחומים S ו־M במקומם ושללו את L(x,y)." : "החליפו ״לכל״ ב״קיים״ או להפך, השאירו את התחום D, ושללו את P(x)."));
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       input2.value = normalize(input2.value);
@@ -1467,16 +1477,16 @@
     box.dataset.ready = "true";
     box.replaceChildren();
     const mode = box.dataset.quantifierStatement;
-    const el20 = (tag, text = "", attrs = {}) => {
+    const el21 = (tag, text = "", attrs = {}) => {
       const n = document.createElement(tag);
       n.textContent = text;
       for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
       return n;
     };
-    const form = el20("form", "", { class: "quantifier-negation-form" }), input2 = el20("input", "", { type: "text", dir: "ltr", maxlength: "300", class: "bk-input", "aria-label": mode === "all" ? "ניסוח כל הסטודנטים החזירו" : "ניסוח לא כל הסטודנטים החזירו", autocomplete: "off", spellcheck: "false" });
-    const keys = el20("div", "", { class: "quantifier-negation-keys" });
+    const form = el21("form", "", { class: "quantifier-negation-form" }), input2 = el21("input", "", { type: "text", dir: "ltr", maxlength: "300", class: "bk-input", "aria-label": mode === "all" ? "ניסוח כל הסטודנטים החזירו" : "ניסוח לא כל הסטודנטים החזירו", autocomplete: "off", spellcheck: "false" });
+    const keys = el21("div", "", { class: "quantifier-negation-keys" });
     for (const symbol of ["∀", "∃", "¬", "∄", "x", "∈", "D", "P(x)", "(", ")"]) {
-      const b = el20("button", symbol, { type: "button", class: "bk-btn", dir: "ltr", "aria-label": "הוספת " + symbol });
+      const b = el21("button", symbol, { type: "button", class: "bk-btn", dir: "ltr", "aria-label": "הוספת " + symbol });
       b.onclick = () => {
         input2.setRangeText(symbol, input2.selectionStart, input2.selectionEnd, "end");
         input2.focus();
@@ -1485,7 +1495,7 @@
       keys.append(b);
     }
     contextualKeyboard(input2, keys, { shortcuts: false });
-    const feedback = el20("p", "", { class: "bk-msg", "aria-live": "polite" }), submit = el20("button", "בדיקה", { type: "submit", class: "bk-btn" });
+    const feedback = el21("p", "", { class: "bk-msg", "aria-live": "polite" }), submit = el21("button", "בדיקה", { type: "submit", class: "bk-btn" });
     input2.oninput = () => {
       feedback.textContent = "";
       input2.removeAttribute("aria-invalid");
@@ -1498,7 +1508,7 @@
       feedback.className = "bk-msg " + (result.ok ? "bk-good" : "bk-bad");
       input2.setAttribute("aria-invalid", String(!result.ok));
     };
-    form.append(input2, keys, el20("p", "אפשר להקליד forall, exists, not. הסימן ∄ פירושו ״לא קיים״."), submit, feedback, answerReveal(mode === "all" ? "∀x ∈ D (P(x))  ⇔  ¬∃x ∈ D (¬P(x))" : "¬∀x ∈ D (P(x))  ⇔  ∃x ∈ D (¬P(x))"));
+    form.append(input2, keys, el21("p", "אפשר להקליד forall, exists, not. הסימן ∄ פירושו ״לא קיים״."), submit, feedback, answerReveal(mode === "all" ? "∀x ∈ D (P(x))  ⇔  ¬∃x ∈ D (¬P(x))" : "¬∀x ∈ D (P(x))  ⇔  ∃x ∈ D (¬P(x))"));
     box.append(answerPanel(form));
   }
 
@@ -4102,11 +4112,11 @@
     controls.append(next, skip, reset);
     box.replaceChildren(nav.root, title, prompt, formula4, first, stage, choices2, status, answers, feedback, controls);
     for (const [text, answer] of [["פסוק פתוח — עדיין חסרה הצבה", null], ["פסוק אמת", true], ["פסוק שקר", false]]) {
-      const button7 = make("button", "bk-btn", text);
-      button7.type = "button";
-      button7.dataset.answer = String(answer);
-      button7.addEventListener("click", () => check(answer));
-      answers.append(button7);
+      const button8 = make("button", "bk-btn", text);
+      button8.type = "button";
+      button8.dataset.answer = String(answer);
+      button8.addEventListener("click", () => check(answer));
+      answers.append(button8);
     }
     function say6(text, kind) {
       feedback.textContent = text;
@@ -5759,9 +5769,9 @@
           stage2.hidden = false;
           translationFields.at(-1).input.focus();
         }));
-        [...reference.querySelectorAll(".bk-btn"), goalView.querySelector(".bk-btn")].forEach((button7) => {
-          button7.setAttribute("aria-label", button7.textContent);
-          button7.textContent = "עריכה";
+        [...reference.querySelectorAll(".bk-btn"), goalView.querySelector(".bk-btn")].forEach((button8) => {
+          button8.setAttribute("aria-label", button8.textContent);
+          button8.textContent = "עריכה";
         });
         refreshReferences();
       }
@@ -6722,25 +6732,25 @@
     function disclosure(container, list, label2, chapter = false) {
       const id = `toc-branch-${controls.length}`;
       list.id = list.id || id;
-      const button7 = document.createElement("button");
-      button7.type = "button";
-      button7.className = chapter ? "toc-chapter-toggle" : "toc-branch-toggle";
-      button7.setAttribute("aria-controls", list.id);
-      button7.setAttribute("aria-expanded", "false");
+      const button8 = document.createElement("button");
+      button8.type = "button";
+      button8.className = chapter ? "toc-chapter-toggle" : "toc-branch-toggle";
+      button8.setAttribute("aria-controls", list.id);
+      button8.setAttribute("aria-expanded", "false");
       const arrow = document.createElement("span");
       arrow.className = "toc-disclosure-arrow";
       arrow.textContent = "◂";
       arrow.setAttribute("aria-hidden", "true");
-      button7.append(arrow);
+      button8.append(arrow);
       const set = (open) => {
         container.classList.toggle("toc-open", open);
-        button7.setAttribute("aria-expanded", String(open));
-        button7.setAttribute("aria-label", `${open ? "קיפול" : "פתיחה"}: ${label2}`);
+        button8.setAttribute("aria-expanded", String(open));
+        button8.setAttribute("aria-label", `${open ? "קיפול" : "פתיחה"}: ${label2}`);
       };
-      button7.addEventListener("click", () => set(button7.getAttribute("aria-expanded") !== "true"));
+      button8.addEventListener("click", () => set(button8.getAttribute("aria-expanded") !== "true"));
       set(false);
       controls.push({ list, set });
-      return button7;
+      return button8;
     }
     for (const link of sidebar.querySelectorAll(".sidebar-menu-container a.sidebar-link")) {
       const url = new URL(link.href), file = url.pathname.split("/").pop();
@@ -6750,7 +6760,7 @@
       const toc = isCurrent && currentToc ? currentToc : document.createElement("div");
       if (toc !== currentToc) {
         toc.innerHTML = chapter.html;
-        toc.querySelectorAll("[id]").forEach((el20) => el20.removeAttribute("id"));
+        toc.querySelectorAll("[id]").forEach((el21) => el21.removeAttribute("id"));
         toc.querySelectorAll("a").forEach((a) => {
           a.href = new URL(file + a.getAttribute("href"), location.href).href;
           a.removeAttribute("data-scroll-target");
@@ -6834,12 +6844,12 @@
         trigger.setAttribute("aria-expanded", "false");
       })]
     ]) {
-      const button7 = document.createElement("button");
-      button7.type = "button";
-      button7.className = "bk-btn bk-quiet";
-      button7.textContent = label2;
-      button7.addEventListener("click", action);
-      controls.append(button7);
+      const button8 = document.createElement("button");
+      button8.type = "button";
+      button8.className = "bk-btn bk-quiet";
+      button8.textContent = label2;
+      button8.addEventListener("click", action);
+      controls.append(button8);
     }
     box.append(controls);
   }
@@ -6873,7 +6883,7 @@
     const boxes = new Map([...main.querySelectorAll(".thmbox[id], .equivalence-law[id]")].map((n) => [n.id, n.cloneNode(true)]));
     const root = new URL("./", location.href), current = new URL(location.href);
     current.hash = "";
-    let loading, serial6 = 0, opened = [];
+    let loading, serial7 = 0, opened = [];
     const skip = (a) => a.matches(".anchorjs-link,.footnote-ref,.footnote-back,[download]") || !a.getAttribute("href") || a.getAttribute("href") === "#";
     function newTabLinks(container) {
       container.querySelectorAll("a[href]").forEach((a) => {
@@ -6976,7 +6986,7 @@
       }
       const panel = document.createElement("aside");
       panel.className = "xref-panel";
-      panel.id = `xref-preview-${++serial6}`;
+      panel.id = `xref-preview-${++serial7}`;
       panel.setAttribute("aria-label", "תוכן ההפניה");
       const head2 = document.createElement("div");
       head2.className = "xref-head";
@@ -6986,15 +6996,15 @@
       jump.target = "_blank";
       jump.rel = "noopener";
       jump.textContent = "פתיחת המקור בלשונית חדשה";
-      const button7 = document.createElement("button");
-      button7.className = "xref-close";
-      button7.type = "button";
-      button7.textContent = "סגירה";
+      const button8 = document.createElement("button");
+      button8.className = "xref-close";
+      button8.type = "button";
+      button8.textContent = "סגירה";
       const body2 = document.createElement("div");
       body2.className = "xref-body";
       body2.setAttribute("aria-live", "polite");
       body2.textContent = "טוען…";
-      head2.append(jump, button7);
+      head2.append(jump, button8);
       panel.append(head2, body2);
       let block = link.closest("p,li,td,th,dd,figcaption") || link.parentElement;
       if (block.matches("td,th")) block = block.closest("table");
@@ -7004,7 +7014,7 @@
       link.classList.add("xref-open");
       link.setAttribute("aria-expanded", "true");
       link.setAttribute("aria-controls", panel.id);
-      button7.addEventListener("click", () => close(entry, true));
+      button8.addEventListener("click", () => close(entry, true));
       try {
         let source = local;
         if (!source) {
@@ -8791,19 +8801,19 @@
     }
   }
   function initDisjointCounterexample(box) {
-    const el20 = (tag, text) => {
+    const el21 = (tag, text) => {
       const n = document.createElement(tag);
       if (text) n.textContent = text;
       return n;
     };
-    const button7 = (text, fn) => {
-      const b = el20("button", text);
+    const button8 = (text, fn) => {
+      const b = el21("button", text);
       b.type = "button";
       b.className = "bk-btn";
       b.onclick = fn;
       return b;
     };
-    const verdict = el20("p"), feedback = el20("p"), explanation = el20("div"), form = el20("form"), choices2 = el20("div");
+    const verdict = el21("p"), feedback = el21("p"), explanation = el21("div"), form = el21("form"), choices2 = el21("div");
     verdict.className = feedback.className = "bk-msg";
     verdict.setAttribute("aria-live", "polite");
     feedback.setAttribute("aria-live", "polite");
@@ -8811,7 +8821,7 @@
     form.hidden = true;
     explanation.hidden = true;
     const fields = ["A", "B"].map((name) => {
-      const label2 = el20("label", `${name} = `), input2 = el20("input");
+      const label2 = el21("label", `${name} = `), input2 = el21("input");
       input2.type = "text";
       input2.dir = "ltr";
       input2.className = "bk-input";
@@ -8834,15 +8844,15 @@
       verdict.textContent = value ? "לא נכון. נסו למצוא דוגמה נגדית בעצמכם והזינו אותה בשדות שלמטה. " + hint : "כדי להצדיק שהטענה אינה נכונה, הזינו קבוצות שמקיימות A ⊆ B וגם A ∩ B = ∅.";
     };
     for (const [value, text] of [[true, "נכון"], [false, "לא נכון"]]) {
-      const b = button7(text, () => choose(value));
+      const b = button8(text, () => choose(value));
       b.dataset.verdict = String(value);
       b.setAttribute("aria-pressed", "false");
       choices2.append(b);
     }
-    const submit = el20("button", "בדיקת הדוגמה הנגדית");
+    const submit = el21("button", "בדיקת הדוגמה הנגדית");
     submit.type = "submit";
     submit.className = "bk-btn";
-    form.append(el20("p", "השתמשו בקבוצות של עד 10 מספרים שלמים בין ‎−99 ל־99. לקבוצה הריקה אפשר לכתוב {} או ∅."), submit, button7("רמז", () => {
+    form.append(el21("p", "השתמשו בקבוצות של עד 10 מספרים שלמים בין ‎−99 ל־99. לקבוצה הריקה אפשר לכתוב {} או ∅."), submit, button8("רמז", () => {
       feedback.textContent = hint;
     }), feedback);
     form.onsubmit = (e) => {
@@ -8853,7 +8863,7 @@
       explanation.hidden = !result.ok;
       if (result.ok) explanation.textContent = "הנקודה היא ש־A יכולה להיות ריקה. למשל, A = ∅ ו־B = {1}: אפילו ההכלה ממש מתקיימת, אך הקבוצות זרות. אם מוסיפים A ≠ ∅, אפשר לבחור איבר של A; מההכלה הוא שייך גם ל־B, ולכן החיתוך אינו ריק.";
     };
-    box.append(el20("p", "האם הטענה נכונה?"), choices2, verdict, form, explanation);
+    box.append(el21("p", "האם הטענה נכונה?"), choices2, verdict, form, explanation);
     fields.forEach(attachSetAnswerInput);
   }
 
@@ -9245,16 +9255,16 @@
     }
     const choices2 = el17("div", { class: "set-mail-choices", role: "group", "aria-label": "בחירת הנמענים" });
     const buttons = names.map((name, i) => {
-      const button7 = btn4(name, () => {
+      const button8 = btn4(name, () => {
         const state = states[stage];
         state.chosen.has(i) ? state.chosen.delete(i) : state.chosen.add(i);
         state.text = "";
         state.solved = false;
         update();
       });
-      button7.setAttribute("aria-pressed", "false");
-      choices2.append(button7);
-      return button7;
+      button8.setAttribute("aria-pressed", "false");
+      choices2.append(button8);
+      return button8;
     });
     function go(i) {
       stage = i;
@@ -9320,6 +9330,143 @@
         feedback.textContent = "";
       }));
     }
+  }
+
+  // games/shared/relation-drawing.js
+  var RELATION_VERTICES = [1, 2, 3, 4];
+  var RELATION_DRAWINGS = [
+    { pairs: [[1, 2], [2, 3]], hint: "כל זוג דורש חץ משלו. שני חצים בזה אחר זה אינם מוסיפים חץ ישיר." },
+    { pairs: [[1, 2], [2, 1]], hint: "שני הזוגות שונים בסדר הרכיבים. נדרשים שני חצים בכיוונים מנוגדים." },
+    { pairs: [[1, 1], [1, 3], [3, 2]], hint: "הזוג (1,1) מיוצג בלולאה: בחרו בקודקוד 1 פעמיים." }
+  ];
+  var pairKey = (pair) => pair.join(",");
+  var relationRoster = (pairs) => pairs.length ? "{" + pairs.map(([a, b]) => `(${a},${b})`).join(", ") + "}" : "∅";
+  function checkRelationDrawing(pairs, target) {
+    if (pairs.some((p) => !Array.isArray(p) || p.length !== 2 || p.some((a) => !RELATION_VERTICES.includes(a)))) return { ok: false, message: "כל חץ צריך להתחיל ולהסתיים באחד מארבעת הקודקודים." };
+    const actual = new Set(pairs.map(pairKey)), expected = new Set(target.map(pairKey));
+    const extra = pairs.find((p) => !expected.has(pairKey(p)));
+    if (extra) return { ok: false, message: `החץ מ־${extra[0]} אל ${extra[1]} מייצג את (${extra.join(",")}), שאינו ביחס הנתון. בחרו שוב בשני קצות החץ באותו סדר כדי להסיר אותו.` };
+    const missing = target.find((p) => !actual.has(pairKey(p)));
+    if (missing) return { ok: false, message: missing[0] === missing[1] ? `חסרה הלולאה שמייצגת את (${missing.join(",")}). בחרו בקודקוד ${missing[0]} פעמיים.` : `חסר החץ שמייצג את (${missing.join(",")}). בחרו תחילה ב־${missing[0]} ואחר כך ב־${missing[1]}.` };
+    return { ok: true, message: "נכון! כל זוג ביחס מיוצג בחץ, ואין חצים לזוגות שאינם ביחס. כל ארבעת איברי A מופיעים כקודקודים." };
+  }
+  var positions = { 1: [100, 100], 2: [340, 100], 3: [100, 310], 4: [340, 310] };
+  function relationGraphSvg(pairs, { id = "relation-arrow", interactive = false, selected = null } = {}) {
+    if (!/^[a-z][a-z0-9-]*$/i.test(id)) throw Error("Invalid SVG marker id");
+    const edges = pairs.map(([a, b]) => {
+      if (!positions[a] || !positions[b]) throw Error("Unknown graph vertex");
+      const [x, y] = positions[a], [u, v] = positions[b];
+      let d;
+      if (a === b) d = `M ${x - 15} ${y - 22} C ${x - 72} ${y - 94}, ${x + 72} ${y - 94}, ${x + 15} ${y - 22}`;
+      else {
+        const dx = u - x, dy = v - y, length = Math.hypot(dx, dy), nx = -dy / length, ny = dx / length;
+        const bend = pairs.some(([c, e]) => c === b && e === a) ? 30 : 0;
+        d = `M ${x + dx / length * 29} ${y + dy / length * 29} Q ${(x + u) / 2 + nx * bend} ${(y + v) / 2 + ny * bend} ${u - dx / length * 31} ${v - dy / length * 31}`;
+      }
+      return `<path data-pair="${a},${b}" d="${d}" fill="none" stroke="#245a7a" stroke-width="3" marker-end="url(#${id})"/>`;
+    }).join("");
+    const vertices = RELATION_VERTICES.map((a) => {
+      const [x, y] = positions[a], chosen = a === selected;
+      return `<g data-vertex="${a}"${interactive ? ` role="button" tabindex="0" aria-label="איבר ${a}" aria-pressed="${chosen}"` : ""}><circle cx="${x}" cy="${y}" r="26" fill="${chosen ? "#fff0c2" : "#f3f8fc"}" stroke="${chosen ? "#825600" : "#245a7a"}" stroke-width="${chosen ? 4 : 2}"/><text x="${x}" y="${y + 8}" text-anchor="middle" direction="ltr" font-family="Georgia, serif" font-size="25" fill="#17364b">${a}</text></g>`;
+    }).join("");
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 365" role="${interactive ? "group" : "img"}" aria-label="${interactive ? "בחירת קודקודים ליצירת חצים" : "תרשים של יחס על ארבעה איברים"}"><defs><marker id="${id}" viewBox="0 0 9 8" refX="8" refY="4" markerWidth="10" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#245a7a"/></marker></defs>${edges}${vertices}</svg>`;
+  }
+  var el18 = (tag, attrs = {}, children2 = []) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) if (k === "text") n.textContent = readable(v);
+    else n.setAttribute(k, v);
+    n.append(...children2);
+    return n;
+  };
+  var button7 = (text, fn) => {
+    const b = el18("button", { type: "button", class: "bk-btn", text });
+    b.addEventListener("click", fn);
+    return b;
+  };
+  var serial5 = 0;
+  function initRelationDrawing(box) {
+    if (box.dataset.ready) return;
+    box.dataset.ready = "true";
+    box.replaceChildren();
+    const id = `relation-board-${++serial5}`, states = RELATION_DRAWINGS.map(() => ({ edges: /* @__PURE__ */ new Set(), done: false }));
+    let active = 0, selected = null;
+    const target = el18("p", { class: "relation-target", dir: "ltr" }), board = el18("div", { class: "relation-board" }), roster = el18("p", { dir: "ltr", class: "relation-current" });
+    const instruction = el18("p", { "aria-live": "polite" }), feedback = el18("p", { class: "bk-msg", "aria-live": "polite" });
+    const model = el18("details", { class: "answer-reveal" }, [el18("summary", { text: "הצגת תרשים הפתרון" }), el18("div", { class: "relation-board" })]);
+    const pairs = () => [...states[active].edges].map((k) => k.split(",").map(Number));
+    const clear = () => {
+      feedback.textContent = "";
+      feedback.className = "bk-msg";
+    };
+    const nav = stageNavigation(RELATION_DRAWINGS.map((q) => relationRoster(q.pairs)), (index) => {
+      active = index;
+      selected = null;
+      clear();
+      model.open = false;
+      draw();
+    });
+    function draw() {
+      target.textContent = "R = " + relationRoster(RELATION_DRAWINGS[active].pairs);
+      board.innerHTML = relationGraphSvg(pairs(), { id, interactive: true, selected });
+      roster.textContent = "S = " + relationRoster(pairs());
+      instruction.textContent = selected === null ? "בחרו את הקודקוד שממנו החץ יוצא." : readable(`החץ יתחיל ב־${selected}. בחרו את הקודקוד שאליו ייכנס.`);
+      model.lastElementChild.innerHTML = relationGraphSvg(RELATION_DRAWINGS[active].pairs, { id: id + "-model" });
+      nav.update(active, states.map((s) => s.done));
+    }
+    function choose(a) {
+      clear();
+      if (selected === null) selected = a;
+      else {
+        const key3 = pairKey([selected, a]), state = states[active];
+        if (state.edges.has(key3)) state.edges.delete(key3);
+        else state.edges.add(key3);
+        state.done = false;
+        selected = null;
+      }
+      draw();
+      board.querySelector(`[data-vertex="${a}"]`).focus();
+    }
+    board.addEventListener("click", (e) => {
+      const node2 = e.target.closest("[data-vertex]");
+      if (node2) choose(Number(node2.dataset.vertex));
+    });
+    board.addEventListener("keydown", (e) => {
+      if (!["Enter", " "].includes(e.key)) return;
+      const node2 = e.target.closest("[data-vertex]");
+      if (node2) {
+        e.preventDefault();
+        choose(Number(node2.dataset.vertex));
+      }
+    });
+    const check = button7("בדיקה", () => {
+      const result = checkRelationDrawing(pairs(), RELATION_DRAWINGS[active].pairs);
+      states[active].done = result.ok;
+      feedback.textContent = readable(result.message);
+      feedback.className = "bk-msg " + (result.ok ? "bk-good" : "bk-bad");
+      nav.update(active, states.map((s) => s.done));
+    });
+    box.append(
+      nav.root,
+      el18("p", { text: "היחס שצריך לצייר:" }),
+      target,
+      instruction,
+      board,
+      el18("p", { text: "החצים שציירתם מייצגים את היחס:" }),
+      roster,
+      el18("div", { class: "bk-bar" }, [check, button7("רמז", () => {
+        feedback.textContent = readable(RELATION_DRAWINGS[active].hint);
+        feedback.className = "bk-msg";
+      }), button7("איפוס", () => {
+        states[active] = { edges: /* @__PURE__ */ new Set(), done: false };
+        selected = null;
+        model.open = false;
+        clear();
+        draw();
+      })]),
+      feedback,
+      model
+    );
+    draw();
   }
 
   // games/shared/practice-choices.js
@@ -10225,8 +10372,8 @@
     if (text === spec.simplified) return "simplified";
     return "wrong";
   }
-  var serial5 = 0;
-  function el18(tag, attrs = {}, children2 = []) {
+  var serial6 = 0;
+  function el19(tag, attrs = {}, children2 = []) {
     const node2 = document.createElement(tag);
     for (const [key3, value] of Object.entries(attrs)) {
       if (key3 === "text") node2.textContent = value;
@@ -10238,11 +10385,11 @@
   }
   function choiceControl(question, feedbackId) {
     const attrs = { class: "choice-select", "aria-label": question.prompt, "aria-describedby": feedbackId };
-    if (question.options.length > 4) return el18("select", attrs, [el18("option", { value: "", text: "בחרו תשובה…" }), ...question.options.map((option, i) => el18("option", { value: String(i), text: option.text }))]);
-    const group = el18("fieldset", { ...attrs, class: "choice-select choice-buttons" });
+    if (question.options.length > 4) return el19("select", attrs, [el19("option", { value: "", text: "בחרו תשובה…" }), ...question.options.map((option, i) => el19("option", { value: String(i), text: option.text }))]);
+    const group = el19("fieldset", { ...attrs, class: "choice-select choice-buttons" });
     let value = "";
     const buttons = question.options.map((option, i) => {
-      const b = el18("button", { type: "button", class: "bk-btn", "aria-pressed": "false", dir: /[א-ת]/.test(option.text) ? "rtl" : "ltr", text: option.text });
+      const b = el19("button", { type: "button", class: "bk-btn", "aria-pressed": "false", dir: /[א-ת]/.test(option.text) ? "rtl" : "ltr", text: option.text });
       b.addEventListener("click", () => {
         group.value = String(i);
         group.dispatchEvent(new Event("change"));
@@ -10261,22 +10408,22 @@
     if (!exercise) return;
     if (box.classList.contains("choice-ready")) return;
     const rows2 = exercise.map((question, index) => {
-      const feedbackId = `practice-choice-feedback-${++serial5}`;
+      const feedbackId = `practice-choice-feedback-${++serial6}`;
       const select2 = choiceControl(question, feedbackId);
-      const feedback = el18("div", { id: feedbackId, class: "bk-msg", "aria-live": "polite" });
+      const feedback = el19("div", { id: feedbackId, class: "bk-msg", "aria-live": "polite" });
       select2.addEventListener("change", () => {
         feedback.textContent = "";
         feedback.className = "bk-msg";
         select2.removeAttribute("aria-invalid");
       });
-      const fieldset = el18("fieldset", { class: "choice-item" }, [el18("legend", { text: `${index + 1}. ${question.prompt}` })]);
-      const form = el18("form", {}, [select2, feedback]);
+      const fieldset = el19("fieldset", { class: "choice-item" }, [el19("legend", { text: `${index + 1}. ${question.prompt}` })]);
+      const form = el19("form", {}, [select2, feedback]);
       let input2 = null, substitutionFeedback = null, checkWritten = null;
       if (question.substitution) {
-        input2 = el18("input", { type: "text", class: "bk-input substitution-input", dir: "ltr", maxlength: "80", autocomplete: "off", spellcheck: "false", placeholder: "כתבו את הפסוק לאחר ההצבה", "aria-describedby": `${feedbackId}-substitution` });
-        substitutionFeedback = el18("div", { id: `${feedbackId}-substitution`, class: "bk-msg", "aria-live": "polite" });
-        const label2 = el18("label", {}, [el18("span", { text: `P(${question.substitution.value}):`, dir: "ltr" }), input2]);
-        const checkInput = el18("button", { type: "button", class: "bk-btn", text: "בדיקת ההצבה" });
+        input2 = el19("input", { type: "text", class: "bk-input substitution-input", dir: "ltr", maxlength: "80", autocomplete: "off", spellcheck: "false", placeholder: "כתבו את הפסוק לאחר ההצבה", "aria-describedby": `${feedbackId}-substitution` });
+        substitutionFeedback = el19("div", { id: `${feedbackId}-substitution`, class: "bk-msg", "aria-live": "polite" });
+        const label2 = el19("label", {}, [el19("span", { text: `P(${question.substitution.value}):`, dir: "ltr" }), input2]);
+        const checkInput = el19("button", { type: "button", class: "bk-btn", text: "בדיקת ההצבה" });
         select2.disabled = true;
         checkWritten = () => {
           const result = checkSubstitution(input2.value, question.substitution);
@@ -10298,7 +10445,7 @@
             n.className = "bk-msg";
           });
         });
-        form.insertBefore(el18("div", { class: "substitution-entry" }, [label2, checkInput, substitutionFeedback]), select2);
+        form.insertBefore(el19("div", { class: "substitution-entry" }, [label2, checkInput, substitutionFeedback]), select2);
         select2.setAttribute("aria-label", `ערך האמת של P(${question.substitution.value})`);
       }
       const check = () => {
@@ -10309,10 +10456,10 @@
         feedback.textContent = choice2 ? `${correct2 ? "נכון. " : "כדאי לבדוק שוב. "}${choice2.feedback}` : "בחרו תשובה לסעיף הזה.";
         select2.setAttribute("aria-invalid", String(!correct2));
       };
-      const checkButton = el18("button", { type: "submit", class: "bk-btn bk-main", text: "בדיקה" });
+      const checkButton = el19("button", { type: "submit", class: "bk-btn bk-main", text: "בדיקה" });
       const correct = question.options.find((o) => o.correct);
       const solution = answerReveal((question.substitution ? `P(${question.substitution.value}): ${question.substitution.expected}. ` : "") + correct.text + ". " + correct.feedback);
-      const reset = el18("button", { type: "button", class: "bk-btn bk-quiet", text: "ניסיון חדש" });
+      const reset = el19("button", { type: "button", class: "bk-btn bk-quiet", text: "ניסיון חדש" });
       reset.addEventListener("click", () => {
         form.reset();
         select2.value = "";
@@ -10331,7 +10478,7 @@
         event.preventDefault();
         check();
       });
-      form.insertBefore(el18("div", { class: "bk-bar" }, [checkButton, reset]), feedback);
+      form.insertBefore(el19("div", { class: "bk-bar" }, [checkButton, reset]), feedback);
       form.append(solution);
       fieldset.append(answerPanel(form));
       return fieldset;
@@ -10345,7 +10492,7 @@
   var m = (s) => `<span class="m">${s}</span>`;
   var chipLeaf = (n) => n.type === "var" ? n.name : tv2(n.value);
   var rowText2 = (names, env) => names.map((n) => m(`${n} = ${tv2(env[n])}`)).join(", ");
-  function el19(tag, attrs, children2) {
+  function el20(tag, attrs, children2) {
     const node2 = document.createElement(tag);
     for (const [k, v] of Object.entries(attrs || {})) {
       if (v === false || v == null) continue;
@@ -10369,14 +10516,14 @@
     if (!hints.length && !steps.length) return;
     let h = 0, s = 0;
     [...hints, ...steps].forEach((x) => x.classList.add("bk-hidden"));
-    hints.forEach((x, i) => x.prepend(el19("span", { class: "bk-label", text: hints.length > 1 ? `רמז ${i + 1}` : "רמז" })));
-    steps.forEach((x, i) => x.prepend(el19("span", { class: "bk-label", text: `צעד ${i + 1} מתוך ${steps.length}` })));
-    const live = el19("span", { class: "bk-sr", "aria-live": "polite" });
-    const bHint = el19("button", { type: "button", class: "bk-btn", onclick: () => reveal("hint") });
-    const bStep = el19("button", { type: "button", class: "bk-btn bk-main", onclick: () => reveal("step") });
-    const bAll = el19("button", { type: "button", class: "bk-btn bk-quiet", text: "כל הפתרון", onclick: () => reveal("all") });
-    const bHide = el19("button", { type: "button", class: "bk-btn bk-quiet", text: "הסתרה", onclick: () => reveal("none") });
-    const bar = el19("div", { class: "bk-bar" }, [el19("span", { class: "bk-title", text: "פתרון מודרך" }), bHint, bStep, bAll, bHide, live]);
+    hints.forEach((x, i) => x.prepend(el20("span", { class: "bk-label", text: hints.length > 1 ? `רמז ${i + 1}` : "רמז" })));
+    steps.forEach((x, i) => x.prepend(el20("span", { class: "bk-label", text: `צעד ${i + 1} מתוך ${steps.length}` })));
+    const live = el20("span", { class: "bk-sr", "aria-live": "polite" });
+    const bHint = el20("button", { type: "button", class: "bk-btn", onclick: () => reveal("hint") });
+    const bStep = el20("button", { type: "button", class: "bk-btn bk-main", onclick: () => reveal("step") });
+    const bAll = el20("button", { type: "button", class: "bk-btn bk-quiet", text: "כל הפתרון", onclick: () => reveal("all") });
+    const bHide = el20("button", { type: "button", class: "bk-btn bk-quiet", text: "הסתרה", onclick: () => reveal("none") });
+    const bar = el20("div", { class: "bk-bar" }, [el20("span", { class: "bk-title", text: "פתרון מודרך" }), bHint, bStep, bAll, bHide, live]);
     box.prepend(bar);
     box.classList.add("bk-solve");
     function draw() {
@@ -10422,10 +10569,10 @@
     const after = kids2(box, "after");
     after.forEach((x) => x.classList.add("bk-hidden"));
     let marks, wrong, focus;
-    const table = el19("table", { class: "bk-tt" });
-    const msg2 = el19("div", { class: "bk-msg", "aria-live": "polite" });
-    const btn5 = (text, fn, cls = "bk-btn") => el19("button", { type: "button", class: cls, text, onclick: fn });
-    const bar = el19("div", { class: "bk-bar" }, [
+    const table = el20("table", { class: "bk-tt" });
+    const msg2 = el20("div", { class: "bk-msg", "aria-live": "polite" });
+    const btn5 = (text, fn, cls = "bk-btn") => el20("button", { type: "button", class: cls, text, onclick: fn });
+    const bar = el20("div", { class: "bk-bar" }, [
       btn5("בדיקה", check, "bk-btn bk-main"),
       btn5("רמז", hint),
       btn5("העמודה הבאה", nextCol),
@@ -10433,7 +10580,7 @@
       btn5("איפוס", reset, "bk-btn bk-quiet")
     ]);
     box.classList.add("bk-ttq");
-    box.prepend(el19("div", { class: "bk-tt-wrap" }, [table]), bar, msg2);
+    box.prepend(el20("div", { class: "bk-tt-wrap" }, [table]), bar, msg2);
     const evidence = initTableEvidence(box, rows2, () => {
       say6("");
       after.forEach((x) => x.classList.add("bk-hidden"));
@@ -10441,7 +10588,7 @@
     if (evidence) {
       bar.before(evidence.node);
       bar.append(btn5("בדיקת הטבלה", checkTable));
-      evidence.node.append(el19("p", { text: "מילוי הטבלה הוא רשות. אפשר לבחור שורה בלי למלא אותה. ״בדיקה״ בודק את התשובה שבחרתם; ״בדיקת הטבלה״ בודק בנפרד את תאי העזר שמילאתם." }));
+      evidence.node.append(el20("p", { text: "מילוי הטבלה הוא רשות. אפשר לבחור שורה בלי למלא אותה. ״בדיקה״ בודק את התשובה שבחרתם; ״בדיקת הטבלה״ בודק בנפרד את תאי העזר שמילאתם." }));
     }
     function invalidateEvidence() {
       if (evidence) {
@@ -10455,13 +10602,13 @@
       msg2.innerHTML = html;
     }
     function draw() {
-      const head2 = el19("tr", {}, [...names.map((n) => el19("th", { html: m(n) })), ...cols.map((c) => el19("th", { html: m(format(c)) }))]);
-      const body2 = el19("tbody");
+      const head2 = el20("tr", {}, [...names.map((n) => el20("th", { html: m(n) })), ...cols.map((c) => el20("th", { html: m(format(c)) }))]);
+      const body2 = el20("tbody");
       rows2.forEach((env, r) => {
-        const tr = el19("tr", {}, names.map((n) => el19("td", { html: tv2(env[n]) })));
+        const tr = el20("tr", {}, names.map((n) => el20("td", { html: tv2(env[n]) })));
         cols.forEach((c, k) => {
           const v = marks[r][k];
-          tr.append(el19("td", {}, [el19("button", {
+          tr.append(el20("td", {}, [el20("button", {
             type: "button",
             class: "bk-cell" + (wrong[r][k] ? " bk-wrong" : "") + (focus && focus[0] === r && focus[1] === k ? " bk-focus" : ""),
             "aria-label": `שורה ${r + 1}, עמודה ${format(c)}: ${v === null ? "ריק" : v ? "T" : "F"}. לחצו כדי לשנות`,
@@ -10477,7 +10624,7 @@
         });
         body2.append(tr);
       });
-      table.replaceChildren(el19("thead", {}, [head2]), body2);
+      table.replaceChildren(el20("thead", {}, [head2]), body2);
     }
     const truth = (r, k) => evaluate(cols[k], rows2[r]);
     function check() {
@@ -10585,9 +10732,9 @@
     const allowed = (box.dataset.vars || variables(answer).join(",")).split(",").map((x) => x.trim());
     const hints = kids2(box, "hint"), explain = kids2(box, "explain");
     [...hints, ...explain].forEach((x) => x.classList.add("bk-hidden"));
-    hints.forEach((x, i) => x.prepend(el19("span", { class: "bk-label", text: hints.length > 1 ? `רמז ${i + 1}` : "רמז" })));
+    hints.forEach((x, i) => x.prepend(el20("span", { class: "bk-label", text: hints.length > 1 ? `רמז ${i + 1}` : "רמז" })));
     let h = 0;
-    const input2 = el19("input", {
+    const input2 = el20("input", {
       type: "text",
       class: "bk-input",
       dir: "ltr",
@@ -10615,21 +10762,21 @@
       input2.setSelectionRange(a + sym.length, a + sym.length);
     };
     const symbols3 = box.dataset.symbols ? SYMS.filter(([s]) => box.dataset.symbols.includes(s)) : SYMS;
-    const keys = el19(
+    const keys = el20(
       "div",
       { class: "bk-keys", role: "group", "aria-label": "סמלים" },
-      symbols3.map(([s, name]) => el19("button", { type: "button", class: "bk-key", "aria-label": name, text: s, onclick: () => insert(s) }))
+      symbols3.map(([s, name]) => el20("button", { type: "button", class: "bk-key", "aria-label": name, text: s, onclick: () => insert(s) }))
     );
     contextualKeyboard(input2, keys);
-    const msg2 = el19("div", { class: "bk-msg", "aria-live": "polite" });
-    const bHint = el19("button", { type: "button", class: "bk-btn", onclick: giveHint });
-    const bar = el19("div", { class: "bk-bar" }, [
-      el19("button", { type: "button", class: "bk-btn bk-main", text: "בדיקה", onclick: check }),
+    const msg2 = el20("div", { class: "bk-msg", "aria-live": "polite" });
+    const bHint = el20("button", { type: "button", class: "bk-btn", onclick: giveHint });
+    const bar = el20("div", { class: "bk-bar" }, [
+      el20("button", { type: "button", class: "bk-btn bk-main", text: "בדיקה", onclick: check }),
       bHint,
-      el19("button", { type: "button", class: "bk-btn bk-quiet", text: "הצגת תשובה", onclick: showAnswer })
+      el20("button", { type: "button", class: "bk-btn bk-quiet", text: "הצגת תשובה", onclick: showAnswer })
     ]);
     const firstHint = hints[0] || null;
-    box.insertBefore(el19("div", { class: "bk-fq-row" }, [input2, keys]), firstHint);
+    box.insertBefore(el20("div", { class: "bk-fq-row" }, [input2, keys]), firstHint);
     box.insertBefore(bar, firstHint);
     box.insertBefore(msg2, firstHint);
     box.classList.add("bk-fq");
@@ -10692,7 +10839,7 @@
     const solution = answerReveal("");
     const body2 = solution.lastElementChild;
     const correct = quiz.querySelector(`.tf-opt[data-val="${quiz.dataset.correct}"]`);
-    if (correct) body2.append(el19("p", { text: correct.textContent.trim() }));
+    if (correct) body2.append(el20("p", { text: correct.textContent.trim() }));
     body2.append(...[...quiz.querySelector(".tf-why").childNodes].map((n) => n.cloneNode(true)));
     solution.addEventListener("toggle", () => {
       if (solution.open) typeset(body2);
@@ -10717,6 +10864,7 @@
     document.querySelectorAll(".venn-workshop").forEach(initVennWorkshop);
     document.querySelectorAll(".set-proof").forEach(initSetProof);
     document.querySelectorAll(".set-lab").forEach(initSetLab);
+    document.querySelectorAll(".relation-drawing").forEach(initRelationDrawing);
     document.querySelectorAll(".choice-exercise").forEach(initPracticeChoice);
     document.querySelectorAll(".argument-editor").forEach(initArgumentEditor);
     document.querySelectorAll(".proof-editor").forEach(initProofEditor);

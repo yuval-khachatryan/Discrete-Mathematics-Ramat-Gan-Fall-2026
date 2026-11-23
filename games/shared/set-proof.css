@@ -124,6 +124,13 @@
 .sets-number-fields { display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:.75rem; }
 .sets-number-fields label { display:flex; align-items:center; gap:.4rem; }
 .sets-number-fields .bk-input { width:6rem; max-width:100%; }
+.relation-board { max-width:440px; margin:.5rem auto; }
+.relation-board svg { display:block; width:100%; height:auto; }
+.relation-board [role="button"] { cursor:pointer; }
+.relation-board [role="button"]:focus { outline:none; }
+.relation-board [role="button"]:focus-visible circle { stroke:#825600; stroke-width:5; stroke-dasharray:5 3; }
+.relation-board text { pointer-events:none; }
+.relation-target, .relation-current { text-align:center; unicode-bidi:isolate; font-family:Georgia,serif; font-size:1.15rem; overflow-wrap:anywhere; }
 .sets-power-layer-fields .bk-input { width:9rem; max-width:100%; }
 
 .set-answer-keyboard { position:relative; display:flex; flex-wrap:wrap; gap:.3rem; margin:.3rem 0; }
