@@ -614,12 +614,16 @@
   var choice = (prompt, options, answer, why) => ({ prompt, options, answer, why, ...options.every((option) => /^\d+$/.test(option)) ? { input: "number" } : {} });
   var write = (prompt, answer, hint) => ({ prompt, answer, hint });
   var SET_TASKS = {
-    "ordered-pair-components": { type: "choice", independent: true, items: [
-      { ...choice("מצאו את x מתוך (x + 1, 4) = (3, y − 2).", ["1", "2", "3"], 1, "משוויון הרכיבים הראשונים מתקבל x + 1 = 3, ולכן x = 2."), emptyMessage: "כתבו את הערך של x." },
-      { ...choice("מצאו את y מתוך (x + 1, 4) = (3, y − 2).", ["2", "4", "6"], 2, "משוויון הרכיבים השניים מתקבל 4 = y − 2, ולכן y = 6."), emptyMessage: "כתבו את הערך של y." }
+    "ordered-pair-components": { type: "number-fields", prompt: "מצאו את x ואת y אם (x + 1, 4) = (3, y − 2).", fields: [
+      { name: "x", answer: 2, why: "משוויון הרכיבים הראשונים מתקבל x + 1 = 3, ולכן x = 2." },
+      { name: "y", answer: 6, why: "משוויון הרכיבים השניים מתקבל 4 = y − 2, ולכן y = 6." }
     ] },
     "ordered-pair-swap": { type: "choice", items: [
       choice("מתי מתקיים (a,b) = (b,a)?", ["a = b", "a ≠ b", "לכל a ו־b"], 0, "משוויון הרכיבים הראשונים נקבל a = b. בכיוון ההפוך, אם a = b, שני הזוגות שווים ל־(a,a).")
+    ] },
+    "product-coordinate-check": { type: "choice", items: [
+      choice("האם (1,7) שייך למכפלה A × B?", ["כן", "לא"], 1, "לא. הרכיב הראשון שייך ל־A, אבל 7 ∉ B. שני תנאי השייכות צריכים להתקיים יחד."),
+      choice("האם (7,2) שייך למכפלה A × B?", ["כן", "לא"], 1, "לא. הרכיב השני שייך ל־B, אבל 7 ∉ A. שייכות הרכיב השני לבדה אינה מספיקה.")
     ] },
     "product-equality-check": { type: "choice", items: [
       choice("A = {1}, B = {2}. האם מן השוויון |A × B| = |B × A| נובע A × B = B × A?", ["כן", "לא"], 1, "המכפלות הן {(1,2)} ו־{(2,1)}. בכל אחת איבר אחד, אבל האיברים שונים."),
@@ -872,6 +876,7 @@
     box.replaceChildren();
     if (data.robot) box.append(robotSpeech(data.robot.text, data.robot.formula));
     if (data.type === "choice") return choices(box, data);
+    if (data.type === "number-fields") return numberFields(box, data);
     if (data.type === "cardinality") return cardinality(box, data);
     if (data.type === "write") return writes(box, data);
     if (data.type === "select") return selection(box, data);
@@ -879,9 +884,43 @@
     if (data.type === "power") return power(box, data);
     if (data.type === "power-layers") return powerLayers(box, data);
   }
+  function numberFields(box, data) {
+    const form = el2("form", { class: "sets-item" }), fields = el2("div", { class: "sets-number-fields" }), feedback = msg();
+    const inputs = data.fields.map((q) => {
+      const input2 = el2("input", { type: "text", inputmode: "numeric", dir: "ltr", class: "bk-input", maxlength: "10", autocomplete: "off", "aria-label": q.name });
+      const clear = () => {
+        input2.removeAttribute("aria-invalid");
+        say(feedback, "");
+      };
+      input2.addEventListener("input", clear);
+      fields.append(el2("label", { dir: "ltr" }, [math(q.name + " ="), input2]));
+      return input2;
+    });
+    const solution = answerReveal(readable(data.fields.map((q) => q.why).join(" ")));
+    const check = () => {
+      const incorrect = [];
+      inputs.forEach((input2, i) => {
+        const value = input2.value.trim(), ok = /^-?\d+$/.test(value) && Number(value) === data.fields[i].answer;
+        input2.setAttribute("aria-invalid", String(!ok));
+        if (!ok) incorrect.push(data.fields[i].name);
+      });
+      say(feedback, incorrect.length ? "בדקו את הערכים בשדות המסומנים: " + incorrect.join(", ") + ". השוו רכיבים במקומות המתאימים." : "נכון! שני הערכים מקיימים את השוויון בין הזוגות הסדורים.", !incorrect.length);
+    };
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      check();
+    });
+    form.append(fields, el2("button", { type: "submit", class: "bk-btn", text: "בדיקה" }), button("איפוס", () => {
+      form.reset();
+      inputs.forEach((input2) => input2.removeAttribute("aria-invalid"));
+      say(feedback, "");
+      solution.open = false;
+    }), feedback, solution);
+    box.append(mixedText(data.prompt), answerPanel(form));
+  }
   function choices(box, data, offset = 0) {
     data.items.forEach((q, i) => {
-      const numeric = q.input === "number", binary2 = q.input === "buttons" || q.options.length === 2 && q.options.includes("כן") && q.options.includes("לא");
+      const numeric = q.input === "number", binary2 = !numeric && (q.input === "buttons" || q.options.length <= 4);
       const s = numeric ? el2("input", { type: "text", inputmode: "numeric", dir: "ltr", class: "bk-input sets-count-input", maxlength: "10", autocomplete: "off", placeholder: "מספר" }) : binary2 ? el2("div", { class: "sets-binary", role: "group" }) : selectOptions(q.options, i + offset + box.dataset.sets.length), feedback = msg();
       s.setAttribute("aria-label", q.prompt);
       if (binary2) {
@@ -10197,16 +10236,33 @@
     children2.forEach((child) => node2.append(child));
     return node2;
   }
+  function choiceControl(question, feedbackId) {
+    const attrs = { class: "choice-select", "aria-label": question.prompt, "aria-describedby": feedbackId };
+    if (question.options.length > 4) return el18("select", attrs, [el18("option", { value: "", text: "בחרו תשובה…" }), ...question.options.map((option, i) => el18("option", { value: String(i), text: option.text }))]);
+    const group = el18("fieldset", { ...attrs, class: "choice-select choice-buttons" });
+    let value = "";
+    const buttons = question.options.map((option, i) => {
+      const b = el18("button", { type: "button", class: "bk-btn", "aria-pressed": "false", dir: /[א-ת]/.test(option.text) ? "rtl" : "ltr", text: option.text });
+      b.addEventListener("click", () => {
+        group.value = String(i);
+        group.dispatchEvent(new Event("change"));
+      });
+      return b;
+    });
+    Object.defineProperty(group, "value", { get: () => value, set: (next) => {
+      value = next;
+      buttons.forEach((b, i) => b.setAttribute("aria-pressed", String(next === String(i))));
+    } });
+    group.append(...buttons);
+    return group;
+  }
   function initPracticeChoice(box) {
     const exercise = PRACTICE_CHOICES[box.dataset.choice];
     if (!exercise) return;
     if (box.classList.contains("choice-ready")) return;
     const rows2 = exercise.map((question, index) => {
       const feedbackId = `practice-choice-feedback-${++serial5}`;
-      const select2 = el18("select", { class: "choice-select", "aria-label": question.prompt, "aria-describedby": feedbackId }, [
-        el18("option", { value: "", text: "בחרו תשובה…" }),
-        ...question.options.map((option, i) => el18("option", { value: String(i), text: option.text }))
-      ]);
+      const select2 = choiceControl(question, feedbackId);
       const feedback = el18("div", { id: feedbackId, class: "bk-msg", "aria-live": "polite" });
       select2.addEventListener("change", () => {
         feedback.textContent = "";
@@ -10259,6 +10315,7 @@
       const reset = el18("button", { type: "button", class: "bk-btn bk-quiet", text: "ניסיון חדש" });
       reset.addEventListener("click", () => {
         form.reset();
+        select2.value = "";
         select2.removeAttribute("aria-invalid");
         feedback.textContent = "";
         feedback.className = "bk-msg";

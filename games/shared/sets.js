@@ -83,6 +83,7 @@ export function initSets(box){
   box.dataset.ready='true';box.classList.add('sets-ready');box.replaceChildren();
   if(data.robot)box.append(robotSpeech(data.robot.text,data.robot.formula));
   if(data.type==='choice')return choices(box,data);
+  if(data.type==='number-fields')return numberFields(box,data);
   if(data.type==='cardinality')return cardinality(box,data);
   if(data.type==='write')return writes(box,data);
   if(data.type==='select')return selection(box,data);
@@ -90,9 +91,32 @@ export function initSets(box){
   if(data.type==='power')return power(box,data);
   if(data.type==='power-layers')return powerLayers(box,data);
 }
+function numberFields(box,data){
+  const form=el('form',{class:'sets-item'}),fields=el('div',{class:'sets-number-fields'}),feedback=msg();
+  const inputs=data.fields.map(q=>{
+    const input=el('input',{type:'text',inputmode:'numeric',dir:'ltr',class:'bk-input',maxlength:'10',autocomplete:'off','aria-label':q.name});
+    const clear=()=>{input.removeAttribute('aria-invalid');say(feedback,'');};
+    input.addEventListener('input',clear);
+    fields.append(el('label',{dir:'ltr'},[math(q.name+' ='),input]));
+    return input;
+  });
+  const solution=answerReveal(readable(data.fields.map(q=>q.why).join(' ')));
+  const check=()=>{
+    const incorrect=[];
+    inputs.forEach((input,i)=>{
+      const value=input.value.trim(),ok=/^-?\d+$/.test(value)&&Number(value)===data.fields[i].answer;
+      input.setAttribute('aria-invalid',String(!ok));
+      if(!ok)incorrect.push(data.fields[i].name);
+    });
+    say(feedback,incorrect.length?'בדקו את הערכים בשדות המסומנים: '+incorrect.join(', ')+'. השוו רכיבים במקומות המתאימים.':'נכון! שני הערכים מקיימים את השוויון בין הזוגות הסדורים.',!incorrect.length);
+  };
+  form.addEventListener('submit',e=>{e.preventDefault();check();});
+  form.append(fields,el('button',{type:'submit',class:'bk-btn',text:'בדיקה'}),button('איפוס',()=>{form.reset();inputs.forEach(input=>input.removeAttribute('aria-invalid'));say(feedback,'');solution.open=false;}),feedback,solution);
+  box.append(mixedText(data.prompt),answerPanel(form));
+}
 function choices(box,data,offset=0){
   data.items.forEach((q,i)=>{
-    const numeric=q.input==='number',binary=q.input==='buttons'||(q.options.length===2&&q.options.includes('כן')&&q.options.includes('לא'));
+    const numeric=q.input==='number',binary=!numeric&&(q.input==='buttons'||q.options.length<=4);
     const s=numeric?el('input',{type:'text',inputmode:'numeric',dir:'ltr',class:'bk-input sets-count-input',maxlength:'10',autocomplete:'off',placeholder:'מספר'}):binary?el('div',{class:'sets-binary',role:'group'}):selectOptions(q.options,i+offset+box.dataset.sets.length),feedback=msg();
     s.setAttribute('aria-label',q.prompt);
     if(binary){

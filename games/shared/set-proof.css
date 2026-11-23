@@ -63,7 +63,8 @@
 
 .set-proof-input [hidden]{display:none!important}
 
-.sets-binary {display:flex;gap:.5rem;}
+.sets-binary {display:flex;flex-wrap:wrap;gap:.5rem;}
+.sets-binary button {max-width:100%;white-space:normal;}
 .sets-binary button[aria-pressed="true"] {background:#dceffc;border-color:#21618c;color:#163d57;}
 
 
@@ -120,6 +121,9 @@
 .sets-power-layer { padding:.75rem 0; border-bottom:1px solid #c6d6e0; }
 .sets-power-layer h4 { font-size:1rem; margin:0 0 .5rem; }
 .sets-power-layer-fields { display:flex; flex-wrap:wrap; gap:.65rem; margin-bottom:.5rem; }
+.sets-number-fields { display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:.75rem; }
+.sets-number-fields label { display:flex; align-items:center; gap:.4rem; }
+.sets-number-fields .bk-input { width:6rem; max-width:100%; }
 .sets-power-layer-fields .bk-input { width:9rem; max-width:100%; }
 
 .set-answer-keyboard { position:relative; display:flex; flex-wrap:wrap; gap:.3rem; margin:.3rem 0; }

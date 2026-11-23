@@ -3,12 +3,16 @@
 const choice = (prompt, options, answer, why) => ({prompt, options, answer, why, ...(options.every(option=>/^\d+$/.test(option))?{input:'number'}:{})});
 const write = (prompt, answer, hint) => ({prompt, answer, hint});
 export const SET_TASKS = {
-  'ordered-pair-components': {type:'choice',independent:true,items:[
-    {...choice('מצאו את x מתוך (x + 1, 4) = (3, y − 2).',['1','2','3'],1,'משוויון הרכיבים הראשונים מתקבל x + 1 = 3, ולכן x = 2.'),emptyMessage:'כתבו את הערך של x.'},
-    {...choice('מצאו את y מתוך (x + 1, 4) = (3, y − 2).',['2','4','6'],2,'משוויון הרכיבים השניים מתקבל 4 = y − 2, ולכן y = 6.'),emptyMessage:'כתבו את הערך של y.'},
+  'ordered-pair-components': {type:'number-fields',prompt:'מצאו את x ואת y אם (x + 1, 4) = (3, y − 2).',fields:[
+    {name:'x',answer:2,why:'משוויון הרכיבים הראשונים מתקבל x + 1 = 3, ולכן x = 2.'},
+    {name:'y',answer:6,why:'משוויון הרכיבים השניים מתקבל 4 = y − 2, ולכן y = 6.'},
   ]},
   'ordered-pair-swap': {type:'choice',items:[
     choice('מתי מתקיים (a,b) = (b,a)?',['a = b','a ≠ b','לכל a ו־b'],0,'משוויון הרכיבים הראשונים נקבל a = b. בכיוון ההפוך, אם a = b, שני הזוגות שווים ל־(a,a).'),
+  ]},
+  'product-coordinate-check': {type:'choice',items:[
+    choice('האם (1,7) שייך למכפלה A × B?',['כן','לא'],1,'לא. הרכיב הראשון שייך ל־A, אבל 7 ∉ B. שני תנאי השייכות צריכים להתקיים יחד.'),
+    choice('האם (7,2) שייך למכפלה A × B?',['כן','לא'],1,'לא. הרכיב השני שייך ל־B, אבל 7 ∉ A. שייכות הרכיב השני לבדה אינה מספיקה.'),
   ]},
   'product-equality-check': {type:'choice',items:[
     choice('A = {1}, B = {2}. האם מן השוויון |A × B| = |B × A| נובע A × B = B × A?',['כן','לא'],1,'המכפלות הן {(1,2)} ו־{(2,1)}. בכל אחת איבר אחד, אבל האיברים שונים.'),
