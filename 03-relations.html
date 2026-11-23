@@ -1,0 +1,2045 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="he" xml:lang="he" dir="rtl"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>3&nbsp; יחסים – מתמטיקה בדידה — מערכי הרצאה</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./02-sets.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-01a495efc5497ac6e3f5457e7ed18e65.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "אין תוצאות",
+    "search-matching-documents-text": "מסמכים תואמים",
+    "search-copy-link-title": "העתק קישור לחיפוש",
+    "search-hide-matches-text": "הסתר התאמות נוספות",
+    "search-more-match-text": "התאמה נוספת במסמך זה",
+    "search-more-matches-text": "התאמות נוספות במסמך זה",
+    "search-clear-button-title": "נקה",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "בטל",
+    "search-submit-button-title": "שלח",
+    "search-label": "חפש"
+  }
+}</script>
+<link rel="stylesheet" href="games/shared/stage-navigation.css">
+<link rel="stylesheet" href="games/shared/venn-workshop.css">
+<link rel="stylesheet" href="games/shared/knight-workshop.css">
+<link rel="stylesheet" href="games/shared/set-proof.css">
+<style>
+.todo {
+  color: #8a8a8a;
+  font-style: italic;
+  background: #fafafa;
+  border: 1px dashed #cccccc;
+  border-radius: 4px;
+  padding: 1.2rem 1rem;
+  margin: 0.4rem 0 1.2rem;
+}
+.tf-quiz {
+  margin: 0.6rem 0 1rem;
+}
+.tf-quiz .tf-opt {
+  margin: 0 0 0 0.5rem;
+  padding: 0.35rem 1.4rem;
+  cursor: pointer;
+  border: 1px solid #bbbbbb;
+  border-radius: 4px;
+  background: #f5f5f5;
+  font: inherit;
+  color: inherit;
+}
+.tf-quiz .tf-opt:hover {
+  background: #ececec;
+}
+.tf-quiz .tf-opt.correct {
+  background: #d4edda;
+  border-color: #28a745;
+}
+.tf-quiz .tf-opt.incorrect {
+  background: #f8d7da;
+  border-color: #dc3545;
+}
+.tf-quiz .tf-feedback {
+  margin-top: 0.45rem;
+  font-weight: bold;
+  min-height: 1.2em;
+}
+.set-quiz {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.4rem 0;
+}
+.set-quiz .set-label {
+  min-width: 5rem;
+}
+.set-quiz .set-input {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #bbbbbb;
+  border-radius: 4px;
+  font: inherit;
+  direction: ltr;
+  text-align: left;
+  min-width: 12rem;
+}
+.set-quiz .set-input.correct {
+  border-color: #28a745;
+  background: #d4edda;
+}
+.set-quiz .set-input.incorrect {
+  border-color: #dc3545;
+  background: #f8d7da;
+}
+.set-quiz .set-check {
+  padding: 0.25rem 0.9rem;
+  cursor: pointer;
+  border: 1px solid #bbbbbb;
+  border-radius: 4px;
+  background: #f5f5f5;
+  font: inherit;
+  color: inherit;
+}
+.set-quiz .set-check:hover {
+  background: #ececec;
+}
+.set-quiz .set-feedback {
+  font-weight: bold;
+  min-height: 1.2em;
+}
+/* Interactive widgets embedded from widgets/<chapter>/*.html.
+   They live in an iframe so their CSS (which styles body/table/button
+   unscoped) cannot leak into the page, and so several copies on one
+   page do not collide on element ids. The height below is a first guess;
+   each widget posts its real height and the listener at the bottom of this
+   file applies it. */
+iframe.widget-frame {
+  display: block;
+  width: 100%;
+  height: 440px;      /* replaced by the widget's own reported height */
+  border: 0;          /* the widget draws its own frame */
+  background: transparent;
+  margin: 1.2rem 0 0;
+}
+/* Inside a .thmsim box the frame sits flush; the box supplies the padding. */
+.thmbox-simulation iframe.widget-frame { margin: 0.5rem 0 0.2rem; }
+.thmbox {
+  border-inline-start: 4px solid #9ca3af;
+  background: #fafafa;
+  border-radius: 4px;
+  padding: 0.6rem 1rem;
+  margin: 1rem 0;
+}
+.thmbox > :first-child { margin-top: 0; }
+.thmbox > :last-child { margin-bottom: 0; }
+.thmbox-definition  { border-color: #4f46e5; background: #eef2ff; }
+.thmbox-notation, .thmbox-terminology { border-color: #0369a1; background: #f0f9ff; }
+.thmbox-notation > p:first-child > strong, .thmbox-terminology > p:first-child > strong { color: #075985; }
+.thmbox-terminology > p:first-child > strong::before { content: "📖"; display: inline-block; margin-inline-end: .4em; }
+/* Summaries and component legends have their own labels and visual identity. */
+.thmbox-summary { border-color: #0f766e; background: #f0fdfa; }
+.thmbox-components { border-color: #64748b; background: #f8fafc; }
+.thmbox-summary > p:first-child > strong::before { content: "📋"; margin-inline-end: .4em; }
+.thmbox-components > p:first-child > strong::before { content: "🧩"; margin-inline-end: .4em; }
+.component-figures { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; margin: .75rem 0; }
+.component-figures figure { margin: 0; padding: .4rem; border: 1px solid #cbd5e1; border-radius: .5rem; background: white; text-align: center; }
+.component-figures svg { display: block; width: 100%; max-width: 180px; margin: auto; }
+.component-figures figcaption { font-size: .85rem; color: #334155; }
+@media (max-width: 480px) { .component-figures { grid-template-columns: 1fr; } }
+.thmbox-method { border-color: #0f766e; background: #f0fdfa; }
+.thmbox-method > p:first-child > strong { color: #115e59; }
+.thmbox-theorem     { border-color: #0d9488; background: #f0fdfa; }
+.thmbox-proposition { border-color: #0d9488; background: #f0fdfa; }
+.thmbox-lemma       { border-color: #14b8a6; background: #f0fdfa; }
+.thmbox-corollary   { border-color: #14b8a6; background: #f0fdfa; }
+.thmbox-example     { border-color: #ea580c; background: #fff7ed; }
+/* Question: kin to .thmbox-example, so same hue family, one shade deeper. Its
+   solution reuses the proof's slate — a solution is to a question what a proof
+   is to a theorem, and the reader already reads that grey as "the working". */
+.thmbox-question    { border-color: #9333ea; background: #faf5ff; }
+.thmbox-solution    { border-color: #64748b; background: #f8fafc; }
+.thmbox-solution > p:first-child > strong { font-weight: 600; color: #64748b; }
+.thmbox-simulation  { border-color: #7c3aed; background: #f7f5ff; }
+/* Self-check (.thmchk), ported from the BGU book: a light beat, thin edge. */
+.thmbox-self-check  { border-color: #db2777; background: #fdf2f8; }
+/* Game (.thmgame): the embedded game sits flush; the box supplies the padding. */
+.thmbox-game        { border-color: #ca8a04; background: #fefce8; }
+.thmbox-game > p:first-child > strong::before { content: "🎮"; margin-inline-end: 0.35em; }
+.thmbox-game iframe.widget-frame { margin: 0.5rem 0 0.2rem; }
+.thmbox-game .game-link { font-size: 0.92em; margin: 0.3rem 0 0; }
+/* Caricatures inside a box (Mitzi in §1.3): beside the text on wide screens, centred above it on phones. */
+.thmbox { display: flow-root; }   /* keep floated pictures inside their box */
+figure.cartoon { float: left; width: 210px; margin: 0 0 0.4rem 0; margin-right: 1.2rem; text-align: center; }
+figure.cartoon img { display: block; width: 100%; height: auto; }
+figure.cartoon-says { width: 190px; }
+.cartoon-bubble {
+  position: relative; display: inline-block; margin-bottom: 14px; padding: 0.35rem 0.85rem;
+  background: #fff; border: 2px solid #1f2937; border-radius: 16px;
+  font-weight: 700; font-size: 0.98rem; line-height: 1.35;
+}
+.cartoon-bubble::after {   /* the tail, pointing down at the cat */
+  content: ""; position: absolute; left: 50%; bottom: -12px; margin-left: -9px;
+  border-left: 9px solid transparent; border-right: 9px solid transparent; border-top: 12px solid #1f2937;
+}
+.cartoon-bubble::before {
+  content: ""; position: absolute; left: 50%; bottom: -8px; margin-left: -6px; z-index: 1;
+  border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid #fff;
+}
+@media (max-width: 600px) {
+  figure.cartoon { float: none; margin: 0.3rem auto 0.6rem; width: 180px; }
+}
+/* The two-colour signal as a small picture inside the text (T = green, F = red). */
+.logic-directions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; margin: 1rem 0; }
+.logic-direction { padding: .8rem; background: #fff; border: 2px solid #cbd5e1; border-radius: 12px; text-align: center; }
+.logic-direction:first-child { border-color: #c2410c; }
+.logic-direction:nth-child(2) { border-color: #075985; }
+.logic-direction p { margin: .4rem 0 0; }
+.logic-arrow-row { display: flex; justify-content: center; align-items: center; gap: .7rem; font-size: 1.25em; font-weight: 700; margin: .4rem 0; }
+.logic-arrow { font-size: 1.7em; color: #475569; }
+.logic-directions figcaption { grid-column: 1 / -1; }
+.candy-comic { margin: 1rem 0; container-type: inline-size; }
+.candy-panels { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }
+.candy-panel { min-width: 0; padding: .6rem; border: 2px solid #7c3aed; border-radius: 14px; background: #fff; display: flex; flex-direction: column; }
+.candy-panel h4 { margin: 0 0 .6rem; color: #6b21a8; font-size: 1em; }
+.candy-speech { padding: .6rem; border: 1px solid #c4b5fd; border-radius: 12px; background: #f5f3ff; font-size: .95em; margin: 0 0 .3rem; flex: 1; }
+.candy-panel img { display: block; width: 100%; height: auto; }
+.candy-caption { font-size: .9em; margin: .3rem 0 0; color: #475569; }
+.candy-comic figcaption, .logic-directions figcaption { margin-top: .5rem; color: #475569; font-size: .9em; text-align: center; }
+@container (max-width: 32rem) { .candy-panels { grid-template-columns: 1fr; } .candy-panel img { max-width: 300px; align-self: center; } }
+@media (max-width: 600px) { .logic-directions { grid-template-columns: 1fr; } }
+img.sig-inline { height: 1.9em; width: auto; vertical-align: -0.6em; margin: 0 0.15em; }
+/* Truth tables and other small tables: compact and centred, not full width. */
+main table.table { width: auto; min-width: 10rem; margin-left: auto; margin-right: auto; }
+main table.table th, main table.table td { padding: 0.3rem 1rem; text-align: center; }
+/* On a phone a 6–7 column truth table is wider than the screen: tighten it, and
+   let it scroll inside its own box instead of pushing the whole page sideways. */
+@media (max-width: 600px) {
+  main table.table { display: block; width: fit-content; max-width: 100%; overflow-x: auto; margin-left: auto; margin-right: auto; }
+  main table.table th, main table.table td { padding: 0.25rem 0.45rem; }
+}
+/* A campus character says something (usually something wrong). */
+.says {
+  position: relative;
+  margin: 1rem 0;
+  padding: 0.55rem 0.9rem;
+  padding-inline-start: 3.3rem;
+  min-height: 3rem;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 14px;
+}
+.says::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0.45rem;
+  top: 50%;
+  margin-top: -1.2rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  background: center / contain no-repeat;
+}
+.says > :first-child { margin-top: 0; }
+.says > :last-child { margin-bottom: 0; }
+/* The characters are the games' own sprites (games/shared/sprites/, built by
+   tools/build-sprites.mjs). The URL is relative to the chapter page. */
+.says.robot::before     { background-image: url("games/shared/sprites/robot.svg"); }
+.robot-scene { display:flex; align-items:flex-start; gap:.7rem; margin:.8rem 0; direction:rtl; }
+.robot-portrait { flex:0 0 4.2rem; width:4.2rem; height:4.2rem; }
+.robot-portrait svg { display:block; width:100%; height:100%; }
+.robot-bubble { position:relative; flex:1; min-width:0; padding:.6rem .85rem; background:#f0f9ff; border:1px solid #7dd3fc; border-radius:14px; }
+.robot-bubble::before { content:""; position:absolute; right:-7px; top:1.3rem; width:12px; height:12px; background:inherit; border:1px solid #7dd3fc; border-left:0; border-bottom:0; transform:rotate(45deg); }
+.robot-speaker { color:#075985; font-size:.9em; }
+.robot-bubble p { margin:.25rem 0 0; }
+.robot-bubble .set-proof-formula { display:block; overflow-wrap:anywhere; }
+@media(max-width:450px) { .robot-portrait { flex-basis:3rem; width:3rem; height:3rem; } }
+.says.guard::before     { background-image: url("games/shared/sprites/guard.svg"); }
+.says.pigeon::before    { background-image: url("games/shared/sprites/pigeon.svg"); }
+.says.barman::before    { background-image: url("games/shared/sprites/barman.svg"); }
+.says.student::before   { background-image: url("games/shared/sprites/student.svg"); }
+.says.euler::before     { background-image: url("games/shared/sprites/euler.svg"); }
+.says.ada::before       { background-image: url("games/shared/sprites/ada.svg"); }
+.says.gauss::before     { background-image: url("games/shared/sprites/gauss.svg"); }
+.thmbox-proof       { border-color: #64748b; background: #f8fafc; }
+.thmbox-proof > p:first-child > strong { font-weight: 600; color: #64748b; }
+.thmbox-remark      { border-color: #94a3b8; background: #f8fafc; }
+.thmbox-remark > p:first-child > strong { font-weight: 600; color: #64748b; }
+/* Warning (.thmwarn, red) and key point (.thmkey, blue): ported from the BGU book with
+   this course's own hues. Thicker edge, because they mark what students must not miss. */
+.thmbox-warning     { border-color: #e11d48; border-inline-start-width: 6px; background: #fff1f2; }
+.thmbox-warning > p:first-child > strong { font-weight: 700; color: #be123c; }
+.thmbox-key-point   { border-color: #0891b2; border-inline-start-width: 6px; background: #ecfeff; }
+.thmbox-key-point > p:first-child > strong { font-weight: 700; color: #0e7490; }
+/* Helper illustrations are part of the box body, not the title. */
+.thmbox.has-helper-art { display: flow-root; }
+.thmbox.has-helper-art > p:first-child > strong::before { content: none; }
+.helper-box-art {
+  float: inline-end;
+  width: 56px;
+  height: 56px;
+  margin: .1rem 0 .4rem 0;
+  margin-inline-start: .85rem;
+  object-fit: contain;
+  pointer-events: none;
+}
+@media (max-width: 480px) {
+  .helper-box-art { width: 40px; height: 40px; margin-inline-start: .5rem; }
+}
+@media print { .helper-box-art { display: none; } }
+/* ---------------------------------------------------------------------------
+   Math must never inherit the page's RTL direction. <html dir="rtl"> makes the
+   whole document a right-to-left bidi context, and two things go wrong inside it:
+
+   1. The renderer's own output boxes lay out right-to-left, so a formula mixed
+      into a Hebrew sentence reads backwards.
+   2. Until MathJax runs, the page literally contains the raw source \( ... \).
+      If the CDN is slow or unreachable that source is what stays on screen, and
+      the bidi algorithm reorders it -- the same failure the widgets have with
+      KaTeX (see mathrender.js).
+
+   `unicode-bidi: isolate` makes every formula its own bidi context: it can
+   neither be reordered by the Hebrew around it nor reorder that Hebrew.
+   --------------------------------------------------------------------------- */
+span.math,
+mjx-container,
+.katex,
+.katex-display {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+mjx-container *,
+.katex * {
+  direction: ltr;
+}
+
+/* Keep inline math on one line. This backs up the MathJax linebreak config
+   below; see the comment there for why v4 needs it at all. Display math is
+   left alone -- MathJax gives it its own scroll box. */
+mjx-container:not([display="true"]),
+.katex:not(.katex-display) {
+  white-space: nowrap;
+}
+
+/* Optional box (.optional): foldable, collapsed by default; same gray look as .extra,
+   but the gray bar is the clickable <summary>. */
+details.thmoptional {
+  border: 1px solid #9ca3af;
+  border-radius: 0;
+  margin: 1.5rem 0;
+  background: #ffffff;
+  overflow: hidden;
+}
+details.thmoptional > summary {
+  background: #d1d5db;
+  color: #374151;
+  font-weight: 700;
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+}
+details.thmoptional[open] > summary { border-bottom: 1px solid #9ca3af; }
+details.thmoptional > .optional { padding: 0.7rem 0.9rem; }
+details.thmoptional > .optional > :first-child { margin-top: 0; }
+details.thmoptional > .optional > :last-child { margin-bottom: 0; }
+/* .foldable: hidden calculations / derivations. Distinct from .optional (which is a
+   whole gray-boxed aside) — this is a light inline disclosure inside the running text. */
+details.thmfoldable {
+  margin: 1rem 0;
+  border-inline-start: 3px solid #cbd5e1;
+  padding-inline-start: 0.8rem;
+}
+details.thmfoldable > summary {
+  cursor: pointer;
+  color: #475569;
+  font-weight: 600;
+}
+details.thmfoldable[open] > summary { margin-bottom: 0.5rem; }
+details.thmcollapse { margin: 1rem 0; }
+details.thmcollapse > summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: #475569;
+  padding: 0.2rem 0;
+}
+details.thmcollapse[open] > summary { margin-bottom: 0.4rem; }
+/* Enrichment box (.extra): non-foldable, gray box; the section heading becomes a gray
+   header bar. Quarto merges the div into <section class="... extra">, so we style .extra. */
+.extra {
+  border: 1px solid #9ca3af;
+  border-radius: 0;
+  margin: 1.5rem 0;
+  background: #ffffff;
+  padding: 0.7rem 0.9rem;
+}
+.extra > h2, .extra > h3, .extra > .extra-title {
+  background: #d1d5db;
+  color: #374151;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: -0.7rem -0.9rem 0.8rem;
+  padding: 0.45rem 0.8rem;
+  border-bottom: 1px solid #9ca3af;
+}
+.extra > :last-child { margin-bottom: 0; }
+/* ---- interactive exercises (games/shared/book.js) ------------------------
+   .solve = step-by-step solution, .ttq = truth-table exercise,
+   .fq = formula answer, .tf-why = explanation inside a T/F quiz. */
+.bk-hidden { display: none !important; }
+details.lecture-answer { margin: .45rem 0 1rem; }
+details.lecture-answer > summary { color: #4338ca; cursor: pointer; font-weight: 600; }
+.lecture-cell-trigger { min-width: 2.3em; color: #4338ca; }
+.lecture-table-controls { margin-top: .6rem; }
+@media print {
+  .lecture-cell-answer[hidden] { display: inline !important; }
+  .lecture-cell-trigger, .lecture-table-controls { display: none !important; }
+  details.lecture-answer::details-content { content-visibility: visible; }
+  details.lecture-answer > :not(summary) { display: block !important; }
+}
+.bk-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.bk-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0.2rem 0 0.5rem; }
+.bk-title { font-weight: 700; color: #475569; margin-inline-end: 0.4rem; }
+.bk-btn {
+  min-height: 40px; padding: 0.3rem 0.9rem; border: 1px solid #94a3b8; border-radius: 8px;
+  background: #fff; color: inherit; font: inherit; font-size: 0.95em; cursor: pointer;
+}
+.bk-btn:hover:not(:disabled) { background: #f1f5f9; }
+.bk-btn:disabled { opacity: 0.5; cursor: default; }
+.bk-main { background: #4f46e5; border-color: #4f46e5; color: #fff; font-weight: 700; }
+.bk-main:hover:not(:disabled) { background: #4338ca; }
+.bk-quiet { color: #475569; }
+.bk-btn:focus-visible, .bk-cell:focus-visible, .bk-key:focus-visible, .bk-input:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.bk-label {
+  display: inline-block; margin-inline-end: 0.5rem; padding: 0 0.5rem; border-radius: 999px;
+  font-size: 0.85em; font-weight: 700; background: #e2e8f0; color: #334155;
+}
+.solve.bk-solve {
+  border-inline-start: 4px solid #64748b; background: #f8fafc; border-radius: 4px;
+  padding: 0.5rem 1rem; margin: 0.6rem 0 1.2rem;
+}
+.solve .hint, .solve .step { margin: 0.45rem 0; padding: 0.45rem 0.7rem; border-radius: 8px; background: #fff; border: 1px solid #e2e8f0; }
+.solve .hint { border-style: dashed; border-color: #d97706; background: #fffbeb; }
+.solve .hint .bk-label { background: #fde68a; color: #92400e; }
+.solve .step > p:first-of-type, .solve .hint > p:first-of-type { display: inline; }
+.bk-ttq, .bk-fq { margin: 0.6rem 0 1.2rem; padding: 0.6rem 0.9rem; border: 1px solid #c7d2fe; border-radius: 10px; background: #f8faff; }
+.bk-tt-wrap { overflow-x: auto; }
+table.bk-tt { border-collapse: collapse; margin: 0.2rem auto 0.4rem; }
+table.bk-tt th, table.bk-tt td { border: 1px solid #d1d5db; padding: 0.2rem 0.45rem; text-align: center; }
+table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
+.bk-cell { min-width: 2.6rem; min-height: 34px; border: 1px dashed #94a3b8; border-radius: 6px; background: #fff; font: inherit; cursor: pointer; }
+.bk-cell.bk-wrong { border: 2px solid #b91c1c; background: #fee2e2; }
+.bk-cell.bk-focus { outline: 3px solid #f59e0b; outline-offset: 1px; }
+.bk-q { color: #94a3b8; font-weight: 700; }
+.bk-msg:empty { display: none; }
+.bk-msg { margin: 0.3rem 0; padding: 0.45rem 0.8rem; border-radius: 8px; border-inline-start: 4px solid #64748b; background: #fff; }
+.bk-msg.bk-good { border-color: #15803d; background: #dcfce7; }
+.bk-msg.bk-good::before { content: "✓ "; font-weight: 700; color: #15803d; }
+.bk-msg.bk-bad { border-color: #b91c1c; background: #fee2e2; }
+.bk-msg.bk-info { border-color: #1d4ed8; background: #dbeafe; }
+.bk-fq-row { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin: 0.4rem 0; }
+.bk-input {
+  flex: 1 1 16rem; min-height: 40px; padding: 0.3rem 0.6rem; border: 1px solid #94a3b8; border-radius: 8px;
+  font: 1.05rem "Cambria Math", "STIX Two Math", "Times New Roman", serif; direction: ltr; text-align: left;
+}
+.proof-editor { margin: .8rem 0; }
+.proof-start { padding: .65rem; border-inline-start: 4px solid #075985; background: #e0f2fe; border-radius: 6px; color: #075985; }
+.proof-step { min-width: 0; margin: .7rem 0; padding: .7rem; border: 1px solid #c7d2fe; border-radius: 10px; background: #f8faff; }
+.proof-step legend { float: none; width: auto; padding: 0 .4rem; margin: 0; font-size: 1.05em; font-weight: 700; color: #581c87; }
+.proof-field { display: grid; gap: .3rem; margin: .45rem 0; font-weight: 600; }
+.proof-input, .proof-rule { width: 100%; min-width: 0; }
+.proof-rule { min-height: 44px; padding: .4rem; border: 1px solid #94a3b8; border-radius: 8px; background: white; font: inherit; }
+.proof-rule:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.proof-input[aria-invalid="true"], .proof-rule[aria-invalid="true"] { border: 2px solid #b91c1c; }
+.proof-reference { margin: .5rem 0; padding: .4rem; background: #e0f2fe; border-radius: 6px; }
+.proof-reference summary { cursor: pointer; color: #075985; }
+.proof-formula { direction: ltr; unicode-bidi: isolate; text-align: left; white-space: nowrap; overflow-x: auto; font-family: "Cambria Math", "Times New Roman", serif; margin-top: .25rem; }
+.proof-ready .proof-offline { display: none; }
+.proof-start-input { width: 100%; }
+.proof-start-input[aria-invalid="true"] { border: 2px solid #b91c1c; }
+.proof-preview { margin-top: 1rem; padding: 1rem; border: 1px solid #99c8c0; border-inline-start: 4px solid #0f766e; border-radius: 8px; background: #fcfffe; }
+.proof-preview > strong { color: #115e59; font-size: 1.1em; }
+.proof-preview > p { margin: .4rem 0 .8rem; }
+.proof-chain { display: grid; grid-template-columns: 1.2em fit-content(65%) minmax(0, max-content); gap: .65rem 1rem; align-items: baseline; direction: ltr; overflow-x: auto; padding: .7rem .2rem; }
+.proof-chain > p { grid-column: 1 / -1; direction: rtl; }
+.proof-chain-line { display: contents; }
+.proof-chain-sign { font-family: "Cambria Math", serif; font-size: 1.25em; color: #0f766e; }
+.proof-chain-line .proof-formula { margin: 0; font-size: 1.2em; line-height: 1.6; }
+.proof-chain-reason { text-align: left; color: #655080; font-size: .95em; unicode-bidi: isolate; }
+.proof-local { margin-top: .8rem; padding: .65rem; background: white; border-top: 2px solid #99c8c0; }
+.proof-local > strong { color: #115e59; }
+.proof-editor [hidden] { display: none !important; }
+.proof-paper { padding-top: .65rem; border-top: 1px solid #d1e5df; }
+.proof-goal { margin: .65rem 0; }
+.proof-goal > p { margin: 0; }
+.proof-goal .proof-formula { display: block; color: #115e59; }
+@media (max-width: 600px) {
+  .proof-chain { grid-template-columns: 1.2em minmax(0, 1fr); gap: .25rem .5rem; }
+  .proof-chain-reason { grid-column: 2; text-align: left; font-size: .9em; margin-bottom: .7rem; }
+}
+.argument-editor [hidden] { display: none !important; }
+.argument-proof-scroll { overflow-x: auto; }
+.argument-proof-table { width: 100%; margin: .6rem 0; border-collapse: collapse; }
+.argument-proof-table th, .argument-proof-table td { padding: .55rem; border-bottom: 1px solid #cbded9; vertical-align: top; }
+.argument-proof-table thead { background: #edf6f3; }
+.argument-proof-table .proof-formula { white-space: normal; overflow-wrap: anywhere; }
+.argument-line-words { margin-top: .3rem; font-size: .93em; }
+.argument-line-reason { color: #655080; width: 28%; }
+.argument-line-reason > span { display: block; }
+.argument-line-refs { white-space: nowrap; }
+@media (max-width: 600px) {
+  .argument-proof-table, .argument-proof-table tbody { display: block; }
+  .argument-proof-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .argument-proof-table tbody tr { display: grid; grid-template-columns: 1.8em minmax(0, 1fr); border-bottom: 1px solid #cbded9; padding: .45rem 0; }
+  .argument-proof-table tbody th { grid-row: 1 / 3; }
+  .argument-proof-table td, .argument-proof-table tbody th { padding: .25rem; border: 0; min-width: 0; }
+  .argument-proof-table .argument-line-reason { grid-column: 2; width: auto; font-size: .9em; }
+  .argument-line-reason > span { display: inline; }
+  .argument-line-refs { white-space: normal; }
+  .argument-line-refs::before { content: " — "; }
+}
+.argument-local .argument-written > p { margin: .5rem 0; }
+.table-evidence { min-width: 0; border: 1px solid #9cb9c7; border-radius: 8px; padding: .7rem; margin: .7rem 0; background: #f5faff; }
+.table-evidence legend { float: none; width: auto; font-size: 1.1em; font-weight: bold; }
+.table-evidence:disabled { opacity: .65; }
+.table-evidence p { margin: .35rem 0; }
+.inference-rule { width: max-content; max-width: 100%; margin: .7rem auto; padding: 0 .5rem; }
+.inference-rule .proof-formula { text-align: center; padding: .2rem .5rem; }
+.inference-conclusion { border-top: 1px solid currentColor; margin-top: .25rem; }
+.argument-ready .argument-offline { display: none; }
+.argument-stage { margin: .8rem 0; padding: .7rem; border: 1px solid #c4b5fd; border-radius: 10px; background: #fff; min-width: 0; }
+.argument-stage h4 { font-size: 1.1em; color: #6b21a8; margin-top: 0; }
+.argument-source-pair { display:grid; grid-template-columns:minmax(7rem,1fr) minmax(0,1fr); gap:.6rem; align-items:center; }
+.argument-source-pair select { min-width:0; width:100%; }
+.argument-source-preview { padding:.5rem; background:#eef2ff; color:#3730a3; overflow-wrap:anywhere; font-family:"Cambria Math",serif; font-weight:400; }
+.argument-mapping { display: flex; align-items: center; gap: .7rem; padding: .5rem 0; }
+.argument-letter { flex: 0 1 12rem; min-width:0; min-height: 44px; direction: ltr; text-align: center; font: inherit; font-weight: 700; border: 1px solid #7c3aed; border-radius: 6px; color: #581c87; background: #faf5ff; }
+.argument-source { width: 100%; min-width: 0; min-height: 44px; padding: .35rem; font: inherit; border: 1px solid #94a3b8; border-radius: 6px; background: #fff; }
+.argument-letter:focus-visible, .argument-source:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.argument-translation { padding: .7rem 0; border-bottom: 1px solid #e2e8f0; }
+.argument-premises { list-style: none; padding: 0; margin: .8rem 0; }
+.argument-premises li { margin: .4rem 0; padding: .6rem; background: #f1f5f9; border-radius: 6px; }
+.argument-rule-help:not(:empty), .argument-hints:not(:empty), .argument-solution:not(:empty) { padding: .6rem; margin: .5rem 0; background: #fffbeb; border: 1px dashed #d97706; border-radius: 6px; }
+.argument-rule-help p, .argument-hints p { margin: .3rem 0; }
+.argument-editor .bk-bar { margin-top: .6rem; }
+.argument-formula-bank, .choice-select { width: 100%; min-width: 0; min-height: 44px; padding: .35rem; font: inherit; border: 1px solid #7c3aed; border-radius: 6px; background: #faf5ff; }
+.argument-formula-bank { direction: ltr; }
+.choice-item { min-width: 0; margin: .8rem 0; padding: .65rem; border: 1px solid #c4b5fd; border-radius: 8px; }
+.answer-panel { margin: .4rem 0; min-width: 0; }
+.answer-panel > summary, .answer-reveal > summary { cursor: pointer; color: #075985; font-weight: 600; }
+.answer-panel[open] > summary { margin-bottom: .5rem; }
+.answer-reveal { margin-top: .5rem; }
+.answer-reveal > div { margin-top: .35rem; padding: .45rem .65rem; background: #f8fafc; border-inline-start: 3px solid #94a3b8; overflow-wrap: anywhere; }
+.choice-item legend { float: none; width: auto; max-width: 100%; font-size: 1em; font-weight: 700; color: #581c87; padding: 0 .25rem; }
+.choice-select[aria-invalid="true"] { border: 2px solid #b91c1c; }
+.substitution-entry label { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; margin: .5rem 0; }
+.substitution-entry .bk-input { width: 18rem; max-width: 100%; min-width: 0; }
+.substitution-entry input[aria-invalid="true"] { border: 2px solid #b91c1c; }
+.choice-select:focus-visible, .argument-formula-bank:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.choice-ready .choice-offline { display: none; }
+.bk-keys { display: flex; flex-wrap: wrap; gap: 0.25rem; direction: ltr; }
+.bk-keys[hidden] { display:none !important; }
+.field-symbol-keyboard { display:flex; flex-wrap:wrap; gap:.25rem; direction:ltr; width:100%; min-width:0; flex-basis:100%; grid-column:1 / -1; margin:.3rem 0; }
+.field-symbol-keyboard[hidden] { display:none !important; }
+.field-symbol-keyboard .formula-autocomplete { flex-basis:100%; }
+.bk-key { min-width: 40px; min-height: 40px; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; font: 1.1rem "Cambria Math", "STIX Two Math", serif; cursor: pointer; }
+.bk-key:hover { background: #eef2ff; }
+.bk-fq .hint, .bk-fq .explain, .bk-ttq .after { margin: 0.4rem 0; padding: 0.4rem 0.7rem; border-radius: 8px; }
+.bk-fq .hint { border: 1px dashed #d97706; background: #fffbeb; }
+.bk-fq .hint .bk-label { background: #fde68a; color: #92400e; }
+.bk-fq .explain, .bk-ttq .after { border: 1px solid #bbf7d0; background: #f0fdf4; }
+.bk-fq .hint > p:first-of-type { display: inline; }
+.tf-quiz .tf-why { display: none; margin-top: 0.4rem; padding: 0.4rem 0.7rem; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; }
+.tf-quiz.tf-answered .tf-why { display: block; }
+.tf-why .m, .bk-msg .m, .bk-tt .m { direction: ltr; unicode-bidi: isolate; display: inline-block; white-space: nowrap; font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif; }
+.tv-T, .tv-F { display: inline-block; min-width: 1.5em; text-align: center; font-weight: 700; border-radius: 4px; padding: 0 0.2em; }
+.tv-T { color: #14532d; background: #bbf7d0; }   /* T = green, F = red, as on the signal */
+.tv-F { color: #7f1d1d; background: #fecaca; }
+/* New terminology has a consistent accent, alongside explicit explanations. */
+.term { white-space: nowrap; color: #6b21a8; background: #f3e8ff; border-radius: .22em; padding: .04em .2em; font-weight: 700; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+/* Whole rules can wrap; purple terms and blue rules have distinct roles. */
+.key-rule { color: #075985; background: #e0f2fe; font-weight: 700; padding: .08em .25em; border-radius: .2em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.fq > p:first-child { color: #581c87; background: #f3e8ff; border-inline-start: 4px solid #9333ea; padding: .55rem .75rem; border-radius: 6px; font-size: 1.08em; font-weight: 700; }
+.pair-figure { margin: .8rem 0; padding: .6rem; background: #fff; border-radius: 8px; }
+.pair-row { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin: .6rem 0; }
+.pair-dots { display: flex; flex-wrap: wrap; gap: .35rem; direction: ltr; }
+.pair-dots > span { color: #075985; background: #e0f2fe; border: 1px solid #7dd3fc; border-radius: 6px; padding: .1rem .35rem; white-space: nowrap; }
+.pair-dots > .pair-single { color: #92400e; background: #fef3c7; border-color: #d97706; }
+.pair-figure figcaption { font-size: .9rem; }
+.open-statement-game { margin-top: .75rem; }
+.os-title { font-size: 1.1rem; margin: .5rem 0; }
+.os-choices, .os-answers { display: flex; flex-wrap: wrap; gap: .6rem; margin: .7rem 0; }
+.os-choice { display: flex; align-items: center; flex-wrap: wrap; gap: .45rem; }
+.os-choice input { min-height: 44px; width: 10rem; max-width: 100%; font: inherit; padding: .3rem .55rem; border: 1px solid #64748b; border-radius: 6px; background: #fff; color: #1e293b; }
+.os-choice input:disabled { background: #f1f5f9; }
+.os-choice input[aria-invalid="true"] { border-color: #be123c; }
+.os-stage { font-weight: 700; color: #4338ca; }
+.os-first { padding: .6rem; border-inline-start: 4px solid #0f766e; background: #f0fdfa; overflow-wrap: anywhere; }
+.os-card { min-width: 0; }
+.os-formula { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; margin: .8rem 0; }
+.os-card { display: flex; flex-direction: column; align-items: center; gap: .6rem; padding: .7rem; border: 2px dashed #a78bfa; background: #faf5ff; border-radius: 9px; }
+.os-card.os-complete { border-style: solid; }
+.os-expression { font: 1.25rem "Cambria Math", "Times New Roman", serif; unicode-bidi: isolate; white-space: nowrap; max-width: 100%; overflow-x: auto; }
+.os-status { padding: .5rem .7rem; background: #f1f5f9; border-radius: 6px; }
+.open-statement-game [hidden] { display: none; }
+.open-statement-game :focus-visible { outline: 3px solid #7c3aed; outline-offset: 3px; }
+@media (max-width: 480px) { .os-formula { grid-template-columns: 1fr; } }
+@media print { .term { color: #111; background: transparent; text-decoration: underline; } }
+
+#knight-rule-proof { background:#eef2ff; border-inline-start:4px solid #6366f1; padding:1rem; border-radius:8px; }
+
+.set-box-diagram { display:flex; flex-wrap:wrap; gap:1.2rem; margin:1rem 0; justify-content:center; }
+.set-box-panel { flex:1 1 220px; max-width:320px; text-align:center; }
+.set-container { display:flex; gap:.7rem; align-items:center; justify-content:center; min-height:115px; padding:1rem; margin:.5rem 0; border:3px solid #6366f1; border-radius:10px; background:#eef2ff; }
+.set-container.set-inner { flex-direction:column; gap:.2rem; min-height:0; padding:.4rem; margin:0; border:2px solid #b45309; background:#fffbeb; }
+.set-number { display:inline-flex; align-items:center; justify-content:center; width:2.4rem; height:2.4rem; border-radius:50%; background:white; color:#1e293b; font-weight:700; }
+
+figure.knight-scene { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.8rem; margin:1rem auto; max-width:680px; }
+.knight-scene:has(> .knight-speaker:nth-child(3)) { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.knight-speaker { min-width:0; display:flex; align-items:center; flex-direction:column; padding:.65rem; border:1px solid #cbd5e1; border-radius:12px; background:#f8fafc; }
+.knight-speaker img { width:64px; height:64px; }
+.knight-speaker > strong { margin:.25rem 0 .7rem; color:#334155; }
+.knight-speaker .knight-speech { position:relative; width:100%; box-sizing:border-box; margin:0; padding:.65rem; border:1px solid #94a3b8; border-radius:10px; background:white; color:#172033; font-size:1rem; font-weight:600; text-align:center; }
+.knight-speech::before { content:""; position:absolute; top:-6px; left:calc(50% - 6px); width:10px; height:10px; background:white; border-top:1px solid #94a3b8; border-left:1px solid #94a3b8; transform:rotate(45deg); }
+.knight-speaker .knight-silent { border-style:dashed; color:#64748b; font-weight:400; }
+.knight-scene figcaption { grid-column:1 / -1; text-align:center; color:#475569; font-size:.9rem; }
+
+@media(max-width:480px) {
+  .knight-scene { gap:.35rem; }
+  .knight-speaker { padding:.45rem .25rem; }
+  .knight-speaker img { width:46px; height:46px; }
+  .knight-speaker .knight-speech { padding:.45rem .25rem; font-size:.88rem; overflow-wrap:anywhere; }
+}
+
+.activity-help { margin:.5rem 0 .8rem; font-size:.92rem; }
+.activity-help summary { cursor:pointer; color:#4338ca; }
+.activity-help ol { padding: .7rem 1.7rem .7rem .7rem; background:#f8fafc; border-radius:8px; }
+.activity-help li + li { margin-top:.5rem; }
+.proof-preview[hidden] { display:none; }
+.replacement-editor > p:empty { display:none; }
+.proof-stairs { max-width:760px; margin:1rem auto; }
+.proof-stairs img { width:100%; height:auto; }
+.proof-stairs figcaption { color:#475569; font-size:.92rem; text-align:center; }
+
+/* One compact reference list; rule statements stay visible, proofs expand below. */
+.equivalence-laws { border-block:1px solid #cbd5e1; font-size:.9rem; }
+.equivalence-law { display:grid; grid-template-columns:8rem minmax(0,1fr) 5.6rem; align-items:start; gap:.25rem .6rem; margin:0; padding:.35rem .25rem; border-bottom:1px solid #e2e8f0; }
+.equivalence-law:last-child { border-bottom:0; }
+.law-heading { display:contents; }
+.law-heading > strong { font-size:.9em; line-height:1.4; color:#334155; }
+.law-formulas { min-width:0; line-height:1.35; }
+.law-proof { min-width:0; margin:0; font-size:.9em; }
+.law-proof:not([open]) .law-proof-hide, .law-proof[open] .law-proof-show { display:none; }
+.law-proof > summary { cursor:pointer; color:#3730a3; line-height:1.4; }
+.law-proof[open] { grid-column:1/-1; font-size:1rem; padding:.5rem; background:#f8fafc; }
+.law-proof[open] > summary { margin-bottom:.5rem; }
+.law-summary-formula { display:inline-block; max-width:100%; overflow-x:auto; vertical-align:middle; padding:0; }
+@media(max-width:600px) {
+ .equivalence-law { grid-template-columns:minmax(0,1fr) auto; gap:.2rem .5rem; padding:.4rem .1rem; }
+ .law-heading > strong { grid-column:1; grid-row:1; }
+ .law-formulas { grid-column:1/-1; grid-row:2; }
+ .law-proof { grid-column:2; grid-row:1; }
+ .law-proof[open] { grid-column:1/-1; grid-row:3; }
+}
+.law-table-scroll { max-width:100%; overflow-x:auto; margin:.8rem 0; }
+.law-truth-table { width:100%; border-collapse:collapse; font-size:.82rem; }
+.law-truth-table caption { caption-side:top; text-align:center; direction:ltr; unicode-bidi:isolate; color:#172033; padding:.6rem; }
+.law-truth-table th,.law-truth-table td { text-align:center; vertical-align:middle; padding:.35rem; border:1px solid #cbd5e1; }
+.law-truth-table th { background:#f8fafc; }
+.law-truth-table .law-result { background:#ede9fe; color:#4c1d95; font-weight:700; }
+.law-side { display:block; font-size:.8rem; margin-bottom:.3rem; }
+.law-formula { display:inline-block; white-space:nowrap; }
+.law-verdict { color:#4c1d95; margin:.5rem 0 0; }
+.xref-panel { border:1px solid #cbd5e1; border-inline-start:4px solid #4338ca; background:#f8fafc; margin:.5rem 0 1rem; padding:.65rem; min-width:0; }
+.xref-head { display:flex; justify-content:space-between; align-items:center; gap:.8rem; margin-bottom:.5rem; font-size:.9rem; }
+.xref-close { border:1px solid #cbd5e1; border-radius:4px; background:white; color:#334155; cursor:pointer; padding:.2rem .5rem; }
+.xref-body { max-height:65vh; overflow:auto; }
+.xref-body > .thmbox { margin:0; }
+.xref-note { color:#475569; }
+.step-compact { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem 1rem; }
+.step-compact[hidden],.step-editor[hidden] { display:none !important; }
+.step-compact .proof-formula { max-width:100%; overflow-x:auto; }
+.step-compact-reason { flex:1 1 12rem; overflow-wrap:anywhere; color:#475569; font-size:.9rem; }
+.step-accepted { border-color:#86b69c; background:#f5faf7; }
+a.xref-open { background:#ede9fe; border-radius:3px; }
+.equivalence-law summary:focus-visible,.law-table-scroll:focus-visible { outline:3px solid #6366f1; outline-offset:3px; }
+</style>
+<script>
+// Start the proofs folded, including when the browser restores a page.
+window.addEventListener('pageshow', function () {
+  document.querySelectorAll('details.law-proof').forEach(function (law) {
+    law.open = false;
+  });
+});
+</script>
+<script src="games/shared/book.bundle.js" defer=""></script>
+<script>
+/* ---------------------------------------------------------------------------
+   MathJax line breaking.
+
+   Quarto now loads mathjax@4, and v4 switched on automatic line breaking that
+   v3 did not do:
+
+     * inline math may be broken at a relation or a binary operator, so a short
+       formula such as \( \phi : U \to V \) comes out split after the U;
+     * display math wider than the column is broken instead of being left to
+       run on.
+
+   Inside an RTL paragraph a break in the middle of a formula does not read as
+   a wrap, it reads as a mistake. So turn the AUTOMATIC breaking off:
+   `linebreaks.inline = false` for inline math, and `displayOverflow = scroll`
+   so that over-wide display math gets a scroll box rather than being chopped.
+
+   Breaks we wrote ourselves are unaffected: `\\` inside aligned/cases/matrix
+   still starts a new row, which is the "unless specifically required" case.
+
+   Both `output` and `chtml` are set because v4 accepts these keys on the
+   generic output block and on the specific output jax, and tex-chtml.js loads
+   CHTML. The more specific one wins; setting both costs nothing.
+
+   This has to run before the MathJax script does. That script carries `defer`,
+   so it runs after parsing, while this inline script runs during parsing --
+   hence anywhere in the head is early enough.
+   --------------------------------------------------------------------------- */
+window.MathJax = {
+  // Adopted from the BGU calculus book: author Hebrew in normal reading order.
+  // Font inheritance keeps each label as real text so browser bidi can shape it;
+  // direction:ltr alone cannot fix Hebrew rendered as separate MathJax glyphs.
+  tex: {
+    macros: { heb: ["\\text{#1}", 1] }
+  },
+  output: {
+    displayOverflow: "scroll",
+    linebreaks: { inline: false }
+  },
+  chtml: {
+    displayOverflow: "scroll",
+    linebreaks: { inline: false },
+    mtextInheritFont: true
+  },
+  svg: {
+    mtextInheritFont: true
+  }
+};
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".tf-quiz").forEach(function (quiz) {
+    var correct = quiz.getAttribute("data-correct");
+    var feedback = quiz.querySelector(".tf-feedback");
+    quiz.querySelectorAll(".tf-opt").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        quiz.querySelectorAll(".tf-opt").forEach(function (b) {
+          b.classList.remove("correct", "incorrect");
+        });
+        if (btn.getAttribute("data-val") === correct) {
+          btn.classList.add("correct");
+          if (feedback) feedback.textContent = "✓ נכון!";
+        } else {
+          btn.classList.add("incorrect");
+          if (feedback) feedback.textContent = "✗ לא מדויק — קראו את ההסבר ונסו שוב.";
+        }
+        /* Opt-in via a bare data-reveal attribute (ported from the BGU book): answering
+           opens the next foldable solution, so the reasoning appears once the reader
+           has committed. Found by document order, not by id: a Div carrying an id
+           together with .thmsol .foldable crashes Quarto's main.lua. */
+        if (quiz.hasAttribute("data-reveal")) {
+          var box = null;
+          for (var node = quiz; node && node.tagName !== "MAIN" && !box; node = node.parentElement) {
+            for (var sib = node.nextElementSibling; sib && !box; sib = sib.nextElementSibling) {
+              box = sib.tagName === "DETAILS" ? sib
+                  : (sib.querySelector ? sib.querySelector("details") : null);
+            }
+          }
+          if (box) box.open = true;
+        }
+      });
+    });
+  });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  function normSet(str) {
+    if (!str) return [];
+    return Array.from(new Set(
+      str.split(/[\s,;]+/).filter(function (s) { return s.length; }).map(Number)
+    )).filter(function (n) { return !Number.isNaN(n); }).sort(function (a, b) { return a - b; });
+  }
+  function eqSet(a, b) {
+    if (a.length !== b.length) return false;
+    for (var i = 0; i < a.length; i++) { if (a[i] !== b[i]) return false; }
+    return true;
+  }
+  document.querySelectorAll(".set-quiz").forEach(function (q) {
+    var answer = normSet(q.getAttribute("data-answer"));
+    var input = q.querySelector(".set-input");
+    var feedback = q.querySelector(".set-feedback");
+    var btn = q.querySelector(".set-check");
+    function check() {
+      input.classList.remove("correct", "incorrect");
+      if (eqSet(normSet(input.value), answer)) {
+        input.classList.add("correct");
+        if (feedback) feedback.textContent = "✓ נכון!";
+      } else {
+        input.classList.add("incorrect");
+        if (feedback) feedback.textContent = "✗ נסו שוב";
+      }
+    }
+    if (btn) btn.addEventListener("click", check);
+    if (input) input.addEventListener("keydown", function (e) { if (e.key === "Enter") check(); });
+  });
+});
+</script>
+<script>
+// Widgets embedded from widgets/<chapter>/ report their own height, so the
+// iframe does not need a hard-coded one (which breaks on narrow screens,
+// where the control panel stacks above the plot).
+window.addEventListener("message", function (e) {
+  var d = e.data;
+  if (!d || d.type !== "widget-height" || typeof d.height !== "number") return;
+  var frames = document.querySelectorAll("iframe.widget-frame");
+  for (var i = 0; i < frames.length; i++) {
+    if (frames[i].contentWindow === e.source) {
+      frames[i].style.height = Math.max(160, Math.min(2400, d.height)) + "px";
+      return;
+    }
+  }
+});
+</script>
+
+<style>
+.sets-ready { border:1px solid #cbd5e1; border-radius:12px; padding:1rem; margin:1rem 0; background:#fff; }
+.sets-ready button,.sets-ready select { min-height:44px; margin:.2rem; font:inherit; max-width:100%; }
+.sets-ready select { padding:.35rem; border:1px solid #94a3b8; border-radius:6px; }
+.sets-item { border:0; border-bottom:1px solid #e2e8f0; margin:0 0 1rem; padding:.5rem 0; min-width:0; }
+.sets-item legend,.sets-prompt { font-size:1rem; font-weight:600; line-height:1.8; }
+.sets-item input { width:100%; max-width:32rem; display:block; margin-bottom:.6rem; }
+.sets-cards,.sets-saved { display:flex; flex-wrap:wrap; gap:.3rem; margin:.65rem 0; }
+.sets-cards button[aria-pressed=true] { background:#e0e7ff; border:2px solid #4f46e5; box-shadow:inset 0 0 0 1px #4f46e5; }
+.sets-cards button[aria-pressed=true]::before { content:'✓ '; }
+.sets-cards .playing-card { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.2rem; width:6rem; min-height:8.5rem; padding:.7rem .35rem; border:2px solid #64748b; border-radius:.6rem; background:#fff; color:#172033; }
+.playing-card .playing-card-rank { align-self:flex-start; font-size:1.25rem; font-weight:700; }
+.playing-card .playing-card-suit { font-size:2.6rem; line-height:1; }
+.playing-card .playing-card-name { font-size:.85rem; color:#172033; }
+.playing-card[data-suit="♥"] .playing-card-suit,.playing-card[data-suit="♦"] .playing-card-suit { color:#b91c1c; }
+.sets-cards .playing-card[aria-pressed=true]::before { position:absolute; top:.25rem; right:.35rem; color:#3730a3; font-weight:700; }
+.sets-math { display:inline-block; direction:ltr; unicode-bidi:isolate; font-family:'Cambria Math',serif; font-size:1.12em; overflow-wrap:anywhere; }
+.sets-stage { color:#5b21b6; font-weight:700; }
+.sets-venn { max-width:460px; margin:auto; direction:ltr; }
+.sets-venn svg { width:100%; display:block; }
+.sets-venn [data-region] { fill:#f8fafc; stroke:#64748b; stroke-width:2; cursor:pointer; }
+.sets-venn [data-region].selected { fill:#a5b4fc; stroke:#4338ca; stroke-width:3; }
+.sets-venn-label { font:700 21px Arial,sans-serif; fill:#334155; pointer-events:none; }
+.sets-proof-preview { background:#f1f5f9; border-radius:8px; padding:1rem 2.5rem; }
+.sets-proof-preview li { margin:.65rem 0; }
+.sets-ready [aria-invalid=true] { outline:2px solid #b91c1c; }
+.sets-ready :focus-visible { outline:3px solid #4338ca; outline-offset:2px; }
+.sets-ready button:disabled { opacity:.5; }
+@media(max-width:480px){.sets-ready{padding:.6rem}.sets-ready select{width:100%;margin:.2rem 0}.sets-proof-preview{padding:.5rem 1.8rem}}
+</style>
+
+<style>
+.sets-item-number { color:#5b21b6; font-size:.9rem; font-weight:700; margin:.3rem 0; }
+.sets-given { background:#f1f5ff; color:#3730a3; padding:.4rem .6rem; border-radius:6px; font-weight:700; font-family:'Cambria Math',serif; overflow-wrap:anywhere; margin:.4rem 0; }
+.sets-proof-preview .sets-math { display:block; }
+.sets-selected-formula { font-weight:600; line-height:1.8; overflow-wrap:anywhere; }
+</style>
+
+<style>
+/* One RTL navigation tree: chapters, sections, then subsections. */
+#quarto-content { direction:rtl; }
+#quarto-sidebar .toc-tree { display:none; direction:rtl; text-align:right; }
+#quarto-sidebar .toc-chapter.toc-open > .toc-tree { display:block; }
+.toc-tree li.toc-parent > ul { display:none !important; }
+.toc-tree li.toc-parent.toc-open > ul { display:block !important; }
+.toc-tree ul { list-style:none; padding:0; padding-inline-start:.7rem; margin:0; border-inline-start:1px solid #e2e8f0; }
+.toc-tree li { position:relative; margin:.2rem 0; }
+.toc-tree li > a { margin-inline-start:1.9rem; }
+#quarto-sidebar .toc-tree a { display:block; padding:.35rem 0; line-height:1.5; font-size:.875rem; white-space:normal; }
+.toc-chapter-row { position:relative; padding-inline-start:1.9rem; }
+.toc-chapter-toggle,.toc-branch-toggle { position:absolute; inset-inline-start:0; top:0; width:1.8rem; min-height:1.8rem; padding:0; color:#334155; background:transparent; border:0; cursor:pointer; font:inherit; border-radius:5px; }
+.toc-disclosure-arrow { display:inline-block; transition:transform .12s; }
+[aria-expanded=true] > .toc-disclosure-arrow { transform:rotate(-90deg); }
+.toc-chapter-toggle:hover,.toc-branch-toggle:hover { background:#eef2ff; }
+.toc-chapter-toggle:focus-visible,.toc-branch-toggle:focus-visible { outline:2px solid #4f46e5; outline-offset:1px; }
+@media(max-width:991px){
+  #quarto-sidebar { max-width:100vw; box-sizing:border-box; right:0; left:auto; }
+  #quarto-sidebar .sidebar-menu-container { white-space:normal; min-width:0; }
+  #quarto-sidebar .sidebar-title { white-space:normal; }
+  .toc-chapter-toggle,.toc-branch-toggle { min-height:44px; width:44px; }
+  .toc-tree li > a { margin-inline-start:44px; min-height:44px; }
+  .toc-chapter-row { padding-inline-start:44px; min-height:44px; }
+}
+@media(prefers-reduced-motion:reduce){.toc-disclosure-arrow{transition:none}}
+</style>
+
+<style>
+.replacement-editor { padding:.75rem; border:1px solid #c7d2fe; border-radius:8px; background:#f8fafc; }
+.replacement-source { font-family:'Cambria Math',serif; font-size:1.2rem; padding:.7rem; overflow-wrap:anywhere; }
+.replacement-highlight { background:#ddd6fe; color:#4c1d95; outline:2px solid #8b5cf6; border-radius:3px; }
+.replacement-item { min-width:0; border:1px solid #cbd5e1; padding:.6rem; margin:.7rem 0; border-radius:6px; }
+.replacement-item legend { font-size:1rem; font-weight:700; }
+.replacement-item label { display:block; margin:.5rem 0; }
+.replacement-item select,.replacement-item input { display:block; width:100%; max-width:100%; min-height:44px; font:inherit; }
+ .replacement-result-tools { margin:.6rem 0; }
+.replacement-recovery { padding:.5rem; border-inline-start:3px solid #b45309; background:#fffbeb; }
+.replacement-recovery:empty { display:none; }
+.replacement-difference summary { cursor:pointer; font-weight:600; }
+.replacement-difference .proof-formula { white-space:normal; overflow-wrap:anywhere; padding:.3rem 0; }
+.replacement-rule-reference { margin:.4rem 0; }
+.replacement-item > .proof-formula { white-space:normal; overflow-wrap:anywhere; color:#5b21b6; font-weight:600; }
+.replacement-item[aria-invalid=true] { border:2px solid #b91c1c; }
+</style>
+
+<style>
+.replacement-choice-bank { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.4rem; min-width:0; border:0; padding:0; margin:.8rem 0; }
+.replacement-choice-bank legend { font-size:1rem; font-weight:700; margin-bottom:.6rem; }
+.replacement-choice { display:flex; align-items:center; gap:.5rem; border:1px solid #cbd5e1; padding:.5rem; border-radius:6px; min-height:44px; cursor:pointer; }
+.replacement-choice input { width:20px; height:20px; flex:none; }
+.replacement-choice span { overflow-wrap:anywhere; }
+.replacement-choice:has(input:checked) { background:#ede9fe; border-color:#8b5cf6; }
+.replacement-choice:has(input:disabled) { opacity:.5; cursor:default; }
+@media(max-width:600px){.replacement-choice-bank{grid-template-columns:minmax(0,1fr)}}
+</style>
+
+<style>
+.argument-written-heading { display:block; color:#5b21b6; margin:.7rem 0 .35rem; }
+.argument-written-givens ol { padding-inline-start:1.7rem; }
+.argument-written-givens li { padding:.25rem 0; }
+.argument-written-goal { border-inline-start:3px solid #7c3aed; padding-inline-start:.7rem; margin:.7rem 0; }
+.argument-written .argument-line-words { color:inherit; font-size:1em; }
+</style>
+
+<style>
+.example-choice .tf-opt { min-height:44px; max-width:100%; margin-bottom:.35rem; }
+.example-choice .tf-opt:focus-visible { outline:3px solid #4338ca; outline-offset:2px; }
+.example-choice .tf-why > :last-child { margin-bottom:0; }
+</style>
+
+<style>
+.coin-sets { margin:1rem 0; }
+.coin-set { display:flex; align-items:center; justify-content:flex-start; gap:.2rem; direction:ltr; width:max-content; max-width:100%; margin:.7rem auto; }
+.coin-set-name { font-family:'Cambria Math',serif; white-space:nowrap; }
+.coin-brace { font:2.7rem/1 'Cambria Math',serif; }
+.coin-elements { display:flex; align-items:center; gap:.15rem; min-width:0; }
+.coin-elements img { display:block; width:clamp(30px,9vw,56px); height:auto; }
+</style>
+
+<style>
+.sets-count-item label { display:block; margin-top:.6rem; }
+.sets-count-item .sets-count-input { max-width:9rem; }
+</style>
+
+<style>
+/* One proof, with inline editable rows; larger controls appear only while editing. */
+.proof-ledger { border:1px solid #b7c8d8; border-radius:7px; padding:.6rem; margin:.6rem 0; background:#fff; min-width:0; }
+.proof-ledger .proof-step { margin:.35rem 0; padding:.45rem; border-radius:4px; }
+.proof-ledger .step-accepted { border:0; border-bottom:1px solid #dbe3ea; background:transparent; padding:.3rem .2rem; }
+.proof-ledger .step-accepted legend { font-size:.8rem; color:#64748b; }
+.proof-ledger .step-compact { gap:.25rem .65rem; font-size:.94rem; }
+.proof-ledger .step-compact .bk-btn { padding:.15rem .5rem; min-height:32px; font-size:.85rem; }
+.step-compact-words { flex-basis:100%; color:#475569; }
+.proof-ledger .proof-goal p { margin:.2rem 0 .5rem; }
+.proof-ledger .proof-start { background:#f0f9ff; }
+.proof-start-choice { width:100%; min-width:0; direction:ltr; font:inherit; padding:.4rem; }
+.proof-custom-start { margin-top:.4rem; }
+.proof-ledger .replacement-editor { padding:.3rem; border:0; background:transparent; }
+.proof-ledger .replacement-source { padding:.3rem; font-size:1.1rem; }
+.replacement-parts > summary,.replacement-suggestions > summary { cursor:pointer; color:#3730a3; }
+.proof-ledger .replacement-item { margin:.4rem 0; padding:.4rem; }
+.proof-ledger .replacement-item label { margin:.3rem 0; font-size:.9rem; }
+.proof-ledger .replacement-item input,.proof-ledger .replacement-item select { min-height:38px; font-size:.9rem; }
+.replacement-suggestions { margin:.4rem 0; font-size:.9rem; }
+.replacement-suggestions > div { display:flex; flex-wrap:wrap; gap:.4rem; }
+.replacement-suggestions button { direction:ltr; font-family:'Cambria Math',serif; overflow-wrap:anywhere; }
+.proof-ledger .bk-msg:empty { display:none; }
+.proof-ledger .argument-premises,.proof-ledger .kp-givens { margin:.4rem 0; }
+.proof-ledger .argument-premises li,.proof-ledger .kp-givens li { border-bottom:1px solid #e2e8f0; padding:.35rem; }
+.proof-ledger .argument-premises strong { font-size:.9rem; font-weight:normal; }
+.proof-ledger .argument-premises .bk-btn,.proof-ledger .kp-givens .bk-btn { padding:.15rem .5rem; margin-inline-start:.5rem; font-size:.85rem; }
+.proof-ledger .argument-rule-help { margin:.3rem 0; }
+.proof-ledger .proof-field { margin:.3rem 0; }
+.proof-ledger select { max-width:100%; min-width:0; }
+.proof-ledger .step-compact > .kp-table-evidence { flex-basis:100%; }
+.proof-ledger[hidden],.proof-steps[hidden],.proof-goal[hidden],.bk-bar[hidden] { display:none!important; }
+@media(max-width:600px){
+ .proof-ledger { padding:.35rem; }
+ .proof-ledger .replacement-item input,.proof-ledger .replacement-item select,.proof-ledger .step-compact .bk-btn { min-height:44px; }
+}
+</style>
+
+<style>
+.proof-ledger .proof-goal p { display:flex; flex-wrap:wrap; align-items:baseline; gap:.25rem .5rem; }
+.proof-ledger .proof-goal .proof-formula { display:inline; margin:0; }
+.step-compact-reason details > summary { cursor:pointer; color:#475569; }
+.step-compact-reason details > div { font-size:.9em; margin-top:.35rem; overflow-wrap:anywhere; }
+</style>
+
+<style>
+.proof-ledger .side-labelled > .step-label { display:none; }
+.proof-ledger .side-labelled > .step-editor { min-width:0; }
+.proof-ledger .side-labelled.step-accepted { display:grid; grid-template-columns:5.2rem minmax(0,1fr); column-gap:.5rem; align-items:start; }
+.proof-ledger .side-labelled.step-accepted > legend { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+.proof-ledger .side-labelled.step-accepted > .step-label { display:block; grid-column:1; grid-row:1; font-size:.8rem; font-weight:600; color:#64748b; padding-top:.35rem; }
+.proof-ledger .side-labelled.step-accepted > .step-compact { grid-column:2; grid-row:1; min-width:0; }
+.proof-ledger .side-labelled > .step-compact { padding:.15rem 0; }
+.replacement-check[hidden] { display:none!important; }
+@media(max-width:600px){.proof-ledger .side-labelled.step-accepted{grid-template-columns:3.6rem minmax(0,1fr);column-gap:.3rem}}
+</style>
+
+<style>
+/* Physical left/right placement is explicit; Hebrew prose stays RTL. */
+.proof-ledger .step-compact { display:grid; direction:ltr; grid-template-columns:3.3rem minmax(0,1fr); align-items:start; }
+.proof-ledger .step-compact > .step-edit { grid-column:1; grid-row:1; justify-self:start; margin:0; direction:rtl; }
+.proof-ledger .step-statement { grid-column:2; grid-row:1; display:grid; grid-template-columns:minmax(0,1fr); align-items:baseline; gap:.4rem; min-width:0; }
+.proof-ledger .step-statement.has-words { grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); }
+.proof-ledger .step-statement > .proof-formula { grid-column:1; margin:0; white-space:normal; overflow-wrap:anywhere; overflow:visible; min-width:0; text-align:left; }
+.proof-ledger .step-statement > .step-compact-words { grid-column:2; direction:rtl; text-align:right; font-size:.9em; }
+.proof-ledger .step-compact-reason { grid-column:2; grid-row:2; direction:rtl; text-align:right; font-size:.85rem; }
+.proof-ledger .step-compact > .kp-table-evidence { grid-column:2; direction:rtl; }
+.proof-ledger .proof-qed { grid-column:2; direction:rtl; justify-self:start; color:#166534; font-weight:700; }
+.proof-qed[hidden],.step-compact-words[hidden] { display:none!important; }
+.proof-ledger .argument-premises li,.proof-ledger .kp-givens li,.argument-ready .proof-ledger > .proof-start { display:grid; direction:ltr; grid-template-columns:3.3rem minmax(0,1fr) minmax(0,1.2fr); gap:.35rem .5rem; align-items:baseline; }
+.proof-ledger .argument-premises li > .bk-btn,.proof-ledger .kp-givens li > .bk-btn,.argument-ready .proof-ledger > .proof-start > .bk-btn { grid-column:1; grid-row:1; margin:0; padding:.15rem .4rem; direction:rtl; justify-self:start; }
+.proof-ledger .argument-premises li > .proof-formula,.proof-ledger .kp-givens li > .proof-formula,.argument-ready .proof-ledger > .proof-start > .proof-formula { grid-column:2; grid-row:1; margin:0; white-space:normal; overflow-wrap:anywhere; }
+.proof-ledger .argument-premises li > strong,.proof-ledger .kp-givens li > span,.argument-ready .proof-ledger > .proof-start > strong { grid-column:3; grid-row:1; direction:rtl; text-align:right; font-size:.9rem; }
+.proof-ledger .argument-rule-help:not(:empty),.proof-ledger .kp-rule-help { background:none; border:0; padding:0; margin:.25rem 0; font-size:.85rem; }
+.proof-ledger .argument-rule-help > summary,.proof-ledger .kp-rule-help > summary { cursor:pointer; color:#475569; }
+.proof-ledger .argument-rule-help p,.proof-ledger .kp-rule-help p { margin:.25rem 0; }
+@media(max-width:480px){
+ .proof-ledger .step-statement.has-words { grid-template-columns:minmax(0,1fr); }
+ .proof-ledger .step-statement > .step-compact-words { grid-column:1; }
+ .proof-ledger .argument-premises li,.proof-ledger .kp-givens li,.argument-ready .proof-ledger > .proof-start { grid-template-columns:3.3rem minmax(0,1fr); }
+ .proof-ledger .argument-premises li > strong,.proof-ledger .kp-givens li > span,.argument-ready .proof-ledger > .proof-start > strong { grid-column:2; grid-row:2; }
+}
+</style>
+
+<style>
+@media(min-width:601px){
+ .proof-ledger .step-compact:has(> .step-statement:not(.has-words)) { grid-template-columns:3.3rem minmax(0,1.5fr) minmax(0,1fr); align-items:baseline; }
+ .proof-ledger .step-compact:has(> .step-statement:not(.has-words)) > .step-compact-reason { grid-column:3; grid-row:1; }
+ .proof-ledger .step-compact:has(> .step-compact-reason:empty) > .step-statement { grid-column:2/-1; }
+}
+</style>
+
+<style>
+.formal-inference { display:grid; grid-template-columns:max-content minmax(0,1fr); gap:.4rem .8rem; align-items:start; direction:rtl; font-size:.9rem; }
+.formal-rule-name { font-weight:600; }
+.formal-rule-stack { min-width:0; direction:ltr; }
+.formal-rule-premise { display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .5rem; }
+.formal-rule-source { color:#64748b; font-size:.85em; }
+.formal-rule-conclusion { border-top:1px solid #475569; margin-top:.2rem; padding-top:.2rem; text-align:left; }
+.formal-inference .proof-formula { margin:0; white-space:normal; overflow-wrap:anywhere; }
+.proof-ledger .side-labelled.step-accepted > .step-label,.proof-ledger .argument-premises li > .given-label,.proof-ledger .kp-givens li > .given-label { font-family:inherit; font-size:.85rem; line-height:1.5; font-weight:600; color:#475569; }
+.proof-ledger .argument-premises li,.proof-ledger .kp-givens li { grid-template-columns:3.3rem minmax(0,1fr) minmax(0,1.2fr) 5.2rem; border-radius:0; background:transparent; }
+.proof-ledger .argument-premises li > .given-label,.proof-ledger .kp-givens li > .given-label { grid-column:4; grid-row:1; direction:rtl; text-align:right; }
+.proof-ledger .argument-premises li > strong,.proof-ledger .kp-givens li > .given-words { font-size:.9rem; font-weight:400; color:#475569; }
+.proof-ledger .step-compact-words { font-size:.9rem; color:#475569; }
+@media(max-width:600px){
+ .formal-inference { grid-template-columns:minmax(0,1fr); gap:.25rem; }
+ .proof-ledger .argument-premises li,.proof-ledger .kp-givens li { grid-template-columns:3.3rem minmax(0,1fr) 3.6rem; }
+ .proof-ledger .argument-premises li > .given-label,.proof-ledger .kp-givens li > .given-label { grid-column:3; }
+ .proof-ledger .argument-premises li > strong,.proof-ledger .kp-givens li > .given-words { grid-column:2; grid-row:2; }
+}
+</style>
+
+<style>
+.formula-autocomplete { display:flex; flex-wrap:wrap; gap:.3rem; flex-basis:100%; padding-top:.3rem; }
+.formula-autocomplete[hidden] { display:none!important; }
+.formula-autocomplete button { border:1px solid #a5b4fc; background:#fff; color:#3730a3; border-radius:4px; padding:.3rem .5rem; font-size:.9rem; }
+.formula-autocomplete button[aria-selected=true] { outline:2px solid #6366f1; background:#eef2ff; }
+</style>
+
+<style>
+.deduction-hint { margin:.35rem 0; font-size:.9rem; }
+.deduction-hint > summary { cursor:pointer; color:#3730a3; }
+.deduction-hint > div { display:flex; flex-wrap:wrap; gap:.4rem; }
+.deduction-hint button { overflow-wrap:anywhere; font-family:"Cambria Math",serif; }
+.deduction-hint[hidden] { display:none!important; }
+
+/* Optional, fillable truth-table proofs. */
+.proof-table-practice { margin:.65rem 0; }
+.proof-table-practice > summary { cursor:pointer; color:#4338ca; font-weight:600; }
+.proof-table-practice .bk-tt select { min-width:3.4rem; padding:.3rem; text-align:center; }
+.proof-table-practice [aria-invalid="true"] { outline:2px solid #b91c1c; }
+.proof-table-practice th { vertical-align:top; }
+</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<script id="book-toc-data" type="application/json">[{"file":"01-logic.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#sec-about\" id=\"toc-sec-about\" class=\"nav-link active\" data-scroll-target=\"#sec-about\">\u003cspan class=\"header-section-number\">1.1\u003c/span> על מה הקורס הזה?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-consistency\" id=\"toc-sec-consistency\" class=\"nav-link\" data-scroll-target=\"#sec-consistency\">\u003cspan class=\"header-section-number\">1.2\u003c/span> האם המסקנה נובעת מההנחות?\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-argument-basics\" id=\"toc-sec-argument-basics\" class=\"nav-link\" data-scroll-target=\"#sec-argument-basics\">\u003cspan class=\"header-section-number\">1.2.1\u003c/span> הנחות, מסקנה וטיעון\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-הדוגמאות-מלמדות\" id=\"toc-מה-הדוגמאות-מלמדות\" class=\"nav-link\" data-scroll-target=\"#מה-הדוגמאות-מלמדות\">\u003cspan class=\"header-section-number\">1.2.2\u003c/span> מה הדוגמאות מלמדות?\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-propositions\" id=\"toc-sec-propositions\" class=\"nav-link\" data-scroll-target=\"#sec-propositions\">\u003cspan class=\"header-section-number\">1.3\u003c/span> פסוקים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-proposition-basics\" id=\"toc-sec-proposition-basics\" class=\"nav-link\" data-scroll-target=\"#sec-proposition-basics\">\u003cspan class=\"header-section-number\">1.3.1\u003c/span> מהו פסוק ומהו ערך אמת?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-naming-statements\" id=\"toc-sec-naming-statements\" class=\"nav-link\" data-scroll-target=\"#sec-naming-statements\">\u003cspan class=\"header-section-number\">1.3.2\u003c/span> איך נותנים לפסוק שם?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-open-propositions\" id=\"toc-sec-open-propositions\" class=\"nav-link\" data-scroll-target=\"#sec-open-propositions\">\u003cspan class=\"header-section-number\">1.3.3\u003c/span> משפט שתלוי בערך שנבחר: פסוק פתוח\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#sec-naming-open-statements\" id=\"toc-sec-naming-open-statements\" class=\"nav-link\" data-scroll-target=\"#sec-naming-open-statements\">\u003cspan class=\"header-section-number\">1.3.3.1\u003c/span> איך נותנים שם לפסוק פתוח?\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-proposition-check\" id=\"toc-sec-proposition-check\" class=\"nav-link\" data-scroll-target=\"#sec-proposition-check\">\u003cspan class=\"header-section-number\">1.3.4\u003c/span> בודקים שההבדל ברור\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-connectives\" id=\"toc-sec-connectives\" class=\"nav-link\" data-scroll-target=\"#sec-connectives\">\u003cspan class=\"header-section-number\">1.4\u003c/span> קשרים לוגיים: מפסוקים פשוטים לפסוק מורכב\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-combining-statements\" id=\"toc-sec-combining-statements\" class=\"nav-link\" data-scroll-target=\"#sec-combining-statements\">\u003cspan class=\"header-section-number\">1.4.1\u003c/span> מחברים פסוקים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-negation\" id=\"toc-sec-negation\" class=\"nav-link\" data-scroll-target=\"#sec-negation\">\u003cspan class=\"header-section-number\">1.4.2\u003c/span> שלילה: ״לא״\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#משחק-של-אור-ואמת\" id=\"toc-משחק-של-אור-ואמת\" class=\"nav-link\" data-scroll-target=\"#משחק-של-אור-ואמת\">\u003cspan class=\"header-section-number\">1.4.2.1\u003c/span> משחק של אור ואמת\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-and\" id=\"toc-sec-and\" class=\"nav-link\" data-scroll-target=\"#sec-and\">\u003cspan class=\"header-section-number\">1.4.3\u003c/span> וגם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-or\" id=\"toc-sec-or\" class=\"nav-link\" data-scroll-target=\"#sec-or\">\u003cspan class=\"header-section-number\">1.4.4\u003c/span> או\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-xor\" id=\"toc-sec-xor\" class=\"nav-link\" data-scroll-target=\"#sec-xor\">\u003cspan class=\"header-section-number\">1.4.5\u003c/span> או מפריד\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-parentheses\" id=\"toc-sec-parentheses\" class=\"nav-link\" data-scroll-target=\"#sec-parentheses\">\u003cspan class=\"header-section-number\">1.4.6\u003c/span> סוגריים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-complex-truth-tables\" id=\"toc-sec-complex-truth-tables\" class=\"nav-link\" data-scroll-target=\"#sec-complex-truth-tables\">\u003cspan class=\"header-section-number\">1.5\u003c/span> בונים טבלת אמת של פסוק מורכב\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-table-building\" id=\"toc-sec-table-building\" class=\"nav-link\" data-scroll-target=\"#sec-table-building\">\u003cspan class=\"header-section-number\">1.5.1\u003c/span> מחשבים חלק אחר חלק\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#כמה-שורות-יש-בטבלה\" id=\"toc-כמה-שורות-יש-בטבלה\" class=\"nav-link\" data-scroll-target=\"#כמה-שורות-יש-בטבלה\">\u003cspan class=\"header-section-number\">1.5.2\u003c/span> כמה שורות יש בטבלה?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#טבלה-של-פסוק-מורכב\" id=\"toc-טבלה-של-פסוק-מורכב\" class=\"nav-link\" data-scroll-target=\"#טבלה-של-פסוק-מורכב\">\u003cspan class=\"header-section-number\">1.5.3\u003c/span> טבלה של פסוק מורכב\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-taut\" id=\"toc-sec-taut\" class=\"nav-link\" data-scroll-target=\"#sec-taut\">\u003cspan class=\"header-section-number\">1.5.4\u003c/span> טאוטולוגיה וסתירה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-evaluate\" id=\"toc-sec-evaluate\" class=\"nav-link\" data-scroll-target=\"#sec-evaluate\">\u003cspan class=\"header-section-number\">1.5.5\u003c/span> מתרגלים: אמת או שקר?\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-demorgan\" id=\"toc-sec-demorgan\" class=\"nav-link\" data-scroll-target=\"#sec-demorgan\">\u003cspan class=\"header-section-number\">1.6\u003c/span> שקילות לוגית וחוקי דה מורגן\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-logical-equivalence\" id=\"toc-sec-logical-equivalence\" class=\"nav-link\" data-scroll-target=\"#sec-logical-equivalence\">\u003cspan class=\"header-section-number\">1.6.1\u003c/span> מהי שקילות לוגית?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#איך-שוללים-משפט-שיש-בו-וגם-או-או\" id=\"toc-איך-שוללים-משפט-שיש-בו-וגם-או-או\" class=\"nav-link\" data-scroll-target=\"#איך-שוללים-משפט-שיש-בו-וגם-או-או\">\u003cspan class=\"header-section-number\">1.6.2\u003c/span> איך שוללים משפט שיש בו ״וגם״ או ״או״?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-full-signal\" id=\"toc-sec-full-signal\" class=\"nav-link\" data-scroll-target=\"#sec-full-signal\">\u003cspan class=\"header-section-number\">1.6.3\u003c/span> הפסוק ושלילתו באותו מעגל\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#משווים-שני-ניסוחים-בעזרת-מנורות\" id=\"toc-משווים-שני-ניסוחים-בעזרת-מנורות\" class=\"nav-link\" data-scroll-target=\"#משווים-שני-ניסוחים-בעזרת-מנורות\">\u003cspan class=\"header-section-number\">1.6.4\u003c/span> משווים שני ניסוחים בעזרת מנורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-implication\" id=\"toc-sec-implication\" class=\"nav-link\" data-scroll-target=\"#sec-implication\">\u003cspan class=\"header-section-number\">1.7\u003c/span> אם… אז…: גרירה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-implication-meaning\" id=\"toc-sec-implication-meaning\" class=\"nav-link\" data-scroll-target=\"#sec-implication-meaning\">\u003cspan class=\"header-section-number\">1.7.1\u003c/span> משמעות הגרירה וטבלת האמת שלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-converse\" id=\"toc-sec-converse\" class=\"nav-link\" data-scroll-target=\"#sec-converse\">\u003cspan class=\"header-section-number\">1.7.2\u003c/span> היפוך וגרירה נגדית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-iff\" id=\"toc-sec-iff\" class=\"nav-link\" data-scroll-target=\"#sec-iff\">\u003cspan class=\"header-section-number\">1.7.3\u003c/span> אם ורק אם\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-calculus\" id=\"toc-sec-calculus\" class=\"nav-link\" data-scroll-target=\"#sec-calculus\">\u003cspan class=\"header-section-number\">1.8\u003c/span> תחשיב הפסוקים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-formalization\" id=\"toc-sec-formalization\" class=\"nav-link\" data-scroll-target=\"#sec-formalization\">\u003cspan class=\"header-section-number\">1.8.1\u003c/span> הצרנה: מן הניסוח במילים אל הסימנים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-equivalence-calculus\" id=\"toc-sec-equivalence-calculus\" class=\"nav-link\" data-scroll-target=\"#sec-equivalence-calculus\">\u003cspan class=\"header-section-number\">1.8.2\u003c/span> חוקי שקילות ופישוט נוסחאות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-deduction\" id=\"toc-sec-deduction\" class=\"nav-link\" data-scroll-target=\"#sec-deduction\">\u003cspan class=\"header-section-number\">1.8.3\u003c/span> כללי היסק\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#sec-rule-mp\" id=\"toc-sec-rule-mp\" class=\"nav-link\" data-scroll-target=\"#sec-rule-mp\">\u003cspan class=\"header-section-number\">1.8.3.1\u003c/span> כלל הניתוק (Modus Ponens)\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-rule-mt\" id=\"toc-sec-rule-mt\" class=\"nav-link\" data-scroll-target=\"#sec-rule-mt\">\u003cspan class=\"header-section-number\">1.8.3.2\u003c/span> כלל השלילה (Modus Tollens)\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-rule-hs\" id=\"toc-sec-rule-hs\" class=\"nav-link\" data-scroll-target=\"#sec-rule-hs\">\u003cspan class=\"header-section-number\">1.8.3.3\u003c/span> כלל השרשרת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-rule-and-out\" id=\"toc-sec-rule-and-out\" class=\"nav-link\" data-scroll-target=\"#sec-rule-and-out\">\u003cspan class=\"header-section-number\">1.8.3.4\u003c/span> הוצאת חלק מ״וגם״\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-rule-and-in\" id=\"toc-sec-rule-and-in\" class=\"nav-link\" data-scroll-target=\"#sec-rule-and-in\">\u003cspan class=\"header-section-number\">1.8.3.5\u003c/span> חיבור באמצעות ״וגם״\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-rule-iff\" id=\"toc-sec-rule-iff\" class=\"nav-link\" data-scroll-target=\"#sec-rule-iff\">\u003cspan class=\"header-section-number\">1.8.3.6\u003c/span> שימוש באם ורק אם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-inference-practice\" id=\"toc-sec-inference-practice\" class=\"nav-link\" data-scroll-target=\"#sec-inference-practice\">\u003cspan class=\"header-section-number\">1.8.3.7\u003c/span> תרגול משולב וזיהוי כשלים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-proof-methods\" id=\"toc-sec-proof-methods\" class=\"nav-link\" data-scroll-target=\"#sec-proof-methods\">\u003cspan class=\"header-section-number\">1.8.4\u003c/span> שתי דרכי הוכחה נוספות\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#sec-proof-contradiction\" id=\"toc-sec-proof-contradiction\" class=\"nav-link\" data-scroll-target=\"#sec-proof-contradiction\">\u003cspan class=\"header-section-number\">1.8.4.1\u003c/span> הוכחה בדרך השלילה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-proof-cases\" id=\"toc-sec-proof-cases\" class=\"nav-link\" data-scroll-target=\"#sec-proof-cases\">\u003cspan class=\"header-section-number\">1.8.4.2\u003c/span> הוכחה לפי מקרים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights\" id=\"toc-sec-knights\" class=\"nav-link\" data-scroll-target=\"#sec-knights\">\u003cspan class=\"header-section-number\">1.9\u003c/span> אבירים ונוכלים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-knights-first\" id=\"toc-sec-knights-first\" class=\"nav-link\" data-scroll-target=\"#sec-knights-first\">\u003cspan class=\"header-section-number\">1.9.1\u003c/span> מתחילים מחידה: בודקים את כל האפשרויות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-rule\" id=\"toc-sec-knights-rule\" class=\"nav-link\" data-scroll-target=\"#sec-knights-rule\">\u003cspan class=\"header-section-number\">1.9.2\u003c/span> מהטבלה לכלל\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-more\" id=\"toc-sec-knights-more\" class=\"nav-link\" data-scroll-target=\"#sec-knights-more\">\u003cspan class=\"header-section-number\">1.9.3\u003c/span> חידות נוספות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-direct\" id=\"toc-sec-knights-direct\" class=\"nav-link\" data-scroll-target=\"#sec-knights-direct\">\u003cspan class=\"header-section-number\">1.9.4\u003c/span> מוצאים את כל האפשרויות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-cases\" id=\"toc-sec-knights-cases\" class=\"nav-link\" data-scroll-target=\"#sec-knights-cases\">\u003cspan class=\"header-section-number\">1.9.5\u003c/span> לפעמים יש כמה פתרונות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-undetermined\" id=\"toc-sec-knights-undetermined\" class=\"nav-link\" data-scroll-target=\"#sec-knights-undetermined\">\u003cspan class=\"header-section-number\">1.9.6\u003c/span> כשסוגו של תושב אינו נקבע\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-impossible\" id=\"toc-sec-knights-impossible\" class=\"nav-link\" data-scroll-target=\"#sec-knights-impossible\">\u003cspan class=\"header-section-number\">1.9.7\u003c/span> לפעמים אין פתרון\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-knights-practice\" id=\"toc-sec-knights-practice\" class=\"nav-link\" data-scroll-target=\"#sec-knights-practice\">\u003cspan class=\"header-section-number\">1.9.8\u003c/span> ממשיכים לתרגל\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-summary\" id=\"toc-sec-summary\" class=\"nav-link\" data-scroll-target=\"#sec-summary\">\u003cspan class=\"header-section-number\">1.10\u003c/span> סיכום\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#פסוקים-שמות-וטבלאות-אמת\" id=\"toc-פסוקים-שמות-וטבלאות-אמת\" class=\"nav-link\" data-scroll-target=\"#פסוקים-שמות-וטבלאות-אמת\">\u003cspan class=\"header-section-number\">1.10.1\u003c/span> פסוקים, שמות וטבלאות אמת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הקשרים-שלמדנו\" id=\"toc-הקשרים-שלמדנו\" class=\"nav-link\" data-scroll-target=\"#הקשרים-שלמדנו\">\u003cspan class=\"header-section-number\">1.10.2\u003c/span> הקשרים שלמדנו\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שקילות-וכתיבת-הוכחה\" id=\"toc-שקילות-וכתיבת-הוכחה\" class=\"nav-link\" data-scroll-target=\"#שקילות-וכתיבת-הוכחה\">\u003cspan class=\"header-section-number\">1.10.3\u003c/span> שקילות וכתיבת הוכחה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הצרנה-ודרכי-הוכחה\" id=\"toc-הצרנה-ודרכי-הוכחה\" class=\"nav-link\" data-scroll-target=\"#הצרנה-ודרכי-הוכחה\">\u003cspan class=\"header-section-number\">1.10.4\u003c/span> הצרנה ודרכי הוכחה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הסקת-מסקנות\" id=\"toc-הסקת-מסקנות\" class=\"nav-link\" data-scroll-target=\"#הסקת-מסקנות\">\u003cspan class=\"header-section-number\">1.10.5\u003c/span> הסקת מסקנות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-self-practice\" id=\"toc-sec-self-practice\" class=\"nav-link\" data-scroll-target=\"#sec-self-practice\">\u003cspan class=\"header-section-number\">1.11\u003c/span> תרגול עצמי לפי נושאים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#practice-statements\" id=\"toc-practice-statements\" class=\"nav-link\" data-scroll-target=\"#practice-statements\">\u003cspan class=\"header-section-number\">1.11.1\u003c/span> פסוקים ופסוקים פתוחים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-translation\" id=\"toc-practice-translation\" class=\"nav-link\" data-scroll-target=\"#practice-translation\">\u003cspan class=\"header-section-number\">1.11.2\u003c/span> ממילים לנוסחאות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-tables\" id=\"toc-practice-tables\" class=\"nav-link\" data-scroll-target=\"#practice-tables\">\u003cspan class=\"header-section-number\">1.11.3\u003c/span> טבלאות אמת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-implication\" id=\"toc-practice-implication\" class=\"nav-link\" data-scroll-target=\"#practice-implication\">\u003cspan class=\"header-section-number\">1.11.4\u003c/span> גרירה ואם ורק אם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-equivalence\" id=\"toc-practice-equivalence\" class=\"nav-link\" data-scroll-target=\"#practice-equivalence\">\u003cspan class=\"header-section-number\">1.11.5\u003c/span> שקילויות: מצדיקים כל שינוי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-proofs\" id=\"toc-practice-proofs\" class=\"nav-link\" data-scroll-target=\"#practice-proofs\">\u003cspan class=\"header-section-number\">1.11.6\u003c/span> הוכחות עם סיוע: מצדיקים כל צעד\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#מתחילים-הוכחה-בצעד-אחד\" id=\"toc-מתחילים-הוכחה-בצעד-אחד\" class=\"nav-link\" data-scroll-target=\"#מתחילים-הוכחה-בצעד-אחד\">\u003cspan class=\"header-section-number\">1.11.6.1\u003c/span> מתחילים: הוכחה בצעד אחד\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ממשיכים-מחברים-נתונים-ומסקנות-ביניים\" id=\"toc-ממשיכים-מחברים-נתונים-ומסקנות-ביניים\" class=\"nav-link\" data-scroll-target=\"#ממשיכים-מחברים-נתונים-ומסקנות-ביניים\">\u003cspan class=\"header-section-number\">1.11.6.2\u003c/span> ממשיכים: מחברים נתונים ומסקנות ביניים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#משלבים-שינוי-ניסוח-ואז-הסקה\" id=\"toc-משלבים-שינוי-ניסוח-ואז-הסקה\" class=\"nav-link\" data-scroll-target=\"#משלבים-שינוי-ניסוח-ואז-הסקה\">\u003cspan class=\"header-section-number\">1.11.6.3\u003c/span> משלבים: שינוי ניסוח ואז הסקה\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-knights\" id=\"toc-practice-knights\" class=\"nav-link\" data-scroll-target=\"#practice-knights\">\u003cspan class=\"header-section-number\">1.11.7\u003c/span> אבירים ונוכלים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"02-sets.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#sec-sets-membership\" id=\"toc-sec-sets-membership\" class=\"nav-link active\" data-scroll-target=\"#sec-sets-membership\">\u003cspan class=\"header-section-number\">2.1\u003c/span> קבוצות, איברים ושייכות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-set-basics\" id=\"toc-sec-set-basics\" class=\"nav-link\" data-scroll-target=\"#sec-set-basics\">\u003cspan class=\"header-section-number\">2.1.1\u003c/span> מהי קבוצה?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-cardinality\" id=\"toc-sec-set-cardinality\" class=\"nav-link\" data-scroll-target=\"#sec-set-cardinality\">\u003cspan class=\"header-section-number\">2.1.2\u003c/span> עצמה, הקבוצה הריקה וקבוצות אינסופיות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-number-sets\" id=\"toc-sec-number-sets\" class=\"nav-link\" data-scroll-target=\"#sec-number-sets\">\u003cspan class=\"header-section-number\">2.1.3\u003c/span> כמה קבוצות מספרים שימושיות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-builder\" id=\"toc-sec-set-builder\" class=\"nav-link\" data-scroll-target=\"#sec-set-builder\">\u003cspan class=\"header-section-number\">2.1.4\u003c/span> מתארים קבוצה באמצעות תנאי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-nested-sets\" id=\"toc-sec-nested-sets\" class=\"nav-link\" data-scroll-target=\"#sec-nested-sets\">\u003cspan class=\"header-section-number\">2.1.5\u003c/span> קבוצות בתוך קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets-membership\" id=\"toc-practice-sets-membership\" class=\"nav-link\" data-scroll-target=\"#practice-sets-membership\">\u003cspan class=\"header-section-number\">2.1.6\u003c/span> תרגול לסעיף: קבוצות ואיברים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-quantifiers\" id=\"toc-sec-quantifiers\" class=\"nav-link\" data-scroll-target=\"#sec-quantifiers\">\u003cspan class=\"header-section-number\">2.2\u003c/span> כמתים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-quantifier-basics\" id=\"toc-sec-quantifier-basics\" class=\"nav-link\" data-scroll-target=\"#sec-quantifier-basics\">\u003cspan class=\"header-section-number\">2.2.1\u003c/span> מן האיבר אל הקבוצה כולה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-bar\" id=\"toc-sec-bar\" class=\"nav-link\" data-scroll-target=\"#sec-bar\">\u003cspan class=\"header-section-number\">2.2.2\u003c/span> שלושה מתמטיקאים ניגשים לדוכן פלאפל\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-bar-again\" id=\"toc-sec-bar-again\" class=\"nav-link\" data-scroll-target=\"#sec-bar-again\">\u003cspan class=\"header-section-number\">2.2.3\u003c/span> ״כולם״ ו״מישהו״ בשפת הכמתים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-evidence\" id=\"toc-sec-evidence\" class=\"nav-link\" data-scroll-target=\"#sec-evidence\">\u003cspan class=\"header-section-number\">2.2.4\u003c/span> איזו הוכחה צריך?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-arbitrary-element\" id=\"toc-sec-arbitrary-element\" class=\"nav-link\" data-scroll-target=\"#sec-arbitrary-element\">\u003cspan class=\"header-section-number\">2.2.5\u003c/span> איך מוכיחים טענה על כל האיברים?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-domain\" id=\"toc-sec-domain\" class=\"nav-link\" data-scroll-target=\"#sec-domain\">\u003cspan class=\"header-section-number\">2.2.6\u003c/span> התחום חשוב\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-neg-quantifiers\" id=\"toc-sec-neg-quantifiers\" class=\"nav-link\" data-scroll-target=\"#sec-neg-quantifiers\">\u003cspan class=\"header-section-number\">2.2.7\u003c/span> שלילה של כמתים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-quantifier-order\" id=\"toc-sec-quantifier-order\" class=\"nav-link\" data-scroll-target=\"#sec-quantifier-order\">\u003cspan class=\"header-section-number\">2.2.8\u003c/span> סדר הכמתים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-quantifiers\" id=\"toc-practice-quantifiers\" class=\"nav-link\" data-scroll-target=\"#practice-quantifiers\">\u003cspan class=\"header-section-number\">2.2.9\u003c/span> תרגול לסעיף: כמתים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-equality-inclusion\" id=\"toc-sec-set-equality-inclusion\" class=\"nav-link\" data-scroll-target=\"#sec-set-equality-inclusion\">\u003cspan class=\"header-section-number\">2.3\u003c/span> שוויון והכלה של קבוצות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-equality-basics\" id=\"toc-sec-equality-basics\" class=\"nav-link\" data-scroll-target=\"#sec-equality-basics\">\u003cspan class=\"header-section-number\">2.3.1\u003c/span> מתי שתי קבוצות שוות?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-order\" id=\"toc-sec-set-order\" class=\"nav-link\" data-scroll-target=\"#sec-set-order\">\u003cspan class=\"header-section-number\">2.3.2\u003c/span> סדר וחזרות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-subset\" id=\"toc-sec-set-subset\" class=\"nav-link\" data-scroll-target=\"#sec-set-subset\">\u003cspan class=\"header-section-number\">2.3.3\u003c/span> קבוצה בתוך קבוצה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-inclusion-writing\" id=\"toc-sec-inclusion-writing\" class=\"nav-link\" data-scroll-target=\"#sec-inclusion-writing\">\u003cspan class=\"header-section-number\">2.3.4\u003c/span> כותבים הוכחת הכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-double-inclusion\" id=\"toc-sec-double-inclusion\" class=\"nav-link\" data-scroll-target=\"#sec-double-inclusion\">\u003cspan class=\"header-section-number\">2.3.5\u003c/span> מוכיחים שוויון בשתי הכלות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-membership-vs-inclusion\" id=\"toc-sec-membership-vs-inclusion\" class=\"nav-link\" data-scroll-target=\"#sec-membership-vs-inclusion\">\u003cspan class=\"header-section-number\">2.3.6\u003c/span> שייכות אינה הכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-set-inclusion\" id=\"toc-practice-set-inclusion\" class=\"nav-link\" data-scroll-target=\"#practice-set-inclusion\">\u003cspan class=\"header-section-number\">2.3.7\u003c/span> תרגול לסעיף: הכלה ודוגמאות נגדיות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-union-intersection\" id=\"toc-sec-union-intersection\" class=\"nav-link\" data-scroll-target=\"#sec-union-intersection\">\u003cspan class=\"header-section-number\">2.4\u003c/span> איחוד וחיתוך\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-intersection\" id=\"toc-sec-intersection\" class=\"nav-link\" data-scroll-target=\"#sec-intersection\">\u003cspan class=\"header-section-number\">2.4.1\u003c/span> חיתוך: מי עומד בשתי הדרישות?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-union\" id=\"toc-sec-union\" class=\"nav-link\" data-scroll-target=\"#sec-union\">\u003cspan class=\"header-section-number\">2.4.2\u003c/span> איחוד: מי עומד לפחות באחת הדרישות?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-venn\" id=\"toc-sec-venn\" class=\"nav-link\" data-scroll-target=\"#sec-venn\">\u003cspan class=\"header-section-number\">2.4.3\u003c/span> רואים את האזורים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-set-direct-proofs\" id=\"toc-practice-set-direct-proofs\" class=\"nav-link\" data-scroll-target=\"#practice-set-direct-proofs\">\u003cspan class=\"header-section-number\">2.4.4\u003c/span> תרגול לסעיף: איחוד וחיתוך\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-difference-complement\" id=\"toc-sec-set-difference-complement\" class=\"nav-link\" data-scroll-target=\"#sec-set-difference-complement\">\u003cspan class=\"header-section-number\">2.5\u003c/span> הפרש, משלים והפרש סימטרי\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-difference\" id=\"toc-sec-difference\" class=\"nav-link\" data-scroll-target=\"#sec-difference\">\u003cspan class=\"header-section-number\">2.5.1\u003c/span> הפרש: מתחילים מקבוצה ומוציאים איברים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-complement\" id=\"toc-sec-complement\" class=\"nav-link\" data-scroll-target=\"#sec-complement\">\u003cspan class=\"header-section-number\">2.5.2\u003c/span> משלים: מי נשאר מחוץ לקבוצה, בתוך העולם?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-symmetric-difference\" id=\"toc-sec-symmetric-difference\" class=\"nav-link\" data-scroll-target=\"#sec-symmetric-difference\">\u003cspan class=\"header-section-number\">2.5.3\u003c/span> הפרש סימטרי: בדיוק באחת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-demorgan-proof\" id=\"toc-sec-set-demorgan-proof\" class=\"nav-link\" data-scroll-target=\"#sec-set-demorgan-proof\">\u003cspan class=\"header-section-number\">2.5.4\u003c/span> מוכיחים את חוק דה מורגן באמצעות לוגיקה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-laws\" id=\"toc-sec-set-laws\" class=\"nav-link\" data-scroll-target=\"#sec-set-laws\">\u003cspan class=\"header-section-number\">2.5.5\u003c/span> אותם כללים בשפה של קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-set-difference\" id=\"toc-practice-set-difference\" class=\"nav-link\" data-scroll-target=\"#practice-set-difference\">\u003cspan class=\"header-section-number\">2.5.6\u003c/span> תרגול לסעיף: הפרש ומשלים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-inclusion-exclusion\" id=\"toc-sec-inclusion-exclusion\" class=\"nav-link\" data-scroll-target=\"#sec-inclusion-exclusion\">\u003cspan class=\"header-section-number\">2.6\u003c/span> סופרים איחוד: עקרון ההכלה וההפרדה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-inclusion-exclusion-three\" id=\"toc-sec-inclusion-exclusion-three\" class=\"nav-link\" data-scroll-target=\"#sec-inclusion-exclusion-three\">\u003cspan class=\"header-section-number\">2.6.1\u003c/span> ומה קורה עם שלוש קבוצות?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets-counting\" id=\"toc-practice-sets-counting\" class=\"nav-link\" data-scroll-target=\"#practice-sets-counting\">\u003cspan class=\"header-section-number\">2.6.2\u003c/span> תרגול לסעיף: הכלה והפרדה\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-power-set\" id=\"toc-sec-power-set\" class=\"nav-link\" data-scroll-target=\"#sec-power-set\">\u003cspan class=\"header-section-number\">2.7\u003c/span> קבוצת החזקה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-all-subsets\" id=\"toc-sec-all-subsets\" class=\"nav-link\" data-scroll-target=\"#sec-all-subsets\">\u003cspan class=\"header-section-number\">2.7.1\u003c/span> אוסף של כל הבחירות האפשריות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-subset-builder\" id=\"toc-sec-subset-builder\" class=\"nav-link\" data-scroll-target=\"#sec-subset-builder\">\u003cspan class=\"header-section-number\">2.7.2\u003c/span> איך מוצאים את כולן בלי כפילויות?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-power-cardinality\" id=\"toc-sec-power-cardinality\" class=\"nav-link\" data-scroll-target=\"#sec-power-cardinality\">\u003cspan class=\"header-section-number\">2.7.3\u003c/span> העצמה של קבוצת החזקה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets-power-product\" id=\"toc-practice-sets-power-product\" class=\"nav-link\" data-scroll-target=\"#practice-sets-power-product\">\u003cspan class=\"header-section-number\">2.7.4\u003c/span> תרגול לסעיף: קבוצת החזקה\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-proofs\" id=\"toc-sec-set-proofs\" class=\"nav-link\" data-scroll-target=\"#sec-set-proofs\">\u003cspan class=\"header-section-number\">2.8\u003c/span> משלבים הגדרות וכללי הוכחה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-set-inclusion-proof\" id=\"toc-sec-set-inclusion-proof\" class=\"nav-link\" data-scroll-target=\"#sec-set-inclusion-proof\">\u003cspan class=\"header-section-number\">2.8.1\u003c/span> הכלה ומקרים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-set-proof-goals\" id=\"toc-sec-set-proof-goals\" class=\"nav-link\" data-scroll-target=\"#sec-set-proof-goals\">\u003cspan class=\"header-section-number\">2.8.2\u003c/span> מפריכים באמצעות איבר שמבדיל\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets\" id=\"toc-practice-sets\" class=\"nav-link\" data-scroll-target=\"#practice-sets\">\u003cspan class=\"header-section-number\">2.9\u003c/span> תרגול משולב: קבוצות וכמתים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#practice-sets-operations\" id=\"toc-practice-sets-operations\" class=\"nav-link\" data-scroll-target=\"#practice-sets-operations\">\u003cspan class=\"header-section-number\">2.9.1\u003c/span> חישובים שמשלבים פעולות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-set-equality-proofs\" id=\"toc-practice-set-equality-proofs\" class=\"nav-link\" data-scroll-target=\"#practice-set-equality-proofs\">\u003cspan class=\"header-section-number\">2.9.2\u003c/span> שוויון קבוצות ושילוב כללים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-set-counterexamples\" id=\"toc-practice-set-counterexamples\" class=\"nav-link\" data-scroll-target=\"#practice-set-counterexamples\">\u003cspan class=\"header-section-number\">2.9.3\u003c/span> כמתים, מקרים ודוגמאות נגדיות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"03-relations.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#sec-cartesian-product\" id=\"toc-sec-cartesian-product\" class=\"nav-link active\" data-scroll-target=\"#sec-cartesian-product\">\u003cspan class=\"header-section-number\">3.1\u003c/span> זוגות סדורים ומכפלה קרטזית\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-ordered-pair\" id=\"toc-sec-ordered-pair\" class=\"nav-link\" data-scroll-target=\"#sec-ordered-pair\">\u003cspan class=\"header-section-number\">3.1.1\u003c/span> כאן הסדר דווקא חשוב\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-product-definition\" id=\"toc-sec-product-definition\" class=\"nav-link\" data-scroll-target=\"#sec-product-definition\">\u003cspan class=\"header-section-number\">3.1.2\u003c/span> כל הצירופים של שתי בחירות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-product-properties\" id=\"toc-sec-product-properties\" class=\"nav-link\" data-scroll-target=\"#sec-product-properties\">\u003cspan class=\"header-section-number\">3.1.3\u003c/span> הסדר, המספר והקבוצה הריקה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#practice-sets-product\" id=\"toc-practice-sets-product\" class=\"nav-link\" data-scroll-target=\"#practice-sets-product\">\u003cspan class=\"header-section-number\">3.1.4\u003c/span> תרגול לסעיף: מכפלה קרטזית\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-relations-between-sets\" id=\"toc-sec-relations-between-sets\" class=\"nav-link\" data-scroll-target=\"#sec-relations-between-sets\">\u003cspan class=\"header-section-number\">3.2\u003c/span> יחסים בין קבוצות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#sec-relation-definition\" id=\"toc-sec-relation-definition\" class=\"nav-link\" data-scroll-target=\"#sec-relation-definition\">\u003cspan class=\"header-section-number\">3.2.1\u003c/span> מן האפשרויות אל הקשרים שמתקיימים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-relations-self-check\" id=\"toc-sec-relations-self-check\" class=\"nav-link\" data-scroll-target=\"#sec-relations-self-check\">\u003cspan class=\"header-section-number\">3.2.2\u003c/span> בדיקה עצמית: מה ההגדרה דורשת?\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-relations-worked-questions\" id=\"toc-sec-relations-worked-questions\" class=\"nav-link\" data-scroll-target=\"#sec-relations-worked-questions\">\u003cspan class=\"header-section-number\">3.2.3\u003c/span> שאלות פתורות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#sec-relations-activity\" id=\"toc-sec-relations-activity\" class=\"nav-link\" data-scroll-target=\"#sec-relations-activity\">\u003cspan class=\"header-section-number\">3.2.4\u003c/span> פעילות: משחזרים את ההרשמה\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"index.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#פתח-דבר\" id=\"toc-פתח-דבר\" class=\"nav-link active\" data-scroll-target=\"#פתח-דבר\">פתח דבר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#מקורות\" id=\"toc-מקורות\" class=\"nav-link\" data-scroll-target=\"#מקורות\">מקורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"}]</script>
+</head>
+
+<body class="nav-sidebar floating quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" aria-label="סרגל כלים">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="הצג/הסתר את סרגל הניווט" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="נתיב"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03-relations.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">יחסים</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="חפש" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="אתר אינטרנט">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">מתמטיקה בדידה — מערכי הרצאה</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="הצג/הסתר מצב קריאה">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="חפש"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">פתח דבר</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-logic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">לוגיקה: הכללים לבניית משפטים ולהסקת מסקנות</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-sets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">קבוצות וכמתים</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-relations.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">יחסים</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+    <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active" data-toc-expanded="-1">
+    <h2 id="toc-title">סעיפי הפרק</h2>
+   
+  <ul>
+  <li><a href="#sec-cartesian-product" id="toc-sec-cartesian-product" class="nav-link active" data-scroll-target="#sec-cartesian-product"><span class="header-section-number">3.1</span> זוגות סדורים ומכפלה קרטזית</a>
+  <ul>
+  <li><a href="#sec-ordered-pair" id="toc-sec-ordered-pair" class="nav-link" data-scroll-target="#sec-ordered-pair"><span class="header-section-number">3.1.1</span> כאן הסדר דווקא חשוב</a></li>
+  <li><a href="#sec-product-definition" id="toc-sec-product-definition" class="nav-link" data-scroll-target="#sec-product-definition"><span class="header-section-number">3.1.2</span> כל הצירופים של שתי בחירות</a></li>
+  <li><a href="#sec-product-properties" id="toc-sec-product-properties" class="nav-link" data-scroll-target="#sec-product-properties"><span class="header-section-number">3.1.3</span> הסדר, המספר והקבוצה הריקה</a></li>
+  <li><a href="#practice-sets-product" id="toc-practice-sets-product" class="nav-link" data-scroll-target="#practice-sets-product"><span class="header-section-number">3.1.4</span> תרגול לסעיף: מכפלה קרטזית</a></li>
+  </ul></li>
+  <li><a href="#sec-relations-between-sets" id="toc-sec-relations-between-sets" class="nav-link" data-scroll-target="#sec-relations-between-sets"><span class="header-section-number">3.2</span> יחסים בין קבוצות</a>
+  <ul>
+  <li><a href="#sec-relation-definition" id="toc-sec-relation-definition" class="nav-link" data-scroll-target="#sec-relation-definition"><span class="header-section-number">3.2.1</span> מן האפשרויות אל הקשרים שמתקיימים</a></li>
+  <li><a href="#sec-relations-self-check" id="toc-sec-relations-self-check" class="nav-link" data-scroll-target="#sec-relations-self-check"><span class="header-section-number">3.2.2</span> בדיקה עצמית: מה ההגדרה דורשת?</a></li>
+  <li><a href="#sec-relations-worked-questions" id="toc-sec-relations-worked-questions" class="nav-link" data-scroll-target="#sec-relations-worked-questions"><span class="header-section-number">3.2.3</span> שאלות פתורות</a></li>
+  <li><a href="#sec-relations-activity" id="toc-sec-relations-activity" class="nav-link" data-scroll-target="#sec-relations-activity"><span class="header-section-number">3.2.4</span> פעילות: משחזרים את ההרשמה</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">יחסים</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>בפרק הקודם הוספנו לאוצר המילים המתמטי את המושג <strong>קבוצה</strong>. בפרק זה נרחיב את השפה בעזרת המושג <strong>יחס</strong>, שיאפשר לנו לתאר קשרים בין איברים של קבוצות.</p>
+<section id="sec-cartesian-product" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="sec-cartesian-product"><span class="header-section-number">3.1</span> זוגות סדורים ומכפלה קרטזית</h2>
+<section id="sec-ordered-pair" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="sec-ordered-pair"><span class="header-section-number">3.1.1</span> כאן הסדר דווקא חשוב</h3>
+<p>כדי לציין מקום באולם, צריך לדעת גם את מספר השורה וגם את מספר הכיסא. הקבוצה <span class="math inline">\(\{2,5\}\)</span> אינה מבדילה בין ״שורה 2, כיסא 5״ לבין ״שורה 5, כיסא 2״, כי <span class="math inline">\(\{2,5\}=\{5,2\}\)</span>. לכן נשתמש בכתיב שבו המקום הראשון מציין את השורה והמקום השני מציין את הכיסא: <span class="math inline">\((2,5)\)</span> ו־<span class="math inline">\((5,2)\)</span> יציינו מקומות שונים באולם. כתיב כזה נקרא <strong>זוג סדור</strong>.</p>
+<div class="thmbox thmbox-definition" title="זוג סדור">
+<p><strong>הגדרה 3.1.1 — זוג סדור.</strong></p>
+<p><span class="term"><strong>זוג סדור</strong></span> הוא זוג של <strong>איברים שאינם בהכרח שונים</strong>, הכתובים בסדר מסוים, כאשר <strong>יש חשיבות לסדרם</strong>. האיבר במקום הראשון נקרא <strong>הרכיב הראשון</strong>, והאיבר במקום השני נקרא <strong>הרכיב השני</strong>. הזוג הסדור שהרכיב הראשון שלו הוא <span class="math inline">\(a\)</span> והרכיב השני שלו הוא <span class="math inline">\(b\)</span> מסומן ב־<span class="math inline">\((a,b)\)</span>.</p>
+<p>שני זוגות סדורים שווים אם ורק אם <strong>הרכיבים במקומות המתאימים שווים</strong>:</p>
+<p><span class="math display">\[(a,b)=(c,d)\quad\Longleftrightarrow\quad a=c\ \land\ b=d.\]</span></p>
+</div>
+<p><strong>הערה.</strong> ייתכן ש־<span class="math inline">\(a=b\)</span>. למשל, בזוג <span class="math inline">\((2,2)\)</span> המספר <span class="math inline">\(2\)</span> מופיע בשני המקומות, ואילו הקבוצה <span class="math inline">\(\{2,2\}=\{2\}\)</span> מכילה איבר אחד בלבד.</p>
+<div class="thmbox thmbox-example" title="מחליפים מקומות, ומשווים רכיבים">
+<p><strong>דוגמה 3.1.2 — מחליפים מקומות, ומשווים רכיבים.</strong></p>
+<ul>
+<li><span class="math inline">\((2,5)\ne(5,2)\)</span>: הרכיבים הראשונים שונים. לעומת זאת, <span class="math inline">\(\{2,5\}=\{5,2\}\)</span>, כי בקבוצה הסדר אינו חשוב.</li>
+<li><span class="math inline">\((2,5)\ne(2,7)\)</span>: שוויון הרכיב הראשון לבדו אינו מספיק; גם הרכיבים השניים צריכים להיות שווים.</li>
+</ul>
+</div>
+<div class="thmbox thmbox-self-check has-helper-art">
+<p><strong>בדיקה עצמית.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
+<p>בחרו תנאי על <span class="math inline">\(a,b\)</span> השקול לשוויון <span class="math inline">\((a,b)=(b,a)\)</span>. נמקו לפי הגדרת השוויון של זוגות.</p>
+<div class="sets-exercise" data-sets="ordered-pair-swap">
+<p>בחרו תשובה ובדקו את הנימוק.</p>
+</div>
+</div>
+<div class="thmbox thmbox-question" title="מוצאים את הרכיבים">
+<p><strong>שאלה 3.1.3 — מוצאים את הרכיבים.</strong></p>
+<p>מצאו את <span class="math inline">\(x,y\)</span> אם <span class="math inline">\((x+1,4)=(3,y-2)\)</span>.</p>
+<div class="sets-exercise" data-sets="ordered-pair-components">
+<p>כתבו את הערכים של <span class="math inline">\(x\)</span> ושל <span class="math inline">\(y\)</span> ובדקו כל תשובה.</p>
+</div>
+</div>
+</section>
+<section id="sec-product-definition" class="level3" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="sec-product-definition"><span class="header-section-number">3.1.2</span> כל הצירופים של שתי בחירות</h3>
+<p>אם יש שתי אפשרויות לשורה ושלוש אפשרויות לכיסא בכל שורה, אפשר ליצור שישה זוגות של ״שורה, כיסא״. כל מקום מתקבל מבחירה ראשונה ואחריה בחירה שנייה.</p>
+<div class="thmbox thmbox-definition" title="מכפלה קרטזית">
+<p><strong>הגדרה 3.1.4 — מכפלה קרטזית.</strong></p>
+<p>ה<span class="term"><strong>מכפלה הקרטזית</strong></span> <span class="math inline">\(A\times B\)</span> היא קבוצת כל הזוגות הסדורים <span class="math inline">\((a,b)\)</span> שבהם <span class="math inline">\(a\in A\)</span> ו־<span class="math inline">\(b\in B\)</span>.</p>
+<p><span class="math display">\[A\times B=\{(a,b)\mid a\in A\quad\heb{וגם}\quad b\in B\}.\]</span></p>
+<p>הסימן <span class="math inline">\(\times\)</span> מציין כאן פעולה על קבוצות: בחירת רכיב ראשון מ־<span class="math inline">\(A\)</span> ורכיב שני מ־<span class="math inline">\(B\)</span>. לא כופלים את ערכי הרכיבים.</p>
+</div>
+<div class="thmbox thmbox-example" title="ארבעה זוגות, ולא ארבע מכפלות">
+<p><strong>דוגמה 3.1.5 — ארבעה זוגות, ולא ארבע מכפלות.</strong></p>
+<p>עבור <span class="math inline">\(A=\{1,2\}\)</span> ו־<span class="math inline">\(B=\{2,4\}\)</span> מתקבל</p>
+<p><span class="math display">\[A\times B=\{(1,2),(1,4),(2,2),(2,4)\}.\]</span></p>
+<p>הזוג <span class="math inline">\((1,4)\)</span> שייך למכפלה כי <span class="math inline">\(1\in A\)</span> ו־<span class="math inline">\(4\in B\)</span>. לעומת זאת, <span class="math inline">\((4,1)\)</span> אינו שייך לה: הרכיב הראשון אינו ב־<span class="math inline">\(A\)</span> וגם הרכיב השני אינו ב־<span class="math inline">\(B\)</span>. המספר <span class="math inline">\(4\)</span> אינו איבר של <span class="math inline">\(A\times B\)</span>; איברי המכפלה הם זוגות סדורים.</p>
+</div>
+<div class="thmbox thmbox-example" title="כל אחד משני התנאים נחוץ">
+<p><strong>דוגמה 3.1.6 — כל אחד משני התנאים נחוץ.</strong></p>
+<p>עבור <span class="math inline">\(A=\{1,2\}\)</span> ו־<span class="math inline">\(B=\{2,4\}\)</span>, הזוג <span class="math inline">\((1,7)\)</span> אינו ב־<span class="math inline">\(A\times B\)</span>, אף שהרכיב הראשון שייך ל־<span class="math inline">\(A\)</span>, כי <span class="math inline">\(7\notin B\)</span>. גם <span class="math inline">\((7,2)\)</span> אינו במכפלה: הפעם הרכיב השני שייך ל־<span class="math inline">\(B\)</span>, אבל הראשון אינו שייך ל־<span class="math inline">\(A\)</span>.</p>
+</div>
+</section>
+<section id="sec-product-properties" class="level3" data-number="3.1.3">
+<h3 data-number="3.1.3" class="anchored" data-anchor-id="sec-product-properties"><span class="header-section-number">3.1.3</span> הסדר, המספר והקבוצה הריקה</h3>
+<div class="thmbox thmbox-warning has-helper-art" title="סדר הקבוצות במכפלה קרטזית">
+<p><strong>שימו לב — סדר הקבוצות במכפלה קרטזית.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/warning.svg" alt="" aria-hidden="true" width="56" height="56">
+<p>החלפת סדר הקבוצות מחליפה את התפקידים של שני הרכיבים. לכן אין להניח ש־<span class="math inline">\(A\times B=B\times A\)</span>.</p>
+</div>
+<div class="thmbox thmbox-example" title="מכפלות בסדר הפוך">
+<p><strong>דוגמה 3.1.7 — מכפלות בסדר הפוך.</strong></p>
+<p>תהיינה <span class="math inline">\(A=\{1\}\)</span> ו־<span class="math inline">\(B=\{2,3\}\)</span>. אז</p>
+<p><span class="math display">\[A\times B=\{(1,2),(1,3)\},\]</span></p>
+<p><span class="math display">\[B\times A=\{(2,1),(3,1)\}.\]</span></p>
+<p>אלו קבוצות שונות, אף שיש בהן אותו מספר איברים. למשל, <span class="math inline">\((1,2)\)</span> שייך ל־<span class="math inline">\(A\times B\)</span> ואינו שייך ל־<span class="math inline">\(B\times A\)</span>.</p>
+</div>
+<div class="thmbox thmbox-theorem" title="עצמת מכפלה קרטזית">
+<p><strong>משפט 3.1.8 — עצמת מכפלה קרטזית.</strong></p>
+<p>תהיינה <span class="math inline">\(A,B\)</span> קבוצות סופיות. אז</p>
+<p><span class="math display">\[|A\times B|=|A|\cdot|B|.\]</span></p>
+</div>
+<div class="thmbox thmbox-proof">
+<p><strong>הוכחה.</strong></p>
+<p>לכל <span class="math inline">\(a\in A\)</span>, הזוגות שהרכיב הראשון שלהם הוא <span class="math inline">\(a\)</span> הם בדיוק הזוגות <span class="math inline">\((a,b)\)</span> שבהם <span class="math inline">\(b\in B\)</span>. לכל איבר של <span class="math inline">\(B\)</span> מתקבל זוג אחד, ולכן יש בדיוק <span class="math inline">\(|B|\)</span> זוגות שהרכיב הראשון שלהם הוא <span class="math inline">\(a\)</span>.</p>
+<p>בקבוצה <span class="math inline">\(A\)</span> יש <span class="math inline">\(|A|\)</span> איברים. לכן יש <span class="math inline">\(|A|\)</span> קבוצות של זוגות, אחת לכל בחירה של הרכיב הראשון, ובכל אחת מהן בדיוק <span class="math inline">\(|B|\)</span> זוגות. כל זוג ב־<span class="math inline">\(A\times B\)</span> נספר בדיוק פעם אחת, בקבוצה המתאימה לרכיב הראשון שלו.</p>
+<p>מספר הזוגות הכולל הוא סכום של <span class="math inline">\(|A|\)</span> מחוברים, שכל אחד מהם שווה ל־<span class="math inline">\(|B|\)</span>. סכום זה הוא <span class="math inline">\(|A|\cdot|B|\)</span>, לפי הגדרת הכפל במספרים טבעיים כחיבור חוזר. לכן</p>
+<p><span class="math display">\[|A\times B|=|A|\cdot|B|.\]</span></p>
+<p>אם אחת הקבוצות ריקה, אין זוגות במכפלה, ושני אגפי השוויון שווים לאפס.</p>
+</div>
+<div class="thmbox thmbox-example" title="ספירת הזוגות במכפלה">
+<p><strong>דוגמה 3.1.9 — ספירת הזוגות במכפלה.</strong></p>
+<p>אם <span class="math inline">\(A=\{1,2\}\)</span> ו־<span class="math inline">\(B=\{2,4\}\)</span>, אז</p>
+<p><span class="math display">\[|A\times B|=2\cdot2=4.\]</span></p>
+<p>אם מחליפים את <span class="math inline">\(B\)</span> בקבוצה הריקה, מספר הזוגות הוא <span class="math inline">\(2\cdot0=0\)</span>.</p>
+</div>
+<div class="thmbox thmbox-key-point has-helper-art" title="מכפלה עם הקבוצה הריקה">
+<p><strong>חשוב לזכור — מכפלה עם הקבוצה הריקה.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/key-point.svg" alt="" aria-hidden="true" width="56" height="56">
+<p>אם אחת הקבוצות ריקה, אי אפשר לבחור ממנה רכיב לזוג. לכן, לכל קבוצה <span class="math inline">\(A\)</span>,</p>
+<p><span class="math display">\[A\times\varnothing=\varnothing\times A=\varnothing.\]</span></p>
+</div>
+<div class="thmbox thmbox-example" title="הקבוצה הריקה לעומת קבוצה שמכילה אותה">
+<p><strong>דוגמה 3.1.10 — הקבוצה הריקה לעומת קבוצה שמכילה אותה.</strong></p>
+<p>תהי <span class="math inline">\(A=\{1,2\}\)</span>. המכפלה <span class="math inline">\(A\times\varnothing\)</span> ריקה. לעומת זאת,</p>
+<p><span class="math display">\[A\times\{\varnothing\}=\{(1,\varnothing),(2,\varnothing)\}.\]</span></p>
+<p>הקבוצה <span class="math inline">\(\{\varnothing\}\)</span> מכילה איבר אחד, ואפשר להשתמש בו כרכיב שני. לכן במכפלה <span class="math inline">\(A\times\{\varnothing\}\)</span> יש שני זוגות.</p>
+</div>
+<div class="thmbox thmbox-summary has-helper-art" title="שתי בחירות עם תפקידים">
+<p><strong>סיכום — שתי בחירות עם תפקידים.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/summary.svg" alt="" aria-hidden="true" width="56" height="56">
+<ul>
+<li>בזוג סדור המקום חשוב; בקבוצה סדר האיברים אינו חשוב.</li>
+<li><span class="math inline">\((a,b)\in A\times B\)</span> כאשר <span class="math inline">\(a\in A\)</span> וגם <span class="math inline">\(b\in B\)</span>.</li>
+<li>בקבוצות סופיות מכפילים את מספר האפשרויות בשני המקומות.</li>
+</ul>
+</div>
+</section>
+<section id="practice-sets-product" class="level3" data-number="3.1.4">
+<h3 data-number="3.1.4" class="anchored" data-anchor-id="practice-sets-product"><span class="header-section-number">3.1.4</span> תרגול לסעיף: מכפלה קרטזית</h3>
+<div class="thmbox thmbox-self-check has-helper-art">
+<p><strong>בדיקה עצמית.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
+<p>נתון <span class="math inline">\(A=\{1\}\)</span> ו־<span class="math inline">\(B=\{2\}\)</span>. ענו על שתי השאלות ונמקו.</p>
+<div class="sets-exercise" data-sets="product-equality-check">
+<p>בחרו תשובה ובדקו את הנימוק.</p>
+</div>
+</div>
+<div class="thmbox thmbox-question">
+<p><strong>שאלה 3.1.11.</strong></p>
+<p>באולם יש שתי שורות, <span class="math inline">\(1,2\)</span>, ובכל שורה שלושה כיסאות, <span class="math inline">\(1,2,3\)</span>. כתבו את קבוצת המקומות, כאשר הרכיב הראשון הוא מספר השורה.</p>
+<div class="solve">
+<div class="hint">
+<p>קבעו תחילה את מספר השורה, ומנו את שלוש האפשרויות לרכיב השני.</p>
+</div>
+<div class="step">
+<p>קבוצת המקומות היא <span class="math inline">\(\{1,2\}\times\{1,2,3\}\)</span>, כלומר</p>
+<p><span class="math display">\[\{(1,1),(1,2),(1,3),(2,1),(2,2),(2,3)\}.\]</span></p>
+<p>יש <span class="math inline">\(2\cdot3=6\)</span> מקומות. הזוג <span class="math inline">\((3,1)\)</span> אינו ברשימה, כי אין שורה <span class="math inline">\(3\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-question">
+<p><strong>שאלה 3.1.12.</strong></p>
+<p>תהיינה <span class="math inline">\(A=\{1,2\}\)</span> ו־<span class="math inline">\(B=\{2,4\}\)</span>. כתבו את <span class="math inline">\(A\times B\)</span>.</p>
+<div class="sets-exercise" data-sets="product-full-roster">
+<p>הקלידו את כל הזוגות הסדורים בתוך קבוצה, למשל <code>{(a,b),(c,d)}</code>. אפשר לבדוק את התשובה או לבחור להציג אותה.</p>
+</div>
+</div>
+<div class="thmbox thmbox-game" title="מכפלה קרטזית של מספרים וסוגי קלפים">
+<p><strong>משחק 3.1.13 — מכפלה קרטזית של מספרים וסוגי קלפים.</strong></p>
+<p>נבחר את קבוצת המספרים <span class="math inline">\(A=\{2,3\}\)</span> ואת קבוצת הסוגים <span class="math inline">\(B=\{\heb{לב},\heb{עלה}\}\)</span>. קלף מיוצג בזוג סדור: המספר הוא הרכיב הראשון והסוג הוא הרכיב השני. למשל, <span class="math inline">\((2,\heb{לב})\)</span> מייצג קלף שמספרו <span class="math inline">\(2\)</span> וסוגו לב.</p>
+<div class="sets-exercise" data-sets="pairs">
+<p>בחרו את כל הקלפים ששייכים ל־<span class="math inline">\(A\times B\)</span>.</p>
+</div>
+</div>
+<div class="thmbox thmbox-question">
+<p><strong>שאלה 3.1.14.</strong></p>
+<div class="sets-exercise" data-sets="pair-check">
+<p>השוו זוגות וקבוצות, ספרו זוגות ובדקו מכפלה עם הקבוצה הריקה.</p>
+</div>
+</div>
+<div id="practice-set-q-product" class="thmbox thmbox-question">
+<p><strong>שאלה 3.1.15.</strong></p>
+<div class="sets-exercise" data-sets="practice-product">
+<p>כתבו את שתי המכפלות הקרטזיות לפי הסדר המבוקש.</p>
+</div>
+</div>
+<!-- Starting point: Velleman, How to Prove It, 2nd ed., section 4.2, definition 4.2.1. Examples and teaching sequence adapted for this course. -->
+</section>
+</section>
+<section id="sec-relations-between-sets" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="sec-relations-between-sets"><span class="header-section-number">3.2</span> יחסים בין קבוצות</h2>
+<section id="sec-relation-definition" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="sec-relation-definition"><span class="header-section-number">3.2.1</span> מן האפשרויות אל הקשרים שמתקיימים</h3>
+<p>נניח שבודקים הרשמה לשני חוגים. נסמן את קבוצת הסטודנטים ב־<span class="math inline">\(A=\{\heb{דנה},\heb{נועם},\heb{רוני}\}\)</span> ואת קבוצת החוגים ב־<span class="math inline">\(B=\{\heb{שחמט},\heb{צילום}\}\)</span>. המכפלה <span class="math inline">\(A\times B\)</span> מכילה את כל ששת הזוגות האפשריים של סטודנט וחוג. כדי לתאר מי נרשם לאיזה חוג, נשמור רק את הזוגות שבהם הסטודנט אכן נרשם לחוג. כך נקבל תת־קבוצה של <span class="math inline">\(A\times B\)</span>.</p>
+<div id="box-relation-between-sets" class="thmbox thmbox-definition" title="יחס בין קבוצות">
+<p><strong>הגדרה 3.2.1 — יחס בין קבוצות.</strong></p>
+<p>תהיינה <span class="math inline">\(A,B\)</span> קבוצות. <span class="term"><strong>יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span></strong></span> הוא קבוצה <span class="math inline">\(R\)</span> של זוגות סדורים המקיימת</p>
+<p><span class="math display">\[R\subseteq A\times B.\]</span></p>
+<p>כלומר, לכל <span class="math inline">\((a,b)\in R\)</span> מתקיים <span class="math inline">\(a\in A\)</span> וגם <span class="math inline">\(b\in B\)</span>. כותבים גם <span class="math inline">\(aRb\)</span> במקום <span class="math inline">\((a,b)\in R\)</span>, וקוראים: ״<span class="math inline">\(a\)</span> עומד ביחס <span class="math inline">\(R\)</span> ל־<span class="math inline">\(b\)</span>״.</p>
+</div>
+<div class="thmbox thmbox-example" title="מי נרשם לאיזה חוג?">
+<p><strong>דוגמה 3.2.2 — מי נרשם לאיזה חוג?</strong></p>
+<p>נניח שדנה נרשמה לשחמט ולצילום, נועם נרשם לצילום בלבד, ורוני לא נרשם לאף אחד משני החוגים. יחס ההרשמה הוא</p>
+<p><span class="math display">\[R=\{(\heb{דנה},\heb{שחמט}),(\heb{דנה},\heb{צילום}),(\heb{נועם},\heb{צילום})\}.\]</span></p>
+<p>למשל, <span class="math inline">\((\heb{דנה},\heb{שחמט})\in R\)</span>, ואפשר לכתוב גם <span class="math inline">\(\heb{דנה}\,R\,\heb{שחמט}\)</span>. לעומת זאת, <span class="math inline">\((\heb{נועם},\heb{שחמט})\notin R\)</span>, אף שהזוג שייך ל־<span class="math inline">\(A\times B\)</span>.</p>
+<p>דנה מופיעה כרכיב ראשון בשני זוגות ורוני אינו מופיע בשום זוג. שני המצבים מותרים: הגדרת יחס אינה דורשת שכל איבר של <span class="math inline">\(A\)</span> יופיע, ואינה מגבילה את מספר הזוגות שבהם הוא מופיע.</p>
+</div>
+<div class="thmbox thmbox-example" title="יחס המתואר באמצעות תנאי">
+<p><strong>דוגמה 3.2.3 — יחס המתואר באמצעות תנאי.</strong></p>
+<p>תהיינה <span class="math inline">\(A=\{1,2,3\}\)</span> ו־<span class="math inline">\(B=\{2,4\}\)</span>. נגדיר</p>
+<p><span class="math display">\[R=\{(a,b)\in A\times B\mid a&lt;b\}.\]</span></p>
+<p>עבור <span class="math inline">\(a=1\)</span> שני איברי <span class="math inline">\(B\)</span> גדולים ממנו; עבור <span class="math inline">\(a=2\)</span> ועבור <span class="math inline">\(a=3\)</span> רק <span class="math inline">\(4\)</span> גדול מ־<span class="math inline">\(a\)</span>. לכן</p>
+<p><span class="math display">\[R=\{(1,2),(1,4),(2,4),(3,4)\}.\]</span></p>
+<p>למשל, <span class="math inline">\(2R4\)</span> הוא פסוק אמת, ואילו <span class="math inline">\(2R2\)</span> הוא פסוק שקר. גם <span class="math inline">\((1,3)\)</span> אינו שייך ל־<span class="math inline">\(R\)</span>: האי־שוויון <span class="math inline">\(1&lt;3\)</span> מתקיים, אך <span class="math inline">\(3\notin B\)</span>. התנאי <span class="math inline">\(a&lt;b\)</span> בוחר זוגות מתוך <span class="math inline">\(A\times B\)</span> בלבד.</p>
+</div>
+<div class="thmbox thmbox-example" title="בלי קשרים, או עם כל הקשרים">
+<p><strong>דוגמה 3.2.4 — בלי קשרים, או עם כל הקשרים.</strong></p>
+<p>עבור <span class="math inline">\(A=\{1,2\}\)</span> ו־<span class="math inline">\(B=\{3\}\)</span>, גם <span class="math inline">\(\varnothing\)</span> וגם <span class="math inline">\(A\times B=\{(1,3),(2,3)\}\)</span> הם יחסים מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span>. הראשון אינו מכיל אף זוג, והשני מכיל את כל הזוגות האפשריים. ההגדרה דורשת הכלה, ולכן אינה מוציאה אף אחד משני המקרים האלה.</p>
+<p>אם <span class="math inline">\(B=\varnothing\)</span>, המכפלה <span class="math inline">\(A\times B\)</span> ריקה. במקרה זה היחס היחיד מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span> הוא <span class="math inline">\(\varnothing\)</span>, כי לקבוצה הריקה יש רק תת־קבוצה אחת.</p>
+</div>
+<div class="thmbox thmbox-example" title="זוג אחד מחוץ למכפלה מספיק">
+<p><strong>דוגמה 3.2.5 — זוג אחד מחוץ למכפלה מספיק.</strong></p>
+<p>עבור <span class="math inline">\(A=\{1,2\}\)</span> ו־<span class="math inline">\(B=\{3\}\)</span>, הקבוצה <span class="math inline">\(S=\{(1,3),(2,5)\}\)</span> אינה יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span>, כי <span class="math inline">\(5\notin B\)</span> ולכן <span class="math inline">\((2,5)\notin A\times B\)</span>. אם מחליפים את <span class="math inline">\(B\)</span> בקבוצה <span class="math inline">\(C=\{3,5\}\)</span>, אז <span class="math inline">\(S\)</span> היא יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(C\)</span>. לכן בבדיקה אם קבוצה של זוגות היא יחס בין קבוצות נתונות, צריך לבדוק גם את הקבוצות שצוינו.</p>
+</div>
+</section>
+<section id="sec-relations-self-check" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="sec-relations-self-check"><span class="header-section-number">3.2.2</span> בדיקה עצמית: מה ההגדרה דורשת?</h3>
+<div class="thmbox thmbox-self-check has-helper-art">
+<p><strong>בדיקה עצמית.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
+<p>תהיינה <span class="math inline">\(A=\{1,2\}\)</span> ו־<span class="math inline">\(B=\{3,4\}\)</span>. קבעו בכל סעיף אם הקבוצה הנתונה היא יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span>.</p>
+<div class="sets-exercise" data-sets="relations-classify">
+<p>בחרו תשובה ובדקו את הנימוק.</p>
+</div>
+</div>
+<div class="thmbox thmbox-self-check has-helper-art">
+<p><strong>בדיקה עצמית.</strong></p>
+<img class="helper-box-art" src="images/box-helpers/self-check.svg" alt="" aria-hidden="true" width="56" height="56">
+<p>נתון <span class="math inline">\(R\subseteq A\times B\)</span>, וכן <span class="math inline">\(a\in A\)</span> ו־<span class="math inline">\(b\in B\)</span>.</p>
+<div class="sets-exercise" data-sets="relation-membership-check">
+<p>האם בהכרח <span class="math inline">\(aRb\)</span>?</p>
+</div>
+<p>אם לא, בנו דוגמה נגדית שבה <span class="math inline">\(R\)</span> אינו ריק: כתבו קבוצות <span class="math inline">\(A,B\)</span>, יחס <span class="math inline">\(R\)</span>, וזוג ששייך ל־<span class="math inline">\(A\times B\)</span> אך אינו שייך ל־<span class="math inline">\(R\)</span>.</p>
+<div class="set-lab" data-set-lab="relation-missing-pair">
+<p>הזינו את שלוש הקבוצות ואת הזוג ובדקו שהם מקיימים את הדרישות.</p>
+</div>
+</div>
+</section>
+<section id="sec-relations-worked-questions" class="level3" data-number="3.2.3">
+<h3 data-number="3.2.3" class="anchored" data-anchor-id="sec-relations-worked-questions"><span class="header-section-number">3.2.3</span> שאלות פתורות</h3>
+<div class="thmbox thmbox-question">
+<p><strong>שאלה 3.2.6.</strong></p>
+<p>תהיינה <span class="math inline">\(A=\{1,2,3\}\)</span> ו־<span class="math inline">\(B=\{2,3,4\}\)</span>. נגדיר יחס <span class="math inline">\(R\)</span> מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span> כך ש־<span class="math inline">\(aRb\)</span> אם ורק אם <span class="math inline">\(a+1=b\)</span>. כתבו את <span class="math inline">\(R\)</span> ברשימת זוגות. האם <span class="math inline">\((3,4)\)</span> ו־<span class="math inline">\((2,1)\)</span> שייכים ל־<span class="math inline">\(R\)</span>?</p>
+<div class="solve">
+<div class="hint">
+<p>לכל <span class="math inline">\(a\in A\)</span>, חשבו את <span class="math inline">\(a+1\)</span> ובדקו אם התוצאה שייכת ל־<span class="math inline">\(B\)</span>.</p>
+</div>
+<div class="step">
+<p>עבור <span class="math inline">\(a=1\)</span> נקבל <span class="math inline">\(b=2\)</span>; עבור <span class="math inline">\(a=2\)</span> נקבל <span class="math inline">\(b=3\)</span>; ועבור <span class="math inline">\(a=3\)</span> נקבל <span class="math inline">\(b=4\)</span>. שלוש התוצאות שייכות ל־<span class="math inline">\(B\)</span>, ולכן</p>
+<p><span class="math display">\[R=\{(1,2),(2,3),(3,4)\}.\]</span></p>
+</div>
+<div class="step">
+<p>הזוג <span class="math inline">\((3,4)\)</span> שייך ל־<span class="math inline">\(R\)</span>. הזוג <span class="math inline">\((2,1)\)</span> אינו שייך ל־<span class="math inline">\(R\)</span>: הוא אינו במכפלה, כי <span class="math inline">\(1\notin B\)</span>, וגם אינו מקיים <span class="math inline">\(2+1=1\)</span>. עצם הופעת <span class="math inline">\((1,2)\)</span> ברשימה אינה מחייבת את הופעת <span class="math inline">\((2,1)\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-question" title="מוכיחים שקבוצת זוגות היא יחס">
+<p><strong>שאלה 3.2.7 — מוכיחים שקבוצת זוגות היא יחס.</strong></p>
+<p>יהיו <span class="math inline">\(R,S\)</span> יחסים מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span>. הוכיחו שגם <span class="math inline">\(R\cup S\)</span> הוא יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span>. לאחר מכן בדקו מה עלול להשתבש אם <span class="math inline">\(S\)</span> הוא יחס מ־<span class="math inline">\(B\)</span> ל־<span class="math inline">\(A\)</span> במקום מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span>.</p>
+<div class="solve">
+<div class="hint">
+<p>כדי להוכיח שהאיחוד הוא יחס, יש להוכיח <span class="math inline">\(R\cup S\subseteq A\times B\)</span>. התחילו מאיבר כלשהו של האיחוד.</p>
+</div>
+<div class="step">
+<p>יהי <span class="math inline">\(z\in R\cup S\)</span>. לפי הגדרת האיחוד, <span class="math inline">\(z\in R\)</span> או <span class="math inline">\(z\in S\)</span>. במקרה הראשון, <span class="math inline">\(z\in A\times B\)</span> כי <span class="math inline">\(R\subseteq A\times B\)</span>. במקרה השני מתקבלת אותה מסקנה כי <span class="math inline">\(S\subseteq A\times B\)</span>. לכן <span class="math inline">\(R\cup S\subseteq A\times B\)</span>, וזה בדיוק התנאי לכך שהאיחוד יהיה יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span>.</p>
+</div>
+<div class="step">
+<p>למשל, עבור <span class="math inline">\(A=\{1,2\}\)</span> ו־<span class="math inline">\(B=\{3\}\)</span>, היחסים <span class="math inline">\(R=\{(1,3)\}\)</span> ו־<span class="math inline">\(S=\{(2,3)\}\)</span> נותנים את האיחוד <span class="math inline">\(\{(1,3),(2,3)\}\)</span>, שהוא יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span>.</p>
+<p>אם במקום זאת נבחר <span class="math inline">\(S=\{(3,1)\}\)</span>, נקבל יחס מ־<span class="math inline">\(B\)</span> ל־<span class="math inline">\(A\)</span>. כעת <span class="math inline">\(R\cup S\)</span> אינו יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span>, כי <span class="math inline">\((3,1)\notin A\times B\)</span>. ההנחה על הקבוצות שמהן נבחרים הרכיבים היא שאפשרה את שני המקרים בהוכחה.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-relations-activity" class="level3" data-number="3.2.4">
+<h3 data-number="3.2.4" class="anchored" data-anchor-id="sec-relations-activity"><span class="header-section-number">3.2.4</span> פעילות: משחזרים את ההרשמה</h3>
+<div class="thmbox thmbox-game" title="אילו רשימות מתאימות לרמזים?">
+<p><strong>משחק 3.2.8 — אילו רשימות מתאימות לרמזים?</strong></p>
+<p>קבוצת הסטודנטים היא <span class="math inline">\(A=\{\heb{דנה},\heb{נועם},\heb{רוני}\}\)</span> וקבוצת החוגים היא <span class="math inline">\(B=\{\heb{שחמט},\heb{צילום}\}\)</span>. ידועים הפרטים הבאים:</p>
+<ul>
+<li>דנה נרשמה לשני החוגים.</li>
+<li>רוני לא נרשם לאף חוג.</li>
+<li>ליחס ההרשמה <span class="math inline">\(R\)</span> יש בדיוק שלושה זוגות.</li>
+</ul>
+<p>כתבו את כל יחסי ההרשמה שמתאימים לרמזים. לאחר מכן הוסיפו פרט אחד על נועם שיקבע יחס יחיד, והסבירו איזה זוג הוא קובע.</p>
+<details class="thmcollapse thmfoldable"><summary>רמז</summary>
+<div class="foldable" title="רמז">
+<p>הרמז הראשון קובע שני זוגות. הרמז השני מוציא שני זוגות אפשריים. ממי יכול להגיע הזוג השלישי?</p>
+</div>
+</details>
+<details class="thmcollapse thmfoldable"><summary>פתרון והסבר</summary>
+<div class="foldable" title="פתרון והסבר">
+<p>שני הזוגות של דנה חייבים להופיע. אף זוג של רוני אינו יכול להופיע. לכן הזוג השלישי חייב לכלול את נועם, ויש בדיוק שתי אפשרויות:</p>
+<p><span class="math display">\[R_1=\{(\heb{דנה},\heb{שחמט}),(\heb{דנה},\heb{צילום}),(\heb{נועם},\heb{שחמט})\},\]</span></p>
+<p><span class="math display">\[R_2=\{(\heb{דנה},\heb{שחמט}),(\heb{דנה},\heb{צילום}),(\heb{נועם},\heb{צילום})\}.\]</span></p>
+<p>למשל, הפרט ״נועם נרשם לצילום״ קובע את הזוג <span class="math inline">\((\heb{נועם},\heb{צילום})\)</span> ומשאיר רק את <span class="math inline">\(R_2\)</span>. מהנתון שיש בדיוק שלושה זוגות נובע שנועם לא נרשם גם לשחמט. הפעילות מראה שמידע על יחס עשוי להשאיר כמה קבוצות זוגות אפשריות; כדי לקבוע את היחס צריך להכריע אילו זוגות נכללים בו.</p>
+</div>
+</details>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "הועתק!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "הועתק!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/yuval-khachatryan\.github\.io\/Discrete-Mathematics-Ramat-Gan-Fall-2026");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"קוד הניתן לגלילה","output":"פלט הניתן לגלילה"};
+  </script>
+<nav class="page-navigation" aria-label="עמוד">
+  <div class="nav-page nav-page-previous">
+      <a href="./02-sets.html" class="pagination-link" aria-label="קבוצות וכמתים">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">קבוצות וכמתים</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

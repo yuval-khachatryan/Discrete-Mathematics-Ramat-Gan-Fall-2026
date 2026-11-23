@@ -57,9 +57,12 @@ export function subsets(atoms){
   return Array.from({length:2**atoms.length},(_,mask)=>({type:'set',items:atoms.filter((_,j)=>mask&(1<<j)).map(parseObject)}));
 }
 export function readable(text){
-  if(!/[א-ת]/.test(text)||text.includes('\u2066'))return text;
-  return text.replace(/[A-Za-z0-9∅{}()[\]∈∉⊆⊇∩∪ᶜ△×¬⇒⇔∖≥≤][A-Za-z0-9_∅{}()[\],. :\-−=<>∈∉⊆⊇∩∪ᶜ△×¬⇒⇔∖≥≤]*/g,chunk=>{
-    const core=chunk.trimEnd();return '\u2066'+core+'\u2069'+chunk.slice(core.length);
+  if(text.includes('\u2066'))return text;
+  // Isolate whole expressions, including arithmetic and their delimiters.
+  // Sentence punctuation belongs to the surrounding RTL prose, not the formula.
+  return text.replace(/[A-Za-z0-9∅{}()[\]|+\-−√∈∉⊆⊇∩∪ᶜ△×¬⇒⇔∖≥≤][A-Za-z0-9_₀-₉²³ⁿ∅{}()[\]|,. :+*/^%·÷√\-−=≠<>∈∉⊆⊇∩∪ᶜ△×¬⇒⇔∖≥≤]*/g,chunk=>{
+    const core=chunk.replace(/[\s.,:]+$/,'');
+    return '\u2066'+core+'\u2069'+chunk.slice(core.length);
   });
 }
 const el=(tag,attrs={},kids=[])=>{const n=document.createElement(tag);for(const [k,v]of Object.entries(attrs)){if(k==='text')n.textContent=readable(v);else if(k==='class')n.className=v;else n.setAttribute(k,v);}for(const k of kids)n.append(k);return n;};
@@ -99,7 +102,7 @@ function choices(box,data,offset=0){
     const solution=answerReveal(readable(q.options[q.answer]+'. '+q.why));
     const check=()=>{
       const ok=numeric?(/^\d+$/.test(s.value.trim())&&Number(s.value)===Number(q.options[q.answer])):s.value!==''&&Number(s.value)===q.answer;
-      s.setAttribute('aria-invalid',String(!ok));say(feedback,s.value.trim()===''?(numeric?'כתבו את מספר האיברים.':'בחרו תשובה.'):numeric&&!/^\d+$/.test(s.value.trim())?'כתבו מספר שלם שאינו שלילי.':(ok?'נכון. ':'כדאי לבדוק שוב. ')+q.why,ok);
+      s.setAttribute('aria-invalid',String(!ok));say(feedback,s.value.trim()===''?(q.emptyMessage||(numeric?'כתבו את מספר האיברים.':'בחרו תשובה.')):numeric&&!/^\d+$/.test(s.value.trim())?'כתבו מספר שלם שאינו שלילי.':(ok?'נכון. ':'כדאי לבדוק שוב. ')+q.why,ok);
     };
     s.addEventListener(numeric?'input':'change',()=>{say(feedback,'');s.removeAttribute('aria-invalid');});
     form.append(button('בדיקה',check),button('איפוס',()=>{form.reset();if(binary){s.value='';[...s.children].forEach(n=>n.setAttribute('aria-pressed','false'));}s.removeAttribute('aria-invalid');say(feedback,'');solution.open=false;}),feedback,solution);
@@ -139,9 +142,20 @@ function writes(box,data){
   });
 }
 function selection(box,data){
-  box.append(math(data.given),mixedText(data.prompt));const selected=new Set(),cards=el('div',{class:'sets-cards'}),feedback=msg();
-  const buttons=data.candidates.map(c=>{const b=button(c,()=>{selected.has(c)?selected.delete(c):selected.add(c);b.setAttribute('aria-pressed',String(selected.has(c)));say(feedback,'');});b.dir='ltr';b.setAttribute('aria-pressed','false');cards.append(b);return b;});
-  box.append(answerPanel(cards,button('בדיקה',()=>{const extra=[...selected].find(x=>!data.answer.includes(x));const missing=data.answer.some(x=>!selected.has(x));say(feedback,extra?`⁦${extra}⁩ אינו מתאים לתנאי. ${data.hint}`:missing?'עדיין חסרה בחירה. '+data.hint:'נכון! נבחרו בדיוק כל האפשרויות המתאימות.',!extra&&!missing);}),button('רמז',()=>say(feedback,data.hint)),button('איפוס',()=>{selected.clear();buttons.forEach(b=>b.setAttribute('aria-pressed','false'));say(feedback,'');}),feedback,answerReveal(readable(data.answer.join(', ')))));
+  if(data.given)box.append(math(data.given));
+  box.append(mixedText(data.prompt));const selected=new Set(),cards=el('div',{class:'sets-cards'}),feedback=msg();
+  const buttons=data.candidates.map(c=>{
+    const b=button(c,()=>{selected.has(c)?selected.delete(c):selected.add(c);b.setAttribute('aria-pressed',String(selected.has(c)));say(feedback,'');});
+    b.dir='ltr';b.setAttribute('aria-pressed','false');
+    const card=data.playingCards?.[c];
+    if(card){
+      b.classList.add('playing-card');b.setAttribute('aria-label',card.name);b.title=card.name;
+      b.dataset.suit=card.suit;
+      b.replaceChildren(el('span',{class:'playing-card-rank','aria-hidden':'true',text:card.rank}),el('span',{class:'playing-card-suit','aria-hidden':'true',text:card.suit}),el('span',{class:'playing-card-name',dir:'rtl',text:card.name}));
+    }
+    cards.append(b);return b;
+  });
+  box.append(answerPanel(cards,button('בדיקה',()=>{const extra=[...selected].find(x=>!data.answer.includes(x));const missing=data.answer.some(x=>!selected.has(x));say(feedback,extra?(data.playingCards?`הקלף ${data.playingCards[extra].name} אינו מתאים לתנאי. ${data.hint}`:`⁦${extra}⁩ אינו מתאים לתנאי. ${data.hint}`):missing?'עדיין חסרה בחירה. '+data.hint:'נכון! נבחרו בדיוק כל האפשרויות המתאימות.',!extra&&!missing);}),button('רמז',()=>say(feedback,data.hint)),button('איפוס',()=>{selected.clear();buttons.forEach(b=>b.setAttribute('aria-pressed','false'));say(feedback,'');}),feedback,answerReveal(readable(data.playingCards?data.answer.map(c=>data.playingCards[c].name).join(', '):data.answer.join(', ')))));
 }
 const REGIONS=['רק ב־A','גם ב־A וגם ב־B','רק ב־B','מחוץ לשתי הקבוצות'];
 function venn(box,data){
