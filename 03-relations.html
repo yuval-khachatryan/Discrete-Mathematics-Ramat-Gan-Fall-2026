@@ -1503,50 +1503,74 @@ window.Quarto = {
 </section>
 <section id="sec-relations-worked-questions" class="level3" data-number="3.2.3">
 <h3 data-number="3.2.3" class="anchored" data-anchor-id="sec-relations-worked-questions"><span class="header-section-number">3.2.3</span> שאלות פתורות</h3>
-<div class="thmbox thmbox-question">
+<div class="thmbox thmbox-question" data-staged-exercise="true">
 <p><strong>שאלה 3.2.6.</strong></p>
-<p>תהיינה <span class="math inline">\(A=\{1,2,3\}\)</span> ו־<span class="math inline">\(B=\{2,3,4\}\)</span>. נגדיר יחס <span class="math inline">\(R\)</span> מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span> כך ש־<span class="math inline">\(aRb\)</span> אם ורק אם <span class="math inline">\(a+1=b\)</span>. כתבו את <span class="math inline">\(R\)</span> ברשימת זוגות. האם <span class="math inline">\((3,4)\)</span> ו־<span class="math inline">\((2,1)\)</span> שייכים ל־<span class="math inline">\(R\)</span>?</p>
-<div class="solve">
-<div class="hint">
-<p>לכל <span class="math inline">\(a\in A\)</span>, חשבו את <span class="math inline">\(a+1\)</span> ובדקו אם התוצאה שייכת ל־<span class="math inline">\(B\)</span>.</p>
+<p>תהיינה <span class="math inline">\(A=\{1,2,3\}\)</span> ו־<span class="math inline">\(.B=\{2,3,4\}\)</span> נגדיר יחס <span class="math inline">\(R\)</span> מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span> כך ש־<span class="math inline">\(aRb\)</span> אם ורק אם <span class="math inline">\(.a+1=b\)</span> כתבו את <span class="math inline">\(R\)</span> ברשימת זוגות. לאחר בדיקת הרשימה, קבעו אם <span class="math inline">\((3,4)\in R\)</span> ואם <span class="math inline">\(.(2,1)\in R\)</span></p>
+<div class="sets-exercise exercise-first" data-sets="relation-successor-roster">
+<p>כתבו את <span class="math inline">\(R\)</span> כקבוצה של זוגות סדורים.</p>
 </div>
-<div class="step">
-<p>עבור <span class="math inline">\(a=1\)</span> נקבל <span class="math inline">\(b=2\)</span>; עבור <span class="math inline">\(a=2\)</span> נקבל <span class="math inline">\(b=3\)</span>; ועבור <span class="math inline">\(a=3\)</span> נקבל <span class="math inline">\(b=4\)</span>. שלוש התוצאות שייכות ל־<span class="math inline">\(B\)</span>, ולכן</p>
+<div class="exercise-second" hidden="true">
+<p><strong>שלב 2: בדיקת שייכות.</strong></p>
+<div class="sets-exercise" data-sets="relation-successor-membership">
+<p>האם <span class="math inline">\((3,4)\in R\)</span>? האם <span class="math inline">\((2,1)\in R\)</span>?</p>
+</div>
+</div>
+<details class="thmcollapse thmfoldable"><summary>פתרון והסבר</summary>
+<div class="foldable" title="פתרון והסבר">
+<p>עבור <span class="math inline">\(a=1\)</span> נקבל <span class="math inline">\(b=2\)</span>; עבור <span class="math inline">\(a=2\)</span> נקבל <span class="math inline">\(b=3\)</span>; ועבור <span class="math inline">\(a=3\)</span> נקבל <span class="math inline">\(.b=4\)</span> שלוש התוצאות שייכות ל־<span class="math inline">\(,B\)</span> ולכן</p>
 <p><span class="math display">\[R=\{(1,2),(2,3),(3,4)\}.\]</span></p>
+<p>הזוג <span class="math inline">\((3,4)\)</span> שייך ל־<span class="math inline">\(.R\)</span> הזוג <span class="math inline">\((2,1)\)</span> אינו שייך ל־<span class="math inline">\(R\)</span>: הוא אינו במכפלה, כי <span class="math inline">\(,1\notin B\)</span> וגם אינו מקיים <span class="math inline">\(.2+1=1\)</span> עצם הופעת <span class="math inline">\((1,2)\)</span> ברשימה אינה מחייבת את הופעת <span class="math inline">\(.(2,1)\)</span></p>
 </div>
-<div class="step">
-<p>הזוג <span class="math inline">\((3,4)\)</span> שייך ל־<span class="math inline">\(R\)</span>. הזוג <span class="math inline">\((2,1)\)</span> אינו שייך ל־<span class="math inline">\(R\)</span>: הוא אינו במכפלה, כי <span class="math inline">\(1\notin B\)</span>, וגם אינו מקיים <span class="math inline">\(2+1=1\)</span>. עצם הופעת <span class="math inline">\((1,2)\)</span> ברשימה אינה מחייבת את הופעת <span class="math inline">\((2,1)\)</span>.</p>
+</details>
 </div>
+<div class="thmbox thmbox-question" data-staged-exercise="true" title="איחוד יחסים">
+<p><strong>שאלה 3.2.7 — איחוד יחסים.</strong></p>
+<p>יהיו <span class="math inline">\(R,S\)</span> יחסים מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(.B\)</span> הוכיחו שגם <span class="math inline">\(R\cup S\)</span> הוא יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(.B\)</span></p>
+<div class="set-proof" data-set-proof="relation-union">
+<p>נסמן <span class="math inline">\(.P=A\times B\)</span> לפי הגדרת יחס, נתון <span class="math inline">\(R\subseteq P\)</span> וגם <span class="math inline">\(.S\subseteq P\)</span> כדי להראות שהאיחוד הוא יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(,B\)</span> הוכיחו <span class="math inline">\(.R\cup S\subseteq P\)</span></p>
 </div>
+<details class="thmcollapse thmfoldable"><summary>הוכחה במילים — לפי צעדי הפתרון לדוגמה</summary>
+<div id="written-proof-relation-union" class="foldable" title="הוכחה במילים — לפי צעדי הפתרון לדוגמה">
+<p>יהי <span class="math inline">\(.x\in R\cup S\)</span> לפי הגדרת האיחוד, <span class="math inline">\(x\in R\)</span> או <span class="math inline">\(.x\in S\)</span> נחלק למקרים.</p>
+<p>אם <span class="math inline">\(,x\in R\)</span> אז מן הנתון <span class="math inline">\(R\subseteq P\)</span> נקבל <span class="math inline">\(.x\in P\)</span></p>
+<p>אם <span class="math inline">\(,x\in S\)</span> אז מן הנתון <span class="math inline">\(S\subseteq P\)</span> נקבל <span class="math inline">\(.x\in P\)</span></p>
+<p>בשני המקרים <span class="math inline">\(.x\in P\)</span> לכן <span class="math inline">\(,R\cup S\subseteq P=A\times B\)</span> ולפי הגדרת יחס, <span class="math inline">\(R\cup S\)</span> הוא יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(.B\)</span></p>
 </div>
-<div class="thmbox thmbox-question" title="מוכיחים שקבוצת זוגות היא יחס">
-<p><strong>שאלה 3.2.7 — מוכיחים שקבוצת זוגות היא יחס.</strong></p>
-<p>יהיו <span class="math inline">\(R,S\)</span> יחסים מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span>. הוכיחו שגם <span class="math inline">\(R\cup S\)</span> הוא יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span>. לאחר מכן בדקו מה עלול להשתבש אם <span class="math inline">\(S\)</span> הוא יחס מ־<span class="math inline">\(B\)</span> ל־<span class="math inline">\(A\)</span> במקום מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span>.</p>
-<div class="solve">
-<div class="hint">
-<p>כדי להוכיח שהאיחוד הוא יחס, יש להוכיח <span class="math inline">\(R\cup S\subseteq A\times B\)</span>. התחילו מאיבר כלשהו של האיחוד.</p>
+</details>
+<p>כעת בדקו מדוע חשוב ששני היחסים יהיו מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(.B\)</span> נבחר <span class="math inline">\(A=\{1,2\}\)</span> ו־<span class="math inline">\(,B=\{3\}\)</span> ונגדיר</p>
+<p><span class="math display">\[R=\{(1,3)\},\qquad S=\{(3,1)\}.\]</span></p>
+<p>הפעם <span class="math inline">\(R\)</span> הוא יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(,B\)</span> ואילו <span class="math inline">\(S\)</span> הוא יחס מ־<span class="math inline">\(B\)</span> ל־<span class="math inline">\(.A\)</span></p>
+<div class="sets-exercise exercise-first" data-sets="relation-union-roster">
+<p>כתבו את <span class="math inline">\(R\cup S\)</span> ברשימת זוגות.</p>
 </div>
-<div class="step">
-<p>יהי <span class="math inline">\(z\in R\cup S\)</span>. לפי הגדרת האיחוד, <span class="math inline">\(z\in R\)</span> או <span class="math inline">\(z\in S\)</span>. במקרה הראשון, <span class="math inline">\(z\in A\times B\)</span> כי <span class="math inline">\(R\subseteq A\times B\)</span>. במקרה השני מתקבלת אותה מסקנה כי <span class="math inline">\(S\subseteq A\times B\)</span>. לכן <span class="math inline">\(R\cup S\subseteq A\times B\)</span>, וזה בדיוק התנאי לכך שהאיחוד יהיה יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span>.</p>
-</div>
-<div class="step">
-<p>למשל, עבור <span class="math inline">\(A=\{1,2\}\)</span> ו־<span class="math inline">\(B=\{3\}\)</span>, היחסים <span class="math inline">\(R=\{(1,3)\}\)</span> ו־<span class="math inline">\(S=\{(2,3)\}\)</span> נותנים את האיחוד <span class="math inline">\(\{(1,3),(2,3)\}\)</span>, שהוא יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span>.</p>
-<p>אם במקום זאת נבחר <span class="math inline">\(S=\{(3,1)\}\)</span>, נקבל יחס מ־<span class="math inline">\(B\)</span> ל־<span class="math inline">\(A\)</span>. כעת <span class="math inline">\(R\cup S\)</span> אינו יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(B\)</span>, כי <span class="math inline">\((3,1)\notin A\times B\)</span>. ההנחה על הקבוצות שמהן נבחרים הרכיבים היא שאפשרה את שני המקרים בהוכחה.</p>
+<div class="exercise-second" hidden="true">
+<p><strong>שלב 2: בדיקת הזוגות והיחס.</strong> בדקו אילו זוגות של האיחוד שייכים ל־<span class="math inline">\(,A\times B\)</span> והסיקו אם האיחוד הוא יחס מ־<span class="math inline">\(A\)</span> ל־<span class="math inline">\(.B\)</span></p>
+<div class="sets-exercise" data-sets="relation-union-membership">
+<p>בדקו את שני הזוגות שבאיחוד ואת ההכלה במכפלה.</p>
 </div>
 </div>
 </div>
 </section>
 <section id="sec-relations-activity" class="level3" data-number="3.2.4">
 <h3 data-number="3.2.4" class="anchored" data-anchor-id="sec-relations-activity"><span class="header-section-number">3.2.4</span> תרגול: יחסי הרשמה</h3>
-<div class="thmbox thmbox-question">
+<div class="thmbox thmbox-question" data-staged-exercise="true">
 <p><strong>שאלה 3.2.8.</strong></p>
-<p>קבוצת הסטודנטים היא <span class="math inline">\(A=\{\heb{דנה},\heb{נועם},\heb{רוני}\}\)</span> וקבוצת החוגים היא <span class="math inline">\(B=\{\heb{שחמט},\heb{צילום}\}\)</span>. ידועים הפרטים הבאים:</p>
+<p>קבוצת הסטודנטים היא <span class="math inline">\(A=\{\heb{דנה},\heb{נועם},\heb{רוני}\}\)</span> וקבוצת החוגים היא <span class="math inline">\(.B=\{\heb{שחמט},\heb{צילום}\}\)</span> ידועים הפרטים הבאים:</p>
 <ul>
 <li>דנה נרשמה לשני החוגים.</li>
 <li>רוני לא נרשם לאף חוג.</li>
 <li>ליחס ההרשמה <span class="math inline">\(R\)</span> יש בדיוק שלושה זוגות.</li>
 </ul>
-<p>כתבו את כל יחסי ההרשמה שמתאימים לרמזים. לאחר מכן הוסיפו פרט אחד על נועם שיקבע יחס יחיד, והסבירו איזה זוג הוא קובע.</p>
+<p>בנו את שני יחסי ההרשמה האפשריים. לאחר מכן בחרו פרט נוסף על נועם שיקבע יחס יחיד, ובדקו אילו זוגות שייכים ליחס שנקבע.</p>
+<div class="registration-input exercise-first">
+<p>בנו כל יחס באמצעות סימון החוגים שאליהם נרשם כל סטודנט.</p>
+</div>
+<div class="exercise-second" hidden="true">
+<p><strong>שלב 2: מידע נוסף ושייכות.</strong></p>
+<div class="registration-fact">
+<p>בחרו חוג שאליו נועם נרשם. לאחר הוספת הנתון הזה, האם נועם נרשם לשחמט? האם נועם נרשם לצילום?</p>
+</div>
+</div>
 <details class="thmcollapse thmfoldable"><summary>רמז</summary>
 <div class="foldable" title="רמז">
 <p>הרמז הראשון קובע שני זוגות. הרמז השני מוציא שני זוגות אפשריים. ממי יכול להגיע הזוג השלישי?</p>
@@ -1557,7 +1581,7 @@ window.Quarto = {
 <p>שני הזוגות של דנה חייבים להופיע. אף זוג של רוני אינו יכול להופיע. לכן הזוג השלישי חייב לכלול את נועם, ויש בדיוק שתי אפשרויות:</p>
 <p><span class="math display">\[R_1=\{(\heb{דנה},\heb{שחמט}),(\heb{דנה},\heb{צילום}),(\heb{נועם},\heb{שחמט})\},\]</span></p>
 <p><span class="math display">\[R_2=\{(\heb{דנה},\heb{שחמט}),(\heb{דנה},\heb{צילום}),(\heb{נועם},\heb{צילום})\}.\]</span></p>
-<p>למשל, הפרט ״נועם נרשם לצילום״ קובע את הזוג <span class="math inline">\((\heb{נועם},\heb{צילום})\)</span> ומשאיר רק את <span class="math inline">\(R_2\)</span>. מהנתון שיש בדיוק שלושה זוגות נובע שנועם לא נרשם גם לשחמט. הפעילות מראה שמידע על יחס עשוי להשאיר כמה קבוצות זוגות אפשריות; כדי לקבוע את היחס צריך להכריע אילו זוגות נכללים בו.</p>
+<p>למשל, הפרט ״נועם נרשם לצילום״ קובע את הזוג <span class="math inline">\((\heb{נועם},\heb{צילום})\)</span> ומשאיר רק את <span class="math inline">\(.R_2\)</span> מהנתון שיש בדיוק שלושה זוגות נובע שנועם לא נרשם גם לשחמט. אם בוחרים במקום זאת בפרט ״נועם נרשם לשחמט״, מתקבל רק <span class="math inline">\(.R_1\)</span></p>
 </div>
 </details>
 </div>

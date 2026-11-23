@@ -12,6 +12,7 @@ function equality(title,givens,left,right,hint,extra={}){
 }
 const withComplement={universe:'U',rules:[...defaults.rules,'complement']};
 export const SET_PROOFS={
+  'relation-union':inclusion('איחוד יחסים',['R ⊆ P','S ⊆ P'],'R ∪ S','P','כאן P = A × B. פתחו שני מקרים לפי השייכות ל־R או ל־S. בכל מקרה השתמשו בהכלה המתאימה.',{sets:['R','S','P']}),
   'inclusion-chain':inclusion('שרשרת הכלות',['A ⊆ B','B ⊆ C'],'A','C','פתחו את הגדרת ההכלה במטרה. עקבו אחר איבר כלשהו באמצעות שתי ההכלות הנתונות.'),
   'intersection-target':inclusion('שתי דרישות לאותו איבר',['A ⊆ B','A ⊆ C'],'A','B ∩ C','כדי להגיע לחיתוך, הראו בנפרד שייכות ל־B ול־C.'),
   'union-target':inclusion('שתי דרכים לאותה קבוצה',['A ⊆ C','B ⊆ C'],'A ∪ B','C','פתחו שני מקרים על פי השייכות לאיחוד. סגרו כל ענף כגרירה, ואז השתמשו בכלל המקרים.'),

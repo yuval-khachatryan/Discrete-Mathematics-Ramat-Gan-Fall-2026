@@ -131,6 +131,12 @@
 .relation-board [role="button"]:focus-visible circle { stroke:#825600; stroke-width:5; stroke-dasharray:5 3; }
 .relation-board text { pointer-events:none; }
 .relation-target, .relation-current { text-align:center; unicode-bidi:isolate; font-family:Georgia,serif; font-size:1.15rem; overflow-wrap:anywhere; }
+.registration-tables { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:1rem; }
+.registration-tables fieldset { min-width:0; }
+.registration-tables table { width:100%; }
+.registration-cell { display:flex; justify-content:center; align-items:center; min-height:44px; cursor:pointer; }
+.registration-cell input { width:1.2rem; height:1.2rem; }
+.exercise-stage-status:empty { display:none; }
 .sets-power-layer-fields .bk-input { width:9rem; max-width:100%; }
 
 .set-answer-keyboard { position:relative; display:flex; flex-wrap:wrap; gap:.3rem; margin:.3rem 0; }
