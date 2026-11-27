@@ -7,7 +7,7 @@ Hebrew (RTL) interactive lecture notes for the Discrete Mathematics course at th
 - `index.qmd`: front page (course details, how to read the notes, topic list, sources).
 - `01-logic.qmd`: chapter 1, all of logic (lecture 1): propositions, connectives, truth tables, implication, equivalence and De Morgan, propositional calculus, deduction rules, knights and knaves.
 - `02-sets.qmd`: chapter 2, sets and quantifiers, set operations, power sets and proofs.
-- `03-relations.qmd`: chapter 3, ordered pairs, Cartesian products and relations between sets. Continue in chunks: relations on sets, then reflexive, symmetric, transitive, antisymmetric relations, and the identity relation, in that order.
+- `03-relations.qmd`: chapter 3, ordered pairs, Cartesian products, relations between sets, and relations on a set with directed diagrams. Continue in chunks: reflexive, symmetric, transitive, antisymmetric relations, and the identity relation, in that order.
 - Practice stays near the material it uses; mixed practice may conclude a chapter.
 - `_quarto.yml`: book config (HTML only for now). `_styles.html`: shared CSS and the small page scripts (T/F quizzes, iframe auto-height). `theorem-numbering.lua`: the numbered-box filter, copied from the Ariel notes, with `.thmgame` (משחק) and `.thmchk` (בדיקה עצמית) added.
 - `games/<name>/`: one folder per game, each a standalone page (`index.html`, `game.js`, `levels.js`, `game.css`).
@@ -144,6 +144,7 @@ These rules are mandatory for new writing and every passage being proofread. The
 - Show why an assumption is needed or what changes without it when that helps understanding. Discuss weaker assumptions and generalizations only when they serve the current explanation; do not add difficulty for its own sake.
 - Use the sequence: definition/result, examples, self-tests, solved questions, then activities. Dependent definitions may share later self-tests and solved questions, but each must still have its own immediate illustration.
 - Self-tests must check core understanding. Solved questions and activities must be clear, illuminating and enjoyable; do not add activities merely to fill a slot.
+- Reserve “game” / `.thmgame` for a graphical, interactive activity that offers a change of pace: students manipulate visible objects and see feedback. A written puzzle or an ordinary question with a playful title is still a question. The Cartesian-product card activity is an accepted example of a game.
 - Keep practice and its hints and solutions near the material it uses. Mixed practice may conclude a chapter.
 - Remove poetic, playful, suspenseful or vague exercise titles. Use the exercise number alone unless a short, literal title identifies the mathematical concept or task. Examples may retain useful titles. Preserve numbered labels and stable reference IDs.
 
@@ -155,8 +156,10 @@ These rules are mandatory for new writing and every passage being proofread. The
 
 ### Student input and model solutions
 
-- Exercises and self-tests must accept student input whenever feasible. A reveal button alone is not an interactive exercise. Supply an appropriate input, checking, useful feedback and retry, alongside hints and the model answer.
+- Every answerable part of an exercise, self-test **or solved question** must accept student input whenever feasible. A heading such as “שאלות פתורות” does not exempt a question from this requirement. A hint, solution reveal or input for only the first part is insufficient. Supply appropriate input, checking, useful feedback and retry for each requested answer; keep the model solution folded separately.
+- Preserve the dependency between parts. When a question asks students to construct a set/relation and then decide membership, use two stages: first accept and check the set of ordered pairs; then show a separate yes/no choice for each membership question. Do not replace the construction with multiple choice, or omit the membership input. Changing or resetting the first answer must clear and hide the dependent answers until the first stage is checked again. Revealing a solution must not mark a stage complete.
 - Reuse existing answer widgets and the proof engine. A proof task should let the student construct and check a proof, not merely reveal one. Match the input to the mathematical work requested.
+- For a short multiple-choice list, show selectable buttons rather than a dropdown; the shared widgets use buttons for up to four options. Keep answer checking, reset and a folded explanation. Yes/no questions use two buttons. Numeric answers still use input fields.
 - Every proof-engine exercise must also have a folded, textbook-style written proof. Use connected mathematical prose, with formulas and explicit transitions, following essentially the same reasoning, cases and conclusions as the engine’s model solution. It must read as a proof, not as a transcript of interface actions or numbered engine rows.
 - Keep the written proof and engine model synchronized. When either changes, compare both versions and revise the other if necessary. Use the established `written-proof-<exercise-id>` foldable alongside the set-proof editor; do not create a competing solution or duplicate an existing written proof.
 
@@ -171,9 +174,12 @@ These rules are mandatory for new writing and every passage being proofread. The
 
 - Reread the changed passage in context, checking purpose, prerequisites, explicitness, mathematical correctness, meaningful emphasis and appropriate boxes.
 - Check examples and solutions against their statements. Compare every affected prose proof with the engine model, including assumptions, case order, intermediate conclusions and final closure.
+- Audit every instruction in a question (“write,” “find,” “is it a member?”, “prove,” “give a counterexample”) against its actual input and checker. Do this for the whole affected exercise section, including solved questions, before considering the work complete. A source check that merely finds one widget in a question is not enough to establish that all its parts are answerable.
 - Try the student input and feedback. Check complete formula direction and sentence punctuation in prompts, answers and explanations. Source searches and automated tests do not establish visual correctness; report when browser verification is unavailable.
 
 ### Chapter-specific and implementation conventions
+
+- **Staged exercises:** `games/shared/relation-practice.js` initializes boxes marked with `data-staged-exercise`. Use that attribute on numbered teaching boxes: the numbering filter replaces their CSS classes, so an extra class alone is not a reliable initialization hook.
 
 - **Substitution activity:** `.open-statement-game` is enhanced by `games/shared/open-statement.js`, imported into `book.bundle.js`. It distinguishes missing values from false results and replaces every occurrence of the same variable together. Without JavaScript, its written example remains visible.
 - **Teaching order:** introduce statement names before open statements and `P(x)`. Explain truth tables before the first connective. For each connective: everyday meaning, definition together with its truth table, then visualization or game. Distinguish defining a connective from computing a compound statement using the established definitions. XOR uses both `⊕` and underlined `∨`; formula inputs accept `⊕`, `⊻` and `^`.

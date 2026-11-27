@@ -1,5 +1,6 @@
 import {parseStatement,expandSubset,show,node,substituteName} from '../games/shared/set-proof-syntax.js';
 import {chromium} from 'playwright-core';
+import {readFileSync} from 'node:fs';
 import {pathToFileURL,fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import {MODELS,step} from './set-proof-models.mjs';
@@ -7,6 +8,7 @@ import {elementContributions} from '../games/shared/set-counting-lab.js';
 import {setRuleCategory} from '../games/shared/set-proof-checker.js';
 import {SET_PROOFS} from '../games/shared/set-proof-exercises.js';
 const browser=await chromium.launch({channel:'chrome',headless:true});
+const chapterProofIds=[...readFileSync(new URL('../02-sets.qmd',import.meta.url),'utf8').matchAll(/data-set-proof="([^"]+)"/g)].map(m=>m[1]);
 try{
  const page=await browser.newPage({viewport:{width:1280,height:950}}),errors=[];
  page.on('pageerror',e=>errors.push(e.message));
@@ -16,7 +18,7 @@ try{
  });
  await page.goto(pathToFileURL(fileURLToPath(new URL('../_book/02-sets.html',import.meta.url))).href);
  await page.waitForFunction(()=>window.MathJax?.startup?.promise);await page.evaluate(()=>window.MathJax.startup.promise);
- assert.equal(await page.locator('.set-proof-editor').count(),Object.keys(SET_PROOFS).length);
+ assert.equal(await page.locator('.set-proof-editor').count(),chapterProofIds.length);
  assert.equal(await page.locator('mjx-merror').count(),0);
  async function openEditor(box){
   const work=box.locator('.set-proof-workspace');
@@ -96,7 +98,7 @@ try{
   await box.getByRole('button',{name:'ביטול העריכה ושחזור ההמשך',exact:true}).click();
   assert.equal(await box.locator('[data-row="S8"]').count(),1);
   // Every exercise exposes a complete checked model without changing student work.
-  for(const id of Object.keys(SET_PROOFS)){
+  for(const id of chapterProofIds){
    const other=page.locator(`[data-set-proof="${id}"]`);
    const count=await other.locator('.set-proof-rows [data-row]').count();
    await other.getByRole('button',{name:'פתרון לדוגמה',exact:true}).click();
@@ -218,7 +220,7 @@ try{
  await testBox.getByLabel('הטענה בצעד החדש',{exact:true}).fill('x ∈ C');
  await testBox.getByRole('button',{name:'בדיקת הצעד',exact:true}).click();assert.equal(await testBox.locator('.set-proof-input .bk-bad').count(),1);
  await testBox.getByRole('button',{name:'איפוס החלק הזה',exact:true}).click();
- for(const [id,parts]of Object.entries(MODELS)){
+ for(const [id,parts]of Object.entries(MODELS).filter(([id])=>chapterProofIds.includes(id))){
   const box=page.locator(`[data-set-proof="${id}"]`);
   if(SET_PROOFS[id].defaultMethod==='equivalence')await box.getByLabel('דרך ההוכחה').selectOption('inclusions');
   for(let i=0;i<parts.length;i++){
@@ -372,5 +374,5 @@ try{
  await chain.screenshot({path:'/tmp/chapter2-arbitrary-opening-mobile.png'});
  assert.ok(await chain.evaluate(n=>n.scrollWidth<=n.clientWidth+2),'mobile arbitrary-element controls overflow');
  assert.ok(await testBox.evaluate(n=>n.scrollWidth<=n.clientWidth+2),'mobile proof overflows');
- assert.deepEqual(errors,[]);console.log(`All ${Object.keys(SET_PROOFS).length} proof activities solved; editing, alternative proof routes, R conclusions, games and mobile layout checked.`);
+ assert.deepEqual(errors,[]);console.log(`All ${chapterProofIds.length} chapter 2 proof activities solved; editing, alternative proof routes, R conclusions, games and mobile layout checked.`);
 }finally{await browser.close();}

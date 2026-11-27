@@ -2,6 +2,7 @@ import {SET_PROOFS} from './set-proof-exercises.js';
 import {parseStatement,expandSubset,show} from './set-proof-syntax.js';
 export const step=(rule,formula,...sources)=>({rule,formula,sources});
 export const MODELS={
+ 'relation-union':[[step('union','(x ∈ R) ∨ (x ∈ S)','S1'),step('assume','x ∈ R'),step('subset-use','x ∈ P','G1','S3'),step('conditional','(x ∈ R) → (x ∈ P)','S3','S4'),step('assume','x ∈ S'),step('subset-use','x ∈ P','G2','S6'),step('conditional','(x ∈ S) → (x ∈ P)','S6','S7'),step('cases','x ∈ P','S2','S5','S8')]],
  'inclusion-chain':[[step('subset-use','x ∈ B','G1','S1'),step('subset-use','x ∈ C','G2','S2')]],
  'hw-intersection':[[step('intersection','x ∈ B','G1'),step('subset-use','x ∈ C','G2','S1'),step('intersection','x ∈ A','G1'),step('intersection','x ∈ A ∩ C','S2','S3')]],
  'intersection-target':[[step('subset-use','x ∈ B','G1','S1'),step('subset-use','x ∈ C','G2','S1'),step('intersection','x ∈ B ∩ C','S2','S3')]],

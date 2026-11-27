@@ -21,16 +21,27 @@ function el(tag, attrs = {}, children = []) {
   return node;
 }
 
+function choiceControl(question,feedbackId){
+  const attrs={class:'choice-select','aria-label':question.prompt,'aria-describedby':feedbackId};
+  if(question.options.length>4)return el('select',attrs,[el('option',{value:'',text:'בחרו תשובה…'}),...question.options.map((option,i)=>el('option',{value:String(i),text:option.text}))]);
+  const group=el('fieldset',{...attrs,class:'choice-select choice-buttons'});
+  let value='';
+  const buttons=question.options.map((option,i)=>{
+    const b=el('button',{type:'button',class:'bk-btn','aria-pressed':'false',dir:/[א-ת]/.test(option.text)?'rtl':'ltr',text:option.text});
+    b.addEventListener('click',()=>{group.value=String(i);group.dispatchEvent(new Event('change'));});
+    return b;
+  });
+  Object.defineProperty(group,'value',{get:()=>value,set:next=>{value=next;buttons.forEach((b,i)=>b.setAttribute('aria-pressed',String(next===String(i))));}});
+  group.append(...buttons);return group;
+}
+
 export function initPracticeChoice(box) {
   const exercise = PRACTICE_CHOICES[box.dataset.choice];
   if (!exercise) return;
   if(box.classList.contains("choice-ready"))return;
   const rows = exercise.map((question, index) => {
     const feedbackId = `practice-choice-feedback-${++serial}`;
-    const select = el("select", { class: "choice-select", "aria-label": question.prompt, "aria-describedby": feedbackId }, [
-      el("option", { value: "", text: "בחרו תשובה…" }),
-      ...question.options.map((option, i) => el("option", { value: String(i), text: option.text })),
-    ]);
+    const select = choiceControl(question,feedbackId);
     const feedback = el("div", { id: feedbackId, class: "bk-msg", "aria-live": "polite" });
     select.addEventListener("change", () => {
       feedback.textContent = ""; feedback.className = "bk-msg";
@@ -79,7 +90,7 @@ export function initPracticeChoice(box) {
     const solution=answerReveal((question.substitution?`P(${question.substitution.value}): ${question.substitution.expected}. `:"")+correct.text+". "+correct.feedback);
     const reset=el("button",{type:"button",class:"bk-btn bk-quiet",text:"ניסיון חדש"});
     reset.addEventListener("click",()=>{
-      form.reset();select.removeAttribute("aria-invalid");feedback.textContent="";feedback.className="bk-msg";solution.open=false;
+      form.reset();select.value="";select.removeAttribute("aria-invalid");feedback.textContent="";feedback.className="bk-msg";solution.open=false;
       if(input){input.removeAttribute("aria-invalid");select.disabled=true;substitutionFeedback.textContent="";substitutionFeedback.className="bk-msg";}
     });
     form.addEventListener("submit",event=>{event.preventDefault();check();});

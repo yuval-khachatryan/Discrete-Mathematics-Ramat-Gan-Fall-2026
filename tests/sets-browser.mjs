@@ -183,6 +183,35 @@ try{
  await counter.getByRole('button',{name:'איפוס',exact:true}).click();assert.equal(await counter.getByRole('textbox',{name:'קבוצה R',exact:true}).inputValue(),'');
  assert.equal(await relationsPage.locator('.playing-card').count(),7);
 
+ // Build directed relations by pointer and keyboard; model drawings leave work intact.
+ const drawing=relationsPage.locator('.relation-drawing');
+ const vertex=a=>drawing.locator('.relation-board').first().locator(`[data-vertex="${a}"]`);
+ const drawPair=async(a,b)=>{await vertex(a).click();await vertex(b).click();};
+ const checkDrawing=()=>drawing.getByRole('button',{name:'בדיקה',exact:true}).click();
+ assert.equal(await drawing.locator('[role="button"]').count(),4);
+ await drawPair(1,2);await drawPair(2,3);await drawPair(1,3);await checkDrawing();
+ assert.equal(await drawing.locator('> .bk-bad').count(),1,'a route does not justify adding its shortcut');
+ await drawPair(1,3);await checkDrawing();assert.equal(await drawing.locator('> .bk-good').count(),1);
+ await drawing.locator('.stage-navigation [data-stage="1"]').click();
+ await vertex(1).focus();await vertex(1).press('Enter');await vertex(2).press('Space');
+ await drawPair(2,1);await checkDrawing();assert.equal(await drawing.locator('> .bk-good').count(),1);
+ await drawing.locator('.stage-navigation [data-stage="2"]').click();
+ await drawPair(1,1);await drawPair(1,3);await drawPair(3,2);await checkDrawing();
+ assert.equal(await drawing.locator('> .bk-good').count(),1);
+ const current=await drawing.locator('.relation-current').innerText();
+ await drawing.locator('.answer-reveal > summary').click();
+ assert.equal(await drawing.locator('.relation-current').innerText(),current);
+ assert.equal(await drawing.locator('.answer-reveal [data-pair]').count(),3);
+ await drawing.getByRole('button',{name:'איפוס',exact:true}).click();
+ assert.equal(await drawing.locator('.relation-board').first().locator('[data-pair]').count(),0);
+ assert.equal(await drawing.locator('[role="button"]').count(),4,'reset retains isolated vertices');
+ assert.equal(await drawing.locator('.answer-reveal').getAttribute('open'),null);
+ await drawing.locator('.stage-navigation [data-stage="0"]').click();
+ assert.equal(await drawing.locator('.relation-board').first().locator('[data-pair]').count(),2,'switching stages retains the drawing');
+ await relationsPage.setViewportSize({width:390,height:844});
+ assert.equal(await drawing.evaluate(n=>n.scrollWidth>n.clientWidth+2),false);
+ await relationsPage.setViewportSize({width:1200,height:900});
+
  assert.match(await relationsPage.locator('#box-relation-between-sets').innerText(),/3\.2\.1/);
  for(const detail of await relationsPage.locator('#sec-relations-between-sets details.thmfoldable').all()){
   await detail.locator(':scope > summary').click();
@@ -192,6 +221,14 @@ try{
  for(const [id,data]of Object.entries(SET_TASKS)){
   if(id==='venn-difference')continue; // Replaced by the extended Venn workshop.
   const box=(moved.has(id)?relationsPage:page).locator(`[data-sets="${id}"]`);
+  const dependent=box.locator('xpath=ancestor::*[contains(concat(" ",normalize-space(@class)," ")," exercise-second ")][1]');
+  if(await dependent.count()&&!await dependent.isVisible()){
+   const first=dependent.locator('..').locator('.exercise-first'),firstId=await first.getAttribute('data-sets');
+   await first.locator('.answer-panel').evaluate(n=>n.open=true);
+   await first.locator('input').fill(SET_TASKS[firstId].items[0].answer);
+   await first.getByRole('button',{name:'בדיקה',exact:true}).click();
+  }
+  await box.locator('.answer-panel').evaluateAll(ns=>ns.forEach(n=>n.open=true));
   const check=()=>box.getByRole('button',{name:'בדיקה',exact:true}).click();
   if(data.type==='number-fields'){
    assert.equal(await box.locator('form').count(),1);
@@ -241,6 +278,11 @@ try{
    }
   }
   if(data.type==='choice'&&!data.independent){
+   for(const [i,q]of data.items.entries())if(q.input!=='number'&&q.options.length<=4){
+    const row=box.locator('.sets-item').nth(i);
+    assert.equal(await row.locator('select').count(),0);
+    assert.equal(await row.locator('.sets-binary button').count(),q.options.length);
+   }
    const choose=async(i,value)=>{const row=box.locator('.sets-item').nth(i);if(data.items[i].input==='number')await row.locator('input').fill(data.items[i].options[value]);else if(await row.locator('.sets-binary').count())await row.getByRole('button',{name:data.items[i].options[value],exact:true}).click();else await row.locator('select').selectOption({value:String(value)});};
    for(const [i,q]of data.items.entries()){
     await choose(i,q.answer);await box.locator('.sets-item').nth(i).getByRole('button',{name:'בדיקה',exact:true}).click();

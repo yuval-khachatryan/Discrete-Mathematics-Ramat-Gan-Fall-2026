@@ -75,6 +75,11 @@ test('Cartesian example accepts a complete typed roster; both power counts use n
  assert.equal(checkSetAnswer('{(1,2),(1,4),(2,2)}',answer).ok,false);
  assert.equal(checkSetAnswer('{(1,2),(1,4),(2,2),(4,2)}',answer).ok,false);
  assert.ok(SET_TASKS['count-power'].items.every(q=>q.input==='number'));
+ const seats=SET_TASKS['product-seating-roster'];assert.equal(seats.type,'write');
+ assert.ok(checkSetAnswer('{(2,3),(1,3),(2,2),(1,2),(2,1),(1,1)}',seats.items[0].answer).ok);
+ for(const invalid of ['{1,2,3}','{(1,1),(1,2),(1,3),(2,1),(2,2)}','{(1,1),(1,2),(1,3),(2,1),(2,2),(3,2)}']){
+  assert.equal(checkSetAnswer(invalid,seats.items[0].answer).ok,false);
+ }
 });
 
 test('ordered-pair exercise groups both unknowns under one prompt',()=>{

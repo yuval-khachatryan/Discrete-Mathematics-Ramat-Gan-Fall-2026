@@ -505,6 +505,9 @@ table.bk-tt thead th { background: #eef2ff; font-weight: 700; }
 .answer-reveal > div { margin-top: .35rem; padding: .45rem .65rem; background: #f8fafc; border-inline-start: 3px solid #94a3b8; overflow-wrap: anywhere; }
 .choice-item legend { float: none; width: auto; max-width: 100%; font-size: 1em; font-weight: 700; color: #581c87; padding: 0 .25rem; }
 .choice-select[aria-invalid="true"] { border: 2px solid #b91c1c; }
+.choice-buttons { display:flex; flex-wrap:wrap; gap:.5rem; border:0; background:transparent; margin:0; }
+.choice-buttons button { max-width:100%; white-space:normal; text-align:start; }
+.choice-buttons button[aria-pressed="true"] { background:#dceffc; border-color:#21618c; color:#163d57; }
 .substitution-entry label { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; margin: .5rem 0; }
 .substitution-entry .bk-input { width: 18rem; max-width: 100%; min-width: 0; }
 .substitution-entry input[aria-invalid="true"] { border: 2px solid #b91c1c; }

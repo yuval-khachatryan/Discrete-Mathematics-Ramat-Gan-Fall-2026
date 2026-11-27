@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="264" viewBox="0 0 680 264" role="img" aria-labelledby="title desc">
+  <title id="title">Counting ordered pairs by their first element</title>
+  <desc id="desc">A has elements a, b, c. B has elements 1, 2. Three boxes, labeled a, b, c, each contain the two pairs with that first element. Three boxes times two pairs gives six pairs.</desc>
+  <g fill="#f0f7fc" stroke="#507b9b" stroke-width="2">
+    <rect x="30" y="12" width="190" height="182" rx="12"/>
+    <rect x="245" y="12" width="190" height="182" rx="12"/>
+    <rect x="460" y="12" width="190" height="182" rx="12"/>
+  </g>
+  <g fill="#fff" stroke="#cbdce8">
+    <rect x="58" y="63" width="134" height="42" rx="6"/>
+    <rect x="58" y="113" width="134" height="42" rx="6"/>
+    <rect x="273" y="63" width="134" height="42" rx="6"/>
+    <rect x="273" y="113" width="134" height="42" rx="6"/>
+    <rect x="488" y="63" width="134" height="42" rx="6"/>
+    <rect x="488" y="113" width="134" height="42" rx="6"/>
+  </g>
+  <g text-anchor="middle" direction="ltr" font-family="Georgia, 'Times New Roman', serif" fill="#183c57">
+    <g font-size="30" font-style="italic" font-weight="bold">
+      <text x="125" y="45">a</text>
+      <text x="340" y="45">b</text>
+      <text x="555" y="45">c</text>
+    </g>
+    <g font-size="26">
+      <text x="125" y="92">(a, 1)</text>
+      <text x="125" y="142">(a, 2)</text>
+      <text x="340" y="92">(b, 1)</text>
+      <text x="340" y="142">(b, 2)</text>
+      <text x="555" y="92">(c, 1)</text>
+      <text x="555" y="142">(c, 2)</text>
+    </g>
+    <g font-size="21">
+      <text x="125" y="181">|B| = 2</text>
+      <text x="340" y="181">|B| = 2</text>
+      <text x="555" y="181">|B| = 2</text>
+      <text x="340" y="253">|A| = 3</text>
+    </g>
+  </g>
+  <path d="M30 205v12h620v-12 M340 217v12" fill="none" stroke="#507b9b" stroke-width="2"/>
+</svg>

@@ -16,7 +16,7 @@ export async function checkAnswerWidgets(page){
     assert.equal(await solution.getAttribute('open'),'');
     await solution.locator('summary').click();
   };
-  for(const chapter of ['02-sets','01-logic']){
+  for(const chapter of ['02-sets','01-logic','03-relations']){
     await page.goto(new URL(`../_book/${chapter}.html`,import.meta.url).href);
     await page.waitForFunction(()=>window.MathJax?.startup?.promise);
     await page.evaluate(()=>window.MathJax.startup.promise);
@@ -27,16 +27,18 @@ export async function checkAnswerWidgets(page){
       for(const [i,q]of questions.entries()){
         const part=box.locator('.choice-item').nth(i);await open(part);
         await reveal(part);
-        assert.equal(await part.locator('select').inputValue(),'','reveal leaves the answer untouched');
+        assert.equal(await part.locator('.choice-select').evaluate(n=>n.value),'','reveal leaves the answer untouched');
         if(q.substitution){
           await part.locator('input').fill(q.substitution.expected);
           await part.getByRole('button',{name:'בדיקת ההצבה',exact:true}).click();
         }
-        const select=part.locator('select');
-        await select.selectOption(String(q.options.findIndex(o=>!o.correct)));
+        const select=part.locator('.choice-select');
+        const choose=async index=>{if(await select.evaluate(n=>n.tagName==='SELECT'))await select.selectOption(String(index));else await select.locator('button').nth(index).click();};
+        if(q.options.length<=4)assert.equal(await select.locator('button').count(),q.options.length);
+        await choose(q.options.findIndex(o=>!o.correct));
         await part.getByRole('button',{name:'בדיקה',exact:true}).click();
         assert.equal(await select.getAttribute('aria-invalid'),'true');
-        await select.selectOption(String(q.options.findIndex(o=>o.correct)));
+        await choose(q.options.findIndex(o=>o.correct));
         await part.getByRole('button',{name:'בדיקה',exact:true}).click();
         assert.equal(await select.getAttribute('aria-invalid'),'false');
         if(i+1<questions.length){
@@ -47,14 +49,17 @@ export async function checkAnswerWidgets(page){
       }
     }
     const quiz=page.locator('.tf-quiz').first();
+    if(await quiz.count()){
     await open(quiz);await reveal(quiz);
     assert.equal(await quiz.locator('.tf-opt.correct').count(),0,'reveal does not mark an answer');
     await quiz.locator(`.tf-opt[data-val="${await quiz.getAttribute('data-correct')}"]`).click();
     assert.equal(await quiz.locator('.tf-opt.correct').count(),1);
-    if(chapter==='02-sets'){
+    }
+    if(chapter!=='01-logic'){
       for(const [id,data]of Object.entries(SET_TASKS)){
         if(!['choice','write','cardinality','select'].includes(data.type))continue;
         const box=page.locator(`[data-sets="${id}"]`);
+        if(!await box.count())continue;
         if(data.type==='choice'){
           for(const [i,q]of data.items.entries()){
             const part=box.locator('.sets-item').nth(i);await open(part);await reveal(part);
@@ -94,7 +99,7 @@ export async function checkAnswerWidgets(page){
         await part.locator('input').press('Enter');assert.equal(await part.locator('.bk-good').count(),1);
       }
       await page.setViewportSize({width:390,height:844});
-      const sample=page.locator('[data-sets="membership"]');
+      const sample=page.locator(chapter==='02-sets'?'[data-sets="membership"]':'[data-sets="product-coordinate-check"]');
       await sample.screenshot({path:'/tmp/independent-answer-panels-mobile.png'});
       assert.ok(await sample.evaluate(n=>n.scrollWidth<=n.clientWidth+2));
       await page.setViewportSize({width:1200,height:900});

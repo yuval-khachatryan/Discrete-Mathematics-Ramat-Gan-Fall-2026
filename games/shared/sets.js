@@ -116,7 +116,7 @@ function numberFields(box,data){
 }
 function choices(box,data,offset=0){
   data.items.forEach((q,i)=>{
-    const numeric=q.input==='number',binary=q.input==='buttons'||(q.options.length===2&&q.options.includes('כן')&&q.options.includes('לא'));
+    const numeric=q.input==='number',binary=!numeric&&(q.input==='buttons'||q.options.length<=4);
     const s=numeric?el('input',{type:'text',inputmode:'numeric',dir:'ltr',class:'bk-input sets-count-input',maxlength:'10',autocomplete:'off',placeholder:'מספר'}):binary?el('div',{class:'sets-binary',role:'group'}):selectOptions(q.options,i+offset+box.dataset.sets.length),feedback=msg();
     s.setAttribute('aria-label',q.prompt);
     if(binary){
@@ -156,13 +156,16 @@ function cardinality(box,data){
   if(data.comparison?.length)choices(box,{items:data.comparison,success:'התשובה להשוואת הקבוצות נכונה.'},data.items.length);
 }
 function writes(box,data){
+  const checked=data.items.map(()=>false);
   data.items.forEach((q,i)=>{
     const input=el('input',{type:'text',dir:'ltr',class:'bk-input',maxlength:'1500',autocomplete:'off',spellcheck:'false','aria-label':q.prompt,placeholder:'{ ... }'}),feedback=msg();
-    const form=el('form',{class:'sets-item'},[el('label',{},[el('span',{class:'sets-item-number',text:`סעיף ${i+1}`}),mixedText(q.prompt),input])]);
-    const check=()=>{const r=checkSetAnswer(input.value,q.answer);input.setAttribute('aria-invalid',String(!r.ok));say(feedback,r.message,r.ok);};
-    form.addEventListener('submit',e=>{e.preventDefault();check();});input.addEventListener('input',()=>{say(feedback,'');input.removeAttribute('aria-invalid');});
+    const form=el('form',{class:'sets-item'},[el('label',{},[...(data.numbered===false?[]:[el('span',{class:'sets-item-number',text:`סעיף ${i+1}`})]),mixedText(q.prompt),input])]);
+    const notify=(name,detail)=>box.dispatchEvent(new CustomEvent(name,{bubbles:true,detail}));
+    const clear=()=>{checked[i]=false;say(feedback,'');input.removeAttribute('aria-invalid');notify('sets-answer-edited');};
+    const check=()=>{const r=checkSetAnswer(input.value,q.answer);checked[i]=r.ok;input.setAttribute('aria-invalid',String(!r.ok));say(feedback,r.message,r.ok);notify('sets-answer-checked',{...r,complete:checked.every(Boolean)});};
+    form.addEventListener('submit',e=>{e.preventDefault();check();});input.addEventListener('input',clear);
     input.remove();
-    form.append(answerPanel(input,button('בדיקה',check),button('רמז',()=>say(feedback,q.hint)),button('איפוס',()=>{input.value='';input.removeAttribute('aria-invalid');say(feedback,'');}),feedback,answerReveal(readable(q.answer))));box.append(form);attachSetAnswerInput(input);
+    form.append(answerPanel(input,button('בדיקה',check),button('רמז',()=>say(feedback,q.hint)),button('איפוס',()=>{input.value='';clear();}),feedback,answerReveal(readable(q.answer))));box.append(form);attachSetAnswerInput(input);
   });
 }
 function selection(box,data){

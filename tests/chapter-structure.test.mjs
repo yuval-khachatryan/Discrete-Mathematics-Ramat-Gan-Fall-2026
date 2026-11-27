@@ -133,7 +133,7 @@ test('ordered pairs and Cartesian products move with every activity into chapter
 test('chapter 3 self-tests and the ordered-pair exercise accept student answers',()=>{
  const chapter=pages['03-relations.qmd'];
  const checks=[...chapter.matchAll(/^:::: \{\.thmchk[^\n]*\}\n([\s\S]*?)^::::\s*$/gm)];
- assert.equal(checks.length,4);
+ assert.equal(checks.length,6);
  for(const [,body]of checks)assert.match(body,/data-sets="[^"]+"/);
  assert.match(chapter,/title="מוצאים את הרכיבים"[\s\S]*?data-sets="ordered-pair-components"/);
  assert.match(chapter,/data-set-lab="relation-missing-pair"/);
